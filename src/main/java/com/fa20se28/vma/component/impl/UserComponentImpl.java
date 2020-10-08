@@ -1,10 +1,12 @@
 package com.fa20se28.vma.component.impl;
 
 import com.fa20se28.vma.component.UserComponent;
+import com.fa20se28.vma.model.Driver;
 import com.fa20se28.vma.model.User;
 import com.fa20se28.vma.mapper.UserMapper;
-import com.fa20se28.vma.response.DriverPageRes;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 public class UserComponentImpl implements UserComponent {
@@ -20,11 +22,15 @@ public class UserComponentImpl implements UserComponent {
     }
 
     @Override
-    public DriverPageRes findDrivers(String userId, String name, String phoneNumber, Long userStatusId, int page) {
-        DriverPageRes driverPageRes = new DriverPageRes();
-        driverPageRes.setDriverList(userMapper.findDriversByUserIdAndFullNameAndPhoneNumberAndUserStatus(userId,
-                name, phoneNumber, userStatusId, page));
-        driverPageRes.setTotalDrivers(userMapper.findNumberOfDrivers());
-        return driverPageRes;
+    public List<Driver> findDrivers(String userId, String name, String phoneNumber, Long userStatusId, int page) {
+        return userMapper.findDriversByUserIdAndFullNameAndPhoneNumberAndUserStatus(userId,
+                name, phoneNumber, userStatusId, page);
     }
+
+    @Override
+    public int findTotalUsers(Long roleId) {
+        return userMapper.findNumberOfUsers(2L);
+    }
+
+
 }

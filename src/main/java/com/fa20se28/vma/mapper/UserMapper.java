@@ -105,6 +105,8 @@ public interface UserMapper {
             "FROM [user] u " +
             "JOIN user_roles ur " +
             "ON u.user_id = ur.user_id " +
-            "WHERE ur.role_id = 2 ")
-    int findNumberOfDrivers();
+            "WHERE ur.role_id = ${role_id} ")
+    int findNumberOfUsers(@Param("role_id") Long roleId);
+
+
 }
