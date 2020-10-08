@@ -1,11 +1,8 @@
-package com.fa20se28.vma.entity;
-
-import java.util.List;
+package com.fa20se28.vma.model;
 
 public class Role {
     private Long roleId;
     private String roleName;
-    private List<User> users;
 
     public Long getRoleId() {
         return roleId;
@@ -21,13 +18,5 @@ public class Role {
 
     public void setRoleName(String roleName) {
         this.roleName = roleName;
-    }
-
-    public List<User> getUsers() {
-        return users;
-    }
-
-    public void setUsers(List<User> users) {
-        this.users = users;
     }
 }

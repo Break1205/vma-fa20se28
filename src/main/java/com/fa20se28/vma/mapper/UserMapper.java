@@ -1,8 +1,8 @@
 package com.fa20se28.vma.mapper;
 
-import com.fa20se28.vma.entity.Role;
-import com.fa20se28.vma.entity.User;
-import com.fa20se28.vma.entity.UserStatus;
+import com.fa20se28.vma.model.Role;
+import com.fa20se28.vma.model.User;
+import com.fa20se28.vma.model.UserStatus;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.One;
 import org.apache.ibatis.annotations.Param;

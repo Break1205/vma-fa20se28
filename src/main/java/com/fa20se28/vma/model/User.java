@@ -1,7 +1,6 @@
-package com.fa20se28.vma.entity;
+package com.fa20se28.vma.model;
 
 import java.util.Date;
-import java.util.List;
 
 public class User {
     private String userId;
@@ -14,7 +13,6 @@ public class User {
     private String address;
     private String imageLink;
     private float baseSalary;
-    private List<Role> roles;
 
     public String getUserId() {
         return userId;
@@ -94,13 +92,5 @@ public class User {
 
     public void setBaseSalary(float baseSalary) {
         this.baseSalary = baseSalary;
-    }
-
-    public List<Role> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(List<Role> roles) {
-        this.roles = roles;
     }
 }

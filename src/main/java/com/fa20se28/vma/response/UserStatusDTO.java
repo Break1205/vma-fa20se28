@@ -1,6 +1,6 @@
-package com.fa20se28.vma.entity;
+package com.fa20se28.vma.response;
 
-public class UserStatus {
+public class UserStatusDTO {
     private Long userStatusId;
     private String userStatusName;
 

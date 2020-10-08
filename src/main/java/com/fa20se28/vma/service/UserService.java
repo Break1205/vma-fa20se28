@@ -1,13 +1,15 @@
 package com.fa20se28.vma.service;
 
-import com.fa20se28.vma.entity.User;
+import com.fa20se28.vma.response.UserDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public interface UserService {
-    User findUserById(Long userId);
+    List<UserDTO> getDrivers();
 
-    List<User> findUsersByRole(String roleName);
+    UserDTO findDriverById(Long userId);
+
+
 }
