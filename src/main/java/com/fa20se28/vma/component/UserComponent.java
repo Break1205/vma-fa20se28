@@ -2,7 +2,6 @@ package com.fa20se28.vma.component;
 
 import com.fa20se28.vma.model.Driver;
 import com.fa20se28.vma.model.User;
-import com.fa20se28.vma.response.DriverPageRes;
 
 import java.util.List;
 
