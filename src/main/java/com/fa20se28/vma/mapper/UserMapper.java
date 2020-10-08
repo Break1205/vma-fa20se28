@@ -1,5 +1,6 @@
 package com.fa20se28.vma.mapper;
 
+import com.fa20se28.vma.model.Contributor;
 import com.fa20se28.vma.model.Driver;
 import com.fa20se28.vma.model.Role;
 import com.fa20se28.vma.model.User;
@@ -81,15 +82,15 @@ public interface UserMapper {
             "ON u.user_status_id = us.user_status_id " +
             "JOIN user_roles ur " +
             "ON ur.user_id = u.user_id " +
-            "WHERE ur.role_id = 2 " +
+            "WHERE ur.role_id = 3 " +
             "AND u.user_id LIKE '%${user_id}%' " +
             "AND u.full_name LIKE '%${full_name}%' " +
             "AND u.phone_number LIKE '%${phone_number}%' " +
-            "AND us.user_status_id = #{user_status_id} " +
+            "AND us.user_status_id = ${user_status_id} " +
             "ORDER BY u.user_id ASC " +
             "OFFSET ${offset} ROWS " +
             "FETCH NEXT 15 ROWS ONLY")
-    @Results(id = "driverResult",value={
+    @Results(id = "driverResult", value = {
             @Result(property = "userId", column = "user_id"),
             @Result(property = "fullName", column = "full_name"),
             @Result(property = "phoneNumber", column = "phone_number"),
@@ -101,6 +102,27 @@ public interface UserMapper {
                                                                            @Param("user_status_id") Long userStatusId,
                                                                            @Param("offset") int offset);
 
+    @Select("SELECT " +
+            "u.user_id," +
+            "u.full_name," +
+            "u.phone_number," +
+            "iv.vehicle_id," +
+            "us.user_status_name " +
+            "FROM " +
+            "[user] u " +
+            "JOIN issued_vehicle iv " +
+            "ON u.user_id= iv.driver_id " +
+            "JOIN user_status us " +
+            "ON u.user_status_id = us.user_status_id " +
+            "JOIN user_roles ur " +
+            "ON ur.user_id = u.user_id " +
+            "WHERE ur.role_id = 3 " +
+            "ORDER BY u.user_id ASC " +
+            "OFFSET ${offset} ROWS " +
+            "FETCH NEXT 15 ROWS ONLY")
+    @ResultMap("driverResult")
+    List<Driver> getDrivers(@Param("offset") int offset);
+
     @Select("SELECT count(*) as size " +
             "FROM [user] u " +
             "JOIN user_roles ur " +
@@ -108,5 +130,51 @@ public interface UserMapper {
             "WHERE ur.role_id = ${role_id} ")
     int findNumberOfUsers(@Param("role_id") Long roleId);
 
+    @Select("SELECT " +
+            "u.user_id, " +
+            "u.full_name, " +
+            "u.phone_number, " +
+            "COUNT(v.vehicle_id) as total_vehicles " +
+            "FROM (vehicle v " +
+            "INNER JOIN [user] u " +
+            "ON u.user_id = v.owner_id) " +
+            "JOIN user_roles ur " +
+            "ON ur.user_id = u.user_id " +
+            "WHERE ur.role_id = 2 " +
+            "AND u.user_id LIKE '%${user_id}%' " +
+            "AND u.full_name LIKE '%${full_name}%' " +
+            "AND u.phone_number LIKE '%${phone_number}%' " +
+            "GROUP BY u.user_id,u.full_name,u.phone_number " +
+            "HAVING COUNT(v.vehicle_id) = ${total_vehicles}" +
+            "ORDER BY u.user_id DESC " +
+            "OFFSET ${offset} ROWS " +
+            "FETCH NEXT 15 ROWS ONLY")
+    @Results(id = "contributorResult", value = {
+            @Result(property = "userId", column = "user_id"),
+            @Result(property = "fullName", column = "full_name"),
+            @Result(property = "phoneNumber", column = "phone_number"),
+            @Result(property = "totalVehicles", column = "total_vehicles")})
+    List<Contributor> findContributorsByUserIdAndFullNameAndPhoneNumberAndTotalVehicle(@Param("user_id") String userID,
+                                                                                       @Param("full_name") String name,
+                                                                                       @Param("phone_number") String phoneNumber,
+                                                                                       @Param("total_vehicles") Long totalVehicles,
+                                                                                       @Param("offset") int offset);
 
+    @Select("SELECT " +
+            "u.user_id, " +
+            "u.full_name, " +
+            "u.phone_number, " +
+            "COUNT(v.vehicle_id) as total_vehicles " +
+            "FROM (vehicle v " +
+            "INNER JOIN [user] u " +
+            "ON u.user_id = v.owner_id) " +
+            "JOIN user_roles ur " +
+            "ON ur.user_id = u.user_id " +
+            "WHERE ur.role_id = 2 " +
+            "GROUP BY u.user_id,u.full_name,u.phone_number " +
+            "ORDER BY u.user_id DESC " +
+            "OFFSET ${offset} ROWS " +
+            "FETCH NEXT 15 ROWS ONLY")
+    @ResultMap("contributorResult")
+    List<Contributor> getContributors(@Param("offset") int offset);
 }
