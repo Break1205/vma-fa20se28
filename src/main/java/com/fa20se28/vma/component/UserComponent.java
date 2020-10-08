@@ -1,11 +1,10 @@
 package com.fa20se28.vma.component;
 
 import com.fa20se28.vma.model.User;
-
-import java.util.List;
+import com.fa20se28.vma.response.DriverPageRes;
 
 public interface UserComponent {
     public User findDriverById (Long userId);
 
-    public List<User> findDrivers();
+    public DriverPageRes findDrivers(String userId, String name, String phoneNumber, Long userStatusId, int page);
 }

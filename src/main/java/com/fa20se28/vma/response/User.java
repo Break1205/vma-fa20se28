@@ -2,11 +2,12 @@ package com.fa20se28.vma.response;
 
 import com.fa20se28.vma.model.UserStatus;
 
-public class UserDTO {
+public class User {
     private String userId;
     private String userName;
     private UserStatus userStatus;
     private String vehicleId;
+    private String phoneNumber;
 
     public String getUserId() {
         return userId;
@@ -38,5 +39,13 @@ public class UserDTO {
 
     public void setVehicleId(String vehicleId) {
         this.vehicleId = vehicleId;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 }

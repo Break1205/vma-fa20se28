@@ -1,11 +1,11 @@
 package com.fa20se28.vma.service.impl;
 
 import com.fa20se28.vma.component.impl.UserComponentImpl;
-import com.fa20se28.vma.response.UserDTO;
+import com.fa20se28.vma.request.DriverPageReq;
+import com.fa20se28.vma.response.DriverPageRes;
+import com.fa20se28.vma.response.User;
 import com.fa20se28.vma.service.UserService;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -16,15 +16,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserDTO> getDrivers() {
-
-        return null;
+    public DriverPageRes getDrivers(DriverPageReq driverPageReq) {
+        return userComponent
+                .findDrivers(driverPageReq.getUserId(),
+                        driverPageReq.getName(),
+                        driverPageReq.getPhoneNumber(),
+                        driverPageReq.getUserStatusId(),
+                        driverPageReq.getPage());
     }
 
 
-
     @Override
-    public UserDTO findDriverById(Long userId) {
+    public User findDriverById(Long userId) {
         return null;
     }
 }

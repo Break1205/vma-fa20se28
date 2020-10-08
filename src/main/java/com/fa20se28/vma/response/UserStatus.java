@@ -1,6 +1,6 @@
 package com.fa20se28.vma.response;
 
-public class UserStatusDTO {
+public class UserStatus {
     private Long userStatusId;
     private String userStatusName;
 
