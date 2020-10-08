@@ -4,7 +4,6 @@ import com.fa20se28.vma.request.DriverPageReq;
 import com.fa20se28.vma.response.DriverPageRes;
 import com.fa20se28.vma.service.impl.UserServiceImpl;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;

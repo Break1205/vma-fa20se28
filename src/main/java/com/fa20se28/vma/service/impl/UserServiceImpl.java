@@ -17,12 +17,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public DriverPageRes getDrivers(DriverPageReq driverPageReq) {
-        return userComponent
+        DriverPageRes driverPageRes = new DriverPageRes();
+        driverPageRes.setDriverList(userComponent
                 .findDrivers(driverPageReq.getUserId(),
                         driverPageReq.getName(),
                         driverPageReq.getPhoneNumber(),
                         driverPageReq.getUserStatusId(),
-                        driverPageReq.getPage());
+                        driverPageReq.getPage()));
+        driverPageRes.setTotalDrivers(userComponent.findTotalUsers(2L));
+        return driverPageRes;
     }
 
 
