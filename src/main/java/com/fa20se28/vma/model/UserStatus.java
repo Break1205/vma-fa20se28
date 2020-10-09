@@ -1,4 +1,4 @@
-package com.fa20se28.vma.entity;
+package com.fa20se28.vma.model;
 
 public class UserStatus {
     private Long userStatusId;

@@ -1,24 +1,19 @@
 package com.fa20se28.vma.component;
 
-import com.fa20se28.vma.entity.User;
-import com.fa20se28.vma.mapper.UserMapper;
-import org.springframework.stereotype.Component;
+import com.fa20se28.vma.model.Contributor;
+import com.fa20se28.vma.model.Driver;
+import com.fa20se28.vma.model.User;
 
 import java.util.List;
 
-@Component
-public class UserComponent {
-    private final UserMapper userMapper;
+public interface UserComponent {
+    User findDriverById (Long userId);
 
-    public UserComponent(UserMapper userMapper) {
-        this.userMapper = userMapper;
-    }
+    List<Driver> findDrivers(String userId, String name, String phoneNumber, Long userStatusId, int page);
 
-    public User findUserById(Long userId){
-        return userMapper.findUserById(userId);
-    }
+    List<Contributor> findContributors(String userId,String name,String phoneNumber,Long totalVehicles,int page);
 
-    public List<User> findUsersByRole(String roleName){
-        return userMapper.findUsersByRole(roleName);
-    }
+    int findTotalDrivers();
+
+    int findTotalContributors();
 }

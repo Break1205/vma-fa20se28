@@ -1,9 +1,11 @@
 package com.fa20se28.vma.controller;
 
-import com.fa20se28.vma.entity.User;
+import com.fa20se28.vma.model.Contributor;
+import com.fa20se28.vma.model.Driver;
+import com.fa20se28.vma.request.ContributorPageReq;
+import com.fa20se28.vma.request.DriverPageReq;
 import com.fa20se28.vma.service.impl.UserServiceImpl;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,13 +21,36 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/users/{user-id}")
-    public User findUserById(@PathVariable(value = "user-id") Long userId){
-        return userService.findUserById(userId);
+    @GetMapping("/drivers")
+    public List<Driver> getDrivers(@RequestParam(required = false) String userId,
+                                   @RequestParam(required = false) String name,
+                                   @RequestParam(required = false) String phoneNumber,
+                                   @RequestParam(required = false) Long userStatusId,
+                                   @RequestParam(required = false, defaultValue = "0") int page) {
+        return userService.getDrivers(new DriverPageReq(userId, name, phoneNumber, userStatusId, page));
     }
 
-    @GetMapping("/users")
-    public List<User> findUsersByRole(@RequestParam String roleName) {
-        return userService.findUsersByRole(roleName);
+    @GetMapping("/contributors")
+    public List<Contributor> getContributors(@RequestParam(required = false) String userId,
+                                             @RequestParam(required = false) String name,
+                                             @RequestParam(required = false) String phoneNumber,
+                                             @RequestParam(required = false) Long totalVehicle,
+                                             @RequestParam(required = false, defaultValue = "0") int page) {
+        return userService.getContributors(new ContributorPageReq(userId, name, phoneNumber, totalVehicle, page));
     }
+
+    @GetMapping("/drivers/count")
+    public int getTotalDrivers(){
+        return userService.getTotalDrivers();
+    }
+
+    @GetMapping("/contributors/count")
+    public int getTotalContributor(){
+        return userService.getTotalContributor();
+    }
+
+//    @GetMapping("/drivers/{id}")
+//    public UserDTO findDriverById(@PathVariable("id") Long userId){
+//        return userService.findDriverById(userId);
+//    }
 }
