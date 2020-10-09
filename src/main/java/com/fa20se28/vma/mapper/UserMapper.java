@@ -108,7 +108,7 @@ public interface UserMapper {
             "u.phone_number, " +
             "COUNT(v.vehicle_id) as total_vehicles " +
             "FROM (vehicle v " +
-            "INNER JOIN [user] u " +
+            "RIGHT JOIN [user] u " +
             "ON u.user_id = v.owner_id) " +
             "JOIN user_roles ur " +
             "ON ur.user_id = u.user_id " +
