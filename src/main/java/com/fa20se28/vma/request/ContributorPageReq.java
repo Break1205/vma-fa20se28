@@ -15,6 +15,13 @@ public class ContributorPageReq {
         this.page = page;
     }
 
+    public ContributorPageReq(String userId, String name, String phoneNumber, Long totalVehicles) {
+        this.userId = userId;
+        this.name = name;
+        this.phoneNumber = phoneNumber;
+        this.totalVehicles = totalVehicles;
+    }
+
     public String getUserId() {
         return userId;
     }
