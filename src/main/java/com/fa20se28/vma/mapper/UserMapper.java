@@ -1,18 +1,7 @@
 package com.fa20se28.vma.mapper;
 
-import com.fa20se28.vma.model.Contributor;
-import com.fa20se28.vma.model.Driver;
-import com.fa20se28.vma.model.Role;
-import com.fa20se28.vma.model.User;
-import com.fa20se28.vma.model.UserStatus;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.One;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.ResultMap;
-import org.apache.ibatis.annotations.Results;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.type.JdbcType;
+import com.fa20se28.vma.model.*;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -68,7 +57,8 @@ public interface UserMapper {
     @ResultMap(value = "userResult")
     List<User> findUsers();
 
-    @Select("SELECT " +
+    @Select({"<script>" +
+            "SELECT " +
             "u.user_id," +
             "u.full_name," +
             "u.phone_number," +
@@ -83,13 +73,22 @@ public interface UserMapper {
             "JOIN user_roles ur " +
             "ON ur.user_id = u.user_id " +
             "WHERE ur.role_id = 3 " +
+            "<if test = \"user_id!=null\" > " +
             "AND u.user_id LIKE '%${user_id}%' " +
+            "</if>" +
+            "<if test = \"full_name!=null\" > " +
             "AND u.full_name LIKE '%${full_name}%' " +
+            "</if>" +
+            "<if test = \"phone_number!=null\" > " +
             "AND u.phone_number LIKE '%${phone_number}%' " +
-            "AND us.user_status_id = ${user_status_id} " +
+            "</if>" +
+            "<if test = \"user_status_id!=null\" > " +
+            "AND u.user_status_id LIKE '%${user_status_id}%' " +
+            "</if>" +
             "ORDER BY u.user_id ASC " +
             "OFFSET ${offset} ROWS " +
-            "FETCH NEXT 15 ROWS ONLY")
+            "FETCH NEXT 15 ROWS ONLY" +
+            "</script>"})
     @Results(id = "driverResult", value = {
             @Result(property = "userId", column = "user_id"),
             @Result(property = "fullName", column = "full_name"),
@@ -102,12 +101,15 @@ public interface UserMapper {
                                                                            @Param("user_status_id") Long userStatusId,
                                                                            @Param("offset") int offset);
 
-    @Select("SELECT " +
-            "u.user_id," +
-            "u.full_name," +
-            "u.phone_number," +
-            "iv.vehicle_id," +
-            "us.user_status_name " +
+    @Select("SELECT count(*) as size " +
+            "FROM [user] u " +
+            "JOIN user_roles ur " +
+            "ON u.user_id = ur.user_id " +
+            "WHERE ur.role_id = ${role_id} ")
+    int findNumberOfUsers(@Param("role_id") Long roleId);
+
+    @Select("SELECT count(*) " +
+            "AS total_driver " +
             "FROM " +
             "[user] u " +
             "JOIN issued_vehicle iv " +
@@ -116,19 +118,8 @@ public interface UserMapper {
             "ON u.user_status_id = us.user_status_id " +
             "JOIN user_roles ur " +
             "ON ur.user_id = u.user_id " +
-            "WHERE ur.role_id = 3 " +
-            "ORDER BY u.user_id ASC " +
-            "OFFSET ${offset} ROWS " +
-            "FETCH NEXT 15 ROWS ONLY")
-    @ResultMap("driverResult")
-    List<Driver> getDrivers(@Param("offset") int offset);
-
-    @Select("SELECT count(*) as size " +
-            "FROM [user] u " +
-            "JOIN user_roles ur " +
-            "ON u.user_id = ur.user_id " +
-            "WHERE ur.role_id = ${role_id} ")
-    int findNumberOfUsers(@Param("role_id") Long roleId);
+            "WHERE ur.role_id = 3")
+    int findTotalDriver();
 
     @Select("SELECT " +
             "u.user_id, " +
@@ -141,11 +132,19 @@ public interface UserMapper {
             "JOIN user_roles ur " +
             "ON ur.user_id = u.user_id " +
             "WHERE ur.role_id = 2 " +
+            "<if test = \"user_id!=null\" > " +
             "AND u.user_id LIKE '%${user_id}%' " +
+            "</if>" +
+            "<if test = \"full_name!=null\" > " +
             "AND u.full_name LIKE '%${full_name}%' " +
+            "</if>" +
+            "<if test = \"phone_number!=null\" > " +
             "AND u.phone_number LIKE '%${phone_number}%' " +
+            "</if>" +
             "GROUP BY u.user_id,u.full_name,u.phone_number " +
-            "HAVING COUNT(v.vehicle_id) = ${total_vehicles}" +
+            "<if test = \"total_vehicles!=null\" > " +
+            "HAVING COUNT(v.vehicle_id) = ${total_vehicles} " +
+            "</if>" +
             "ORDER BY u.user_id DESC " +
             "OFFSET ${offset} ROWS " +
             "FETCH NEXT 15 ROWS ONLY")
@@ -160,21 +159,13 @@ public interface UserMapper {
                                                                                        @Param("total_vehicles") Long totalVehicles,
                                                                                        @Param("offset") int offset);
 
-    @Select("SELECT " +
-            "u.user_id, " +
-            "u.full_name, " +
-            "u.phone_number, " +
-            "COUNT(v.vehicle_id) as total_vehicles " +
+    @Select("SELECT count(*) " +
+            "AS total_contributor " +
             "FROM (vehicle v " +
             "INNER JOIN [user] u " +
             "ON u.user_id = v.owner_id) " +
             "JOIN user_roles ur " +
             "ON ur.user_id = u.user_id " +
-            "WHERE ur.role_id = 2 " +
-            "GROUP BY u.user_id,u.full_name,u.phone_number " +
-            "ORDER BY u.user_id DESC " +
-            "OFFSET ${offset} ROWS " +
-            "FETCH NEXT 15 ROWS ONLY")
-    @ResultMap("contributorResult")
-    List<Contributor> getContributors(@Param("offset") int offset);
+            "WHERE ur.role_id = 2 ")
+    int findTotalContributor();
 }
