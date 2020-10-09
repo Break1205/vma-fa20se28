@@ -66,7 +66,7 @@ public interface UserMapper {
             "us.user_status_name " +
             "FROM " +
             "[user] u " +
-            "JOIN issued_vehicle iv " +
+            "LEFT JOIN issued_vehicle iv " +
             "ON u.user_id= iv.driver_id " +
             "JOIN user_status us " +
             "ON u.user_status_id = us.user_status_id " +
