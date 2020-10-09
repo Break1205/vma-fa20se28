@@ -5,20 +5,20 @@ import com.fa20se28.vma.model.Vehicle;
 import java.util.List;
 
 public class VehiclePageRes {
-    private int totalVehicles;
+    private String atPage;
     private List<Vehicle> vehicleList;
 
-    public VehiclePageRes(int totalVehicles, List<Vehicle> vehicleList) {
-        this.totalVehicles = totalVehicles;
+    public VehiclePageRes(String atPage, List<Vehicle> vehicleList) {
+        this.atPage = atPage;
         this.vehicleList = vehicleList;
     }
 
-    public int getTotalVehicles() {
-        return totalVehicles;
+    public String getAtPage() {
+        return atPage;
     }
 
-    public void setTotalVehicles(int totalVehicles) {
-        this.totalVehicles = totalVehicles;
+    public void setAtPage(String atPage) {
+        this.atPage = atPage;
     }
 
     public List<Vehicle> getVehicleList() {

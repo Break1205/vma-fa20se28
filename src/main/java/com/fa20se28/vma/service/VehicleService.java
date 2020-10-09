@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public interface VehicleService {
-    int getTotal();
+    int getTotal(int viewOption, String ownerId);
 
-    VehiclePageRes getVehicles();
+    VehiclePageRes getVehicles(String vehicleId, String model, String vehicleType, Float vehicleDisMin, Float vehicleDisMax , String vehicleStatus, int viewOption, int pageNum, String ownerId);
 }
