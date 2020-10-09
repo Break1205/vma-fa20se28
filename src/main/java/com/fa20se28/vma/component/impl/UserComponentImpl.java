@@ -23,17 +23,7 @@ public class UserComponentImpl implements UserComponent {
     }
 
     @Override
-    public List<Driver> findDrivers(int page) {
-        return userMapper.getDrivers(page);
-    }
-
-    @Override
-    public List<Contributor> findContributors(int page) {
-        return userMapper.getContributors(page);
-    }
-
-    @Override
-    public List<Driver> searchDrivers(String userId, String name, String phoneNumber, Long userStatusId, int page) {
+    public List<Driver> findDrivers(String userId, String name, String phoneNumber, Long userStatusId, int page) {
         return userMapper
                 .findDriversByUserIdAndFullNameAndPhoneNumberAndUserStatus(
                         userId,
@@ -44,7 +34,7 @@ public class UserComponentImpl implements UserComponent {
     }
 
     @Override
-    public List<Contributor> searchContributors(String userId, String name, String phoneNumber, Long totalVehicles, int page) {
+    public List<Contributor> findContributors(String userId, String name, String phoneNumber, Long totalVehicles, int page) {
         return userMapper.findContributorsByUserIdAndFullNameAndPhoneNumberAndTotalVehicle(
                 userId,
                 name,
@@ -54,8 +44,12 @@ public class UserComponentImpl implements UserComponent {
     }
 
     @Override
-    public int findTotalUsers(Long roleId) {
-        return userMapper.findNumberOfUsers(roleId);
+    public int findTotalDrivers() {
+        return userMapper.findTotalUserByRoles(3);
     }
 
+    @Override
+    public int findTotalContributors() {
+        return userMapper.findTotalUserByRoles(2);
+    }
 }

@@ -101,27 +101,8 @@ public interface UserMapper {
                                                                            @Param("user_status_id") Long userStatusId,
                                                                            @Param("offset") int offset);
 
-    @Select("SELECT count(*) as size " +
-            "FROM [user] u " +
-            "JOIN user_roles ur " +
-            "ON u.user_id = ur.user_id " +
-            "WHERE ur.role_id = ${role_id} ")
-    int findNumberOfUsers(@Param("role_id") Long roleId);
-
-    @Select("SELECT count(*) " +
-            "AS total_driver " +
-            "FROM " +
-            "[user] u " +
-            "JOIN issued_vehicle iv " +
-            "ON u.user_id= iv.driver_id " +
-            "JOIN user_status us " +
-            "ON u.user_status_id = us.user_status_id " +
-            "JOIN user_roles ur " +
-            "ON ur.user_id = u.user_id " +
-            "WHERE ur.role_id = 3")
-    int findTotalDriver();
-
-    @Select("SELECT " +
+    @Select({"<script>" +
+            "SELECT " +
             "u.user_id, " +
             "u.full_name, " +
             "u.phone_number, " +
@@ -147,7 +128,8 @@ public interface UserMapper {
             "</if>" +
             "ORDER BY u.user_id DESC " +
             "OFFSET ${offset} ROWS " +
-            "FETCH NEXT 15 ROWS ONLY")
+            "FETCH NEXT 15 ROWS ONLY " +
+            "</script>"})
     @Results(id = "contributorResult", value = {
             @Result(property = "userId", column = "user_id"),
             @Result(property = "fullName", column = "full_name"),
@@ -159,13 +141,7 @@ public interface UserMapper {
                                                                                        @Param("total_vehicles") Long totalVehicles,
                                                                                        @Param("offset") int offset);
 
-    @Select("SELECT count(*) " +
-            "AS total_contributor " +
-            "FROM (vehicle v " +
-            "INNER JOIN [user] u " +
-            "ON u.user_id = v.owner_id) " +
-            "JOIN user_roles ur " +
-            "ON ur.user_id = u.user_id " +
-            "WHERE ur.role_id = 2 ")
-    int findTotalContributor();
+    @Select("SELECT count(DISTINCT u.user_id)" +
+            "FROM [user] u join user_roles ur on u.user_id = ur.user_id where role_id = ${role_id}")
+    int findTotalUserByRoles(@Param("role_id") int roleId);
 }
