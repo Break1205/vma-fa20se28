@@ -1,14 +1,16 @@
 package com.fa20se28.vma.controller;
 
+import com.fa20se28.vma.model.Contributor;
+import com.fa20se28.vma.model.Driver;
 import com.fa20se28.vma.request.ContributorPageReq;
 import com.fa20se28.vma.request.DriverPageReq;
-import com.fa20se28.vma.response.ContributorPageRes;
-import com.fa20se28.vma.response.DriverPageRes;
 import com.fa20se28.vma.service.impl.UserServiceImpl;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -20,21 +22,31 @@ public class UserController {
     }
 
     @GetMapping("/drivers")
-    public DriverPageRes getDrivers(@RequestParam(required = false) String userId,
-                                    @RequestParam(required = false) String name,
-                                    @RequestParam(required = false) String phoneNumber,
-                                    @RequestParam(required = false) Long userStatusId,
-                                    @RequestParam(required = false, defaultValue = "0") int page) {
+    public List<Driver> getDrivers(@RequestParam(required = false) String userId,
+                                   @RequestParam(required = false) String name,
+                                   @RequestParam(required = false) String phoneNumber,
+                                   @RequestParam(required = false) Long userStatusId,
+                                   @RequestParam(required = false, defaultValue = "0") int page) {
         return userService.getDrivers(new DriverPageReq(userId, name, phoneNumber, userStatusId, page));
     }
 
     @GetMapping("/contributors")
-    public ContributorPageRes getContributors(@RequestParam(required = false) String userId,
-                                         @RequestParam(required = false) String name,
-                                         @RequestParam(required = false) String phoneNumber,
-                                         @RequestParam(required = false,defaultValue = "0") Long totalVehicle,
-                                         @RequestParam(required = false, defaultValue = "0") int page) {
+    public List<Contributor> getContributors(@RequestParam(required = false) String userId,
+                                             @RequestParam(required = false) String name,
+                                             @RequestParam(required = false) String phoneNumber,
+                                             @RequestParam(required = false) Long totalVehicle,
+                                             @RequestParam(required = false, defaultValue = "0") int page) {
         return userService.getContributors(new ContributorPageReq(userId, name, phoneNumber, totalVehicle, page));
+    }
+
+    @GetMapping("/drivers/count")
+    public int getTotalDrivers(){
+        return userService.getTotalDrivers();
+    }
+
+    @GetMapping("/contributors/count")
+    public int getTotalContributor(){
+        return userService.getTotalContributor();
     }
 
 //    @GetMapping("/drivers/{id}")

@@ -1,17 +1,19 @@
 package com.fa20se28.vma.service;
 
+import com.fa20se28.vma.model.Contributor;
+import com.fa20se28.vma.model.Driver;
 import com.fa20se28.vma.request.ContributorPageReq;
 import com.fa20se28.vma.request.DriverPageReq;
-import com.fa20se28.vma.response.ContributorPageRes;
-import com.fa20se28.vma.response.DriverPageRes;
-import com.fa20se28.vma.response.User;
-import org.springframework.stereotype.Service;
 
-@Service
+import java.util.List;
+
 public interface UserService {
-    DriverPageRes getDrivers(DriverPageReq driverPageReq);
+    List<Driver> getDrivers(DriverPageReq driverPageReq);
 
-    ContributorPageRes getContributors(ContributorPageReq contributorPageReq);
+    int getTotalDrivers();
 
-    User findDriverById(Long userId);
+    List<Contributor> getContributors(ContributorPageReq contributorPageReq);
+
+    int getTotalContributor();
+
 }

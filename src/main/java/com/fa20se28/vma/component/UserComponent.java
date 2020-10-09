@@ -9,13 +9,11 @@ import java.util.List;
 public interface UserComponent {
     User findDriverById (Long userId);
 
-    List<Driver> findDrivers(int page);
+    List<Driver> findDrivers(String userId, String name, String phoneNumber, Long userStatusId, int page);
 
-    List<Contributor> findContributors(int page);
+    List<Contributor> findContributors(String userId,String name,String phoneNumber,Long totalVehicles,int page);
 
-    List<Driver> searchDrivers(String userId, String name, String phoneNumber, Long userStatusId, int page);
+    int findTotalDrivers();
 
-    List<Contributor> searchContributors(String userId,String name,String phoneNumber,Long totalVehicles,int page);
-
-    int findTotalUsers(Long roleId);
+    int findTotalContributors();
 }
