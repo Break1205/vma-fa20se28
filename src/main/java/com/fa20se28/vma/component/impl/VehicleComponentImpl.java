@@ -3,6 +3,8 @@ package com.fa20se28.vma.component.impl;
 import com.fa20se28.vma.component.VehicleComponent;
 import com.fa20se28.vma.mapper.VehicleMapper;
 import com.fa20se28.vma.model.Vehicle;
+import com.fa20se28.vma.model.VehicleStatus;
+import com.fa20se28.vma.model.VehicleType;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -18,6 +20,16 @@ public class VehicleComponentImpl implements VehicleComponent {
     @Override
     public int getTotal(int viewOption, String ownerId) {
         return vehicleMapper.getTotal(viewOption, ownerId);
+    }
+
+    @Override
+    public List<VehicleType> getTypes() {
+        return vehicleMapper.getTypes();
+    }
+
+    @Override
+    public List<VehicleStatus> getStatus() {
+        return vehicleMapper.getStatus();
     }
 
     @Override

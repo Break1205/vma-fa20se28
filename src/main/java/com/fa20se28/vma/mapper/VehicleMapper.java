@@ -1,6 +1,8 @@
 package com.fa20se28.vma.mapper;
 
 import com.fa20se28.vma.model.Vehicle;
+import com.fa20se28.vma.model.VehicleStatus;
+import com.fa20se28.vma.model.VehicleType;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -8,7 +10,7 @@ import java.util.List;
 @Mapper
 public interface VehicleMapper {
     @Select({"<script> " +
-            "SELECT COUNT(*) " +
+            "SELECT COUNT(v.vehicle_id) " +
             "FROM vehicle v " +
             "WHERE " +
             "<if test = \"v_option == 0\" > " +
@@ -84,4 +86,20 @@ public interface VehicleMapper {
                               @Param("v_option") int viewOption,
                               @Param("v_offset") int offset,
                               @Param("v_owner_id") String ownerId);
+
+    @Select("SELECT vt.vehicle_type_id, vt.vehicle_type_name " +
+            "FROM vehicle_type vt ")
+    @Results(id = "types", value = {
+            @Result(property = "vehicleTypeId", column = "vehicle_type_id"),
+            @Result(property = "vehicleTypeName", column = "vehicle_type_name"),
+    })
+    List<VehicleType> getTypes();
+
+    @Select("SELECT vs.vehicle_status_id, vs.vehicle_status_name " +
+            "FROM vehicle_status vs ")
+    @Results(id = "status", value = {
+            @Result(property = "vehicleStatusId", column = "vehicle_status_id"),
+            @Result(property = "vehicleStatusName", column = "vehicle_status_name"),
+    })
+    List<VehicleStatus> getStatus();
 }
