@@ -1,9 +1,11 @@
 package com.fa20se28.vma.controller;
 
 import com.fa20se28.vma.request.DriverPageReq;
+import com.fa20se28.vma.response.DriverDetailRes;
 import com.fa20se28.vma.response.DriverPageRes;
 import com.fa20se28.vma.service.DriverService;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,6 +17,11 @@ public class DriverController {
 
     public DriverController(DriverService driverService) {
         this.driverService = driverService;
+    }
+
+    @GetMapping("/{driver-id}")
+    public DriverDetailRes getDriverById(@PathVariable("driver-id") String userId){
+        return driverService.getDriverById(userId);
     }
 
     @GetMapping()

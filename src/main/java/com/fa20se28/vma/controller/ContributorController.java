@@ -1,9 +1,11 @@
 package com.fa20se28.vma.controller;
 
 import com.fa20se28.vma.request.ContributorPageReq;
+import com.fa20se28.vma.response.ContributorDetailRes;
 import com.fa20se28.vma.response.ContributorPageRes;
 import com.fa20se28.vma.service.ContributorService;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,6 +17,11 @@ public class ContributorController {
 
     public ContributorController(ContributorService contributorService) {
         this.contributorService = contributorService;
+    }
+
+    @GetMapping("/{contributor-id}")
+    public ContributorDetailRes getContributorById(@PathVariable("contributor-id") String userId){
+        return contributorService.getContributorById(userId);
     }
 
     @GetMapping()

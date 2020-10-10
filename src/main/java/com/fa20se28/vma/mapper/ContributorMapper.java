@@ -31,7 +31,8 @@ public interface ContributorMapper {
             "ON ur.user_id = u.user_id " +
             "JOIN user_status us " +
             "ON u.user_status_id = us.user_status_id " +
-            "WHERE ur.role_id=2 " +
+            "WHERE ur.role_id = 2 " +
+            "AND v.is_deleted = 0 " +
             "AND u.user_id LIKE '%${user_id}%' " +
             "GROUP BY  " +
             "u.user_id, " +
@@ -73,6 +74,7 @@ public interface ContributorMapper {
             "JOIN user_status us " +
             "ON u.user_status_id = us.user_status_id " +
             "WHERE ur.role_id = 2 " +
+            "AND v.is_deleted = 0 " +
             "<if test = \"user_id!=null\" > " +
             "AND u.user_id LIKE '%${user_id}%' " +
             "</if>" +
@@ -111,6 +113,7 @@ public interface ContributorMapper {
             "JOIN user_roles ur " +
             "ON ur.user_id = u.user_id " +
             "WHERE ur.role_id = 2 " +
+            "AND v.is_deleted = 0 " +
             "<if test = \"user_id!=null\" > " +
             "AND u.user_id LIKE '%${user_id}%' " +
             "</if>" +
