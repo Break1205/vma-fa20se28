@@ -10,10 +10,10 @@ import java.util.List;
 public interface UserService {
     List<Driver> getDrivers(DriverPageReq driverPageReq);
 
-    int getTotalDrivers();
+    int getTotalDriversOrTotalFilteredDriver(DriverPageReq driverPageReq);
 
     List<Contributor> getContributors(ContributorPageReq contributorPageReq);
 
-    int getTotalContributor();
+    int getTotalContributorsOrTotalFilteredContributors(ContributorPageReq contributorPageReq);
 
 }

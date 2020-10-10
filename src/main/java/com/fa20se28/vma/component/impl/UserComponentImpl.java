@@ -30,7 +30,17 @@ public class UserComponentImpl implements UserComponent {
                         name,
                         phoneNumber,
                         userStatusId,
-                        page);
+                        page*15);
+    }
+
+    @Override
+    public int findTotalDrivers() {
+        return userMapper.findTotalUserByRoles(3);
+    }
+
+    @Override
+    public int findTotalDriversWhenFilter(String userId, String name, String phoneNumber, Long userStatusId) {
+        return userMapper.findTotalDriversWhenFilter(userId, name, phoneNumber, userStatusId);
     }
 
     @Override
@@ -40,16 +50,17 @@ public class UserComponentImpl implements UserComponent {
                 name,
                 phoneNumber,
                 totalVehicles,
-                page);
-    }
-
-    @Override
-    public int findTotalDrivers() {
-        return userMapper.findTotalUserByRoles(3);
+                page*15);
     }
 
     @Override
     public int findTotalContributors() {
         return userMapper.findTotalUserByRoles(2);
+    }
+
+
+    @Override
+    public int findTotalContributorsWhenFilter(String userId, String name, String phoneNumber, Long totalVehicles) {
+        return userMapper.findTotalContributorsWhenFilter(userId, name, phoneNumber, totalVehicles);
     }
 }

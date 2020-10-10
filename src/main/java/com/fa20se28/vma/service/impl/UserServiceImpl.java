@@ -31,8 +31,27 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public int getTotalDrivers() {
+    public int getTotalDriversOrTotalFilteredDriver(DriverPageReq driverPageReq) {
+        if (driverPageReq.getUserId() != null
+                || driverPageReq.getName() != null
+                || driverPageReq.getPhoneNumber() != null
+                || driverPageReq.getUserStatusId() != null) {
+            return getTotalDriversWhenFiltering(driverPageReq);
+        }
+        return getTotalDrivers();
+    }
+
+    private int getTotalDrivers() {
         return userComponent.findTotalDrivers();
+    }
+
+    private int getTotalDriversWhenFiltering(DriverPageReq driverPageReq) {
+        return userComponent
+                .findTotalDriversWhenFilter(
+                        driverPageReq.getUserId(),
+                        driverPageReq.getName(),
+                        driverPageReq.getPhoneNumber(),
+                        driverPageReq.getUserStatusId());
     }
 
     @Override
@@ -47,7 +66,27 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public int getTotalContributor() {
+    public int getTotalContributorsOrTotalFilteredContributors(ContributorPageReq contributorPageReq) {
+        if (contributorPageReq.getUserId() != null
+                || contributorPageReq.getName() != null
+                || contributorPageReq.getPhoneNumber() != null
+                || contributorPageReq.getTotalVehicles() != null) {
+            return getTotalContributorsWhenFiltering(contributorPageReq);
+        }
+        return getTotalContributors();
+    }
+
+
+    private int getTotalContributors() {
         return userComponent.findTotalContributors();
+    }
+
+    private int getTotalContributorsWhenFiltering(ContributorPageReq contributorPageReq) {
+        return userComponent
+                .findTotalContributorsWhenFilter(
+                        contributorPageReq.getUserId(),
+                        contributorPageReq.getName(),
+                        contributorPageReq.getPhoneNumber(),
+                        contributorPageReq.getTotalVehicles());
     }
 }

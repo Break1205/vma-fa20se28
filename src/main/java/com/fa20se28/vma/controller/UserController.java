@@ -40,13 +40,19 @@ public class UserController {
     }
 
     @GetMapping("/drivers/count")
-    public int getTotalDrivers(){
-        return userService.getTotalDrivers();
+    public int getTotalDrivers(@RequestParam(required = false) String userId,
+                               @RequestParam(required = false) String name,
+                               @RequestParam(required = false) String phoneNumber,
+                               @RequestParam(required = false) Long userStatusId){
+        return userService.getTotalDriversOrTotalFilteredDriver(new DriverPageReq(userId, name, phoneNumber, userStatusId));
     }
 
     @GetMapping("/contributors/count")
-    public int getTotalContributor(){
-        return userService.getTotalContributor();
+    public int getTotalContributor(@RequestParam(required = false) String userId,
+                                   @RequestParam(required = false) String name,
+                                   @RequestParam(required = false) String phoneNumber,
+                                   @RequestParam(required = false) Long totalVehicle){
+        return userService.getTotalContributorsOrTotalFilteredContributors(new ContributorPageReq(userId, name, phoneNumber, totalVehicle));
     }
 
 //    @GetMapping("/drivers/{id}")

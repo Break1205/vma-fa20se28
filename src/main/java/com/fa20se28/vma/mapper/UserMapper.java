@@ -108,7 +108,7 @@ public interface UserMapper {
             "u.phone_number, " +
             "COUNT(v.vehicle_id) as total_vehicles " +
             "FROM (vehicle v " +
-            "INNER JOIN [user] u " +
+            "RIGHT JOIN [user] u " +
             "ON u.user_id = v.owner_id) " +
             "JOIN user_roles ur " +
             "ON ur.user_id = u.user_id " +
@@ -144,4 +144,59 @@ public interface UserMapper {
     @Select("SELECT count(DISTINCT u.user_id)" +
             "FROM [user] u join user_roles ur on u.user_id = ur.user_id where role_id = ${role_id}")
     int findTotalUserByRoles(@Param("role_id") int roleId);
+
+    @Select({"<script>" +
+            "SELECT " +
+            "count(DISTINCT u.user_id) " +
+            "FROM (vehicle v " +
+            "RIGHT JOIN [user] u " +
+            "ON u.user_id = v.owner_id) " +
+            "JOIN user_roles ur " +
+            "ON ur.user_id = u.user_id " +
+            "WHERE ur.role_id = 2 " +
+            "<if test = \"user_id!=null\" > " +
+            "AND u.user_id LIKE '%${user_id}%' " +
+            "</if>" +
+            "<if test = \"full_name!=null\" > " +
+            "AND u.full_name LIKE '%${full_name}%' " +
+            "</if>" +
+            "<if test = \"phone_number!=null\" > " +
+            "AND u.phone_number LIKE '%${phone_number}%' " +
+            "</if>" +
+            "<if test = \"total_vehicles!=null\" > " +
+            "HAVING COUNT(v.vehicle_id) = ${total_vehicles} " +
+            "</if> " +
+            "</script>"})
+    int findTotalContributorsWhenFilter(@Param("user_id") String userID,
+                                        @Param("full_name") String name,
+                                        @Param("phone_number") String phoneNumber,
+                                        @Param("total_vehicles") Long totalVehicles);
+
+    @Select({"<script>" +
+            "SELECT count(u.user_id) " +
+            "FROM [user] u " +
+            "LEFT JOIN issued_vehicle iv " +
+            "ON u.user_id= iv.driver_id " +
+            "JOIN user_status us " +
+            "ON u.user_status_id = us.user_status_id " +
+            "JOIN user_roles ur " +
+            "ON ur.user_id = u.user_id " +
+            "WHERE ur.role_id = 3 " +
+            "<if test = \"user_id!=null\" > " +
+            "AND u.user_id LIKE '%${user_id}%' " +
+            "</if>" +
+            "<if test = \"full_name!=null\" > " +
+            "AND u.full_name LIKE '%${full_name}%' " +
+            "</if>" +
+            "<if test = \"phone_number!=null\" > " +
+            "AND u.phone_number LIKE '%${phone_number}%' " +
+            "</if>" +
+            "<if test = \"user_status_id!=null\" > " +
+            "AND u.user_status_id LIKE '%${user_status_id}%' " +
+            "</if>" +
+            "</script>"})
+    int findTotalDriversWhenFilter(@Param("user_id") String userID,
+                                   @Param("full_name") String name,
+                                   @Param("phone_number") String phoneNumber,
+                                   @Param("user_status_id") Long userStatusId);
 }
