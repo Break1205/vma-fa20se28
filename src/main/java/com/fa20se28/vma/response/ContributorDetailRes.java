@@ -1,6 +1,9 @@
 package com.fa20se28.vma.response;
 
+import com.fa20se28.vma.model.UserDocument;
+
 import java.util.Date;
+import java.util.List;
 
 public class ContributorDetailRes {
     private String userId;
@@ -13,6 +16,7 @@ public class ContributorDetailRes {
     private String address;
     private String imageLink;
     private Float baseSalary;
+    private List<UserDocument> userDocumentList;
 
     public String getUserId() {
         return userId;
@@ -92,5 +96,13 @@ public class ContributorDetailRes {
 
     public void setBaseSalary(Float baseSalary) {
         this.baseSalary = baseSalary;
+    }
+
+    public List<UserDocument> getUserDocumentList() {
+        return userDocumentList;
+    }
+
+    public void setUserDocumentList(List<UserDocument> userDocumentList) {
+        this.userDocumentList = userDocumentList;
     }
 }

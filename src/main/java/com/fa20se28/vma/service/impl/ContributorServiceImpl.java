@@ -30,6 +30,7 @@ public class ContributorServiceImpl implements ContributorService {
         contributorDetailRes.setDateOfBirth(contributorDetail.getDateOfBirth());
         contributorDetailRes.setGender(contributorDetail.isGender());
         contributorDetailRes.setImageLink(contributorDetail.getImageLink());
+        contributorDetailRes.setUserDocumentList(contributorDetail.getUserDocumentList());
         return contributorDetailRes;
     }
 

@@ -2,6 +2,7 @@ package com.fa20se28.vma.component.impl;
 
 import com.fa20se28.vma.component.ContributorComponent;
 import com.fa20se28.vma.mapper.ContributorMapper;
+import com.fa20se28.vma.mapper.UserDocumentMapper;
 import com.fa20se28.vma.mapper.UserMapper;
 import com.fa20se28.vma.model.Contributor;
 import com.fa20se28.vma.model.ContributorDetail;
@@ -12,16 +13,20 @@ import java.util.List;
 @Component
 public class ContributorComponentImpl implements ContributorComponent {
     private final ContributorMapper contributorMapper;
+    private final UserDocumentMapper userDocumentMapper;
     private final UserMapper userMapper;
 
-    public ContributorComponentImpl(ContributorMapper contributorMapper, UserMapper userMapper) {
+    public ContributorComponentImpl(ContributorMapper contributorMapper, UserDocumentMapper userDocumentMapper, UserMapper userMapper) {
         this.contributorMapper = contributorMapper;
+        this.userDocumentMapper = userDocumentMapper;
         this.userMapper = userMapper;
     }
 
     @Override
     public ContributorDetail findContributorById(String userId) {
-        return contributorMapper.findContributorById(userId);
+        ContributorDetail contributorDetail = contributorMapper.findContributorById(userId);
+        contributorDetail.setUserDocumentList(userDocumentMapper.findUserDocumentByUserId(userId));
+        return contributorDetail;
     }
 
     @Override

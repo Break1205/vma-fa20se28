@@ -2,6 +2,7 @@ package com.fa20se28.vma.component.impl;
 
 import com.fa20se28.vma.component.DriverComponent;
 import com.fa20se28.vma.mapper.DriverMapper;
+import com.fa20se28.vma.mapper.UserDocumentMapper;
 import com.fa20se28.vma.mapper.UserMapper;
 import com.fa20se28.vma.model.Driver;
 import com.fa20se28.vma.model.DriverDetail;
@@ -12,16 +13,20 @@ import java.util.List;
 @Component
 public class DriverComponentImpl implements DriverComponent {
     private final DriverMapper driverMapper;
+    private final UserDocumentMapper userDocumentMapper;
     private final UserMapper userMapper;
 
-    public DriverComponentImpl(DriverMapper driverMapper, UserMapper userMapper) {
+    public DriverComponentImpl(DriverMapper driverMapper, UserDocumentMapper userDocumentMapper, UserMapper userMapper) {
         this.driverMapper = driverMapper;
+        this.userDocumentMapper = userDocumentMapper;
         this.userMapper = userMapper;
     }
 
     @Override
     public DriverDetail findDriverById(String userId) {
-        return driverMapper.findDriverById(userId);
+        DriverDetail driverDetail = driverMapper.findDriverById(userId);
+        driverDetail.setUserDocumentList(userDocumentMapper.findUserDocumentByUserId(userId));
+        return driverDetail;
     }
 
     @Override

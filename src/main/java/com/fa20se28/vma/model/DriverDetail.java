@@ -1,6 +1,7 @@
 package com.fa20se28.vma.model;
 
 import java.util.Date;
+import java.util.List;
 
 public class DriverDetail {
     private String userId;
@@ -13,6 +14,7 @@ public class DriverDetail {
     private String address;
     private String imageLink;
     private Float baseSalary;
+    private List<UserDocument> userDocumentList;
 
     public String getUserId() {
         return userId;
@@ -92,5 +94,13 @@ public class DriverDetail {
 
     public void setBaseSalary(Float baseSalary) {
         this.baseSalary = baseSalary;
+    }
+
+    public List<UserDocument> getUserDocumentList() {
+        return userDocumentList;
+    }
+
+    public void setUserDocumentList(List<UserDocument> userDocumentList) {
+        this.userDocumentList = userDocumentList;
     }
 }

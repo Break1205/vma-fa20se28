@@ -30,6 +30,7 @@ public class DriverServiceImpl implements DriverService {
         driverDetailRes.setDateOfBirth(driverDetail.getDateOfBirth());
         driverDetailRes.setGender(driverDetail.isGender());
         driverDetailRes.setImageLink(driverDetail.getImageLink());
+        driverDetailRes.setUserDocumentList(driverDetail.getUserDocumentList());
         return driverDetailRes;
     }
 
