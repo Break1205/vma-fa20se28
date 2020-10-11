@@ -42,6 +42,7 @@ public class ContributorServiceImpl implements ContributorService {
                         contributorPageReq.getUserId(),
                         contributorPageReq.getName(),
                         contributorPageReq.getPhoneNumber(),
+                        contributorPageReq.getUserStatusId(),
                         contributorPageReq.getMin(),
                         contributorPageReq.getMax(),
                         contributorPageReq.getPage()));
@@ -78,6 +79,7 @@ public class ContributorServiceImpl implements ContributorService {
                         contributorPageReq.getUserId(),
                         contributorPageReq.getName(),
                         contributorPageReq.getPhoneNumber(),
+                        contributorPageReq.getUserStatusId(),
                         contributorPageReq.getMin(),
                         contributorPageReq.getMax());
     }

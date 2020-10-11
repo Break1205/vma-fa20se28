@@ -4,15 +4,17 @@ public class ContributorPageReq {
     private String userId;
     private String name;
     private String phoneNumber;
+    private Long userStatusId;
     private Long min;
     private Long max;
     private int page;
 
 
-    public ContributorPageReq(String userId, String name, String phoneNumber, Long min, Long max, int page) {
+    public ContributorPageReq(String userId, String name, String phoneNumber,Long userStatusId, Long min, Long max, int page) {
         this.userId = userId;
         this.name = name;
         this.phoneNumber = phoneNumber;
+        this.userStatusId = userStatusId;
         this.min = min;
         this.max = max;
         this.page = page;
@@ -48,6 +50,14 @@ public class ContributorPageReq {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    public Long getUserStatusId() {
+        return userStatusId;
+    }
+
+    public void setUserStatusId(Long userStatusId) {
+        this.userStatusId = userStatusId;
     }
 
     public Long getMin() {

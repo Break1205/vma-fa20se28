@@ -75,6 +75,9 @@ public interface ContributorMapper {
             "ON u.user_status_id = us.user_status_id " +
             "WHERE ur.role_id = 2 " +
             "AND v.is_deleted = 0 " +
+            "<if test = \"user_status_id!=null\" > " +
+            "AND us.user_status_id = ${user_status_id} " +
+            "</if>" +
             "<if test = \"user_id!=null\" > " +
             "AND u.user_id LIKE '%${user_id}%' " +
             "</if>" +
@@ -103,6 +106,7 @@ public interface ContributorMapper {
             @Param("user_id") String userID,
             @Param("full_name") String name,
             @Param("phone_number") String phoneNumber,
+            @Param("user_status_id") Long userStatusId,
             @Param("min") Long min,
             @Param("max") Long max,
             @Param("offset") int offset);
@@ -117,6 +121,9 @@ public interface ContributorMapper {
             "ON ur.user_id = u.user_id " +
             "WHERE ur.role_id = 2 " +
             "AND v.is_deleted = 0 " +
+            "<if test = \"user_status_id!=null\" > " +
+            "AND us.user_status_id = ${user_status_id} " +
+            "</if>" +
             "<if test = \"user_id!=null\" > " +
             "AND u.user_id LIKE '%${user_id}%' " +
             "</if>" +
@@ -134,6 +141,7 @@ public interface ContributorMapper {
     int findTotalContributorsWhenFilter(@Param("user_id") String userID,
                                         @Param("full_name") String name,
                                         @Param("phone_number") String phoneNumber,
+                                        @Param("user_status_id") Long userStatusId,
                                         @Param("min") Long min,
                                         @Param("max") Long max);
 
