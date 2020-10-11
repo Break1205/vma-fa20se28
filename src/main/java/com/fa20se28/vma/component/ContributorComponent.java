@@ -8,11 +8,11 @@ import java.util.List;
 public interface ContributorComponent {
     ContributorDetail findContributorById(String userId);
 
-    List<Contributor> findContributors(String userId, String name, String phoneNumber, Long totalVehicles, int page);
+    List<Contributor> findContributors(String userId, String name, String phoneNumber, Long min,Long max, int page);
 
     int findTotalContributors();
 
-    int findTotalContributorsWhenFilter(String userId, String name, String phoneNumber, Long totalVehicles);
+    int findTotalContributorsWhenFilter(String userId, String name, String phoneNumber, Long min,Long max);
 
     int findTheHighestTotalVehicleInAllContributors();
 
