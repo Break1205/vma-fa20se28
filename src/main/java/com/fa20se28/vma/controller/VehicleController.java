@@ -43,7 +43,7 @@ public class VehicleController {
     {
         return  vehicleService.getStatus();
     }
-    //get vehicle type
+
     //get vehicle detail
     //create update delete
 }
