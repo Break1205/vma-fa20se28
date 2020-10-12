@@ -112,13 +112,21 @@ public interface ContributorMapper {
             @Param("offset") int offset);
 
     @Select({"<script>" +
-            "SELECT " +
-            "count(DISTINCT u.user_id) " +
+            "SELECT count(tc.user_id) " +
+            "FROM " +
+            "(SELECT " +
+            "u.user_id, " +
+            "u.full_name, " +
+            "u.phone_number, " +
+            "us.user_status_name, " +
+            "COUNT(v.vehicle_id) as total_vehicles " +
             "FROM vehicle v " +
             "RIGHT JOIN [user] u " +
             "ON u.user_id = v.owner_id " +
             "JOIN user_roles ur " +
             "ON ur.user_id = u.user_id " +
+            "JOIN user_status us " +
+            "ON u.user_status_id = us.user_status_id " +
             "WHERE ur.role_id = 2 " +
             "AND v.is_deleted = 0 " +
             "<if test = \"user_status_id!=null\" > " +
@@ -133,10 +141,12 @@ public interface ContributorMapper {
             "<if test = \"phone_number!=null\" > " +
             "AND u.phone_number LIKE '%${phone_number}%' " +
             "</if>" +
+            "GROUP BY u.user_id,u.full_name,u.phone_number,us.user_status_name " +
             "HAVING COUNT(v.vehicle_id) <![CDATA[>=]]> ${min} " +
             "<if test = \"max!=null\" > " +
             "AND COUNT(v.vehicle_id) <![CDATA[<=]]> ${max} " +
             "</if>" +
+            ") tc" +
             "</script>"})
     int findTotalContributorsWhenFilter(@Param("user_id") String userID,
                                         @Param("full_name") String name,
