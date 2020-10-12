@@ -4,22 +4,28 @@ public class ContributorPageReq {
     private String userId;
     private String name;
     private String phoneNumber;
-    private Long totalVehicles;
+    private Long userStatusId;
+    private Long min;
+    private Long max;
     private int page;
 
-    public ContributorPageReq(String userId, String name, String phoneNumber, Long totalVehicles, int page) {
+
+    public ContributorPageReq(String userId, String name, String phoneNumber,Long userStatusId, Long min, Long max, int page) {
         this.userId = userId;
         this.name = name;
         this.phoneNumber = phoneNumber;
-        this.totalVehicles = totalVehicles;
+        this.userStatusId = userStatusId;
+        this.min = min;
+        this.max = max;
         this.page = page;
     }
 
-    public ContributorPageReq(String userId, String name, String phoneNumber, Long totalVehicles) {
+    public ContributorPageReq(String userId, String name, String phoneNumber, Long min, Long max) {
         this.userId = userId;
         this.name = name;
         this.phoneNumber = phoneNumber;
-        this.totalVehicles = totalVehicles;
+        this.min = min;
+        this.max = max;
     }
 
     public String getUserId() {
@@ -46,12 +52,28 @@ public class ContributorPageReq {
         this.phoneNumber = phoneNumber;
     }
 
-    public Long getTotalVehicles() {
-        return totalVehicles;
+    public Long getUserStatusId() {
+        return userStatusId;
     }
 
-    public void setTotalVehicles(Long totalVehicles) {
-        this.totalVehicles = totalVehicles;
+    public void setUserStatusId(Long userStatusId) {
+        this.userStatusId = userStatusId;
+    }
+
+    public Long getMin() {
+        return min;
+    }
+
+    public void setMin(Long min) {
+        this.min = min;
+    }
+
+    public Long getMax() {
+        return max;
+    }
+
+    public void setMax(Long max) {
+        this.max = max;
     }
 
     public int getPage() {

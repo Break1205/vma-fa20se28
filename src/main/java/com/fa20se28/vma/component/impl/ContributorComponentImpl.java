@@ -30,12 +30,21 @@ public class ContributorComponentImpl implements ContributorComponent {
     }
 
     @Override
-    public List<Contributor> findContributors(String userId, String name, String phoneNumber, Long totalVehicles, int page) {
+    public List<Contributor> findContributors(
+            String userId,
+            String name,
+            String phoneNumber,
+            Long userStatusId,
+            Long min,
+            Long max,
+            int page) {
         return contributorMapper.findContributorsByUserIdAndFullNameAndPhoneNumberAndTotalVehicle(
                 userId,
                 name,
                 phoneNumber,
-                totalVehicles,
+                userStatusId,
+                min,
+                max,
                 page * 15);
     }
 
@@ -46,8 +55,8 @@ public class ContributorComponentImpl implements ContributorComponent {
 
 
     @Override
-    public int findTotalContributorsWhenFilter(String userId, String name, String phoneNumber, Long totalVehicles) {
-        return contributorMapper.findTotalContributorsWhenFilter(userId, name, phoneNumber, totalVehicles);
+    public int findTotalContributorsWhenFilter(String userId, String name, String phoneNumber, Long userStatusId, Long min, Long max) {
+        return contributorMapper.findTotalContributorsWhenFilter(userId, name, phoneNumber, userStatusId, min, max);
     }
 
     @Override

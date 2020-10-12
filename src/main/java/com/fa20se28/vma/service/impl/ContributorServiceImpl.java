@@ -42,7 +42,9 @@ public class ContributorServiceImpl implements ContributorService {
                         contributorPageReq.getUserId(),
                         contributorPageReq.getName(),
                         contributorPageReq.getPhoneNumber(),
-                        contributorPageReq.getTotalVehicles(),
+                        contributorPageReq.getUserStatusId(),
+                        contributorPageReq.getMin(),
+                        contributorPageReq.getMax(),
                         contributorPageReq.getPage()));
         return contributorPageRes;
     }
@@ -52,7 +54,8 @@ public class ContributorServiceImpl implements ContributorService {
         if (contributorPageReq.getUserId() != null
                 || contributorPageReq.getName() != null
                 || contributorPageReq.getPhoneNumber() != null
-                || contributorPageReq.getTotalVehicles() != null) {
+                || contributorPageReq.getMin() != null
+                || contributorPageReq.getMax() != null) {
             return getTotalContributorsWhenFiltering(contributorPageReq);
         }
         return getTotalContributors();
@@ -76,6 +79,8 @@ public class ContributorServiceImpl implements ContributorService {
                         contributorPageReq.getUserId(),
                         contributorPageReq.getName(),
                         contributorPageReq.getPhoneNumber(),
-                        contributorPageReq.getTotalVehicles());
+                        contributorPageReq.getUserStatusId(),
+                        contributorPageReq.getMin(),
+                        contributorPageReq.getMax());
     }
 }

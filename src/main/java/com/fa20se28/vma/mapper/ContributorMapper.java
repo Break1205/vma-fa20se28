@@ -45,7 +45,7 @@ public interface ContributorMapper {
             "u.image_link, " +
             "u.base_salary" +
             "</script>"})
-    @Results(id = "contributorDetailResult",value = {
+    @Results(id = "contributorDetailResult", value = {
             @Result(property = "userId", column = "user_id"),
             @Result(property = "fullName", column = "full_name"),
             @Result(property = "phoneNumber", column = "phone_number"),
@@ -75,6 +75,9 @@ public interface ContributorMapper {
             "ON u.user_status_id = us.user_status_id " +
             "WHERE ur.role_id = 2 " +
             "AND v.is_deleted = 0 " +
+            "<if test = \"user_status_id!=null\" > " +
+            "AND us.user_status_id = ${user_status_id} " +
+            "</if>" +
             "<if test = \"user_id!=null\" > " +
             "AND u.user_id LIKE '%${user_id}%' " +
             "</if>" +
@@ -85,8 +88,9 @@ public interface ContributorMapper {
             "AND u.phone_number LIKE '%${phone_number}%' " +
             "</if>" +
             "GROUP BY u.user_id,u.full_name,u.phone_number,us.user_status_name " +
-            "<if test = \"total_vehicles!=null\" > " +
-            "HAVING COUNT(v.vehicle_id) = ${total_vehicles} " +
+            "HAVING COUNT(v.vehicle_id) <![CDATA[>=]]> ${min} " +
+            "<if test = \"max!=null\" > " +
+            "AND COUNT(v.vehicle_id) <![CDATA[<=]]> ${max} " +
             "</if>" +
             "ORDER BY u.user_id DESC " +
             "OFFSET ${offset} ROWS " +
@@ -98,11 +102,14 @@ public interface ContributorMapper {
             @Result(property = "phoneNumber", column = "phone_number"),
             @Result(property = "totalVehicles", column = "total_vehicles"),
             @Result(property = "userStatusName", column = "user_status_name")})
-    List<Contributor> findContributorsByUserIdAndFullNameAndPhoneNumberAndTotalVehicle(@Param("user_id") String userID,
-                                                                                       @Param("full_name") String name,
-                                                                                       @Param("phone_number") String phoneNumber,
-                                                                                       @Param("total_vehicles") Long totalVehicles,
-                                                                                       @Param("offset") int offset);
+    List<Contributor> findContributorsByUserIdAndFullNameAndPhoneNumberAndTotalVehicle(
+            @Param("user_id") String userID,
+            @Param("full_name") String name,
+            @Param("phone_number") String phoneNumber,
+            @Param("user_status_id") Long userStatusId,
+            @Param("min") Long min,
+            @Param("max") Long max,
+            @Param("offset") int offset);
 
     @Select({"<script>" +
             "SELECT " +
@@ -114,6 +121,9 @@ public interface ContributorMapper {
             "ON ur.user_id = u.user_id " +
             "WHERE ur.role_id = 2 " +
             "AND v.is_deleted = 0 " +
+            "<if test = \"user_status_id!=null\" > " +
+            "AND us.user_status_id = ${user_status_id} " +
+            "</if>" +
             "<if test = \"user_id!=null\" > " +
             "AND u.user_id LIKE '%${user_id}%' " +
             "</if>" +
@@ -123,14 +133,17 @@ public interface ContributorMapper {
             "<if test = \"phone_number!=null\" > " +
             "AND u.phone_number LIKE '%${phone_number}%' " +
             "</if>" +
-            "<if test = \"total_vehicles!=null\" > " +
-            "HAVING COUNT(v.vehicle_id) = ${total_vehicles} " +
-            "</if> " +
+            "HAVING COUNT(v.vehicle_id) <![CDATA[>=]]> ${min} " +
+            "<if test = \"max!=null\" > " +
+            "AND COUNT(v.vehicle_id) <![CDATA[<=]]> ${max} " +
+            "</if>" +
             "</script>"})
     int findTotalContributorsWhenFilter(@Param("user_id") String userID,
                                         @Param("full_name") String name,
                                         @Param("phone_number") String phoneNumber,
-                                        @Param("total_vehicles") Long totalVehicles);
+                                        @Param("user_status_id") Long userStatusId,
+                                        @Param("min") Long min,
+                                        @Param("max") Long max);
 
     @Select("SELECT Max(con.total_vehicles) " +
             "FROM (" +

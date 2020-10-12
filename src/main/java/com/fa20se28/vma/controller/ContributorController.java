@@ -20,7 +20,7 @@ public class ContributorController {
     }
 
     @GetMapping("/{contributor-id}")
-    public ContributorDetailRes getContributorById(@PathVariable("contributor-id") String userId){
+    public ContributorDetailRes getContributorById(@PathVariable("contributor-id") String userId) {
         return contributorService.getContributorById(userId);
     }
 
@@ -28,17 +28,21 @@ public class ContributorController {
     public ContributorPageRes getContributors(@RequestParam(required = false) String userId,
                                               @RequestParam(required = false) String name,
                                               @RequestParam(required = false) String phoneNumber,
-                                              @RequestParam(required = false) Long totalVehicle,
+                                              @RequestParam(required = false) Long userStatusId,
+                                              @RequestParam(defaultValue = "0") Long min,
+                                              @RequestParam(required = false) Long max,
                                               @RequestParam(required = false, defaultValue = "0") int page) {
-        return contributorService.getContributors(new ContributorPageReq(userId, name, phoneNumber, totalVehicle, page));
+        return contributorService.getContributors(new ContributorPageReq(userId, name, phoneNumber, userStatusId, min, max, page));
     }
 
     @GetMapping("count")
     public int getTotalContributor(@RequestParam(required = false) String userId,
                                    @RequestParam(required = false) String name,
                                    @RequestParam(required = false) String phoneNumber,
-                                   @RequestParam(required = false) Long totalVehicle) {
-        return contributorService.getTotalContributorsOrTotalFilteredContributors(new ContributorPageReq(userId, name, phoneNumber, totalVehicle));
+                                   @RequestParam(defaultValue = "0") Long min,
+                                   @RequestParam(required = false) Long max) {
+        return contributorService.getTotalContributorsOrTotalFilteredContributors(
+                new ContributorPageReq(userId, name, phoneNumber, min, max));
     }
 
     @GetMapping("total-vehicle")
