@@ -1,7 +1,7 @@
 package com.fa20se28.vma.mapper;
 
 import com.fa20se28.vma.model.UserDocument;
-import com.fa20se28.vma.model.UserDocumentImage;
+import com.fa20se28.vma.model.DocumentImage;
 import org.apache.ibatis.annotations.Many;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -31,20 +31,20 @@ public interface UserDocumentMapper {
             @Result(property = "registerLocation", column = "registered_location"),
             @Result(property = "registerDate", column = "registered_date"),
             @Result(property = "expiryDate", column = "expiry_date"),
-            @Result(property = "userDocumentImages", column = "user_document_id",
-                    many = @Many(select = "findUserDocumentImagesByUserDocumentId")),
+            @Result(property = "documentImages", column = "user_document_id",
+                    many = @Many(select = "findDocumentImagesByUserDocumentId")),
     })
     List<UserDocument> findUserDocumentByUserId(@Param("user_id") String userId);
 
     @Select("SELECT " +
-            "udi.user_document_image_id, " +
-            "udi.image_link " +
-            "FROM user_document_image udi " +
-            "WHERE udi.user_document_id = '${user_document_id}' ")
-    @Results(id = "userDocumentImageResult",value = {
-            @Result(property = "userDocumentImageId", column = "user_document_image_id"),
+            "di.document_image_id, " +
+            "di.image_link " +
+            "FROM document_image di " +
+            "WHERE di.document_id = '${document_id}' ")
+    @Results(id = "documentImageResult",value = {
+            @Result(property = "documentImageId", column = "document_image_id"),
             @Result(property = "imageLink", column = "image_link")
     })
-    List<UserDocumentImage> findUserDocumentImagesByUserDocumentId(
-            @Param("user_document_id") String userDocumentId);
+    List<DocumentImage> findDocumentImagesByUserDocumentId(
+            @Param("document_id") String documentId);
 }

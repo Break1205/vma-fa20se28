@@ -10,7 +10,7 @@ public class UserDocument {
     private String registerLocation;
     private Date registerDate;
     private Date expiryDate;
-    private List<UserDocumentImage> userDocumentImages;
+    private List<DocumentImage> documentImages;
 
     public String getUserDocumentId() {
         return userDocumentId;
@@ -60,11 +60,11 @@ public class UserDocument {
         this.expiryDate = expiryDate;
     }
 
-    public List<UserDocumentImage> getUserDocumentImages() {
-        return userDocumentImages;
+    public List<DocumentImage> getDocumentImages() {
+        return documentImages;
     }
 
-    public void setUserDocumentImages(List<UserDocumentImage> userDocumentImages) {
-        this.userDocumentImages = userDocumentImages;
+    public void setDocumentImages(List<DocumentImage> documentImages) {
+        this.documentImages = documentImages;
     }
 }
