@@ -15,6 +15,13 @@ public class DriverPageReq {
         this.page = page;
     }
 
+    public DriverPageReq(String userId, String name, String phoneNumber, Long userStatusId) {
+        this.userId = userId;
+        this.name = name;
+        this.phoneNumber = phoneNumber;
+        this.userStatusId = userStatusId;
+    }
+
     public String getUserId() {
         return userId;
     }
