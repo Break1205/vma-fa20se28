@@ -9,6 +9,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 @Mapper
 public interface UserMapper {
@@ -65,4 +66,9 @@ public interface UserMapper {
             "#{imageLink}, " +
             "getdate())")
     int insertDocumentImage(DocumentImageReq documentImageReq);
+
+    @Update("UPDATE [user] " +
+            "SET user_status_id = 4 " +
+            "WHERE user_id = #{user_id} ")
+    void deleteUserById(@Param("user_id") String userId);
 }

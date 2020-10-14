@@ -49,4 +49,9 @@ public class FirebaseServiceImpl implements FirebaseService {
 
         FirebaseAuth.getInstance().createUser(request);
     }
+
+    @Override
+    public void deleteUserRecord(String userId) throws FirebaseAuthException {
+        FirebaseAuth.getInstance().deleteUser(userId);
+    }
 }

@@ -26,10 +26,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Transactional
+    @Override
     public int createDriver(DriverReq driverReq) throws FirebaseAuthException {
         if (driverReq.getUserStatusId() == 2) {
             firebaseService.createUserRecord(driverReq);
         }
         return userComponent.createDriver(driverReq);
+    }
+
+    @Transactional
+    @Override
+    public void deleteUserByUserId(String userId) throws FirebaseAuthException {
+        firebaseService.deleteUserRecord(userId);
+        userComponent.deleteUserById(userId);
     }
 }

@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserComponentImpl implements UserComponent {
     private final UserMapper userMapper;
 
-
     public UserComponentImpl(UserMapper userMapper) {
         this.userMapper = userMapper;
     }
@@ -37,5 +36,10 @@ public class UserComponentImpl implements UserComponent {
             return 1;
         }
         return 0;
+    }
+
+    @Override
+    public void deleteUserById(String userId){
+        userMapper.deleteUserById(userId);
     }
 }
