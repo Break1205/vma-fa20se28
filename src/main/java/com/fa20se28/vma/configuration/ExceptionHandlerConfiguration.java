@@ -65,7 +65,7 @@ public class ExceptionHandlerConfiguration extends ResponseEntityExceptionHandle
     protected  ResponseEntity<Object> handleException(IllegalArgumentException e)
     {
         ApiError apiError = new ApiError(HttpStatus.INTERNAL_SERVER_ERROR);
-        apiError.setMessage("An error has occured");
+        apiError.setMessage("An error has occurred");
         apiError.setDebugMessage(e.getLocalizedMessage());
         return buildResponseEntity(apiError);
     }
