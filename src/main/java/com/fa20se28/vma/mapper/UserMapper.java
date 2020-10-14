@@ -71,4 +71,35 @@ public interface UserMapper {
             "SET user_status_id = 4 " +
             "WHERE user_id = #{user_id} ")
     void deleteUserById(@Param("user_id") String userId);
+
+    @Update("UPDATE [user] " +
+            "SET " +
+            "full_name = #{fullName}, " +
+            "phone_number = #{phoneNumber}, " +
+            "gender = #{gender}, " +
+            "date_of_birth = ${dateOfBirth}, " +
+            "address = ${address}, " +
+            "image_link = ${imageLink}, " +
+            "base_salary = ${baseSalary} " +
+            "WHERE user_id = #{userId}")
+    void updateDriver(DriverReq driverReq);
+
+    @Update("UPDATE dbo.user_document " +
+            "SET " +
+            "user_document_type_id = #{userDocumentTypeId}, " +
+            "registered_location = #{registeredLocation}, " +
+            "registered_date = #{registeredDate}, " +
+            "expiry_date = #{expiryDate}, " +
+            "other_information = #{otherInformation} " +
+            "WHERE user_document_id = #{userDocumentId}" +
+            "AND user_id = #{userId}")
+    void updateDocument(UserDocumentReq userDocumentReq);
+
+    @Update("UPDATE dbo.document_image " +
+            "SET " +
+            "image_link = #{imageLink}, " +
+            "create_date = getdate() " +
+            "WHERE document_id = #{documentId} " +
+            "AND doucment_image_id = #{documentImageId} ")
+    void updateDocumentImage(DocumentImageReq documentImageReq);
 }

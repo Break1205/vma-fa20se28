@@ -1,19 +1,35 @@
 package com.fa20se28.vma.service.impl;
 
 import com.fa20se28.vma.component.DriverComponent;
+import com.fa20se28.vma.component.UserComponent;
 import com.fa20se28.vma.model.DriverDetail;
 import com.fa20se28.vma.request.DriverPageReq;
+import com.fa20se28.vma.request.DriverReq;
 import com.fa20se28.vma.response.DriverDetailRes;
 import com.fa20se28.vma.response.DriverPageRes;
 import com.fa20se28.vma.service.DriverService;
+import com.fa20se28.vma.service.FirebaseService;
+import com.google.firebase.auth.FirebaseAuthException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class DriverServiceImpl implements DriverService {
     private final DriverComponent driverComponent;
+    private final FirebaseService firebaseService;
 
-    public DriverServiceImpl(DriverComponent driverComponent) {
+    public DriverServiceImpl(DriverComponent driverComponent, FirebaseService firebaseService) {
         this.driverComponent = driverComponent;
+        this.firebaseService = firebaseService;
+    }
+
+    @Transactional
+    @Override
+    public int createDriver(DriverReq driverReq) throws FirebaseAuthException {
+        if (driverReq.getUserStatusId() == 2) {
+            firebaseService.createUserRecord(driverReq);
+        }
+        return driverComponent.createDriver(driverReq);
     }
 
     @Override
@@ -56,6 +72,19 @@ public class DriverServiceImpl implements DriverService {
             return getTotalDriversWhenFiltering(driverPageReq);
         }
         return getTotalDrivers();
+    }
+
+    @Transactional
+    @Override
+    public void deleteUserByUserId(String userId) throws FirebaseAuthException {
+        firebaseService.deleteUserRecord(userId);
+        driverComponent.deleteDriverById(userId);
+    }
+
+    @Override
+    public void updateDriver(DriverReq driverReq) throws FirebaseAuthException {
+        firebaseService.updateUserRecord(driverReq);
+        driverComponent.updateDriverByUserId(driverReq);
     }
 
     private int getTotalDrivers() {

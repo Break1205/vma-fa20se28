@@ -8,7 +8,6 @@ import com.google.firebase.FirebaseOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.UserRecord;
-import com.google.firebase.messaging.FirebaseMessaging;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
@@ -53,5 +52,16 @@ public class FirebaseServiceImpl implements FirebaseService {
     @Override
     public void deleteUserRecord(String userId) throws FirebaseAuthException {
         FirebaseAuth.getInstance().deleteUser(userId);
+    }
+
+    @Override
+    public void updateUserRecord(DriverReq driverReq) throws FirebaseAuthException {
+        UserRecord.UpdateRequest request = new UserRecord.UpdateRequest(driverReq.getUserId())
+                .setPhoneNumber("+84" + driverReq.getPhoneNumber())
+                .setDisplayName(driverReq.getFullName())
+                .setPhotoUrl(driverReq.getImageLink())
+                .setDisabled(false);
+
+        FirebaseAuth.getInstance().updateUser(request);
     }
 }

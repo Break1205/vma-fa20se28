@@ -6,7 +6,11 @@ import com.fa20se28.vma.mapper.UserDocumentMapper;
 import com.fa20se28.vma.mapper.UserMapper;
 import com.fa20se28.vma.model.Driver;
 import com.fa20se28.vma.model.DriverDetail;
+import com.fa20se28.vma.request.DocumentImageReq;
+import com.fa20se28.vma.request.DriverReq;
+import com.fa20se28.vma.request.UserDocumentReq;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -20,6 +24,28 @@ public class DriverComponentImpl implements DriverComponent {
         this.driverMapper = driverMapper;
         this.userDocumentMapper = userDocumentMapper;
         this.userMapper = userMapper;
+    }
+
+    @Override
+    @Transactional
+    public int createDriver(DriverReq driverReq) {
+        int documentRecords = 0;
+        int documentImageRecords = 0;
+        int driverRecord = userMapper.insertDriver(driverReq);
+        for (UserDocumentReq userDocumentReq : driverReq.getUserDocumentReqList()) {
+            userDocumentReq.setUserId(driverReq.getUserId());
+            userMapper.insertDocument(userDocumentReq);
+            documentRecords++;
+            for (DocumentImageReq documentImageReq : userDocumentReq.getDocumentImagesReqList()) {
+                documentImageReq.setDocumentId(userDocumentReq.getUserDocumentId());
+                userMapper.insertDocumentImage(documentImageReq);
+                documentImageRecords++;
+            }
+        }
+        if (driverRecord == 1 && documentRecords > 0 && documentImageRecords > 0) {
+            return 1;
+        }
+        return 0;
     }
 
     @Override
@@ -49,4 +75,24 @@ public class DriverComponentImpl implements DriverComponent {
     public int findTotalDriversWhenFilter(String userId, String name, String phoneNumber, Long userStatusId) {
         return driverMapper.findTotalDriversWhenFilter(userId, name, phoneNumber, userStatusId);
     }
+
+    @Override
+    public void deleteDriverById(String userId) {
+        userMapper.deleteUserById(userId);
+    }
+
+    @Transactional
+    @Override
+    public void updateDriverByUserId(DriverReq driverReq) {
+        userMapper.updateDriver(driverReq);
+        for (UserDocumentReq userDocumentReq : driverReq.getUserDocumentReqList()) {
+            userDocumentReq.setUserId(driverReq.getUserId());
+            userMapper.updateDocument(userDocumentReq);
+            for (DocumentImageReq documentImageReq : userDocumentReq.getDocumentImagesReqList()) {
+                documentImageReq.setDocumentId(userDocumentReq.getUserDocumentId());
+                userMapper.updateDocumentImage(documentImageReq);
+            }
+        }
+    }
+
 }

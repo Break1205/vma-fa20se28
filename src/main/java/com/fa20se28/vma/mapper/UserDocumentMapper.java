@@ -46,6 +46,7 @@ public interface UserDocumentMapper {
 
     @Select("SELECT " +
             "di.document_image_id, " +
+            "di.document_image_id, " +
             "di.image_link " +
             "FROM document_image di " +
             "WHERE di.document_id = '${document_id}' ")
