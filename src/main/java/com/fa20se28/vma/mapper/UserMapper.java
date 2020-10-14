@@ -39,6 +39,15 @@ public interface UserMapper {
             "#{baseSalary})")
     int insertDriver(DriverReq driverReq);
 
+    @Insert("INSERT INTO user_roles " +
+            "(user_id, " +
+            "role_id) " +
+            "VALUES " +
+            "(#{user_id}, " +
+            "#{role_id} " +
+            ");")
+    int insertRoleForUserId(@Param("user_id") String userId, @Param("role_id") int roleId);
+
     @Insert("INSERT INTO user_document " +
             "(user_document_id, " +
             "user_document_type_id, " +

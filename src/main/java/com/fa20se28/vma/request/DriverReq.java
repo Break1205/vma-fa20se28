@@ -4,7 +4,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.List;
 
-public class DriverReq {
+public class DriverReq extends UserReq {
     @NotNull(message = "This field is required")
     @Size(max = 9, min = 9)
     private String userId;

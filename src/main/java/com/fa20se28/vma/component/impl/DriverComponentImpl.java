@@ -42,7 +42,11 @@ public class DriverComponentImpl implements DriverComponent {
                 documentImageRecords++;
             }
         }
-        if (driverRecord == 1 && documentRecords > 0 && documentImageRecords > 0) {
+        int userRoles = userMapper.insertRoleForUserId(driverReq.getUserId(), 3);
+        if (driverRecord == 1
+                && documentRecords > 0
+                && documentImageRecords > 0
+                && userRoles == 1) {
             return 1;
         }
         return 0;

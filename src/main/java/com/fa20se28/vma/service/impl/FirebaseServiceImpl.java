@@ -1,6 +1,7 @@
 package com.fa20se28.vma.service.impl;
 
 import com.fa20se28.vma.request.DriverReq;
+import com.fa20se28.vma.request.UserReq;
 import com.fa20se28.vma.service.FirebaseService;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
@@ -17,6 +18,10 @@ import org.springframework.stereotype.Service;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class FirebaseServiceImpl implements FirebaseService {
@@ -38,15 +43,24 @@ public class FirebaseServiceImpl implements FirebaseService {
     }
 
     @Override
-    public void createUserRecord(DriverReq driverReq) throws FirebaseAuthException {
-        UserRecord.CreateRequest request = new UserRecord.CreateRequest()
-                .setPhoneNumber("+84" + driverReq.getPhoneNumber())
-                .setDisplayName(driverReq.getFullName())
-                .setPhotoUrl(driverReq.getImageLink())
-                .setUid(driverReq.getUserId())
-                .setDisabled(false);
+    public void createUserRecord(UserReq userReq, String role) throws FirebaseAuthException {
+        UserRecord.CreateRequest request = new UserRecord.CreateRequest();
+        if (role.equals("DRIVER")) {
+            DriverReq driverReq = (DriverReq) userReq;
+            request
+                    .setPhoneNumber("+84" + driverReq.getPhoneNumber())
+                    .setDisplayName(driverReq.getFullName())
+                    .setPhotoUrl(driverReq.getImageLink())
+                    .setUid(driverReq.getUserId())
+                    .setDisabled(false);
 
-        FirebaseAuth.getInstance().createUser(request);
+            FirebaseAuth.getInstance().createUser(request);
+
+            Map<String, Object> claims = new HashMap<>();
+            claims.put("DRIVER", true);
+
+            FirebaseAuth.getInstance().setCustomUserClaims(driverReq.getUserId(), claims);
+        }
     }
 
     @Override

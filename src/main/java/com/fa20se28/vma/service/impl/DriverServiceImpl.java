@@ -27,7 +27,7 @@ public class DriverServiceImpl implements DriverService {
     @Override
     public int createDriver(DriverReq driverReq) throws FirebaseAuthException {
         if (driverReq.getUserStatusId() == 2) {
-            firebaseService.createUserRecord(driverReq);
+            firebaseService.createUserRecord(driverReq,"DRIVER");
         }
         return driverComponent.createDriver(driverReq);
     }
