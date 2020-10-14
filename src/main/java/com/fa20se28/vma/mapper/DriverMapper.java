@@ -75,7 +75,7 @@ public interface DriverMapper {
             "AND u.phone_number LIKE '%${phone_number}%' " +
             "</if>" +
             "<if test = \"user_status_id!=null\" > " +
-            "AND u.user_status_id LIKE '%${user_status_id}%' " +
+            "AND u.user_status_id = #{user_status_id} " +
             "</if>" +
             "ORDER BY u.user_id ASC " +
             "OFFSET ${offset} ROWS " +
@@ -113,7 +113,7 @@ public interface DriverMapper {
             "AND u.phone_number LIKE '%${phone_number}%' " +
             "</if>" +
             "<if test = \"user_status_id!=null\" > " +
-            "AND u.user_status_id LIKE '%${user_status_id}%' " +
+            "AND u.user_status_id = #{user_status_id} " +
             "</if>" +
             "</script>"})
     int findTotalDriversWhenFilter(@Param("user_id") String userID,

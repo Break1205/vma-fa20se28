@@ -1,6 +1,7 @@
 package com.fa20se28.vma.mapper;
 
 
+import com.fa20se28.vma.model.User;
 import com.fa20se28.vma.request.DocumentImageReq;
 import com.fa20se28.vma.request.DriverReq;
 import com.fa20se28.vma.request.UserDocumentReq;
@@ -10,6 +11,8 @@ import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
+
+import java.util.List;
 
 @Mapper
 public interface UserMapper {
@@ -111,4 +114,9 @@ public interface UserMapper {
             "WHERE document_id = #{documentId} " +
             "AND doucment_image_id = #{documentImageId} ")
     void updateDocumentImage(DocumentImageReq documentImageReq);
+
+    @Update("Update [user] " +
+            "SET user_status_id = #{user_status_id} " +
+            "WHERE user_id = #{user_id}")
+    void updateUserStatusByUserId(@Param("user_status_id") Long userStatusId,@Param("user_id") String userId);
 }
