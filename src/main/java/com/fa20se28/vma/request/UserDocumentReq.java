@@ -1,19 +1,13 @@
 package com.fa20se28.vma.request;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 import java.util.List;
 
 public class UserDocumentReq {
-    @Pattern(regexp = "^\\w{9}$|^\\w{12}$|^\\w{15}$")
     private String userDocumentId;
     private int userDocumentTypeId;
     private String userId;
-    @NotNull(message = "This field is required")
     private String registerLocation;
-    @NotNull(message = "This field is required")
     private String registerDate;
-    @NotNull(message = "This field is required")
     private String expiryDate;
     private String otherInformation;
     private List<DocumentImageReq> documentImagesReqList;

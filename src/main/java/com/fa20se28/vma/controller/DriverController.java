@@ -31,7 +31,7 @@ public class DriverController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public int createDriver(@Valid @RequestBody DriverReq driverReq) throws FirebaseAuthException {
+    public int createDriver(@RequestBody DriverReq driverReq) throws FirebaseAuthException {
         return driverService.createDriver(driverReq);
     }
 
@@ -58,7 +58,7 @@ public class DriverController {
     }
 
     @PutMapping
-    public void updateDriver(@Valid @RequestBody DriverReq driverReq) throws FirebaseAuthException {
+    public void updateDriver(@RequestBody DriverReq driverReq) throws FirebaseAuthException {
         driverService.updateDriver(driverReq);
     }
 

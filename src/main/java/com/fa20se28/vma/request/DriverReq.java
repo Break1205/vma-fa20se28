@@ -1,30 +1,16 @@
 package com.fa20se28.vma.request;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.util.List;
 
 public class DriverReq extends UserReq {
-    @NotNull(message = "This field is required")
-    @Size(max = 9, min = 9)
     private String userId;
-    @NotNull(message = "This field is required")
-    @Size(max = 50)
     private String fullName;
-    @NotNull(message = "This field is required")
-    @Size(max = 100)
     private String address;
-    @NotNull(message = "This field is required")
-    @Size(max = 11, min = 10)
     private String phoneNumber;
-    @NotNull(message = "This field is required")
     private int gender;
-    @NotNull(message = "This field is required")
     private String dateOfBirth;
     private String imageLink;
-    @NotNull(message = "This field is required")
     private Float baseSalary;
-    @NotNull(message = "This field is required")
     private int userStatusId;
     private List<UserDocumentReq> userDocumentReqList;
 
