@@ -1,11 +1,12 @@
 package com.fa20se28.vma.configuration.exception;
 
-public class InvalidFirebaseTokenException extends RuntimeException {
-    public InvalidFirebaseTokenException(String e) {
-        super(e);
-    }
+import com.google.firebase.auth.AuthErrorCode;
 
-    public InvalidFirebaseTokenException(String e, Throwable cause) {
+public class InvalidFirebaseTokenException extends RuntimeException {
+    public AuthErrorCode authErrorCode;
+
+    public InvalidFirebaseTokenException(String e, Throwable cause, AuthErrorCode authErrorCode) {
         super(e, cause);
+        this.authErrorCode = authErrorCode;
     }
 }
