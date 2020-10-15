@@ -1,14 +1,16 @@
 package com.fa20se28.vma.mapper;
 
 
+import com.fa20se28.vma.model.Role;
 import com.fa20se28.vma.model.User;
 import com.fa20se28.vma.request.DocumentImageReq;
 import com.fa20se28.vma.request.DriverReq;
 import com.fa20se28.vma.request.UserDocumentReq;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Result;
+import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
@@ -118,5 +120,22 @@ public interface UserMapper {
     @Update("Update [user] " +
             "SET user_status_id = #{user_status_id} " +
             "WHERE user_id = #{user_id}")
-    void updateUserStatusByUserId(@Param("user_status_id") Long userStatusId,@Param("user_id") String userId);
+    void updateUserStatusByUserId(@Param("user_status_id") Long userStatusId, @Param("user_id") String userId);
+
+    @Select("SELECT u.user_id" +
+            "FROM [user] u" +
+            "WHERE u.user_id = #{user_id}")
+    @Results(id = "userAccountResult", value = {
+            @Result(property = "userId", column = "user_id")
+    })
+    User findUserByUserId(@Param("user_id") String userId);
+
+    @Select("SELECT " +
+            "r.role_id " +
+            "r.role_name " +
+            "FROM user_roles ur " +
+            "JOIN role r " +
+            "ON ur.role_id = r.role_id " +
+            "WHERE ur.user_id = #{user_id}")
+    List<Role> findUserRoles(@Param("user_id") String userId);
 }
