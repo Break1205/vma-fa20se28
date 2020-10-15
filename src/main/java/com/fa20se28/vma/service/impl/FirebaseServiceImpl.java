@@ -56,7 +56,7 @@ public class FirebaseServiceImpl implements FirebaseService {
 
             Map<String, Object> claims = new HashMap<>();
             claims.put("DRIVER", true);
-
+            
             FirebaseAuth.getInstance().setCustomUserClaims(driverReq.getUserId(), claims);
         }
     }
