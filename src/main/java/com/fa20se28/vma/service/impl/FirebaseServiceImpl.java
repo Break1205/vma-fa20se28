@@ -1,5 +1,6 @@
 package com.fa20se28.vma.service.impl;
 
+import com.fa20se28.vma.configuration.exception.InvalidFirebaseTokenException;
 import com.fa20se28.vma.request.DriverReq;
 import com.fa20se28.vma.request.UserReq;
 import com.fa20se28.vma.service.FirebaseService;
@@ -18,8 +19,6 @@ import org.springframework.stereotype.Service;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 @Service
 public class FirebaseServiceImpl implements FirebaseService {
@@ -41,7 +40,7 @@ public class FirebaseServiceImpl implements FirebaseService {
     }
 
     @Override
-    public void createUserRecord(UserReq userReq, String role) throws FirebaseAuthException {
+    public void createUserRecord(UserReq userReq, String role) {
         UserRecord.CreateRequest request = new UserRecord.CreateRequest();
         if (role.equals("DRIVER")) {
             DriverReq driverReq = (DriverReq) userReq;
@@ -52,28 +51,35 @@ public class FirebaseServiceImpl implements FirebaseService {
                     .setUid(driverReq.getUserId())
                     .setDisabled(false);
 
-            FirebaseAuth.getInstance().createUser(request);
-
-            Map<String, Object> claims = new HashMap<>();
-            claims.put("DRIVER", true);
-            
-            FirebaseAuth.getInstance().setCustomUserClaims(driverReq.getUserId(), claims);
+            try {
+                FirebaseAuth.getInstance().createUser(request);
+            } catch (FirebaseAuthException e) {
+                throw new InvalidFirebaseTokenException("Invalid Firebase Token", e, e.getAuthErrorCode());
+            }
         }
     }
 
     @Override
-    public void deleteUserRecord(String userId) throws FirebaseAuthException {
-        FirebaseAuth.getInstance().deleteUser(userId);
+    public void deleteUserRecord(String userId) {
+        try {
+            FirebaseAuth.getInstance().deleteUser(userId);
+        } catch (FirebaseAuthException e) {
+            throw new InvalidFirebaseTokenException("Invalid Firebase Token", e, e.getAuthErrorCode());
+        }
     }
 
     @Override
-    public void updateUserRecord(DriverReq driverReq) throws FirebaseAuthException {
+    public void updateUserRecord(DriverReq driverReq) {
         UserRecord.UpdateRequest request = new UserRecord.UpdateRequest(driverReq.getUserId())
                 .setPhoneNumber("+84" + driverReq.getPhoneNumber())
                 .setDisplayName(driverReq.getFullName())
                 .setPhotoUrl(driverReq.getImageLink())
                 .setDisabled(false);
 
-        FirebaseAuth.getInstance().updateUser(request);
+        try {
+            FirebaseAuth.getInstance().updateUser(request);
+        } catch (FirebaseAuthException e) {
+            throw new InvalidFirebaseTokenException("Invalid Firebase Token", e, e.getAuthErrorCode());
+        }
     }
 }

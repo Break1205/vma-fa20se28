@@ -2,6 +2,7 @@ package com.fa20se28.vma.service.impl;
 
 import com.fa20se28.vma.component.DriverComponent;
 import com.fa20se28.vma.component.UserComponent;
+import com.fa20se28.vma.configuration.exception.InvalidFirebaseTokenException;
 import com.fa20se28.vma.model.DriverDetail;
 import com.fa20se28.vma.request.DriverPageReq;
 import com.fa20se28.vma.request.DriverReq;
@@ -23,9 +24,10 @@ public class DriverServiceImpl implements DriverService {
         this.firebaseService = firebaseService;
     }
 
-    @Transactional
+
     @Override
-    public int createDriver(DriverReq driverReq) throws FirebaseAuthException {
+    @Transactional(rollbackFor = Exception.class)
+    public int createDriver(DriverReq driverReq){
         if (driverReq.getUserStatusId() == 2) {
             firebaseService.createUserRecord(driverReq,"DRIVER");
         }
@@ -76,13 +78,13 @@ public class DriverServiceImpl implements DriverService {
 
     @Transactional
     @Override
-    public void deleteUserByUserId(String userId) throws FirebaseAuthException {
+    public void deleteUserByUserId(String userId){
         firebaseService.deleteUserRecord(userId);
         driverComponent.deleteDriverById(userId);
     }
 
     @Override
-    public void updateDriver(DriverReq driverReq) throws FirebaseAuthException {
+    public void updateDriver(DriverReq driverReq){
         firebaseService.updateUserRecord(driverReq);
         driverComponent.updateDriverByUserId(driverReq);
     }

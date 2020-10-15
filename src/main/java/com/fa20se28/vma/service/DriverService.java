@@ -4,10 +4,9 @@ import com.fa20se28.vma.request.DriverPageReq;
 import com.fa20se28.vma.request.DriverReq;
 import com.fa20se28.vma.response.DriverDetailRes;
 import com.fa20se28.vma.response.DriverPageRes;
-import com.google.firebase.auth.FirebaseAuthException;
 
 public interface DriverService {
-    int createDriver(DriverReq driverReq) throws FirebaseAuthException;
+    int createDriver(DriverReq driverReq);
 
     DriverDetailRes getDriverById(String userId);
 
@@ -15,7 +14,7 @@ public interface DriverService {
 
     int getTotalDriversOrTotalFilteredDriver(DriverPageReq driverPageReq);
 
-    void deleteUserByUserId(String userId) throws FirebaseAuthException;
+    void deleteUserByUserId(String userId);
 
-    void updateDriver(DriverReq driverReq) throws FirebaseAuthException;
+    void updateDriver(DriverReq driverReq);
 }

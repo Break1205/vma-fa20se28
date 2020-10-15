@@ -86,34 +86,39 @@ public class ExceptionHandlerConfiguration extends ResponseEntityExceptionHandle
 
     @ExceptionHandler(InvalidFirebaseTokenException.class)
     public ResponseEntity<Object> handleInvalidFirebaseTokenException(InvalidFirebaseTokenException e) {
-
         ApiError apiError = new ApiError(HttpStatus.UNAUTHORIZED);
         apiError.setDebugMessage(e.getLocalizedMessage());
-        if (e.authErrorCode.equals(AuthErrorCode.CERTIFICATE_FETCH_FAILED)) {
-            apiError.setMessage("Failed to retrieve public key");
-        }
-        if (e.authErrorCode.equals(AuthErrorCode.EXPIRED_ID_TOKEN)) {
-            apiError.setMessage("The Token is expired");
-        }
-        if (e.authErrorCode.equals(AuthErrorCode.INVALID_ID_TOKEN)) {
-            apiError.setMessage("The ID token is invalid");
-        }
-        if (e.authErrorCode.equals(AuthErrorCode.PHONE_NUMBER_ALREADY_EXISTS)) {
-            apiError.setMessage("A user already exists with the provided phone number");
-        }
-        if (e.authErrorCode.equals(AuthErrorCode.UID_ALREADY_EXISTS)) {
-            apiError.setMessage("A user already exists with the provided UID");
-        }
-        if (e.authErrorCode.equals(AuthErrorCode.INVALID_ID_TOKEN)) {
-            apiError.setMessage("The ID token is invalid");
-        }
-        if (e.authErrorCode.equals(AuthErrorCode.UNAUTHORIZED_CONTINUE_URL)) {
-            apiError.setMessage("The domain of the continue URL is not whitelisted");
-        }
-        if (e.authErrorCode.equals(AuthErrorCode.USER_NOT_FOUND)) {
-            apiError.setMessage("No user record found for the given ID");
-        }
+        apiError.setMessage(checkFirebaseExceptionType(e.authErrorCode));
         return buildResponseEntity(apiError);
+    }
+
+    private String checkFirebaseExceptionType(AuthErrorCode authErrorCode) {
+        String message = "";
+        if (authErrorCode.equals(AuthErrorCode.CERTIFICATE_FETCH_FAILED)) {
+            message = "Failed to retrieve public key";
+        }
+        if (authErrorCode.equals(AuthErrorCode.EXPIRED_ID_TOKEN)) {
+            message = "The Token is expired";
+        }
+        if (authErrorCode.equals(AuthErrorCode.INVALID_ID_TOKEN)) {
+            message = "The ID token is invalid";
+        }
+        if (authErrorCode.equals(AuthErrorCode.PHONE_NUMBER_ALREADY_EXISTS)) {
+            message = "A user already exists with the provided phone number";
+        }
+        if (authErrorCode.equals(AuthErrorCode.UID_ALREADY_EXISTS)) {
+            message = "A user already exists with the provided UID";
+        }
+        if (authErrorCode.equals(AuthErrorCode.INVALID_ID_TOKEN)) {
+            message = "The ID token is invalid";
+        }
+        if (authErrorCode.equals(AuthErrorCode.UNAUTHORIZED_CONTINUE_URL)) {
+            message = "The domain of the continue URL is not whitelisted";
+        }
+        if (authErrorCode.equals(AuthErrorCode.USER_NOT_FOUND)) {
+            message = "No user record found for the given ID";
+        }
+        return message;
     }
 
     // Exception Template.
