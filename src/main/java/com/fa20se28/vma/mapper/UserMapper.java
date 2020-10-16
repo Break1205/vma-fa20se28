@@ -15,6 +15,7 @@ import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
+import java.util.Optional;
 
 @Mapper
 public interface UserMapper {
@@ -128,7 +129,7 @@ public interface UserMapper {
     @Results(id = "userAccountResult", value = {
             @Result(property = "userId", column = "user_id")
     })
-    User findUserByUserId(@Param("user_id") String userId);
+    Optional<User> findUserByUserId(@Param("user_id") String userId);
 
     @Select("SELECT " +
             "r.role_id " +

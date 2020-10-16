@@ -1,6 +1,7 @@
 package com.fa20se28.vma.component.impl;
 
 import com.fa20se28.vma.component.DriverComponent;
+import com.fa20se28.vma.configuration.exception.ResourceNotFoundException;
 import com.fa20se28.vma.mapper.DriverMapper;
 import com.fa20se28.vma.mapper.UserDocumentMapper;
 import com.fa20se28.vma.mapper.UserMapper;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class DriverComponentImpl implements DriverComponent {
@@ -55,9 +57,13 @@ public class DriverComponentImpl implements DriverComponent {
 
     @Override
     public DriverDetail findDriverById(String userId) {
-        DriverDetail driverDetail = driverMapper.findDriverById(userId);
-        driverDetail.setUserDocumentList(userDocumentMapper.findUserDocumentByUserId(userId));
-        return driverDetail;
+        Optional<DriverDetail> optionalDriverDetail = driverMapper.findDriverById(userId);
+        optionalDriverDetail.ifPresent(detail ->
+                detail.
+                        setUserDocumentList(userDocumentMapper.
+                                findUserDocumentByUserId(userId)));
+        return optionalDriverDetail.orElseThrow(() ->
+                new ResourceNotFoundException("Driver with id: " + userId + " not found"));
     }
 
     @Override

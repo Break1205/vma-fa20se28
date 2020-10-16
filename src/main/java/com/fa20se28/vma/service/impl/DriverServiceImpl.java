@@ -12,6 +12,7 @@ import com.fa20se28.vma.service.DriverService;
 import com.fa20se28.vma.service.FirebaseService;
 import com.google.firebase.auth.FirebaseAuthException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -24,14 +25,15 @@ public class DriverServiceImpl implements DriverService {
         this.firebaseService = firebaseService;
     }
 
-
     @Override
-    @Transactional(rollbackFor = Exception.class)
-    public int createDriver(DriverReq driverReq){
-        if (driverReq.getUserStatusId() == 2) {
-            firebaseService.createUserRecord(driverReq,"DRIVER");
+    @Transactional
+    public int createDriver(DriverReq driverReq) {
+        int success = driverComponent.createDriver(driverReq);
+        if (success == 1 && driverReq.getUserStatusId() == 2) {
+            firebaseService.createUserRecord(driverReq, "DRIVER");
+            return 1;
         }
-        return driverComponent.createDriver(driverReq);
+        return 0;
     }
 
     @Override
@@ -78,13 +80,13 @@ public class DriverServiceImpl implements DriverService {
 
     @Transactional
     @Override
-    public void deleteUserByUserId(String userId){
+    public void deleteUserByUserId(String userId) {
         firebaseService.deleteUserRecord(userId);
         driverComponent.deleteDriverById(userId);
     }
 
     @Override
-    public void updateDriver(DriverReq driverReq){
+    public void updateDriver(DriverReq driverReq) {
         firebaseService.updateUserRecord(driverReq);
         driverComponent.updateDriverByUserId(driverReq);
     }

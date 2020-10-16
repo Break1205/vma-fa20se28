@@ -9,6 +9,7 @@ import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
+import java.util.Optional;
 
 @Mapper
 public interface DriverMapper {
@@ -47,7 +48,7 @@ public interface DriverMapper {
             @Result(property = "address", column = "address"),
             @Result(property = "imageLink", column = "image_link"),
             @Result(property = "baseSalary", column = "base_salary")})
-    DriverDetail findDriverById(@Param("user_id") String userId);
+    Optional<DriverDetail> findDriverById(@Param("user_id") String userId);
 
     @Select({"<script>" +
             "SELECT " +
