@@ -45,4 +45,19 @@ public class VehicleServiceImpl implements VehicleService {
         }
         return new VehiclePageRes(vehicleComponent.getVehicles(vehicleId, model, vehicleType, minDis, maxDis, vehicleStatus, viewOption, pageNum, ownerId));
     }
+
+    @Override
+    public VehiclePageRes getAvailableVehicles(String vehicleId, String model, String vehicleType, int pageNum, String ownerId) {
+        return new VehiclePageRes(vehicleComponent.getAvailableVehicles(vehicleId, model, vehicleType, pageNum, ownerId));
+    }
+
+    @Override
+    public void assignDriverWithVehicle(String vehicleId, String driverId) {
+        vehicleComponent.assignVehicle(vehicleId, driverId);
+    }
+
+    @Override
+    public void updateIssuedVehicle(String vehicleId) {
+        vehicleComponent.updateIssuedVehicle(vehicleId);
+    }
 }

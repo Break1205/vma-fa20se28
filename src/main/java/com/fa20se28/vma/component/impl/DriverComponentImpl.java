@@ -31,6 +31,7 @@ public class DriverComponentImpl implements DriverComponent {
     public int createDriver(DriverReq driverReq) {
         int documentRecords = 0;
         int documentImageRecords = 0;
+
         int driverRecord = userMapper.insertDriver(driverReq);
         for (UserDocumentReq userDocumentReq : driverReq.getUserDocumentReqList()) {
             userDocumentReq.setUserId(driverReq.getUserId());

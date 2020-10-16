@@ -4,7 +4,6 @@ import com.fa20se28.vma.configuration.exception.InvalidFirebaseTokenException;
 import com.fa20se28.vma.configuration.exception.TemplateException;
 import com.fa20se28.vma.configuration.exception.model.ApiError;
 import com.google.firebase.auth.AuthErrorCode;
-import com.google.firebase.auth.FirebaseAuthException;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
@@ -75,17 +73,25 @@ public class ExceptionHandlerConfiguration extends ResponseEntityExceptionHandle
 
     // Handle RunTimeException. Triggered when the exception is happened at runtime
     @ExceptionHandler(RuntimeException.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ResponseEntity<Object> handleRunTimeException(RuntimeException e) {
-        ApiError apiError = new ApiError(
-                HttpStatus.INTERNAL_SERVER_ERROR,
-                "An internal server error occurred",
-                e);
+    protected ResponseEntity<Object> handleRunTimeException(RuntimeException e) {
+        ApiError apiError = new ApiError(HttpStatus.INTERNAL_SERVER_ERROR);
+        if (e.getLocalizedMessage().contains("SQLServerException"))
+        {
+            apiError.setMessage("Database Error");
+            String errorMessage = e.getMessage();
+            String formattedMessage = errorMessage.substring(errorMessage.lastIndexOf("SQLServerException") + 2);
+            apiError.setDebugMessage(formattedMessage);
+        }
+        else
+        {
+            apiError.setMessage("An internal server error has occured");
+            apiError.setDebugMessage(e.getLocalizedMessage());
+        }
         return buildResponseEntity(apiError);
     }
 
     @ExceptionHandler(InvalidFirebaseTokenException.class)
-    public ResponseEntity<Object> handleInvalidFirebaseTokenException(InvalidFirebaseTokenException e) {
+    protected ResponseEntity<Object> handleInvalidFirebaseTokenException(InvalidFirebaseTokenException e) {
         ApiError apiError = new ApiError(HttpStatus.UNAUTHORIZED);
         apiError.setDebugMessage(e.getLocalizedMessage());
         apiError.setMessage(checkFirebaseExceptionType(e.authErrorCode));
