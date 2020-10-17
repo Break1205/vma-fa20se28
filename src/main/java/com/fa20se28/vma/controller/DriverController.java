@@ -5,7 +5,6 @@ import com.fa20se28.vma.request.DriverReq;
 import com.fa20se28.vma.response.DriverDetailRes;
 import com.fa20se28.vma.response.DriverPageRes;
 import com.fa20se28.vma.service.DriverService;
-import com.google.firebase.auth.FirebaseAuthException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,8 +17,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
-
 @RestController
 @RequestMapping("/api/v1/drivers")
 public class DriverController {
@@ -31,7 +28,7 @@ public class DriverController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public int createDriver(@RequestBody DriverReq driverReq) throws FirebaseAuthException {
+    public int createDriver(@RequestBody DriverReq driverReq) {
         return driverService.createDriver(driverReq);
     }
 
@@ -58,13 +55,13 @@ public class DriverController {
     }
 
     @PutMapping
-    public void updateDriver(@RequestBody DriverReq driverReq) throws FirebaseAuthException {
+    public void updateDriver(@RequestBody DriverReq driverReq) {
         driverService.updateDriver(driverReq);
     }
 
     @DeleteMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteDriver(String userId) throws FirebaseAuthException {
+    public void deleteDriver(String userId) {
         driverService.deleteUserByUserId(userId);
     }
 }
