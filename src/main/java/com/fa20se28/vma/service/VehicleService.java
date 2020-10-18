@@ -12,4 +12,10 @@ public interface VehicleService {
     VehicleStatusRes getStatus();
 
     VehiclePageRes getVehicles(String vehicleId, String model, String vehicleType, Float vehicleDisMin, Float vehicleDisMax , String vehicleStatus, int viewOption, int pageNum, String ownerId);
+
+    VehiclePageRes getAvailableVehicles(String vehicleId, String model, String vehicleType, int pageNum, String ownerId);
+
+    void assignDriverWithVehicle(String vehicleId, String driverId);
+
+    void updateIssuedVehicle(String vehicleId);
 }

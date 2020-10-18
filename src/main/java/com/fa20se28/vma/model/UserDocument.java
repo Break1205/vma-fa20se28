@@ -6,10 +6,10 @@ import java.util.List;
 public class UserDocument {
     private String userDocumentId;
     private String userDocumentType;
-    private String userId;
     private String registerLocation;
     private Date registerDate;
     private Date expiryDate;
+    private String otherInformation;
     private List<DocumentImage> documentImages;
 
     public String getUserDocumentId() {
@@ -26,14 +26,6 @@ public class UserDocument {
 
     public void setUserDocumentType(String userDocumentType) {
         this.userDocumentType = userDocumentType;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
     }
 
     public String getRegisterLocation() {
@@ -66,5 +58,13 @@ public class UserDocument {
 
     public void setDocumentImages(List<DocumentImage> documentImages) {
         this.documentImages = documentImages;
+    }
+
+    public String getOtherInformation() {
+        return otherInformation;
+    }
+
+    public void setOtherInformation(String otherInformation) {
+        this.otherInformation = otherInformation;
     }
 }

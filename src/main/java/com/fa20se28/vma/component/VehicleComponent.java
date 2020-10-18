@@ -14,4 +14,10 @@ public interface VehicleComponent {
     List<VehicleStatus> getStatus();
 
     List<Vehicle> getVehicles(String vehicleId, String model, String vehicleType, float vehicleDisMin, float vehicleDisMax , String vehicleStatus, int viewOption, int pageNum, String ownerId);
+
+    List<Vehicle> getAvailableVehicles(String vehicleId, String model, String vehicleType, int pageNum, String ownerId);
+
+    void assignVehicle(String vehicleId, String driverId);
+
+    void updateIssuedVehicle(String vehicleId);
 }

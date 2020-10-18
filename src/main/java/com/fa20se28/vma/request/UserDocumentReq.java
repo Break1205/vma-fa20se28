@@ -5,7 +5,6 @@ import java.util.List;
 public class UserDocumentReq {
     private String userDocumentId;
     private int userDocumentTypeId;
-    private String userId;
     private String registerLocation;
     private String registerDate;
     private String expiryDate;
@@ -26,14 +25,6 @@ public class UserDocumentReq {
 
     public void setUserDocumentTypeId(int userDocumentTypeId) {
         this.userDocumentTypeId = userDocumentTypeId;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
     }
 
     public String getRegisterLocation() {

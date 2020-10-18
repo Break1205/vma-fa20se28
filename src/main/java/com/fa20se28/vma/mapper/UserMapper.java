@@ -70,7 +70,7 @@ public interface UserMapper {
             "#{registerDate}, " +
             "#{expiryDate}, " +
             "#{otherInformation}) ")
-    int insertDocument(UserDocumentReq userDocumentReq);
+    int insertDocument(UserDocumentReq userDocumentReq,@Param("userId") String userId);
 
     @Insert("INSERT INTO document_image " +
             "(document_id, " +
@@ -84,7 +84,7 @@ public interface UserMapper {
 
     @Update("UPDATE [user] " +
             "SET user_status_id = 4 " +
-            "WHERE user_id = #{user_id} ")
+            "WHERE user_id = '${user_id}' ")
     void deleteUserById(@Param("user_id") String userId);
 
     @Update("UPDATE [user] " +
@@ -96,7 +96,7 @@ public interface UserMapper {
             "address = ${address}, " +
             "image_link = ${imageLink}, " +
             "base_salary = ${baseSalary} " +
-            "WHERE user_id = #{userId}")
+            "WHERE user_id = '${user_id}'")
     void updateDriver(DriverReq driverReq);
 
     @Update("UPDATE dbo.user_document " +
@@ -107,8 +107,8 @@ public interface UserMapper {
             "expiry_date = #{expiryDate}, " +
             "other_information = #{otherInformation} " +
             "WHERE user_document_id = #{userDocumentId}" +
-            "AND user_id = #{userId}")
-    void updateDocument(UserDocumentReq userDocumentReq);
+            "AND user_id = '${user_id}'")
+    void updateDocument(UserDocumentReq userDocumentReq,@Param("userId") String userId);
 
     @Update("UPDATE dbo.document_image " +
             "SET " +
@@ -120,12 +120,12 @@ public interface UserMapper {
 
     @Update("Update [user] " +
             "SET user_status_id = #{user_status_id} " +
-            "WHERE user_id = #{user_id}")
+            "WHERE user_id = '${user_id}'")
     void updateUserStatusByUserId(@Param("user_status_id") Long userStatusId, @Param("user_id") String userId);
 
     @Select("SELECT u.user_id" +
             "FROM [user] u" +
-            "WHERE u.user_id = #{user_id}")
+            "WHERE u.user_id = '${user_id}'")
     @Results(id = "userAccountResult", value = {
             @Result(property = "userId", column = "user_id")
     })
@@ -137,6 +137,6 @@ public interface UserMapper {
             "FROM user_roles ur " +
             "JOIN role r " +
             "ON ur.role_id = r.role_id " +
-            "WHERE ur.user_id = #{user_id}")
+            "WHERE ur.user_id = '${user_id}'")
     List<Role> findUserRoles(@Param("user_id") String userId);
 }

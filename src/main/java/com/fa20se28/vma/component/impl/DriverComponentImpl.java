@@ -33,10 +33,10 @@ public class DriverComponentImpl implements DriverComponent {
     public int createDriver(DriverReq driverReq) {
         int documentRecords = 0;
         int documentImageRecords = 0;
+
         int driverRecord = userMapper.insertDriver(driverReq);
         for (UserDocumentReq userDocumentReq : driverReq.getUserDocumentReqList()) {
-            userDocumentReq.setUserId(driverReq.getUserId());
-            userMapper.insertDocument(userDocumentReq);
+            userMapper.insertDocument(userDocumentReq, driverReq.getUserId());
             documentRecords++;
             for (DocumentImageReq documentImageReq : userDocumentReq.getDocumentImagesReqList()) {
                 documentImageReq.setDocumentId(userDocumentReq.getUserDocumentId());
@@ -96,8 +96,7 @@ public class DriverComponentImpl implements DriverComponent {
     public void updateDriverByUserId(DriverReq driverReq) {
         userMapper.updateDriver(driverReq);
         for (UserDocumentReq userDocumentReq : driverReq.getUserDocumentReqList()) {
-            userDocumentReq.setUserId(driverReq.getUserId());
-            userMapper.updateDocument(userDocumentReq);
+            userMapper.updateDocument(userDocumentReq, driverReq.getUserId());
             for (DocumentImageReq documentImageReq : userDocumentReq.getDocumentImagesReqList()) {
                 documentImageReq.setDocumentId(userDocumentReq.getUserDocumentId());
                 userMapper.updateDocumentImage(documentImageReq);

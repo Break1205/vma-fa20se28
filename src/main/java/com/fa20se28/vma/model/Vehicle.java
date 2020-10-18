@@ -3,8 +3,8 @@ package com.fa20se28.vma.model;
 public class Vehicle {
     private String vehicleId;
     private String model;
-    private VehicleType vehicleType;
-    private VehicleStatus vehicleStatus;
+    private String vehicleTypeId;
+    private String vehicleStatusId;
     private float vehicleDistance;
 
     public String getVehicleId() {
@@ -23,20 +23,20 @@ public class Vehicle {
         this.model = model;
     }
 
-    public VehicleType getVehicleType() {
-        return vehicleType;
+    public String getVehicleTypeId() {
+        return vehicleTypeId;
     }
 
-    public void setVehicleType(VehicleType vehicleType) {
-        this.vehicleType = vehicleType;
+    public void setVehicleTypeId(String vehicleTypeId) {
+        this.vehicleTypeId = vehicleTypeId;
     }
 
-    public VehicleStatus getVehicleStatus() {
-        return vehicleStatus;
+    public String getVehicleStatusId() {
+        return vehicleStatusId;
     }
 
-    public void setVehicleStatus(VehicleStatus vehicleStatus) {
-        this.vehicleStatus = vehicleStatus;
+    public void setVehicleStatusId(String vehicleStatusId) {
+        this.vehicleStatusId = vehicleStatusId;
     }
 
     public float getVehicleDistance() {
