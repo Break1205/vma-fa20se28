@@ -63,14 +63,14 @@ public interface UserMapper {
             "expiry_date, " +
             "other_information) " +
             "VALUES  " +
-            "(#{userDocumentId}, " +
-            "#{userDocumentTypeId}, " +
+            "(#{UserDocumentReq.userDocumentId}, " +
+            "#{UserDocumentReq.userDocumentTypeId}, " +
             "#{userId}, " +
-            "#{registerLocation}, " +
-            "#{registerDate}, " +
-            "#{expiryDate}, " +
-            "#{otherInformation}) ")
-    int insertDocument(UserDocumentReq userDocumentReq,@Param("userId") String userId);
+            "#{UserDocumentReq.registerLocation}, " +
+            "#{UserDocumentReq.registerDate}, " +
+            "#{UserDocumentReq.expiryDate}, " +
+            "#{UserDocumentReq.otherInformation}) ")
+    int insertDocument(@Param("UserDocumentReq") UserDocumentReq userDocumentReq,@Param("userId") String userId);
 
     @Insert("INSERT INTO document_image " +
             "(document_id, " +

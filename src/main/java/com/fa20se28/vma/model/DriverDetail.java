@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 public class DriverDetail extends Driver {
+
     private boolean gender;
     private Date dateOfBirth;
     private String address;

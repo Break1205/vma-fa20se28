@@ -5,6 +5,7 @@ import com.fa20se28.vma.model.DriverDetail;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Result;
+import org.apache.ibatis.annotations.ResultMap;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 
@@ -34,7 +35,7 @@ public interface DriverMapper {
             "JOIN user_roles ur " +
             "ON ur.user_id = u.user_id " +
             "WHERE ur.role_id = 3 " +
-            "AND u.user_id = '%${user_id}%' " +
+            "AND u.user_id = '${user_id}' " +
             "ORDER BY u.user_id ASC " +
             "</script>"})
     @Results(id = "driverDetailResult", value = {
