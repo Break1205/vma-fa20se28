@@ -34,7 +34,7 @@ public interface DriverMapper {
             "JOIN user_roles ur " +
             "ON ur.user_id = u.user_id " +
             "WHERE ur.role_id = 3 " +
-            "AND u.user_id LIKE '%${user_id}%' " +
+            "AND u.user_id = '%${user_id}%' " +
             "ORDER BY u.user_id ASC " +
             "</script>"})
     @Results(id = "driverDetailResult", value = {
