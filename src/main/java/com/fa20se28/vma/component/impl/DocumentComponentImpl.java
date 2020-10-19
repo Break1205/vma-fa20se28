@@ -20,13 +20,8 @@ public class DocumentComponentImpl implements DocumentComponent {
     }
 
     @Override
-    public List<UserDocument> findUserDocumentById(String id) {
+    public List<UserDocument> findUserDocumentByUserId(String id) {
         return userDocumentMapper.findUserDocumentByUserId(id);
-    }
-
-    @Override
-    public List<UserDocument> getUserDocuments() {
-        return userDocumentMapper.getUserDocuments();
     }
 
     @Override

@@ -6,9 +6,7 @@ import com.fa20se28.vma.model.UserDocumentType;
 import java.util.List;
 
 public interface DocumentComponent {
-    List<UserDocument> findUserDocumentById(String id);
-
-    List<UserDocument> getUserDocuments();
+    List<UserDocument> findUserDocumentByUserId(String id);
 
     List<UserDocumentType> getUserDocumentTypes();
 }

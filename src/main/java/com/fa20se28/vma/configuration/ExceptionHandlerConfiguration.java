@@ -79,7 +79,7 @@ public class ExceptionHandlerConfiguration extends ResponseEntityExceptionHandle
         {
             apiError.setMessage("Database Error");
             String errorMessage = e.getMessage();
-            String formattedMessage = errorMessage.substring(errorMessage.lastIndexOf("SQLServerException") + 2);
+            String formattedMessage = errorMessage.substring(errorMessage.lastIndexOf("SQLServerException") + 1);
             apiError.setDebugMessage(formattedMessage);
         }
         else

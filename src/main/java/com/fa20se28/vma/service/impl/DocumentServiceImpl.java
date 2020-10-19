@@ -16,14 +16,7 @@ public class DocumentServiceImpl implements DocumentService {
 
     @Override
     public UserDocumentRes getUserDocuments(String id) {
-        if (id == null)
-        {
-            return new UserDocumentRes(documentComponent.getUserDocuments());
-        }
-        else
-        {
-            return new UserDocumentRes(documentComponent.findUserDocumentById(id));
-        }
+        return new UserDocumentRes(documentComponent.findUserDocumentByUserId(id));
     }
 
     @Override

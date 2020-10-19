@@ -31,19 +31,6 @@ public interface UserDocumentMapper {
     })
     List<UserDocument> findUserDocumentByUserId(@Param("user_id") String userId);
 
-    @ResultMap("userDocumentResult")
-    @Select("SELECT " +
-            "ud.user_document_id, " +
-            "udt.user_document_type_name, " +
-            "ud.registered_location, " +
-            "ud.registered_date, " +
-            "ud.expiry_date, " +
-            "ud.other_information " +
-            "FROM user_document ud " +
-            "JOIN user_document_type udt " +
-            "ON ud.user_document_type_id = udt.user_document_type_id ")
-    List<UserDocument> getUserDocuments();
-
     @Select("SELECT " +
             "di.document_image_id, " +
             "di.image_link " +
