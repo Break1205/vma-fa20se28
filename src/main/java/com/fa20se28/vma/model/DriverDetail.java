@@ -1,12 +1,11 @@
 package com.fa20se28.vma.model;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 public class DriverDetail extends Driver {
-
     private boolean gender;
-    private Date dateOfBirth;
+    private LocalDate dateOfBirth;
     private String address;
     private String imageLink;
     private Float baseSalary;
@@ -20,11 +19,11 @@ public class DriverDetail extends Driver {
         this.gender = gender;
     }
 
-    public Date getDateOfBirth() {
+    public LocalDate getDateOfBirth() {
         return dateOfBirth;
     }
 
-    public void setDateOfBirth(Date dateOfBirth) {
+    public void setDateOfBirth(LocalDate dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
 

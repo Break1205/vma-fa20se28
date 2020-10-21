@@ -39,8 +39,7 @@ public class DriverComponentImpl implements DriverComponent {
             userMapper.insertDocument(userDocumentReq, driverReq.getUserId());
             documentRecords++;
             for (DocumentImageReq documentImageReq : userDocumentReq.getDocumentImagesReqList()) {
-                documentImageReq.setDocumentId(userDocumentReq.getUserDocumentId());
-                userMapper.insertDocumentImage(documentImageReq);
+                userMapper.insertDocumentImage(documentImageReq, userDocumentReq.getUserDocumentId());
                 documentImageRecords++;
             }
         }
@@ -98,8 +97,7 @@ public class DriverComponentImpl implements DriverComponent {
         for (UserDocumentReq userDocumentReq : driverReq.getUserDocumentReqList()) {
             userMapper.updateDocument(userDocumentReq, driverReq.getUserId());
             for (DocumentImageReq documentImageReq : userDocumentReq.getDocumentImagesReqList()) {
-                documentImageReq.setDocumentId(userDocumentReq.getUserDocumentId());
-                userMapper.updateDocumentImage(documentImageReq);
+                userMapper.updateDocumentImage(documentImageReq, userDocumentReq.getUserDocumentId());
             }
         }
     }

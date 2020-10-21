@@ -1,13 +1,18 @@
 package com.fa20se28.vma.request;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import java.util.Date;
 import java.util.List;
 
 public class UserDocumentReq {
     private String userDocumentId;
     private int userDocumentTypeId;
     private String registerLocation;
-    private String registerDate;
-    private String expiryDate;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    private Date registerDate;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    private Date expiryDate;
     private String otherInformation;
     private List<DocumentImageReq> documentImagesReqList;
 
@@ -35,19 +40,19 @@ public class UserDocumentReq {
         this.registerLocation = registerLocation;
     }
 
-    public String getRegisterDate() {
+    public Date getRegisterDate() {
         return registerDate;
     }
 
-    public void setRegisterDate(String registerDate) {
+    public void setRegisterDate(Date registerDate) {
         this.registerDate = registerDate;
     }
 
-    public String getExpiryDate() {
+    public Date getExpiryDate() {
         return expiryDate;
     }
 
-    public void setExpiryDate(String expiryDate) {
+    public void setExpiryDate(Date expiryDate) {
         this.expiryDate = expiryDate;
     }
 

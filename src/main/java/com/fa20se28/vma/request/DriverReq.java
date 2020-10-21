@@ -1,5 +1,8 @@
 package com.fa20se28.vma.request;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import java.util.Date;
 import java.util.List;
 
 public class DriverReq extends UserReq {
@@ -7,8 +10,9 @@ public class DriverReq extends UserReq {
     private String fullName;
     private String address;
     private String phoneNumber;
-    private int gender;
-    private String dateOfBirth;
+    private boolean gender;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    private Date dateOfBirth;
     private String imageLink;
     private Float baseSalary;
     private int userStatusId;
@@ -46,19 +50,19 @@ public class DriverReq extends UserReq {
         this.phoneNumber = phoneNumber;
     }
 
-    public int isGender() {
+    public boolean isGender() {
         return gender;
     }
 
-    public void setGender(int gender) {
+    public void setGender(boolean gender) {
         this.gender = gender;
     }
 
-    public String getDateOfBirth() {
+    public Date getDateOfBirth() {
         return dateOfBirth;
     }
 
-    public void setDateOfBirth(String dateOfBirth) {
+    public void setDateOfBirth(Date dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
 

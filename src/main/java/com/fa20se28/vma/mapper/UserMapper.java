@@ -52,7 +52,8 @@ public interface UserMapper {
             "(#{user_id}, " +
             "#{role_id} " +
             ");")
-    int insertRoleForUserId(@Param("user_id") String userId, @Param("role_id") int roleId);
+    int insertRoleForUserId(@Param("user_id") String userId,
+                            @Param("role_id") int roleId);
 
     @Insert("INSERT INTO user_document " +
             "(user_document_id, " +
@@ -70,7 +71,8 @@ public interface UserMapper {
             "#{UserDocumentReq.registerDate}, " +
             "#{UserDocumentReq.expiryDate}, " +
             "#{UserDocumentReq.otherInformation}) ")
-    int insertDocument(@Param("UserDocumentReq") UserDocumentReq userDocumentReq,@Param("userId") String userId);
+    int insertDocument(@Param("UserDocumentReq") UserDocumentReq userDocumentReq,
+                       @Param("userId") String userId);
 
     @Insert("INSERT INTO document_image " +
             "(document_id, " +
@@ -78,9 +80,10 @@ public interface UserMapper {
             "create_date) " +
             "VALUES " +
             "(#{documentId}, " +
-            "#{imageLink}, " +
+            "#{DocumentImageReq.imageLink}, " +
             "getdate())")
-    int insertDocumentImage(DocumentImageReq documentImageReq);
+    int insertDocumentImage(@Param("DocumentImageReq") DocumentImageReq documentImageReq,
+                            @Param("documentId") String documentId);
 
     @Update("UPDATE [user] " +
             "SET user_status_id = 4 " +
@@ -101,27 +104,30 @@ public interface UserMapper {
 
     @Update("UPDATE dbo.user_document " +
             "SET " +
-            "user_document_type_id = #{userDocumentTypeId}, " +
-            "registered_location = #{registeredLocation}, " +
-            "registered_date = #{registeredDate}, " +
-            "expiry_date = #{expiryDate}, " +
-            "other_information = #{otherInformation} " +
-            "WHERE user_document_id = #{userDocumentId}" +
+            "user_document_type_id = #{UserDocumentReq.userDocumentTypeId}, " +
+            "registered_location = #{UserDocumentReq.registeredLocation}, " +
+            "registered_date = #{UserDocumentReq.registeredDate}, " +
+            "expiry_date = #{UserDocumentReq.expiryDate}, " +
+            "other_information = #{UserDocumentReq.otherInformation} " +
+            "WHERE user_document_id = #{UserDocumentReq.userDocumentId}" +
             "AND user_id = '${user_id}'")
-    void updateDocument(UserDocumentReq userDocumentReq,@Param("userId") String userId);
+    void updateDocument(@Param("UserDocumentReq") UserDocumentReq userDocumentReq,
+                        @Param("userId") String userId);
 
     @Update("UPDATE dbo.document_image " +
             "SET " +
-            "image_link = #{imageLink}, " +
+            "image_link = #{DocumentImageReq.imageLink}, " +
             "create_date = getdate() " +
             "WHERE document_id = #{documentId} " +
-            "AND doucment_image_id = #{documentImageId} ")
-    void updateDocumentImage(DocumentImageReq documentImageReq);
+            "AND document_image_id = #{DocumentImageReq.documentImageId} ")
+    void updateDocumentImage(@Param("DocumentImageReq") DocumentImageReq documentImageReq,
+                             @Param("documentId") String documentId);
 
     @Update("Update [user] " +
             "SET user_status_id = #{user_status_id} " +
             "WHERE user_id = '${user_id}'")
-    void updateUserStatusByUserId(@Param("user_status_id") Long userStatusId, @Param("user_id") String userId);
+    void updateUserStatusByUserId(@Param("user_status_id") Long userStatusId,
+                                  @Param("user_id") String userId);
 
     @Select("SELECT u.user_id" +
             "FROM [user] u" +

@@ -1,14 +1,14 @@
 package com.fa20se28.vma.model;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 public class UserDocument {
     private String userDocumentId;
     private String userDocumentType;
     private String registerLocation;
-    private Date registerDate;
-    private Date expiryDate;
+    private LocalDate registerDate;
+    private LocalDate expiryDate;
     private String otherInformation;
     private List<DocumentImage> documentImages;
 
@@ -36,19 +36,19 @@ public class UserDocument {
         this.registerLocation = registerLocation;
     }
 
-    public Date getRegisterDate() {
+    public LocalDate getRegisterDate() {
         return registerDate;
     }
 
-    public void setRegisterDate(Date registerDate) {
+    public void setRegisterDate(LocalDate registerDate) {
         this.registerDate = registerDate;
     }
 
-    public Date getExpiryDate() {
+    public LocalDate getExpiryDate() {
         return expiryDate;
     }
 
-    public void setExpiryDate(Date expiryDate) {
+    public void setExpiryDate(LocalDate expiryDate) {
         this.expiryDate = expiryDate;
     }
 
