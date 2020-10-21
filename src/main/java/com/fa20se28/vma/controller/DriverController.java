@@ -42,16 +42,20 @@ public class DriverController {
                                     @RequestParam(required = false) String name,
                                     @RequestParam(required = false) String phoneNumber,
                                     @RequestParam(required = false) Long userStatusId,
-                                    @RequestParam(required = false, defaultValue = "0") int page) {
-        return driverService.getDrivers(new DriverPageReq(userId, name, phoneNumber, userStatusId, page));
+                                    @RequestParam(required = false, defaultValue = "0") int page,
+                                    @RequestParam(required = false) Long viewOption) {
+        return driverService.getDrivers(new DriverPageReq(userId, name, phoneNumber, userStatusId, page*15, viewOption));
     }
 
     @GetMapping("count")
     public int getTotalDrivers(@RequestParam(required = false) String userId,
                                @RequestParam(required = false) String name,
                                @RequestParam(required = false) String phoneNumber,
-                               @RequestParam(required = false) Long userStatusId) {
-        return driverService.getTotalDriversOrTotalFilteredDriver(new DriverPageReq(userId, name, phoneNumber, userStatusId));
+                               @RequestParam(required = false) Long userStatusId,
+                               @RequestParam(required = false) Long viewOption) {
+        return driverService.getTotalDriversOrTotalFilteredDriver(
+                new DriverPageReq(
+                        userId, name, phoneNumber, userStatusId, 0,viewOption));
     }
 
     @PutMapping

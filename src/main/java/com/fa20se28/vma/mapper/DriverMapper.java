@@ -2,12 +2,8 @@ package com.fa20se28.vma.mapper;
 
 import com.fa20se28.vma.model.Driver;
 import com.fa20se28.vma.model.DriverDetail;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.ResultMap;
-import org.apache.ibatis.annotations.Results;
-import org.apache.ibatis.annotations.Select;
+import com.fa20se28.vma.request.DriverPageReq;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -67,20 +63,23 @@ public interface DriverMapper {
             "JOIN user_roles ur " +
             "ON ur.user_id = u.user_id " +
             "WHERE ur.role_id = 3 " +
-            "<if test = \"user_id!=null\" > " +
-            "AND u.user_id LIKE '%${user_id}%' " +
+            "<if test = \"DriverPageReq.userId!=null\" > " +
+            "AND u.user_id LIKE '%${DriverPageReq.userId}%' " +
             "</if>" +
-            "<if test = \"full_name!=null\" > " +
-            "AND u.full_name LIKE '%${full_name}%' " +
+            "<if test = \"DriverPageReq.fullName!=null\" > " +
+            "AND u.full_name LIKE '%${DriverPageReq.fullName}%' " +
             "</if>" +
-            "<if test = \"phone_number!=null\" > " +
-            "AND u.phone_number LIKE '%${phone_number}%' " +
+            "<if test = \"DriverPageReq.phoneNumber!=null\" > " +
+            "AND u.phone_number LIKE '%${DriverPageReq.phoneNumber}%' " +
             "</if>" +
-            "<if test = \"user_status_id!=null\" > " +
-            "AND u.user_status_id = #{user_status_id} " +
+            "<if test = \"DriverPageReq.viewOption == 1\" > " +
+            " AND u.user_status_id != 3" +
+            "</if>" +
+            "<if test = \"DriverPageReq.userStatusId!=null\" > " +
+            "AND u.user_status_id = #{DriverPageReq.userStatusId} " +
             "</if>" +
             "ORDER BY u.user_id ASC " +
-            "OFFSET ${offset} ROWS " +
+            "OFFSET ${DriverPageReq.page} ROWS " +
             "FETCH NEXT 15 ROWS ONLY" +
             "</script>"})
     @Results(id = "driverResult", value = {
@@ -89,11 +88,7 @@ public interface DriverMapper {
             @Result(property = "phoneNumber", column = "phone_number"),
             @Result(property = "vehicleId", column = "vehicle_id"),
             @Result(property = "userStatusName", column = "user_status_name")})
-    List<Driver> findDriversByUserIdAndFullNameAndPhoneNumberAndUserStatus(@Param("user_id") String userID,
-                                                                           @Param("full_name") String name,
-                                                                           @Param("phone_number") String phoneNumber,
-                                                                           @Param("user_status_id") Long userStatusId,
-                                                                           @Param("offset") int offset);
+    List<Driver> findDriversByUserIdAndFullNameAndPhoneNumberAndUserStatus(@Param("DriverPageReq")DriverPageReq driverPageReq);
 
     @Select({"<script>" +
             "SELECT count(u.user_id) " +
@@ -105,21 +100,21 @@ public interface DriverMapper {
             "JOIN user_roles ur " +
             "ON ur.user_id = u.user_id " +
             "WHERE ur.role_id = 3 " +
-            "<if test = \"user_id!=null\" > " +
-            "AND u.user_id LIKE '%${user_id}%' " +
+            "<if test = \"DriverPageReq.userId!=null\" > " +
+            "AND u.user_id LIKE '%${DriverPageReq.userId}%' " +
             "</if>" +
-            "<if test = \"full_name!=null\" > " +
-            "AND u.full_name LIKE '%${full_name}%' " +
+            "<if test = \"DriverPageReq.fullName!=null\" > " +
+            "AND u.full_name LIKE '%${DriverPageReq.fullName}%' " +
             "</if>" +
-            "<if test = \"phone_number!=null\" > " +
-            "AND u.phone_number LIKE '%${phone_number}%' " +
+            "<if test = \"DriverPageReq.phoneNumber!=null\" > " +
+            "AND u.phone_number LIKE '%${DriverPageReq.phoneNumber}%' " +
             "</if>" +
-            "<if test = \"user_status_id!=null\" > " +
-            "AND u.user_status_id = #{user_status_id} " +
+            "<if test = \"DriverPageReq.viewOption == 1\" > " +
+            " AND u.user_status_id != 3" +
+            "</if>" +
+            "<if test = \"DriverPageReq.userStatusId!=null\" > " +
+            "AND u.user_status_id = #{DriverPageReq.userStatusId} " +
             "</if>" +
             "</script>"})
-    int findTotalDriversWhenFilter(@Param("user_id") String userID,
-                                   @Param("full_name") String name,
-                                   @Param("phone_number") String phoneNumber,
-                                   @Param("user_status_id") Long userStatusId);
+    int findTotalDriversWhenFilter(@Param("DriverPageReq")DriverPageReq driverPageReq);
 }

@@ -42,22 +42,19 @@ public class DriverServiceImpl implements DriverService {
     @Override
     public DriverPageRes getDrivers(DriverPageReq driverPageReq) {
         DriverPageRes driverPageRes = new DriverPageRes();
-        driverPageRes.setDriverList(driverComponent
-                .findDrivers(
-                        driverPageReq.getUserId(),
-                        driverPageReq.getName(),
-                        driverPageReq.getPhoneNumber(),
-                        driverPageReq.getUserStatusId(),
-                        driverPageReq.getPage()));
+        driverPageRes.setDriverList(
+                driverComponent
+                        .findDrivers(driverPageReq));
         return driverPageRes;
     }
 
     @Override
     public int getTotalDriversOrTotalFilteredDriver(DriverPageReq driverPageReq) {
         if (driverPageReq.getUserId() != null
-                || driverPageReq.getName() != null
+                || driverPageReq.getFullName() != null
                 || driverPageReq.getPhoneNumber() != null
-                || driverPageReq.getUserStatusId() != null) {
+                || driverPageReq.getUserStatusId() != null
+                || driverPageReq.getViewOption() != null) {
             return getTotalDriversWhenFiltering(driverPageReq);
         }
         return getTotalDrivers();
@@ -82,10 +79,6 @@ public class DriverServiceImpl implements DriverService {
 
     private int getTotalDriversWhenFiltering(DriverPageReq driverPageReq) {
         return driverComponent
-                .findTotalDriversWhenFilter(
-                        driverPageReq.getUserId(),
-                        driverPageReq.getName(),
-                        driverPageReq.getPhoneNumber(),
-                        driverPageReq.getUserStatusId());
+                .findTotalDriversWhenFiltering(driverPageReq);
     }
 }

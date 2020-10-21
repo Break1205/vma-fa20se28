@@ -8,6 +8,7 @@ import com.fa20se28.vma.mapper.UserMapper;
 import com.fa20se28.vma.model.Driver;
 import com.fa20se28.vma.model.DriverDetail;
 import com.fa20se28.vma.request.DocumentImageReq;
+import com.fa20se28.vma.request.DriverPageReq;
 import com.fa20se28.vma.request.DriverReq;
 import com.fa20se28.vma.request.UserDocumentReq;
 import org.springframework.stereotype.Component;
@@ -33,7 +34,6 @@ public class DriverComponentImpl implements DriverComponent {
     public int createDriver(DriverReq driverReq) {
         int documentRecords = 0;
         int documentImageRecords = 0;
-
         int driverRecord = userMapper.insertDriver(driverReq);
         for (UserDocumentReq userDocumentReq : driverReq.getUserDocumentReqList()) {
             userMapper.insertDocument(userDocumentReq, driverReq.getUserId());
@@ -65,14 +65,9 @@ public class DriverComponentImpl implements DriverComponent {
     }
 
     @Override
-    public List<Driver> findDrivers(String userId, String name, String phoneNumber, Long userStatusId, int page) {
+    public List<Driver> findDrivers(DriverPageReq driverPageReq) {
         return driverMapper
-                .findDriversByUserIdAndFullNameAndPhoneNumberAndUserStatus(
-                        userId,
-                        name,
-                        phoneNumber,
-                        userStatusId,
-                        page * 15);
+                .findDriversByUserIdAndFullNameAndPhoneNumberAndUserStatus(driverPageReq);
     }
 
     @Override
@@ -81,8 +76,8 @@ public class DriverComponentImpl implements DriverComponent {
     }
 
     @Override
-    public int findTotalDriversWhenFilter(String userId, String name, String phoneNumber, Long userStatusId) {
-        return driverMapper.findTotalDriversWhenFilter(userId, name, phoneNumber, userStatusId);
+    public int findTotalDriversWhenFiltering(DriverPageReq driverPageReq) {
+        return driverMapper.findTotalDriversWhenFilter(driverPageReq);
     }
 
     @Override

@@ -2,24 +2,19 @@ package com.fa20se28.vma.request;
 
 public class DriverPageReq {
     private String userId;
-    private String name;
+    private String fullName;
     private String phoneNumber;
     private Long userStatusId;
     private int page;
+    private Long viewOption;
 
-    public DriverPageReq(String userId, String name, String phoneNumber, Long userStatusId, int page) {
+    public DriverPageReq(String userId, String fullName, String phoneNumber, Long userStatusId, int page, Long viewOption) {
         this.userId = userId;
-        this.name = name;
+        this.fullName = fullName;
         this.phoneNumber = phoneNumber;
         this.userStatusId = userStatusId;
         this.page = page;
-    }
-
-    public DriverPageReq(String userId, String name, String phoneNumber, Long userStatusId) {
-        this.userId = userId;
-        this.name = name;
-        this.phoneNumber = phoneNumber;
-        this.userStatusId = userStatusId;
+        this.viewOption = viewOption;
     }
 
     public String getUserId() {
@@ -30,12 +25,12 @@ public class DriverPageReq {
         this.userId = userId;
     }
 
-    public String getName() {
-        return name;
+    public String getFullName() {
+        return fullName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 
     public String getPhoneNumber() {
@@ -60,5 +55,13 @@ public class DriverPageReq {
 
     public void setPage(int page) {
         this.page = page;
+    }
+
+    public Long getViewOption() {
+        return viewOption;
+    }
+
+    public void setViewOption(Long viewOption) {
+        this.viewOption = viewOption;
     }
 }
