@@ -67,7 +67,7 @@ public class DriverComponentImpl implements DriverComponent {
     @Override
     public List<Driver> findDrivers(DriverPageReq driverPageReq) {
         return driverMapper
-                .findDriversByUserIdAndFullNameAndPhoneNumberAndUserStatus(driverPageReq);
+                .findDrivers(driverPageReq);
     }
 
     @Override

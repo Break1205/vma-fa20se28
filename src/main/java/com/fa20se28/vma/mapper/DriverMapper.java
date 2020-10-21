@@ -88,7 +88,7 @@ public interface DriverMapper {
             @Result(property = "phoneNumber", column = "phone_number"),
             @Result(property = "vehicleId", column = "vehicle_id"),
             @Result(property = "userStatusName", column = "user_status_name")})
-    List<Driver> findDriversByUserIdAndFullNameAndPhoneNumberAndUserStatus(@Param("DriverPageReq")DriverPageReq driverPageReq);
+    List<Driver> findDrivers(@Param("DriverPageReq")DriverPageReq driverPageReq);
 
     @Select({"<script>" +
             "SELECT count(u.user_id) " +
