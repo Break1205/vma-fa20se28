@@ -69,11 +69,11 @@ public interface UserDocumentMapper {
             "SET " +
             "user_document_type_id = #{UserDocumentReq.userDocumentTypeId}, " +
             "registered_location = #{UserDocumentReq.registeredLocation}, " +
-            "registered_date = #{UserDocumentReq.registeredDate}, " +
-            "expiry_date = #{UserDocumentReq.expiryDate}, " +
+            "registered_date = CONVERT(date, #{UserDocumentReq.registeredDate}), " +
+            "expiry_date = CONVERT(date, #{UserDocumentReq.expiryDate}), " +
             "other_information = #{UserDocumentReq.otherInformation} " +
-            "WHERE user_document_id = #{UserDocumentReq.userDocumentId}" +
-            "AND user_id = '${user_id}'")
+            "WHERE user_document_id = #{UserDocumentReq.userDocumentId} " +
+            "AND user_id = #{userId}")
     void updateDocument(@Param("UserDocumentReq") UserDocumentReq userDocumentReq,
                         @Param("userId") String userId);
 }

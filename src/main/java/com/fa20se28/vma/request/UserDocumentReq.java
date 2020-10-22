@@ -8,9 +8,9 @@ import java.util.List;
 public class UserDocumentReq {
     private String userDocumentId;
     private int userDocumentTypeId;
-    private String registerLocation;
+    private String registeredLocation;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private Date registerDate;
+    private Date registeredDate;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date expiryDate;
     private String otherInformation;
@@ -32,20 +32,20 @@ public class UserDocumentReq {
         this.userDocumentTypeId = userDocumentTypeId;
     }
 
-    public String getRegisterLocation() {
-        return registerLocation;
+    public String getRegisteredLocation() {
+        return registeredLocation;
     }
 
-    public void setRegisterLocation(String registerLocation) {
-        this.registerLocation = registerLocation;
+    public void setRegisteredLocation(String registeredLocation) {
+        this.registeredLocation = registeredLocation;
     }
 
-    public Date getRegisterDate() {
-        return registerDate;
+    public Date getRegisteredDate() {
+        return registeredDate;
     }
 
-    public void setRegisterDate(Date registerDate) {
-        this.registerDate = registerDate;
+    public void setRegisteredDate(Date registeredDate) {
+        this.registeredDate = registeredDate;
     }
 
     public Date getExpiryDate() {
@@ -56,19 +56,19 @@ public class UserDocumentReq {
         this.expiryDate = expiryDate;
     }
 
-    public List<DocumentImageReq> getDocumentImagesReqList() {
-        return documentImagesReqList;
-    }
-
-    public void setDocumentImagesReqList(List<DocumentImageReq> documentImagesReqList) {
-        this.documentImagesReqList = documentImagesReqList;
-    }
-
     public String getOtherInformation() {
         return otherInformation;
     }
 
     public void setOtherInformation(String otherInformation) {
         this.otherInformation = otherInformation;
+    }
+
+    public List<DocumentImageReq> getDocumentImagesReqList() {
+        return documentImagesReqList;
+    }
+
+    public void setDocumentImagesReqList(List<DocumentImageReq> documentImagesReqList) {
+        this.documentImagesReqList = documentImagesReqList;
     }
 }

@@ -9,6 +9,7 @@ import com.fa20se28.vma.mapper.UserDocumentMapper;
 import com.fa20se28.vma.mapper.UserMapper;
 import com.fa20se28.vma.model.DriverDetail;
 import com.fa20se28.vma.model.Request;
+import com.fa20se28.vma.model.User;
 import com.fa20se28.vma.request.DocumentImageReq;
 import com.fa20se28.vma.request.DriverPageReq;
 import com.fa20se28.vma.request.DriverReq;
@@ -43,31 +44,43 @@ public class DriverComponentImpl implements DriverComponent {
     @Override
     @Transactional
     public int createDriver(DriverReq driverReq) {
-        int documentRecords = 0;
-        int documentImageRecords = 0;
-        int driverRecord = driverMapper.insertDriver(driverReq);
-        for (UserDocumentReq userDocumentReq : driverReq.getUserDocumentReqList()) {
-            userDocumentMapper.insertDocument(userDocumentReq, driverReq.getUserId());
-            documentRecords++;
-            for (DocumentImageReq documentImageReq : userDocumentReq.getDocumentImagesReqList()) {
-                documentImageMapper.insertDocumentImage(documentImageReq, userDocumentReq.getUserDocumentId());
-                documentImageRecords++;
+        if (checkUserIdValidity(driverReq.getUserId())) {
+            int documentRecords = 0;
+            int documentImageRecords = 0;
+            int driverRecord = driverMapper.insertDriver(driverReq);
+            for (UserDocumentReq userDocumentReq : driverReq.getUserDocumentReqList()) {
+                userDocumentMapper.insertDocument(userDocumentReq, driverReq.getUserId());
+                documentRecords++;
+                for (DocumentImageReq documentImageReq : userDocumentReq.getDocumentImagesReqList()) {
+                    documentImageMapper.insertDocumentImage(documentImageReq, userDocumentReq.getUserDocumentId());
+                    documentImageRecords++;
+                }
+            }
+            int userRoles = userMapper.insertRoleForUserId(driverReq.getUserId(), 3);
+            int requestRecords = requestMapper.insertRequest(
+                    new Request(
+                            driverReq.getUserId(),
+                            1L,
+                            "New Registration",
+                            false));
+            if (driverRecord == 1
+                    && requestRecords == 1
+                    && documentRecords > 0
+                    && documentImageRecords > 0
+                    && userRoles == 1) {
+                return 1;
             }
         }
-        int userRoles = userMapper.insertRoleForUserId(driverReq.getUserId(), 3);
-        requestMapper.insertRequest(
-                new Request(
-                        driverReq.getUserId(),
-                        1L,
-                        "New Registration",
-                        false));
-        if (driverRecord == 1
-                && documentRecords > 0
-                && documentImageRecords > 0
-                && userRoles == 1) {
-            return 1;
-        }
         return 0;
+    }
+
+    private boolean checkUserIdValidity(String userId) {
+        Optional<User> optionalUser = userMapper.findUserByUserId(userId);
+        if (optionalUser.isPresent()) {
+            return false;
+        }else{
+            return true;
+        }
     }
 
     @Override

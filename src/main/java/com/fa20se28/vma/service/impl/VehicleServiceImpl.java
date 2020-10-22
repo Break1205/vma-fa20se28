@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class VehicleServiceImpl implements VehicleService {
-    private VehicleComponent vehicleComponent;
+    private final VehicleComponent vehicleComponent;
 
     public VehicleServiceImpl(VehicleComponent vehicleComponent) {
         this.vehicleComponent = vehicleComponent;

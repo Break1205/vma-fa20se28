@@ -148,10 +148,10 @@ public interface DriverMapper {
             "full_name = #{fullName}, " +
             "phone_number = #{phoneNumber}, " +
             "gender = #{gender}, " +
-            "date_of_birth = ${dateOfBirth}, " +
-            "address = ${address}, " +
-            "image_link = ${imageLink}, " +
-            "base_salary = ${baseSalary} " +
-            "WHERE user_id = '${userId}'")
+            "date_of_birth = CONVERT(date, #{dateOfBirth}), " +
+            "address = #{address}, " +
+            "image_link = #{imageLink}, " +
+            "base_salary = #{baseSalary} " +
+            "WHERE user_id = #{userId}")
     void updateDriver(DriverReq driverReq);
 }
