@@ -3,7 +3,7 @@ package com.fa20se28.vma.controller;
 import com.fa20se28.vma.request.DriverPageReq;
 import com.fa20se28.vma.request.DriverReq;
 import com.fa20se28.vma.response.DriverDetailRes;
-import com.fa20se28.vma.response.DriverPageRes;
+import com.fa20se28.vma.response.DriverRes;
 import com.fa20se28.vma.service.DriverService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/drivers")
@@ -38,13 +40,13 @@ public class DriverController {
     }
 
     @GetMapping()
-    public DriverPageRes getDrivers(@RequestParam(required = false) String userId,
-                                    @RequestParam(required = false) String name,
-                                    @RequestParam(required = false) String phoneNumber,
-                                    @RequestParam(required = false) Long userStatusId,
-                                    @RequestParam(required = false, defaultValue = "0") int page,
-                                    @RequestParam(required = false) Long viewOption) {
-        return driverService.getDrivers(new DriverPageReq(userId, name, phoneNumber, userStatusId, page*15, viewOption));
+    public List<DriverRes> getDrivers(@RequestParam(required = false) String userId,
+                                      @RequestParam(required = false) String name,
+                                      @RequestParam(required = false) String phoneNumber,
+                                      @RequestParam(required = false) Long userStatusId,
+                                      @RequestParam(required = false, defaultValue = "0") int page,
+                                      @RequestParam(required = false) Long viewOption) {
+        return driverService.getDrivers(new DriverPageReq(userId, name, phoneNumber, userStatusId, page * 15, viewOption));
     }
 
     @GetMapping("count")
@@ -55,7 +57,7 @@ public class DriverController {
                                @RequestParam(required = false) Long viewOption) {
         return driverService.getTotalDriversOrTotalFilteredDriver(
                 new DriverPageReq(
-                        userId, name, phoneNumber, userStatusId, 0,viewOption));
+                        userId, name, phoneNumber, userStatusId, 0, viewOption));
     }
 
     @PutMapping

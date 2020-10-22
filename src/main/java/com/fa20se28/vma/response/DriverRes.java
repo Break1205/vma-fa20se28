@@ -1,11 +1,11 @@
-package com.fa20se28.vma.model;
+package com.fa20se28.vma.response;
 
-public class Driver {
+public class DriverRes {
     private String userId;
     private String fullName;
     private String phoneNumber;
     private String vehicleId;
-    private UserStatus userStatus;
+    private String userStatusName;
 
     public String getUserId() {
         return userId;
@@ -39,11 +39,11 @@ public class Driver {
         this.vehicleId = vehicleId;
     }
 
-    public UserStatus getUserStatus() {
-        return userStatus;
+    public String getUserStatusName() {
+        return userStatusName;
     }
 
-    public void setUserStatus(UserStatus userStatus) {
-        this.userStatus = userStatus;
+    public void setUserStatusName(String userStatusName) {
+        this.userStatusName = userStatusName;
     }
 }

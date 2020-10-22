@@ -1,14 +1,14 @@
 package com.fa20se28.vma.model;
 
 public class UserStatus {
-    private Long userStatusId;
+    private int userStatusId;
     private String userStatusName;
 
-    public Long getUserStatusId() {
+    public int getUserStatusId() {
         return userStatusId;
     }
 
-    public void setUserStatusId(Long userStatusId) {
+    public void setUserStatusId(int userStatusId) {
         this.userStatusId = userStatusId;
     }
 

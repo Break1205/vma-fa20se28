@@ -1,8 +1,9 @@
 package com.fa20se28.vma.mapper;
 
-import com.fa20se28.vma.model.Driver;
 import com.fa20se28.vma.model.DriverDetail;
 import com.fa20se28.vma.request.DriverPageReq;
+import com.fa20se28.vma.request.DriverReq;
+import com.fa20se28.vma.response.DriverRes;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -13,6 +14,7 @@ public interface DriverMapper {
     @Select({"<script>" +
             "SELECT " +
             "u.user_id, " +
+            "us.user_status_id, " +
             "us.user_status_name, " +
             "u.full_name, " +
             "u.phone_number, " +
@@ -39,7 +41,8 @@ public interface DriverMapper {
             @Result(property = "fullName", column = "full_name"),
             @Result(property = "phoneNumber", column = "phone_number"),
             @Result(property = "vehicleId", column = "vehicle_id"),
-            @Result(property = "userStatusName", column = "user_status_name"),
+            @Result(property = "userStatus.userStatusId", column = "user_status_id"),
+            @Result(property = "userStatus.userStatusName", column = "user_status_name"),
             @Result(property = "gender", column = "gender"),
             @Result(property = "dateOfBirth", column = "date_of_birth"),
             @Result(property = "address", column = "address"),
@@ -88,7 +91,7 @@ public interface DriverMapper {
             @Result(property = "phoneNumber", column = "phone_number"),
             @Result(property = "vehicleId", column = "vehicle_id"),
             @Result(property = "userStatusName", column = "user_status_name")})
-    List<Driver> findDrivers(@Param("DriverPageReq")DriverPageReq driverPageReq);
+    List<DriverRes> findDrivers(@Param("DriverPageReq") DriverPageReq driverPageReq);
 
     @Select({"<script>" +
             "SELECT count(u.user_id) " +
@@ -116,5 +119,39 @@ public interface DriverMapper {
             "AND u.user_status_id = #{DriverPageReq.userStatusId} " +
             "</if>" +
             "</script>"})
-    int findTotalDriversWhenFilter(@Param("DriverPageReq")DriverPageReq driverPageReq);
+    int findTotalDriversWhenFilter(@Param("DriverPageReq") DriverPageReq driverPageReq);
+
+    @Insert("INSERT INTO [user] " +
+            "(user_id, " +
+            "user_status_id, " +
+            "full_name, " +
+            "phone_number, " +
+            "gender, " +
+            "date_of_birth, " +
+            "address, " +
+            "image_link, " +
+            "base_salary) " +
+            "VALUES " +
+            "(#{userId}, " +
+            "#{userStatusId}, " +
+            "#{fullName}, " +
+            "#{phoneNumber}, " +
+            "#{gender}, " +
+            "#{dateOfBirth}, " +
+            "#{address}, " +
+            "#{imageLink}, " +
+            "#{baseSalary})")
+    int insertDriver(DriverReq driverReq);
+
+    @Update("UPDATE [user] " +
+            "SET " +
+            "full_name = #{fullName}, " +
+            "phone_number = #{phoneNumber}, " +
+            "gender = #{gender}, " +
+            "date_of_birth = ${dateOfBirth}, " +
+            "address = ${address}, " +
+            "image_link = ${imageLink}, " +
+            "base_salary = ${baseSalary} " +
+            "WHERE user_id = '${userId}'")
+    void updateDriver(DriverReq driverReq);
 }
