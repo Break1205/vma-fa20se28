@@ -5,11 +5,13 @@ import com.fa20se28.vma.model.DriverDetail;
 import com.fa20se28.vma.request.DriverPageReq;
 import com.fa20se28.vma.request.DriverReq;
 import com.fa20se28.vma.response.DriverDetailRes;
-import com.fa20se28.vma.response.DriverPageRes;
+import com.fa20se28.vma.response.DriverRes;
 import com.fa20se28.vma.service.DriverService;
 import com.fa20se28.vma.service.FirebaseService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 public class DriverServiceImpl implements DriverService {
@@ -40,12 +42,8 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
-    public DriverPageRes getDrivers(DriverPageReq driverPageReq) {
-        DriverPageRes driverPageRes = new DriverPageRes();
-        driverPageRes.setDriverList(
-                driverComponent
-                        .findDrivers(driverPageReq));
-        return driverPageRes;
+    public List<DriverRes> getDrivers(DriverPageReq driverPageReq) {
+        return driverComponent.findDrivers(driverPageReq);
     }
 
     @Override

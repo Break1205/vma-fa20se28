@@ -2,6 +2,7 @@ package com.fa20se28.vma.mapper;
 
 import com.fa20se28.vma.model.UserDocument;
 import com.fa20se28.vma.model.DocumentImage;
+import com.fa20se28.vma.request.UserDocumentReq;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.List;
 public interface UserDocumentMapper {
     @Select("SELECT " +
             "ud.user_document_id, " +
+            "udt.user_document_type_id, " +
             "udt.user_document_type_name, " +
             "ud.registered_location, " +
             "ud.registered_date, " +
@@ -21,7 +23,8 @@ public interface UserDocumentMapper {
             "WHERE ud.user_id = '${user_id}' ")
     @Results(id = "userDocumentResult", value = {
             @Result(property = "userDocumentId", column = "user_document_id"),
-            @Result(property = "userDocumentType", column = "user_document_type_name"),
+            @Result(property = "userDocumentType.userDocumentTypeId", column = "user_document_type_id"),
+            @Result(property = "userDocumentType.userDocumentTypeName", column = "user_document_type_name"),
             @Result(property = "registerLocation", column = "registered_location"),
             @Result(property = "registerDate", column = "registered_date"),
             @Result(property = "expiryDate", column = "expiry_date"),
@@ -42,4 +45,35 @@ public interface UserDocumentMapper {
     })
     List<DocumentImage> findDocumentImagesByUserDocumentId(
             @Param("document_id") String documentId);
+
+    @Insert("INSERT INTO user_document " +
+            "(user_document_id, " +
+            "user_document_type_id, " +
+            "user_id, " +
+            "registered_location, " +
+            "registered_date, " +
+            "expiry_date, " +
+            "other_information) " +
+            "VALUES  " +
+            "(#{UserDocumentReq.userDocumentId}, " +
+            "#{UserDocumentReq.userDocumentTypeId}, " +
+            "#{userId}, " +
+            "#{UserDocumentReq.registerLocation}, " +
+            "#{UserDocumentReq.registerDate}, " +
+            "#{UserDocumentReq.expiryDate}, " +
+            "#{UserDocumentReq.otherInformation}) ")
+    int insertDocument(@Param("UserDocumentReq") UserDocumentReq userDocumentReq,
+                       @Param("userId") String userId);
+
+    @Update("UPDATE dbo.user_document " +
+            "SET " +
+            "user_document_type_id = #{UserDocumentReq.userDocumentTypeId}, " +
+            "registered_location = #{UserDocumentReq.registeredLocation}, " +
+            "registered_date = #{UserDocumentReq.registeredDate}, " +
+            "expiry_date = #{UserDocumentReq.expiryDate}, " +
+            "other_information = #{UserDocumentReq.otherInformation} " +
+            "WHERE user_document_id = #{UserDocumentReq.userDocumentId}" +
+            "AND user_id = '${user_id}'")
+    void updateDocument(@Param("UserDocumentReq") UserDocumentReq userDocumentReq,
+                        @Param("userId") String userId);
 }
