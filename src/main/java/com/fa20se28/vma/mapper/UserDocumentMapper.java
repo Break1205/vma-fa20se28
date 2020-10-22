@@ -74,6 +74,6 @@ public interface UserDocumentMapper {
             "other_information = #{UserDocumentReq.otherInformation} " +
             "WHERE user_document_id = #{UserDocumentReq.userDocumentId} " +
             "AND user_id = #{userId}")
-    void updateDocument(@Param("UserDocumentReq") UserDocumentReq userDocumentReq,
+    int updateDocument(@Param("UserDocumentReq") UserDocumentReq userDocumentReq,
                         @Param("userId") String userId);
 }

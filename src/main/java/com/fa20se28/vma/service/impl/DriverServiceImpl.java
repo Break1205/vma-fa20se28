@@ -4,6 +4,7 @@ import com.fa20se28.vma.component.DriverComponent;
 import com.fa20se28.vma.model.DriverDetail;
 import com.fa20se28.vma.request.DriverPageReq;
 import com.fa20se28.vma.request.DriverReq;
+import com.fa20se28.vma.request.UserReq;
 import com.fa20se28.vma.response.DriverDetailRes;
 import com.fa20se28.vma.response.DriverPageRes;
 import com.fa20se28.vma.service.DriverService;
@@ -26,9 +27,15 @@ public class DriverServiceImpl implements DriverService {
     public int createDriver(DriverReq driverReq) {
         int success = driverComponent.createDriver(driverReq);
         if (success == 1 && driverReq.getUserStatusId() == 2) {
-            firebaseService.createUserRecord(driverReq, "DRIVER");
+            UserReq userReq = new UserReq(
+                    driverReq.getUserId(),
+                    driverReq.getFullName(),
+                    driverReq.getPhoneNumber(),
+                    driverReq.getImageLink());
+            firebaseService.createUserRecord(userReq);
+            return 1;
         }
-        return success;
+        return 0;
     }
 
     @Override
@@ -62,13 +69,16 @@ public class DriverServiceImpl implements DriverService {
     @Transactional
     @Override
     public void deleteUserByUserId(String userId) {
-        firebaseService.deleteUserRecord(userId);
-        driverComponent.deleteDriverById(userId);
+        if (driverComponent.deleteDriverById(userId) == 1) {
+            firebaseService.deleteUserRecord(userId);
+        }
+
     }
 
     @Override
     public void updateDriver(DriverReq driverReq) {
-        firebaseService.updateUserRecord(driverReq);
-        driverComponent.updateDriverByUserId(driverReq);
+        if (driverComponent.updateDriverByUserId(driverReq) == 1) {
+            firebaseService.updateUserRecord(driverReq);
+        }
     }
 }

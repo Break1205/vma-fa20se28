@@ -20,7 +20,9 @@ public class UserController {
 
     @PatchMapping("/{user-id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updateUserStatusByUserId(@RequestParam Long userStatusId, @PathVariable("user-id") String userid) {
+    public void updateUserStatusByUserId(@RequestParam Long userStatusId,
+                                         @RequestParam
+                                         @PathVariable("user-id") String userid) {
         userService.updateUserStatusByUserId(userStatusId, userid);
     }
 }

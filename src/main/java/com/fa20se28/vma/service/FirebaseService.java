@@ -4,7 +4,7 @@ import com.fa20se28.vma.request.DriverReq;
 import com.fa20se28.vma.request.UserReq;
 
 public interface FirebaseService {
-    void createUserRecord(UserReq userReq,String role);
+    void createUserRecord(UserReq userReq);
 
     void deleteUserRecord(String userId);
 

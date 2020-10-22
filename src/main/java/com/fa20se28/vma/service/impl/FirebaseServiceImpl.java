@@ -40,22 +40,18 @@ public class FirebaseServiceImpl implements FirebaseService {
     }
 
     @Override
-    public void createUserRecord(UserReq userReq, String role) {
+    public void createUserRecord(UserReq userReq) {
         UserRecord.CreateRequest request = new UserRecord.CreateRequest();
-        if (role.equals("DRIVER")) {
-            DriverReq driverReq = (DriverReq) userReq;
-            request
-                    .setPhoneNumber("+84" + driverReq.getPhoneNumber())
-                    .setDisplayName(driverReq.getFullName())
-                    .setPhotoUrl(driverReq.getImageLink())
-                    .setUid(driverReq.getUserId())
-                    .setDisabled(false);
-
-            try {
-                FirebaseAuth.getInstance().createUser(request);
-            } catch (FirebaseAuthException e) {
-                throw new InvalidFirebaseTokenException("Invalid Firebase Token", e, e.getAuthErrorCode());
-            }
+        request
+                .setPhoneNumber("+84" + userReq.getPhoneNumber())
+                .setDisplayName(userReq.getFullName())
+                .setPhotoUrl(userReq.getImageLink())
+                .setUid(userReq.getUserId())
+                .setDisabled(false);
+        try {
+            FirebaseAuth.getInstance().createUser(request);
+        } catch (FirebaseAuthException e) {
+            throw new InvalidFirebaseTokenException("Invalid Firebase Token", e, e.getAuthErrorCode());
         }
     }
 

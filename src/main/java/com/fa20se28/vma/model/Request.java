@@ -1,12 +1,13 @@
 package com.fa20se28.vma.model;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public class Request {
     private Long requestId;
     private String userId;
     private Long requestStatusId;
-    private Date requestDate;
+    private Long userRequestTypeId;
+    private LocalDate requestDate;
     private String description;
     private boolean isDeleted;
 
@@ -44,11 +45,11 @@ public class Request {
         this.requestStatusId = requestStatusId;
     }
 
-    public Date getRequestDate() {
+    public LocalDate getRequestDate() {
         return requestDate;
     }
 
-    public void setRequestDate(Date requestDate) {
+    public void setRequestDate(LocalDate requestDate) {
         this.requestDate = requestDate;
     }
 
@@ -66,5 +67,13 @@ public class Request {
 
     public void setDeleted(boolean deleted) {
         isDeleted = deleted;
+    }
+
+    public Long getUserRequestTypeId() {
+        return userRequestTypeId;
+    }
+
+    public void setUserRequestTypeId(Long userRequestTypeId) {
+        this.userRequestTypeId = userRequestTypeId;
     }
 }

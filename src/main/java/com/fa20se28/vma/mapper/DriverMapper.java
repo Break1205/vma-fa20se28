@@ -153,5 +153,5 @@ public interface DriverMapper {
             "image_link = #{imageLink}, " +
             "base_salary = #{baseSalary} " +
             "WHERE user_id = #{userId}")
-    void updateDriver(DriverReq driverReq);
+    int updateDriver(DriverReq driverReq);
 }

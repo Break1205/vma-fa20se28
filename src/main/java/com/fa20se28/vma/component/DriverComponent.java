@@ -18,9 +18,8 @@ public interface DriverComponent {
 
     int createDriver(DriverReq driverReq);
 
-    void deleteDriverById(String userId);
+    int deleteDriverById(String userId);
 
-    void updateDriverByUserId(DriverReq driverReq);
-
+    int updateDriverByUserId(DriverReq driverReq);
 
 }

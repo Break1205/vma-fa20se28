@@ -6,7 +6,7 @@ import com.fa20se28.vma.model.User;
 import java.util.List;
 
 public interface UserComponent {
-    void updateUserStatusByUserId(Long userStatusId, String userid);
+    int updateUserStatusByUserId(Long userStatusId, String userid);
 
     User findUserByUserId(String userId);
 

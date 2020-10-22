@@ -33,20 +33,29 @@ public interface UserMapper {
     @Update("UPDATE [user] " +
             "SET user_status_id = 4 " +
             "WHERE user_id = '${user_id}' ")
-    void deleteUserById(@Param("user_id") String userId);
+    int deleteUserById(@Param("user_id") String userId);
 
 
     @Update("Update [user] " +
             "SET user_status_id = #{user_status_id} " +
             "WHERE user_id = '${user_id}'")
-    void updateUserStatusByUserId(@Param("user_status_id") Long userStatusId,
-                                  @Param("user_id") String userId);
+    int updateUserStatusByUserId(@Param("user_status_id") Long userStatusId,
+                                 @Param("user_id") String userId);
 
-    @Select("SELECT u.user_id" +
-            "FROM [user] u " +
-            "WHERE u.user_id = '${user_id}'")
+    @Select("SELECT " +
+            "u.user_id, " +
+            "u.user_status_id, " +
+            "u.full_name, " +
+            "u.phone_number, " +
+            "u.image_link " +
+            "FROM [user] u  " +
+            "WHERE u.user_id = #{user_id}")
     @Results(id = "userAccountResult", value = {
-            @Result(property = "userId", column = "user_id")
+            @Result(property = "userId", column = "user_id"),
+            @Result(property = "userStatusId", column = "user_status_id"),
+            @Result(property = "fullName", column = "full_name"),
+            @Result(property = "phoneNumber", column = "phone_number"),
+            @Result(property = "imageLink", column = "image_link"),
     })
     Optional<User> findUserByUserId(@Param("user_id") String userId);
 

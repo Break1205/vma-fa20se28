@@ -25,6 +25,6 @@ public interface DocumentImageMapper {
             "create_date = getdate() " +
             "WHERE document_id = #{documentId} " +
             "AND document_image_id = #{DocumentImageReq.documentImageId} ")
-    void updateDocumentImage(@Param("DocumentImageReq") DocumentImageReq documentImageReq,
+    int updateDocumentImage(@Param("DocumentImageReq") DocumentImageReq documentImageReq,
                              @Param("documentId") String documentId);
 }

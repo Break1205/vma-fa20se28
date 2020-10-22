@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import java.util.Date;
 import java.util.List;
 
-public class DriverReq extends UserReq {
+public class DriverReq {
     private String userId;
     private String fullName;
     private String address;
