@@ -3,6 +3,7 @@ package com.fa20se28.vma.controller;
 import com.fa20se28.vma.request.DriverPageReq;
 import com.fa20se28.vma.request.DriverReq;
 import com.fa20se28.vma.response.DriverDetailRes;
+import com.fa20se28.vma.response.DriverPageRes;
 import com.fa20se28.vma.response.DriverRes;
 import com.fa20se28.vma.service.DriverService;
 import org.springframework.http.HttpStatus;
@@ -40,12 +41,12 @@ public class DriverController {
     }
 
     @GetMapping()
-    public List<DriverRes> getDrivers(@RequestParam(required = false) String userId,
-                                      @RequestParam(required = false) String name,
-                                      @RequestParam(required = false) String phoneNumber,
-                                      @RequestParam(required = false) Long userStatusId,
-                                      @RequestParam(required = false, defaultValue = "0") int page,
-                                      @RequestParam(required = false) Long viewOption) {
+    public DriverPageRes getDrivers(@RequestParam(required = false) String userId,
+                                    @RequestParam(required = false) String name,
+                                    @RequestParam(required = false) String phoneNumber,
+                                    @RequestParam(required = false) Long userStatusId,
+                                    @RequestParam(required = false, defaultValue = "0") int page,
+                                    @RequestParam(required = false) Long viewOption) {
         return driverService.getDrivers(new DriverPageReq(userId, name, phoneNumber, userStatusId, page * 15, viewOption));
     }
 

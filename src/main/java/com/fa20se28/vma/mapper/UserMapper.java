@@ -43,7 +43,7 @@ public interface UserMapper {
                                   @Param("user_id") String userId);
 
     @Select("SELECT u.user_id" +
-            "FROM [user] u" +
+            "FROM [user] u " +
             "WHERE u.user_id = '${user_id}'")
     @Results(id = "userAccountResult", value = {
             @Result(property = "userId", column = "user_id")
@@ -58,6 +58,5 @@ public interface UserMapper {
             "ON ur.role_id = r.role_id " +
             "WHERE ur.user_id = '${user_id}'")
     List<Role> findUserRoles(@Param("user_id") String userId);
-
 
 }

@@ -5,13 +5,11 @@ import com.fa20se28.vma.model.DriverDetail;
 import com.fa20se28.vma.request.DriverPageReq;
 import com.fa20se28.vma.request.DriverReq;
 import com.fa20se28.vma.response.DriverDetailRes;
-import com.fa20se28.vma.response.DriverRes;
+import com.fa20se28.vma.response.DriverPageRes;
 import com.fa20se28.vma.service.DriverService;
 import com.fa20se28.vma.service.FirebaseService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 public class DriverServiceImpl implements DriverService {
@@ -42,8 +40,10 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
-    public List<DriverRes> getDrivers(DriverPageReq driverPageReq) {
-        return driverComponent.findDrivers(driverPageReq);
+    public DriverPageRes getDrivers(DriverPageReq driverPageReq) {
+        DriverPageRes driverPageRes = new DriverPageRes();
+        driverPageRes.setDriverRes(driverComponent.findDrivers(driverPageReq));
+        return driverPageRes;
     }
 
     @Override
@@ -53,9 +53,10 @@ public class DriverServiceImpl implements DriverService {
                 || driverPageReq.getPhoneNumber() != null
                 || driverPageReq.getUserStatusId() != null
                 || driverPageReq.getViewOption() != null) {
-            return getTotalDriversWhenFiltering(driverPageReq);
+            return driverComponent
+                    .findTotalDriversWhenFiltering(driverPageReq);
         }
-        return getTotalDrivers();
+        return driverComponent.findTotalDrivers();
     }
 
     @Transactional
@@ -69,14 +70,5 @@ public class DriverServiceImpl implements DriverService {
     public void updateDriver(DriverReq driverReq) {
         firebaseService.updateUserRecord(driverReq);
         driverComponent.updateDriverByUserId(driverReq);
-    }
-
-    private int getTotalDrivers() {
-        return driverComponent.findTotalDrivers();
-    }
-
-    private int getTotalDriversWhenFiltering(DriverPageReq driverPageReq) {
-        return driverComponent
-                .findTotalDriversWhenFiltering(driverPageReq);
     }
 }

@@ -29,6 +29,7 @@ public class UserServiceImpl implements UserService {
         return null;
     }
 
+    //TODO fix this ( cant send to firebase yet)
     @Override
     public void updateUserStatusByUserId(Long userStatusId, String userid) {
         userComponent.updateUserStatusByUserId(userStatusId, userid);
