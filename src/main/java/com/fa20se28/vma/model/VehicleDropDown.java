@@ -3,7 +3,7 @@ package com.fa20se28.vma.model;
 public class VehicleDropDown {
     private String vehicleId;
     private String model;
-    private String vehicleType;
+    private String vehicleTypeName;
 
     public String getVehicleId() {
         return vehicleId;
@@ -21,11 +21,11 @@ public class VehicleDropDown {
         this.model = model;
     }
 
-    public String getVehicleType() {
-        return vehicleType;
+    public String getVehicleTypeName() {
+        return vehicleTypeName;
     }
 
-    public void setVehicleType(String vehicleType) {
-        this.vehicleType = vehicleType;
+    public void setVehicleTypeName(String vehicleTypeName) {
+        this.vehicleTypeName = vehicleTypeName;
     }
 }

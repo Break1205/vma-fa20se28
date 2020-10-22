@@ -3,18 +3,18 @@ package com.fa20se28.vma.request;
 public class VehiclePageReq {
     private String vehicleId;
     private String model;
-    private String vehicleType;
-    private Float vehicleMinDis;
-    private Float vehicleMaxDis;
-    private String vehicleStatus;
+    private int vehicleTypeId;
+    private float vehicleMinDis;
+    private float vehicleMaxDis;
+    private int vehicleStatusId;
 
-    public VehiclePageReq(String vehicleId, String model, String vehicleType, Float vehicleMinDis, Float vehicleMaxDis, String vehicleStatus) {
+    public VehiclePageReq(String vehicleId, String model, int vehicleTypeId, float vehicleMinDis, float vehicleMaxDis, int vehicleStatusId) {
         this.vehicleId = vehicleId;
         this.model = model;
-        this.vehicleType = vehicleType;
+        this.vehicleTypeId = vehicleTypeId;
         this.vehicleMinDis = vehicleMinDis;
         this.vehicleMaxDis = vehicleMaxDis;
-        this.vehicleStatus = vehicleStatus;
+        this.vehicleStatusId = vehicleStatusId;
     }
 
     public String getVehicleId() {
@@ -33,35 +33,35 @@ public class VehiclePageReq {
         this.model = model;
     }
 
-    public String getVehicleType() {
-        return vehicleType;
+    public int getVehicleTypeId() {
+        return vehicleTypeId;
     }
 
-    public void setVehicleType(String vehicleType) {
-        this.vehicleType = vehicleType;
+    public void setVehicleTypeId(int vehicleTypeId) {
+        this.vehicleTypeId = vehicleTypeId;
     }
 
-    public Float getVehicleMinDis() {
+    public float getVehicleMinDis() {
         return vehicleMinDis;
     }
 
-    public void setVehicleMinDis(Float vehicleMinDis) {
+    public void setVehicleMinDis(float vehicleMinDis) {
         this.vehicleMinDis = vehicleMinDis;
     }
 
-    public Float getVehicleMaxDis() {
+    public float getVehicleMaxDis() {
         return vehicleMaxDis;
     }
 
-    public void setVehicleMaxDis(Float vehicleMaxDis) {
+    public void setVehicleMaxDis(float vehicleMaxDis) {
         this.vehicleMaxDis = vehicleMaxDis;
     }
 
-    public String getVehicleStatus() {
-        return vehicleStatus;
+    public int getVehicleStatusId() {
+        return vehicleStatusId;
     }
 
-    public void setVehicleStatus(String vehicleStatus) {
-        this.vehicleStatus = vehicleStatus;
+    public void setVehicleStatusId(int vehicleStatusId) {
+        this.vehicleStatusId = vehicleStatusId;
     }
 }

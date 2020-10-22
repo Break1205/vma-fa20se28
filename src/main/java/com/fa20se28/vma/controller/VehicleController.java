@@ -1,6 +1,8 @@
 package com.fa20se28.vma.controller;
 
+import com.fa20se28.vma.request.VehicleDropDownReq;
 import com.fa20se28.vma.request.VehiclePageReq;
+import com.fa20se28.vma.response.VehicleDropDownRes;
 import com.fa20se28.vma.response.VehiclePageRes;
 import com.fa20se28.vma.response.VehicleStatusRes;
 import com.fa20se28.vma.response.VehicleTypesRes;
@@ -23,21 +25,20 @@ public class VehicleController {
         return vehicleService.getTotal(viewOption, ownerId);
     }
 
-    @GetMapping("")
     public VehiclePageRes getVehicles(
             @RequestParam(required = false, defaultValue = "0") int viewOption,
             @RequestParam(required = false, defaultValue = "0") int pageNum,
             @RequestParam(required = false) String ownerId,
             VehiclePageReq request) {
-        return vehicleService.getVehicles(request.getVehicleId(), request.getModel(), request.getVehicleType(), request.getVehicleMinDis(), request.getVehicleMaxDis(), request.getVehicleStatus(), viewOption, pageNum, ownerId);
+        return vehicleService.getVehicles(request, viewOption, pageNum, ownerId);
     }
 
-    @GetMapping("availability")
-    public VehiclePageRes getAvailableVehicles(
+    @GetMapping("/dropdown")
+    public VehicleDropDownRes getAvailableVehicles(
             @RequestParam(required = false, defaultValue = "0") int pageNum,
             @RequestParam(required = false) String ownerId,
-          VehiclePageReq request) {
-        return vehicleService.getAvailableVehicles(request.getVehicleId(), request.getModel(), request.getVehicleType(), pageNum, ownerId);
+            VehicleDropDownReq request) {
+        return vehicleService.getAvailableVehicles(request, pageNum, ownerId);
     }
 
     @GetMapping("types")
@@ -51,9 +52,6 @@ public class VehicleController {
         return  vehicleService.getStatus();
     }
 
-    //get vehicle detail
-    //create update delete
-
     @PostMapping("assignment/{vehicle_id}/{driver_id}")
     public void assignDriverWithVehicle(
             @PathVariable("vehicle_id") String vehicleId,
@@ -62,7 +60,7 @@ public class VehicleController {
     }
 
     @PutMapping("assignment/{vehicle_id}")
-    public void updateIssuedVehicle(@PathVariable("vehicle_id") String vehicleId) {
-        vehicleService.updateIssuedVehicle(vehicleId);
+    public void withdrawIssuedVehicle(@PathVariable("vehicle_id") String vehicleId) {
+        vehicleService.withdrawIssuedVehicle(vehicleId);
     }
 }
