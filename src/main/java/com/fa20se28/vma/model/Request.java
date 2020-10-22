@@ -12,12 +12,10 @@ public class Request {
 
     public Request(String userId,
                    Long requestStatusId,
-                   Date requestDate,
                    String description,
                    boolean isDeleted) {
         this.userId = userId;
         this.requestStatusId = requestStatusId;
-        this.requestDate = requestDate;
         this.description = description;
         this.isDeleted = isDeleted;
     }

@@ -8,6 +8,7 @@ import com.fa20se28.vma.mapper.RequestMapper;
 import com.fa20se28.vma.mapper.UserDocumentMapper;
 import com.fa20se28.vma.mapper.UserMapper;
 import com.fa20se28.vma.model.DriverDetail;
+import com.fa20se28.vma.model.Request;
 import com.fa20se28.vma.request.DocumentImageReq;
 import com.fa20se28.vma.request.DriverPageReq;
 import com.fa20se28.vma.request.DriverReq;
@@ -54,7 +55,12 @@ public class DriverComponentImpl implements DriverComponent {
             }
         }
         int userRoles = userMapper.insertRoleForUserId(driverReq.getUserId(), 3);
-//        requestMapper.insertRequest(new Request(driverReq.getUserId()))
+        requestMapper.insertRequest(
+                new Request(
+                        driverReq.getUserId(),
+                        1L,
+                        "New Registration",
+                        false));
         if (driverRecord == 1
                 && documentRecords > 0
                 && documentImageRecords > 0
