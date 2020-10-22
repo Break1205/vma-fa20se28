@@ -1,8 +1,11 @@
 package com.fa20se28.vma.component;
 
 import com.fa20se28.vma.model.Vehicle;
+import com.fa20se28.vma.model.VehicleDropDown;
 import com.fa20se28.vma.model.VehicleStatus;
 import com.fa20se28.vma.model.VehicleType;
+import com.fa20se28.vma.request.VehicleDropDownReq;
+import com.fa20se28.vma.request.VehiclePageReq;
 
 import java.util.List;
 
@@ -13,11 +16,11 @@ public interface VehicleComponent {
 
     List<VehicleStatus> getStatus();
 
-    List<Vehicle> getVehicles(String vehicleId, String model, String vehicleType, float vehicleDisMin, float vehicleDisMax , String vehicleStatus, int viewOption, int pageNum, String ownerId);
+    List<Vehicle> getVehicles(VehiclePageReq request, int viewOption, int pageNum, String ownerId);
 
-    List<Vehicle> getAvailableVehicles(String vehicleId, String model, String vehicleType, int pageNum, String ownerId);
+    List<VehicleDropDown> getAvailableVehicles(VehicleDropDownReq request, int pageNum, String ownerId);
 
     void assignVehicle(String vehicleId, String driverId);
 
-    void updateIssuedVehicle(String vehicleId);
+    void withdrawVehicle(String vehicleId);
 }

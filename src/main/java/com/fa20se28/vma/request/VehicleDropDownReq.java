@@ -1,11 +1,15 @@
-package com.fa20se28.vma.model;
+package com.fa20se28.vma.request;
 
-public class Vehicle {
+public class VehicleDropDownReq {
     private String vehicleId;
     private String model;
     private String vehicleTypeName;
-    private String vehicleStatusName;
-    private float vehicleDistance;
+
+    public VehicleDropDownReq(String vehicleId, String model, String vehicleTypeName) {
+        this.vehicleId = vehicleId;
+        this.model = model;
+        this.vehicleTypeName = vehicleTypeName;
+    }
 
     public String getVehicleId() {
         return vehicleId;
@@ -29,21 +33,5 @@ public class Vehicle {
 
     public void setVehicleTypeName(String vehicleTypeName) {
         this.vehicleTypeName = vehicleTypeName;
-    }
-
-    public String getVehicleStatusName() {
-        return vehicleStatusName;
-    }
-
-    public void setVehicleStatusName(String vehicleStatusName) {
-        this.vehicleStatusName = vehicleStatusName;
-    }
-
-    public float getVehicleDistance() {
-        return vehicleDistance;
-    }
-
-    public void setVehicleDistance(float vehicleDistance) {
-        this.vehicleDistance = vehicleDistance;
     }
 }

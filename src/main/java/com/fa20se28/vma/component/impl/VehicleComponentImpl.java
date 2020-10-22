@@ -7,13 +7,14 @@ import com.fa20se28.vma.mapper.VehicleMapper;
 import com.fa20se28.vma.mapper.VehicleStatusMapper;
 import com.fa20se28.vma.mapper.VehicleTypeMapper;
 import com.fa20se28.vma.model.Vehicle;
+import com.fa20se28.vma.model.VehicleDropDown;
 import com.fa20se28.vma.model.VehicleStatus;
 import com.fa20se28.vma.model.VehicleType;
+import com.fa20se28.vma.request.VehicleDropDownReq;
+import com.fa20se28.vma.request.VehiclePageReq;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Component
@@ -46,23 +47,19 @@ public class VehicleComponentImpl implements VehicleComponent {
     }
 
     @Override
-    public List<Vehicle> getVehicles(String vehicleId, String model, String vehicleType, float vehicleDisMin, float vehicleDisMax, String vehicleStatus, int viewOption, int pageNum, String ownerId) {
-        return vehicleMapper.getVehicles(vehicleId, model, vehicleType, vehicleDisMin, vehicleDisMax, vehicleStatus, viewOption, pageNum*15, ownerId);
+    public List<Vehicle> getVehicles(VehiclePageReq request, int viewOption, int pageNum, String ownerId) {
+        return vehicleMapper.getVehicles(request, viewOption, pageNum*15, ownerId);
     }
 
     @Override
-    public List<Vehicle> getAvailableVehicles(String vehicleId, String model, String vehicleType, int pageNum, String ownerId) {
-//        return vehicleMapper.getAvailableVehicles(vehicleId, model, vehicleType, pageNum, ownerId);
-        return null;
+    public List<VehicleDropDown> getAvailableVehicles(VehicleDropDownReq request, int pageNum, String ownerId) {
+        return vehicleMapper.getAvailableVehicles(request, pageNum, ownerId);
     }
 
     @Override
     @Transactional
     public void assignVehicle(String vehicleId, String driverId) {
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        String date = dtf.format(LocalDateTime.now());
-
-        int row = issuedVehicleMapper.assignVehicle(vehicleId, driverId, date);
+        int row = issuedVehicleMapper.assignVehicle(vehicleId, driverId);
 
         if (row == 0)
         {
@@ -72,11 +69,8 @@ public class VehicleComponentImpl implements VehicleComponent {
 
     @Override
     @Transactional
-    public void updateIssuedVehicle(String vehicleId) {
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        String date = dtf.format(LocalDateTime.now());
-
-        int row = issuedVehicleMapper.updateIssuedVehicle(vehicleId, date);
+    public void withdrawVehicle(String vehicleId) {
+        int row = issuedVehicleMapper.withdrawVehicle(vehicleId);
 
         if (row == 0)
         {

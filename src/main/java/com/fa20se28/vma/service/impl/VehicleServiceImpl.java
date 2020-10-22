@@ -1,6 +1,9 @@
 package com.fa20se28.vma.service.impl;
 
 import com.fa20se28.vma.component.VehicleComponent;
+import com.fa20se28.vma.request.VehicleDropDownReq;
+import com.fa20se28.vma.request.VehiclePageReq;
+import com.fa20se28.vma.response.VehicleDropDownRes;
 import com.fa20se28.vma.response.VehiclePageRes;
 import com.fa20se28.vma.response.VehicleStatusRes;
 import com.fa20se28.vma.response.VehicleTypesRes;
@@ -32,23 +35,13 @@ public class VehicleServiceImpl implements VehicleService {
 
 
     @Override
-    public VehiclePageRes getVehicles(String vehicleId, String model, String vehicleType, Float vehicleDisMin, Float vehicleDisMax , String vehicleStatus, int viewOption, int pageNum, String ownerId) {
-        float minDis = -1, maxDis = -1;
-        if (vehicleDisMin != null)
-        {
-            minDis = vehicleDisMin;
-        }
-
-        if (vehicleDisMax !=null)
-        {
-            maxDis = vehicleDisMax;
-        }
-        return new VehiclePageRes(vehicleComponent.getVehicles(vehicleId, model, vehicleType, minDis, maxDis, vehicleStatus, viewOption, pageNum, ownerId));
+    public VehiclePageRes getVehicles(VehiclePageReq request, int viewOption, int pageNum, String ownerId) {
+        return new VehiclePageRes(vehicleComponent.getVehicles(request, viewOption, pageNum, ownerId));
     }
 
     @Override
-    public VehiclePageRes getAvailableVehicles(String vehicleId, String model, String vehicleType, int pageNum, String ownerId) {
-        return new VehiclePageRes(vehicleComponent.getAvailableVehicles(vehicleId, model, vehicleType, pageNum, ownerId));
+    public VehicleDropDownRes getAvailableVehicles(VehicleDropDownReq request, int pageNum, String ownerId) {
+        return new VehicleDropDownRes(vehicleComponent.getAvailableVehicles(request, pageNum, ownerId));
     }
 
     @Override
@@ -57,7 +50,7 @@ public class VehicleServiceImpl implements VehicleService {
     }
 
     @Override
-    public void updateIssuedVehicle(String vehicleId) {
-        vehicleComponent.updateIssuedVehicle(vehicleId);
+    public void withdrawIssuedVehicle(String vehicleId) {
+        vehicleComponent.withdrawVehicle(vehicleId);
     }
 }
