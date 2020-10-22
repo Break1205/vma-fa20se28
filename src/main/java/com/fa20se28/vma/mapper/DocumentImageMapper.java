@@ -19,7 +19,7 @@ public interface DocumentImageMapper {
     int insertDocumentImage(@Param("DocumentImageReq") DocumentImageReq documentImageReq,
                             @Param("documentId") String documentId);
 
-    @Update("UPDATE dbo.document_image " +
+    @Update("UPDATE document_image " +
             "SET " +
             "image_link = #{DocumentImageReq.imageLink}, " +
             "create_date = getdate() " +

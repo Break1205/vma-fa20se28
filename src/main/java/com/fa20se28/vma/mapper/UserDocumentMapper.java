@@ -58,14 +58,14 @@ public interface UserDocumentMapper {
             "(#{UserDocumentReq.userDocumentId}, " +
             "#{UserDocumentReq.userDocumentTypeId}, " +
             "#{userId}, " +
-            "#{UserDocumentReq.registerLocation}, " +
-            "#{UserDocumentReq.registerDate}, " +
+            "#{UserDocumentReq.registeredLocation}, " +
+            "#{UserDocumentReq.registeredDate}, " +
             "#{UserDocumentReq.expiryDate}, " +
             "#{UserDocumentReq.otherInformation}) ")
     int insertDocument(@Param("UserDocumentReq") UserDocumentReq userDocumentReq,
                        @Param("userId") String userId);
 
-    @Update("UPDATE dbo.user_document " +
+    @Update("UPDATE user_document " +
             "SET " +
             "user_document_type_id = #{UserDocumentReq.userDocumentTypeId}, " +
             "registered_location = #{UserDocumentReq.registeredLocation}, " +
