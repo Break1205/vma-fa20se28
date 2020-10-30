@@ -1,6 +1,6 @@
 package com.fa20se28.vma.mapper;
 
-import com.fa20se28.vma.request.DocumentImageReq;
+import com.fa20se28.vma.request.UserDocumentImageReq;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -16,7 +16,7 @@ public interface UserDocumentImageMapper {
             "(#{documentId}, " +
             "#{DocumentImageReq.imageLink}, " +
             "getdate())")
-    int insertUserDocumentImage(@Param("DocumentImageReq") DocumentImageReq documentImageReq,
+    int insertUserDocumentImage(@Param("DocumentImageReq") UserDocumentImageReq userDocumentImageReq,
                                 @Param("documentId") String documentId);
 
     @Update("UPDATE document_image " +
@@ -25,6 +25,6 @@ public interface UserDocumentImageMapper {
             "create_date = getdate() " +
             "WHERE document_id = #{documentId} " +
             "AND document_image_id = #{DocumentImageReq.documentImageId} ")
-    int updateUserDocumentImage(@Param("DocumentImageReq") DocumentImageReq documentImageReq,
+    int updateUserDocumentImage(@Param("DocumentImageReq") UserDocumentImageReq userDocumentImageReq,
                                 @Param("documentId") String documentId);
 }

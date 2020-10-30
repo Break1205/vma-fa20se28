@@ -71,7 +71,6 @@ public class DriverServiceImpl implements DriverService {
         if (driverComponent.deleteDriverById(userId) == 1) {
             firebaseService.deleteUserRecord(userId);
         }
-
     }
 
     @Override

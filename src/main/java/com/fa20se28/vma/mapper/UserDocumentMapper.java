@@ -65,7 +65,7 @@ public interface UserDocumentMapper {
 
     @Update("UPDATE user_document " +
             "SET " +
-            "user_document_type_id = #{UserDocumentReq.userDocumentTypeId}, " +
+            "user_document_type = #{UserDocumentReq.userDocumentType}, " +
             "registered_location = #{UserDocumentReq.registeredLocation}, " +
             "registered_date = CONVERT(date, #{UserDocumentReq.registeredDate}), " +
             "expiry_date = CONVERT(date, #{UserDocumentReq.expiryDate}), " +
