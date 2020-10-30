@@ -8,8 +8,8 @@ import java.util.List;
 public class UserDocument {
     private String userDocumentId;
     private UserDocumentType userDocumentType;
-    private String registerLocation;
-    private LocalDate registerDate;
+    private String registeredLocation;
+    private LocalDate registeredDate;
     private LocalDate expiryDate;
     private String otherInformation;
     private List<UserDocumentImage> userDocumentImages;
@@ -30,20 +30,20 @@ public class UserDocument {
         this.userDocumentType = userDocumentType;
     }
 
-    public String getRegisterLocation() {
-        return registerLocation;
+    public String getRegisteredLocation() {
+        return registeredLocation;
     }
 
-    public void setRegisterLocation(String registerLocation) {
-        this.registerLocation = registerLocation;
+    public void setRegisteredLocation(String registeredLocation) {
+        this.registeredLocation = registeredLocation;
     }
 
-    public LocalDate getRegisterDate() {
-        return registerDate;
+    public LocalDate getRegisteredDate() {
+        return registeredDate;
     }
 
-    public void setRegisterDate(LocalDate registerDate) {
-        this.registerDate = registerDate;
+    public void setRegisteredDate(LocalDate registeredDate) {
+        this.registeredDate = registeredDate;
     }
 
     public LocalDate getExpiryDate() {

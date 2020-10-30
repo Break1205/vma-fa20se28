@@ -21,8 +21,8 @@ public interface UserDocumentMapper {
     @Results(id = "userDocumentResult", value = {
             @Result(property = "userDocumentId", column = "user_document_id"),
             @Result(property = "userDocumentType", column = "user_document_type"),
-            @Result(property = "registerLocation", column = "registered_location"),
-            @Result(property = "registerDate", column = "registered_date"),
+            @Result(property = "registeredLocation", column = "registered_location"),
+            @Result(property = "registeredDate", column = "registered_date"),
             @Result(property = "expiryDate", column = "expiry_date"),
             @Result(property = "otherInformation", column = "other_information"),
             @Result(property = "documentImages", column = "user_document_id",
@@ -34,7 +34,7 @@ public interface UserDocumentMapper {
             "di.user_document_image_id, " +
             "di.image_link " +
             "FROM user_document_image di " +
-            "WHERE di.user_document_id = '${document_id}' ")
+            "WHERE di.user_document_id = '${user_document_id}' ")
     @Results(id = "documentImageResult", value = {
             @Result(property = "userDocumentImageId", column = "user_document_image_id"),
             @Result(property = "imageLink", column = "image_link")

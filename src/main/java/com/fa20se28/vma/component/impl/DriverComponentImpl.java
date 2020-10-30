@@ -1,6 +1,7 @@
 package com.fa20se28.vma.component.impl;
 
 import com.fa20se28.vma.component.DriverComponent;
+import com.fa20se28.vma.configuration.CustomUtils;
 import com.fa20se28.vma.configuration.exception.ResourceNotFoundException;
 import com.fa20se28.vma.mapper.UserDocumentImageMapper;
 import com.fa20se28.vma.mapper.DriverMapper;
@@ -49,8 +50,15 @@ public class DriverComponentImpl implements DriverComponent {
     }
 
     private boolean insertDriver(DriverReq driverReq) {
+        String generateId = CustomUtils.randomId();
+        Optional<DriverDetail> optionalDriverDetail = driverMapper.findDriverById(generateId);
+        while (optionalDriverDetail.isPresent()) {
+            generateId = CustomUtils.randomId();
+            optionalDriverDetail = driverMapper.findDriverById(generateId);
+        }
         int documentRecords = 0;
         int documentImageRecords = 0;
+        driverReq.setUserId(generateId);
         driverReq.setPassword(passwordEncoder.encode(driverReq.getPassword()));
         int driverRecord = driverMapper.insertDriver(driverReq);
         for (UserDocumentReq userDocumentReq : driverReq.getUserDocumentReqList()) {
