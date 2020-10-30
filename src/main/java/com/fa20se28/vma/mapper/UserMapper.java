@@ -31,7 +31,7 @@ public interface UserMapper {
                             @Param("role_id") int roleId);
 
     @Update("UPDATE [user] " +
-            "SET user_status_id = 4 " +
+            "SET user_status = 'DISABLE' " +
             "WHERE user_id = '${user_id}' ")
     int deleteUserById(@Param("user_id") String userId);
 

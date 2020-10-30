@@ -5,6 +5,4 @@ import com.fa20se28.vma.response.UserDocumentTypesRes;
 
 public interface DocumentService {
     UserDocumentRes getUserDocuments(String id);
-
-    UserDocumentTypesRes getUserDocumentTypes();
 }

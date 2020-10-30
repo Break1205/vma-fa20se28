@@ -1,5 +1,7 @@
 package com.fa20se28.vma.model;
 
+import com.fa20se28.vma.enums.UserStatus;
+
 public class Driver {
     private String userId;
     private String fullName;

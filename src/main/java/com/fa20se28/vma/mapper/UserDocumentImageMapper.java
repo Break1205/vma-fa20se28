@@ -7,17 +7,17 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Update;
 
 @Mapper
-public interface DocumentImageMapper {
-    @Insert("INSERT INTO document_image " +
-            "(document_id, " +
+public interface UserDocumentImageMapper {
+    @Insert("INSERT INTO user_document_image " +
+            "(user_document_id, " +
             "image_link, " +
             "create_date) " +
             "VALUES " +
             "(#{documentId}, " +
             "#{DocumentImageReq.imageLink}, " +
             "getdate())")
-    int insertDocumentImage(@Param("DocumentImageReq") DocumentImageReq documentImageReq,
-                            @Param("documentId") String documentId);
+    int insertUserDocumentImage(@Param("DocumentImageReq") DocumentImageReq documentImageReq,
+                                @Param("documentId") String documentId);
 
     @Update("UPDATE document_image " +
             "SET " +
@@ -25,6 +25,6 @@ public interface DocumentImageMapper {
             "create_date = getdate() " +
             "WHERE document_id = #{documentId} " +
             "AND document_image_id = #{DocumentImageReq.documentImageId} ")
-    int updateDocumentImage(@Param("DocumentImageReq") DocumentImageReq documentImageReq,
-                             @Param("documentId") String documentId);
+    int updateUserDocumentImage(@Param("DocumentImageReq") DocumentImageReq documentImageReq,
+                                @Param("documentId") String documentId);
 }

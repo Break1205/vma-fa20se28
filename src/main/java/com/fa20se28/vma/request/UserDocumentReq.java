@@ -1,5 +1,6 @@
 package com.fa20se28.vma.request;
 
+import com.fa20se28.vma.enums.UserDocumentType;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.util.Date;
@@ -7,7 +8,7 @@ import java.util.List;
 
 public class UserDocumentReq {
     private String userDocumentId;
-    private int userDocumentTypeId;
+    private UserDocumentType userDocumentType;
     private String registeredLocation;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date registeredDate;
@@ -24,12 +25,12 @@ public class UserDocumentReq {
         this.userDocumentId = userDocumentId;
     }
 
-    public int getUserDocumentTypeId() {
-        return userDocumentTypeId;
+    public UserDocumentType getUserDocumentType() {
+        return userDocumentType;
     }
 
-    public void setUserDocumentTypeId(int userDocumentTypeId) {
-        this.userDocumentTypeId = userDocumentTypeId;
+    public void setUserDocumentType(UserDocumentType userDocumentType) {
+        this.userDocumentType = userDocumentType;
     }
 
     public String getRegisteredLocation() {

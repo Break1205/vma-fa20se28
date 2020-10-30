@@ -26,7 +26,7 @@ public class DriverServiceImpl implements DriverService {
     @Transactional
     public int createDriver(DriverReq driverReq) {
         int success = driverComponent.createDriver(driverReq);
-        if (success == 1 && driverReq.getUserStatusId() == 2) {
+        if (success == 1) {
             UserReq userReq = new UserReq(
                     driverReq.getUserId(),
                     driverReq.getFullName(),
@@ -58,8 +58,7 @@ public class DriverServiceImpl implements DriverService {
         if (driverPageReq.getUserId() != null
                 || driverPageReq.getFullName() != null
                 || driverPageReq.getPhoneNumber() != null
-                || driverPageReq.getUserStatusId() != null
-                || driverPageReq.getViewOption() != null) {
+                || driverPageReq.getUserStatus() != null) {
             return driverComponent
                     .findTotalDriversWhenFiltering(driverPageReq);
         }

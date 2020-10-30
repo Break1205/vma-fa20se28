@@ -8,14 +8,14 @@ import java.util.List;
 public class DriverReq {
     private String userId;
     private String fullName;
+    private String password;
     private String address;
     private String phoneNumber;
     private boolean gender;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date dateOfBirth;
     private String imageLink;
-    private Float baseSalary;
-    private int userStatusId;
+    private float baseSalary;
     private List<UserDocumentReq> userDocumentReqList;
 
     public String getUserId() {
@@ -32,6 +32,14 @@ public class DriverReq {
 
     public void setFullName(String fullName) {
         this.fullName = fullName;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getAddress() {
@@ -74,20 +82,12 @@ public class DriverReq {
         this.imageLink = imageLink;
     }
 
-    public Float getBaseSalary() {
+    public float getBaseSalary() {
         return baseSalary;
     }
 
-    public void setBaseSalary(Float baseSalary) {
+    public void setBaseSalary(float baseSalary) {
         this.baseSalary = baseSalary;
-    }
-
-    public int getUserStatusId() {
-        return userStatusId;
-    }
-
-    public void setUserStatusId(int userStatusId) {
-        this.userStatusId = userStatusId;
     }
 
     public List<UserDocumentReq> getUserDocumentReqList() {

@@ -18,9 +18,4 @@ public class DocumentServiceImpl implements DocumentService {
     public UserDocumentRes getUserDocuments(String id) {
         return new UserDocumentRes(documentComponent.findUserDocumentByUserId(id));
     }
-
-    @Override
-    public UserDocumentTypesRes getUserDocumentTypes() {
-        return new UserDocumentTypesRes(documentComponent.getUserDocumentTypes());
-    }
 }

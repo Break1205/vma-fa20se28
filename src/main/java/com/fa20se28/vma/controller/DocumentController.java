@@ -24,6 +24,6 @@ public class DocumentController {
 
     @GetMapping("/types")
     public UserDocumentTypesRes getUserDocumentTypes() {
-        return documentService.getUserDocumentTypes();
+        return new UserDocumentTypesRes();
     }
 }

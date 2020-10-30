@@ -1,20 +1,20 @@
 package com.fa20se28.vma.request;
 
+import com.fa20se28.vma.enums.UserStatus;
+
 public class DriverPageReq {
     private String userId;
     private String fullName;
     private String phoneNumber;
-    private Long userStatusId;
+    private UserStatus userStatus;
     private int page;
-    private Long viewOption;
 
-    public DriverPageReq(String userId, String fullName, String phoneNumber, Long userStatusId, int page, Long viewOption) {
+    public DriverPageReq(String userId, String fullName, String phoneNumber, UserStatus userStatus, int page) {
         this.userId = userId;
         this.fullName = fullName;
         this.phoneNumber = phoneNumber;
-        this.userStatusId = userStatusId;
+        this.userStatus = userStatus;
         this.page = page;
-        this.viewOption = viewOption;
     }
 
     public String getUserId() {
@@ -41,12 +41,12 @@ public class DriverPageReq {
         this.phoneNumber = phoneNumber;
     }
 
-    public Long getUserStatusId() {
-        return userStatusId;
+    public UserStatus getUserStatus() {
+        return userStatus;
     }
 
-    public void setUserStatusId(Long userStatusId) {
-        this.userStatusId = userStatusId;
+    public void setUserStatus(UserStatus userStatus) {
+        this.userStatus = userStatus;
     }
 
     public int getPage() {
@@ -57,11 +57,4 @@ public class DriverPageReq {
         this.page = page;
     }
 
-    public Long getViewOption() {
-        return viewOption;
-    }
-
-    public void setViewOption(Long viewOption) {
-        this.viewOption = viewOption;
-    }
 }

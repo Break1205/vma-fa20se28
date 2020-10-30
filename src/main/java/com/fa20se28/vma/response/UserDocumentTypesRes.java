@@ -1,21 +1,13 @@
 package com.fa20se28.vma.response;
 
-import com.fa20se28.vma.model.UserDocumentType;
+import com.fa20se28.vma.enums.UserDocumentType;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class UserDocumentTypesRes {
-    private List<UserDocumentType> userDocumentTypes;
-
-    public UserDocumentTypesRes(List<UserDocumentType> userDocumentTypes) {
-        this.userDocumentTypes = userDocumentTypes;
-    }
-
     public List<UserDocumentType> getUserDocumentTypes() {
-        return userDocumentTypes;
-    }
-
-    public void setUserDocumentTypes(List<UserDocumentType> userDocumentTypes) {
-        this.userDocumentTypes = userDocumentTypes;
+        return Stream.of(UserDocumentType.values()).collect(Collectors.toList());
     }
 }

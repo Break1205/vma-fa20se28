@@ -14,8 +14,7 @@ public interface DriverMapper {
     @Select({"<script>" +
             "SELECT " +
             "u.user_id, " +
-            "us.user_status_id, " +
-            "us.user_status_name, " +
+            "u.user_status, " +
             "u.full_name, " +
             "u.phone_number, " +
             "u.gender, " +
@@ -28,8 +27,6 @@ public interface DriverMapper {
             "[user] u " +
             "LEFT JOIN issued_vehicle iv " +
             "ON u.user_id = iv.driver_id " +
-            "JOIN user_status us " +
-            "ON u.user_status_id = us.user_status_id " +
             "JOIN user_roles ur " +
             "ON ur.user_id = u.user_id " +
             "WHERE ur.role_id = 3 " +
@@ -41,8 +38,7 @@ public interface DriverMapper {
             @Result(property = "fullName", column = "full_name"),
             @Result(property = "phoneNumber", column = "phone_number"),
             @Result(property = "vehicleId", column = "vehicle_id"),
-            @Result(property = "userStatus.userStatusId", column = "user_status_id"),
-            @Result(property = "userStatus.userStatusName", column = "user_status_name"),
+            @Result(property = "userStatus", column = "user_status"),
             @Result(property = "gender", column = "gender"),
             @Result(property = "dateOfBirth", column = "date_of_birth"),
             @Result(property = "address", column = "address"),
@@ -51,96 +47,90 @@ public interface DriverMapper {
     Optional<DriverDetail> findDriverById(@Param("user_id") String userId);
 
     @Select({"<script>" +
-            "SELECT " +
-            "u.user_id," +
-            "u.full_name," +
-            "u.phone_number," +
-            "iv.vehicle_id," +
-            "us.user_status_name " +
-            "FROM " +
-            "[user] u " +
-            "LEFT JOIN issued_vehicle iv " +
-            "ON u.user_id= iv.driver_id " +
-            "JOIN user_status us " +
-            "ON u.user_status_id = us.user_status_id " +
-            "JOIN user_roles ur " +
-            "ON ur.user_id = u.user_id " +
-            "WHERE ur.role_id = 3 " +
-            "<if test = \"DriverPageReq.userId!=null\" > " +
-            "AND u.user_id LIKE '%${DriverPageReq.userId}%' " +
-            "</if>" +
-            "<if test = \"DriverPageReq.fullName!=null\" > " +
-            "AND u.full_name LIKE '%${DriverPageReq.fullName}%' " +
-            "</if>" +
-            "<if test = \"DriverPageReq.phoneNumber!=null\" > " +
-            "AND u.phone_number LIKE '%${DriverPageReq.phoneNumber}%' " +
-            "</if>" +
-            "<if test = \"DriverPageReq.viewOption == 1\" > " +
-            " AND u.user_status_id != 3" +
-            "</if>" +
-            "<if test = \"DriverPageReq.userStatusId!=null\" > " +
-            "AND u.user_status_id = #{DriverPageReq.userStatusId} " +
-            "</if>" +
-            "ORDER BY u.user_id ASC " +
-            "OFFSET ${DriverPageReq.page} ROWS " +
-            "FETCH NEXT 15 ROWS ONLY" +
+            "SELECT\n" +
+            "u.user_id, \n" +
+            "u.full_name, \n" +
+            "u.phone_number, \n" +
+            "iv.vehicle_id, \n" +
+            "u.user_status\n" +
+            "FROM\n" +
+            "[user] u\n" +
+            "LEFT JOIN issued_vehicle iv\n" +
+            "ON u.user_id= iv.driver_id\n" +
+            "JOIN user_roles ur\n" +
+            "ON ur.user_id = u.user_id\n" +
+            "WHERE ur.role_id = 3\n" +
+            "<if test = \"DriverPageReq.userId!=null\" >\n" +
+            "AND u.user_id LIKE '%${DriverPageReq.userId}%'\n" +
+            "</if> \n" +
+            "<if test = \"DriverPageReq.fullName!=null\" >\n" +
+            "AND u.full_name LIKE N'%${DriverPageReq.fullName}%'\n" +
+            "</if> \n" +
+            "<if test = \"DriverPageReq.phoneNumber!=null\" >\n" +
+            "AND u.phone_number LIKE '%${DriverPageReq.phoneNumber}%'\n" +
+            "</if> \n" +
+            "<if test = \"DriverPageReq.userStatus!=null\" >\n" +
+            "AND u.user_status = #{DriverPageReq.userStatus}\n" +
+            "</if> \n" +
+            "ORDER BY u.user_id ASC\n" +
+            "OFFSET ${DriverPageReq.page} ROWS\n" +
+            "FETCH NEXT 15 ROWS ONLY "+
             "</script>"})
     @Results(id = "driverResult", value = {
             @Result(property = "userId", column = "user_id"),
             @Result(property = "fullName", column = "full_name"),
             @Result(property = "phoneNumber", column = "phone_number"),
             @Result(property = "vehicleId", column = "vehicle_id"),
-            @Result(property = "userStatusName", column = "user_status_name")})
+            @Result(property = "userStatus", column = "user_status")})
     List<DriverRes> findDrivers(@Param("DriverPageReq") DriverPageReq driverPageReq);
 
     @Select({"<script>" +
-            "SELECT count(u.user_id) " +
-            "FROM [user] u " +
-            "LEFT JOIN issued_vehicle iv " +
-            "ON u.user_id= iv.driver_id " +
-            "JOIN user_status us " +
-            "ON u.user_status_id = us.user_status_id " +
-            "JOIN user_roles ur " +
-            "ON ur.user_id = u.user_id " +
-            "WHERE ur.role_id = 3 " +
-            "<if test = \"DriverPageReq.userId!=null\" > " +
-            "AND u.user_id LIKE '%${DriverPageReq.userId}%' " +
-            "</if>" +
-            "<if test = \"DriverPageReq.fullName!=null\" > " +
-            "AND u.full_name LIKE '%${DriverPageReq.fullName}%' " +
-            "</if>" +
-            "<if test = \"DriverPageReq.phoneNumber!=null\" > " +
-            "AND u.phone_number LIKE '%${DriverPageReq.phoneNumber}%' " +
-            "</if>" +
-            "<if test = \"DriverPageReq.viewOption == 1\" > " +
-            " AND u.user_status_id != 3" +
-            "</if>" +
-            "<if test = \"DriverPageReq.userStatusId!=null\" > " +
-            "AND u.user_status_id = #{DriverPageReq.userStatusId} " +
-            "</if>" +
+            "SELECT count(u.user_id)\n" +
+            "FROM [user] u\n" +
+            "LEFT JOIN issued_vehicle iv\n" +
+            "ON u.user_id= iv.driver_id\n" +
+            "JOIN user_roles ur\n" +
+            "ON ur.user_id = u.user_id\n" +
+            "WHERE ur.role_id = 3\n" +
+            "<if test = \"DriverPageReq.userId!=null\" >\n" +
+            "AND u.user_id LIKE '%${DriverPageReq.userId}%'\n" +
+            "</if> \n" +
+            "<if test = \"DriverPageReq.fullName!=null\" >\n" +
+            "AND u.full_name LIKE N'%${DriverPageReq.fullName}%'\n" +
+            "</if> \n" +
+            "<if test = \"DriverPageReq.phoneNumber!=null\" >\n" +
+            "AND u.phone_number LIKE '%${DriverPageReq.phoneNumber}%'\n" +
+            "</if> \n" +
+            "<if test = \"DriverPageReq.userStatus!=null\" >\n" +
+            "AND u.user_status = #{DriverPageReq.userStatus}\n" +
+            "</if> " +
             "</script>"})
     int findTotalDriversWhenFilter(@Param("DriverPageReq") DriverPageReq driverPageReq);
 
-    @Insert("INSERT INTO [user] " +
-            "(user_id, " +
-            "user_status_id, " +
-            "full_name, " +
-            "phone_number, " +
-            "gender, " +
-            "date_of_birth, " +
-            "address, " +
-            "image_link, " +
-            "base_salary) " +
-            "VALUES " +
-            "(#{userId}, " +
-            "#{userStatusId}, " +
-            "#{fullName}, " +
-            "#{phoneNumber}, " +
-            "#{gender}, " +
-            "#{dateOfBirth}, " +
-            "#{address}, " +
-            "#{imageLink}, " +
-            "#{baseSalary})")
+    @Insert("INSERT INTO [user]\n" +
+            "(user_id,\n" +
+            "user_status,\n" +
+            "full_name,\n" +
+            "password,\n" +
+            "phone_number,\n" +
+            "gender,\n" +
+            "date_of_birth,\n" +
+            "address,\n" +
+            "image_link,\n" +
+            "base_salary,\n" +
+            "create_date)\n" +
+            "VALUES\n" +
+            "(#{userId},\n" +
+            "'INACTIVE',\n" +
+            "#{fullName},\n" +
+            "#{password},\n" +
+            "#{phoneNumber},\n" +
+            "#{gender},\n" +
+            "#{dateOfBirth},\n" +
+            "#{address},\n" +
+            "#{imageLink},\n" +
+            "#{baseSalary},\n" +
+            "getDate())")
     int insertDriver(DriverReq driverReq);
 
     @Update("UPDATE [user] " +
