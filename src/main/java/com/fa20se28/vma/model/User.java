@@ -2,18 +2,7 @@ package com.fa20se28.vma.model;
 
 public class User {
     private String userId;
-    private Long userStatusId;
-    private String fullName;
-    private String phoneNumber;
-    private String imageLink;
-
-    public Long getUserStatusId() {
-        return userStatusId;
-    }
-
-    public void setUserStatusId(Long userStatusId) {
-        this.userStatusId = userStatusId;
-    }
+    private String password;
 
     public String getUserId() {
         return userId;
@@ -23,27 +12,11 @@ public class User {
         this.userId = userId;
     }
 
-    public String getFullName() {
-        return fullName;
+    public String getPassword() {
+        return password;
     }
 
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
-    public String getImageLink() {
-        return imageLink;
-    }
-
-    public void setImageLink(String imageLink) {
-        this.imageLink = imageLink;
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

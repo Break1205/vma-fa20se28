@@ -13,4 +13,6 @@ public interface DocumentService {
     int createUserDocumentWithRequest(UserDocumentReq userDocumentReq, String userId);
 
     int updateUserDocumentWithRequest(UserDocumentReq userDocumentReq, String userId);
+
+    void deleteUserDocument(String userDocumentId);
 }

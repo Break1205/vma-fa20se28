@@ -54,11 +54,11 @@ public class UserDocument {
         this.expiryDate = expiryDate;
     }
 
-    public List<UserDocumentImage> getDocumentImages() {
+    public List<UserDocumentImage> getUserDocumentImages() {
         return userDocumentImages;
     }
 
-    public void setDocumentImages(List<UserDocumentImage> userDocumentImages) {
+    public void setUserDocumentImages(List<UserDocumentImage> userDocumentImages) {
         this.userDocumentImages = userDocumentImages;
     }
 

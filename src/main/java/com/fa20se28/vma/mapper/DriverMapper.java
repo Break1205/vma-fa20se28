@@ -2,7 +2,6 @@ package com.fa20se28.vma.mapper;
 
 import com.fa20se28.vma.model.DriverDetail;
 import com.fa20se28.vma.request.DriverPageReq;
-import com.fa20se28.vma.request.DriverReq;
 import com.fa20se28.vma.response.DriverRes;
 import org.apache.ibatis.annotations.*;
 
@@ -74,7 +73,7 @@ public interface DriverMapper {
             "</if> \n" +
             "ORDER BY u.user_id ASC\n" +
             "OFFSET ${DriverPageReq.page} ROWS\n" +
-            "FETCH NEXT 15 ROWS ONLY "+
+            "FETCH NEXT 15 ROWS ONLY " +
             "</script>"})
     @Results(id = "driverResult", value = {
             @Result(property = "userId", column = "user_id"),
@@ -106,42 +105,4 @@ public interface DriverMapper {
             "</if> " +
             "</script>"})
     int findTotalDriversWhenFilter(@Param("DriverPageReq") DriverPageReq driverPageReq);
-
-    @Insert("INSERT INTO [user]\n" +
-            "(user_id,\n" +
-            "user_status,\n" +
-            "full_name,\n" +
-            "password,\n" +
-            "phone_number,\n" +
-            "gender,\n" +
-            "date_of_birth,\n" +
-            "address,\n" +
-            "image_link,\n" +
-            "base_salary,\n" +
-            "create_date)\n" +
-            "VALUES\n" +
-            "(#{userId},\n" +
-            "'INACTIVE',\n" +
-            "#{fullName},\n" +
-            "#{password},\n" +
-            "#{phoneNumber},\n" +
-            "#{gender},\n" +
-            "#{dateOfBirth},\n" +
-            "#{address},\n" +
-            "#{imageLink},\n" +
-            "#{baseSalary},\n" +
-            "getDate())")
-    int insertDriver(DriverReq driverReq);
-
-    @Update("UPDATE [user] " +
-            "SET " +
-            "full_name = #{fullName}, " +
-            "phone_number = #{phoneNumber}, " +
-            "gender = #{gender}, " +
-            "date_of_birth = CONVERT(date, #{dateOfBirth}), " +
-            "address = #{address}, " +
-            "image_link = #{imageLink}, " +
-            "base_salary = #{baseSalary} " +
-            "WHERE user_id = #{userId}")
-    int updateDriver(DriverReq driverReq);
 }

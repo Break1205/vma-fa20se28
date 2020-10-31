@@ -20,6 +20,11 @@ public class UserDocumentServiceImpl implements DocumentService {
     }
 
     @Override
+    public void deleteUserDocument(String userDocumentId) {
+        documentComponent.deleteUserDocument(userDocumentId);
+    }
+
+    @Override
     public int createUserDocument(UserDocumentReq userDocumentReq, String userId) {
         return documentComponent.createUserDocument(userDocumentReq, userId);
     }

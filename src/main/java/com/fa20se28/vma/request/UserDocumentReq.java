@@ -15,7 +15,7 @@ public class UserDocumentReq {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date expiryDate;
     private String otherInformation;
-    private List<UserDocumentImageReq> documentImagesReqList;
+    private List<UserDocumentImageReq> userDocumentImages;
 
     public String getUserDocumentId() {
         return userDocumentId;
@@ -65,11 +65,11 @@ public class UserDocumentReq {
         this.otherInformation = otherInformation;
     }
 
-    public List<UserDocumentImageReq> getDocumentImagesReqList() {
-        return documentImagesReqList;
+    public List<UserDocumentImageReq> getUserDocumentImages() {
+        return userDocumentImages;
     }
 
-    public void setDocumentImagesReqList(List<UserDocumentImageReq> documentImagesReqList) {
-        this.documentImagesReqList = documentImagesReqList;
+    public void setUserDocumentImages(List<UserDocumentImageReq> userDocumentImages) {
+        this.userDocumentImages = userDocumentImages;
     }
 }

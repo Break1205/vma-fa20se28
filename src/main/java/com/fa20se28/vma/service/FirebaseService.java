@@ -1,6 +1,5 @@
 package com.fa20se28.vma.service;
 
-import com.fa20se28.vma.request.DriverReq;
 import com.fa20se28.vma.request.UserReq;
 
 public interface FirebaseService {
@@ -8,5 +7,5 @@ public interface FirebaseService {
 
     void deleteUserRecord(String userId);
 
-    void updateUserRecord(DriverReq driverReq);
+    void updateUserRecord(UserReq userReq);
 }

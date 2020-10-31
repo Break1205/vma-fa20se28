@@ -3,8 +3,6 @@ package com.fa20se28.vma.enums;
 public enum RequestType {
     NEW_DOCUMENT,
     UPDATE_DOCUMENT,
-    NEW_DOCUMENT_IMAGE,
-    UPDATE_DOCUMENT_IMAGE,
     CHANGE_VEHICLE,
     VEHICLE_NEEDS_REPAIRED,
     NEED_BACKUP_VEHICLE,

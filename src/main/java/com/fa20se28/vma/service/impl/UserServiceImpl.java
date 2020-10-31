@@ -1,6 +1,7 @@
 package com.fa20se28.vma.service.impl;
 
 import com.fa20se28.vma.component.UserComponent;
+import com.fa20se28.vma.enums.UserStatus;
 import com.fa20se28.vma.model.Role;
 import com.fa20se28.vma.model.User;
 import com.fa20se28.vma.model.UserAccount;
@@ -10,6 +11,7 @@ import com.fa20se28.vma.service.UserService;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -23,6 +25,7 @@ public class UserServiceImpl implements UserService {
         this.firebaseService = firebaseService;
     }
 
+    //TODO
     @Override
     public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
         User user = userComponent.findUserByUserId(userId);
@@ -34,15 +37,32 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updateUserStatusByUserId(Long userStatusId, String userid) {
-        if (userComponent.updateUserStatusByUserId(userStatusId, userid) == 2) {
-            User user = userComponent.findUserByUserId(userid);
-            UserReq userReq = new UserReq(
-                    user.getUserId(),
-                    user.getFullName(),
-                    user.getPhoneNumber(),
-                    user.getImageLink());
+    public void updateUserStatusByUserId(UserStatus userStatus, String userid) {
+        userComponent.updateUserStatusByUserId(userStatus, userid);
+    }
+
+    @Override
+    @Transactional
+    public int createUser(UserReq userReq, int roleId) {
+        int success = userComponent.createUserWithRole(userReq, roleId);
+        if (success == 1) {
             firebaseService.createUserRecord(userReq);
+            return 1;
+        }
+        return 0;
+    }
+
+    @Override
+    public void updateUser(UserReq userReq) {
+        if (userComponent.updateUserByUserId(userReq) == 1) {
+            firebaseService.updateUserRecord(userReq);
+        }
+    }
+
+    @Override
+    public void deleteUserByUserId(String userId) {
+        if (userComponent.deleteUserByUserId(userId) == 1) {
+            firebaseService.deleteUserRecord(userId);
         }
     }
 }

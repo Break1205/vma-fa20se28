@@ -1,8 +1,8 @@
-package com.fa20se28.vma.model;
+package com.fa20se28.vma.response;
 
 import com.fa20se28.vma.enums.UserStatus;
 
-public class Contributor {
+public class ContributorRes {
     private String userId;
     private String fullName;
     private String phoneNumber;
