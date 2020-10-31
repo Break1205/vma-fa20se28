@@ -84,7 +84,7 @@ public class ExceptionHandlerConfiguration extends ResponseEntityExceptionHandle
         }
         else
         {
-            apiError.setMessage("An internal server error has occured");
+            apiError.setMessage("An internal server error has occurred");
             apiError.setDebugMessage(e.getLocalizedMessage());
         }
         return buildResponseEntity(apiError);
