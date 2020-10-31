@@ -88,7 +88,7 @@ public class UserComponentImpl implements UserComponent {
         userReq.setUserId(generateId);
         userReq.setPassword(passwordEncoder.encode(userReq.getPassword()));
         int userRecord = userMapper.insertUser(userReq);
-        for (UserDocumentReq userDocumentReq : userReq.getUserDocumentReqList()) {
+        for (UserDocumentReq userDocumentReq : userReq.getUserDocumentList()) {
             documentRecords += userDocumentMapper.insertDocument(userDocumentReq, userReq.getUserId());
             userDocumentMapper.insertDocumentLog(userDocumentReq, userReq.getUserId());
             for (UserDocumentImageReq userDocumentImageReq : userDocumentReq.getUserDocumentImages()) {

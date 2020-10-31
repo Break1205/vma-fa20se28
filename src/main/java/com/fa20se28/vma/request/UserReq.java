@@ -16,7 +16,7 @@ public class UserReq {
     private Date dateOfBirth;
     private String imageLink;
     private float baseSalary;
-    private List<UserDocumentReq> userDocumentReqList;
+    private List<UserDocumentReq> userDocumentList;
 
     public String getUserId() {
         return userId;
@@ -90,11 +90,11 @@ public class UserReq {
         this.baseSalary = baseSalary;
     }
 
-    public List<UserDocumentReq> getUserDocumentReqList() {
-        return userDocumentReqList;
+    public List<UserDocumentReq> getUserDocumentList() {
+        return userDocumentList;
     }
 
-    public void setUserDocumentReqList(List<UserDocumentReq> userDocumentReqList) {
-        this.userDocumentReqList = userDocumentReqList;
+    public void setUserDocumentList(List<UserDocumentReq> userDocumentList) {
+        this.userDocumentList = userDocumentList;
     }
 }

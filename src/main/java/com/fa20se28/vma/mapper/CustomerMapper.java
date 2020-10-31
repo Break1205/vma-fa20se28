@@ -40,17 +40,21 @@ public interface CustomerMapper {
 
     @Update("UPDATE customer\n" +
             "SET \n" +
-            "customer_name = #{customer_name},\n" +
-            "address = #{address},\n" +
-            "fax = #{fax},\n" +
-            "tax_code = #{tax_code},\n" +
-            "phone_number = #{phone_number},\n" +
-            "email = #{email},\n" +
-            "account_number = #{account_number}\n" +
-            "WHERE customer_id = '${customer_id}'")
-    void updateCustomer(CustomerReq customerReq);
+            "customer_name = #{CustomerReq.customerName},\n" +
+            "address = #{CustomerReq.address},\n" +
+            "fax = #{CustomerReq.fax},\n" +
+            "tax_code = #{CustomerReq.taxCode},\n" +
+            "phone_number = #{CustomerReq.phoneNumber},\n" +
+            "email = #{CustomerReq.email},\n" +
+            "account_number = #{CustomerReq.accountNumber}\n" +
+            "WHERE customer_id = '${CustomerReq.customerId}'")
+    void updateCustomer(@Param("CustomerReq") CustomerReq customerReq);
 
-    void deleteCustomer(String customerId);
+    @Update("UPDATE customer " +
+            "SET " +
+            "is_deleted = 1 " +
+            "WHERE customer_id = '${customerId}'")
+    void deleteCustomer(@Param("customerId") String customerId);
 
     @Select("SELECT " +
             "customer_name " +
