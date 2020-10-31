@@ -1,7 +1,10 @@
 package com.fa20se28.vma.service.impl;
 
 import com.fa20se28.vma.component.CustomerComponent;
+import com.fa20se28.vma.request.CustomerPageReq;
 import com.fa20se28.vma.request.CustomerReq;
+import com.fa20se28.vma.response.CustomerDetailRes;
+import com.fa20se28.vma.response.CustomerPageRes;
 import com.fa20se28.vma.service.CustomerService;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +24,20 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public void updateCustomer(CustomerReq customerReq) {
         customerComponent.updateCustomer(customerReq);
+    }
+
+    @Override
+    public CustomerPageRes getDrivers(CustomerPageReq customerPageReq) {
+        CustomerPageRes customerPageRes = new CustomerPageRes();
+        customerPageRes.setCustomerRes(customerComponent.findCustomers(customerPageReq));
+        return customerPageRes;
+    }
+
+    @Override
+    public CustomerDetailRes findCustomerByCustomerId(String customerId) {
+        CustomerDetailRes customerDetailRes = new CustomerDetailRes();
+        customerDetailRes.setCustomer(customerComponent.findCustomerByCustomerId(customerId));
+        return customerDetailRes;
     }
 
     @Override

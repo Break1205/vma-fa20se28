@@ -1,7 +1,9 @@
 package com.fa20se28.vma.mapper;
 
 import com.fa20se28.vma.model.Customer;
+import com.fa20se28.vma.request.CustomerPageReq;
 import com.fa20se28.vma.request.CustomerReq;
+import com.fa20se28.vma.response.CustomerRes;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -10,6 +12,7 @@ import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
+import java.util.List;
 import java.util.Optional;
 
 @Mapper
@@ -56,12 +59,60 @@ public interface CustomerMapper {
             "WHERE customer_id = '${customerId}'")
     void deleteCustomer(@Param("customerId") String customerId);
 
-    @Select("SELECT " +
-            "customer_name " +
-            "FROM customer " +
-            "WHERE customer_id = #{customerId}")
+    @Select("SELECT \n" +
+            "customer_id,\n" +
+            "customer_name,\n" +
+            "address,\n" +
+            "fax,\n" +
+            "tax_code,\n" +
+            "phone_number,\n" +
+            "email,\n" +
+            "account_number\n" +
+            "FROM customer\n" +
+            "WHERE customer_id = '${customerId}'")
     @Results(id = "customerResult", value = {
-            @Result(property = "customerName", column = "customer_name")
+            @Result(property = "customerId", column = "customer_id"),
+            @Result(property = "customerName", column = "customer_name"),
+            @Result(property = "address", column = "address"),
+            @Result(property = "fax", column = "fax"),
+            @Result(property = "taxCode", column = "tax_code"),
+            @Result(property = "phoneNumber", column = "phone_number"),
+            @Result(property = "email", column = "email"),
+            @Result(property = "accountNumber", column = "account_number"),
     })
     Optional<Customer> findCustomerByCustomerId(@Param("customerId") String customerId);
+
+    @Select({"<script>" +
+            "SELECT \n" +
+            "customer_id,\n" +
+            "customer_name,\n" +
+            "address,\n" +
+            "email,\n" +
+            "phone_number\n" +
+            "FROM customer\n" +
+            "WHERE is_deleted = 0\n" +
+            "<if test = \"CustomerPageReq.customerName!=null\" >\n" +
+            "AND customer_name LIKE N'%${CustomerPageReq.customerName}%' \n" +
+            "</if> \n" +
+            "<if test = \"CustomerPageReq.address!=null\" >\n" +
+            "AND address LIKE N'%${CustomerPageReq.address}%' \n" +
+            "</if> \n" +
+            "<if test = \"CustomerPageReq.email!=null\" >\n" +
+            "AND email LIKE '%${CustomerPageReq.email}%' \n" +
+            "</if> \n" +
+            "<if test = \"CustomerPageReq.phoneNumber!=null\" >\n" +
+            "AND phone_number LIKE N'%${CustomerPageReq.phoneNumber}%' \n" +
+            "</if> \n" +
+            "ORDER BY customer_id ASC\n" +
+            "OFFSET ${CustomerPageReq.page} ROWS \n" +
+            "FETCH NEXT 15 ROWS ONLY" +
+            "</script>"})
+    @Results(id = "customerListResult", value = {
+            @Result(property = "customerId", column = "customer_id"),
+            @Result(property = "customerName", column = "customer_name"),
+            @Result(property = "address", column = "address"),
+            @Result(property = "email", column = "email"),
+            @Result(property = "phoneNumber", column = "phone_number")
+    })
+    List<CustomerRes> findCustomers(@Param("CustomerPageReq") CustomerPageReq customerPageReq);
 }
