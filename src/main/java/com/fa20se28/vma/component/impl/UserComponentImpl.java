@@ -90,10 +90,12 @@ public class UserComponentImpl implements UserComponent {
         int userRecord = userMapper.insertUser(userReq);
         for (UserDocumentReq userDocumentReq : userReq.getUserDocumentReqList()) {
             documentRecords += userDocumentMapper.insertDocument(userDocumentReq, userReq.getUserId());
+            userDocumentMapper.insertDocumentLog(userDocumentReq, userReq.getUserId());
             for (UserDocumentImageReq userDocumentImageReq : userDocumentReq.getUserDocumentImages()) {
                 documentImageRecords += userDocumentImageMapper
                         .insertUserDocumentImage(
                                 userDocumentImageReq, userDocumentReq.getUserDocumentId());
+                userDocumentImageMapper.insertUserDocumentImageLog(userDocumentImageReq, userDocumentReq.getUserDocumentId());
             }
         }
         int userRoles = userMapper.insertRoleForUserId(userReq.getUserId(), roleId);
@@ -105,6 +107,6 @@ public class UserComponentImpl implements UserComponent {
 
     @Override
     public int updateUserStatusByUserId(UserStatus userStatus, String userId) {
-        return userMapper.updateUserStatusByUserId(userStatus,userId);
+        return userMapper.updateUserStatusByUserId(userStatus, userId);
     }
 }
