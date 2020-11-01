@@ -1,6 +1,9 @@
 package com.fa20se28.vma.mapper;
 
+import com.fa20se28.vma.model.IssuedVehicle;
 import org.apache.ibatis.annotations.*;
+
+import java.util.Optional;
 
 @Mapper
 public interface IssuedVehicleMapper {
@@ -31,4 +34,22 @@ public interface IssuedVehicleMapper {
             "FROM issued_vehicle iv " +
             "WHERE iv.vehicle_id = #{v_id} ")
     boolean isVehicleHasRecords(@Param("v_id") String vehicleId);
+
+    @Select("SELECT \n" +
+            "issued_vehicle_id, \n" +
+            "vehicle_id, \n" +
+            "driver_id, \n" +
+            "issued_date, \n" +
+            "returned_date\n" +
+            "FROM issued_vehicle \n" +
+            "WHERE returned_date IS NULL \n" +
+            "AND driver_id = '${driver_id}'")
+    @Results(id = "issuedVehicleResult", value = {
+            @Result(property = "issuedVehicleId", column = "issued_vehicle_id"),
+            @Result(property = "vehicleId", column = "vehicle_id"),
+            @Result(property = "driverId", column = "driver_id"),
+            @Result(property = "issuedDate", column = "issued_date"),
+            @Result(property = "returnedDate", column = "returned_date"),
+    } )
+    Optional<IssuedVehicle> checkIfTheDriverIsStillDriving(@Param("driver_id") String driverId);
 }

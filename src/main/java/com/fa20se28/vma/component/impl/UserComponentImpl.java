@@ -2,13 +2,18 @@ package com.fa20se28.vma.component.impl;
 
 import com.fa20se28.vma.component.UserComponent;
 import com.fa20se28.vma.configuration.CustomUtils;
+import com.fa20se28.vma.configuration.exception.ResourceIsInUsedException;
 import com.fa20se28.vma.configuration.exception.ResourceNotFoundException;
 import com.fa20se28.vma.enums.UserStatus;
+import com.fa20se28.vma.mapper.IssuedVehicleMapper;
 import com.fa20se28.vma.mapper.UserDocumentImageMapper;
 import com.fa20se28.vma.mapper.UserDocumentMapper;
 import com.fa20se28.vma.mapper.UserMapper;
+import com.fa20se28.vma.mapper.VehicleMapper;
+import com.fa20se28.vma.model.IssuedVehicle;
 import com.fa20se28.vma.model.Role;
 import com.fa20se28.vma.model.User;
+import com.fa20se28.vma.model.Vehicle;
 import com.fa20se28.vma.request.UserDocumentImageReq;
 import com.fa20se28.vma.request.UserDocumentReq;
 import com.fa20se28.vma.request.UserReq;
@@ -17,22 +22,28 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Component
 public class UserComponentImpl implements UserComponent {
     private final UserMapper userMapper;
     private final UserDocumentMapper userDocumentMapper;
     private final UserDocumentImageMapper userDocumentImageMapper;
+    private final IssuedVehicleMapper issuedVehicleMapper;
+    private final VehicleMapper vehicleMapper;
     private final PasswordEncoder passwordEncoder;
 
     public UserComponentImpl(UserMapper userMapper,
                              UserDocumentMapper userDocumentMapper,
                              UserDocumentImageMapper userDocumentImageMapper,
-                             PasswordEncoder passwordEncoder) {
+                             IssuedVehicleMapper issuedVehicleMapper, VehicleMapper vehicleMapper, PasswordEncoder passwordEncoder) {
         this.userMapper = userMapper;
         this.userDocumentMapper = userDocumentMapper;
         this.userDocumentImageMapper = userDocumentImageMapper;
+        this.issuedVehicleMapper = issuedVehicleMapper;
+        this.vehicleMapper = vehicleMapper;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -73,7 +84,27 @@ public class UserComponentImpl implements UserComponent {
 
     @Override
     public int deleteUserByUserId(String userId) {
-        return userMapper.deleteUserById(userId);
+        List<Role> roles = userMapper.findUserRoles(userId);
+        if (!roles.isEmpty()) {
+            for (Role role : roles) {
+                if (role.getRoleId() == 2L) {
+                    List<Vehicle> notDeletedVehicles = vehicleMapper.getNotDeletedVehiclesByOwnerId(userId);
+                    if (notDeletedVehicles.isEmpty()) {
+                        return userMapper.deleteUserById(userId);
+                    }
+                    String detailMessage = notDeletedVehicles.stream().map(Objects::toString).collect(Collectors.joining(","));
+                    throw new ResourceIsInUsedException("Contributor with id: " + userId + " still has in-used vehicles: " + detailMessage);
+                } else if (role.getRoleId() == 3L) {
+                    Optional<IssuedVehicle> driverIsStillDriving = issuedVehicleMapper.checkIfTheDriverIsStillDriving(userId);
+                    if (driverIsStillDriving.isPresent()) {
+                        throw new ResourceIsInUsedException("Driver with id: " + userId + " is still driving vehicle with id: "
+                                + driverIsStillDriving.get().getVehicleId());
+                    }
+                    return userMapper.deleteUserById(userId);
+                }
+            }
+        }
+        return 0;
     }
 
     private boolean insertUser(UserReq userReq, int roleId) {

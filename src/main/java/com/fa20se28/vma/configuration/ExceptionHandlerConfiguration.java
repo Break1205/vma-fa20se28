@@ -1,6 +1,7 @@
 package com.fa20se28.vma.configuration;
 
 import com.fa20se28.vma.configuration.exception.InvalidFirebaseTokenException;
+import com.fa20se28.vma.configuration.exception.ResourceIsInUsedException;
 import com.fa20se28.vma.configuration.exception.ResourceNotFoundException;
 import com.fa20se28.vma.configuration.exception.TemplateException;
 import com.fa20se28.vma.configuration.exception.model.ApiError;
@@ -76,6 +77,14 @@ public class ExceptionHandlerConfiguration extends ResponseEntityExceptionHandle
     protected ResponseEntity<Object> handleResourceNotFoundException(ResourceNotFoundException e){
         ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST);
         apiError.setMessage("Not Found");
+        apiError.setDebugMessage(e.getLocalizedMessage());
+        return buildResponseEntity(apiError);
+    }
+
+    @ExceptionHandler(ResourceIsInUsedException.class)
+    protected ResponseEntity<Object> handleResourceIsInUsedException(ResourceIsInUsedException e){
+        ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST);
+        apiError.setMessage("Resource is in used");
         apiError.setDebugMessage(e.getLocalizedMessage());
         return buildResponseEntity(apiError);
     }

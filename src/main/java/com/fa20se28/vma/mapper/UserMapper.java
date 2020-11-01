@@ -55,13 +55,17 @@ public interface UserMapper {
     })
     Optional<User> findUserByUserId(@Param("user_id") String userId);
 
-    @Select("SELECT " +
-            "r.role_id " +
-            "r.role_name " +
-            "FROM user_roles ur " +
-            "JOIN role r " +
-            "ON ur.role_id = r.role_id " +
-            "WHERE ur.user_id = '${user_id}'")
+    @Select("SELECT\n" +
+            "r.role_id,\n" +
+            "r.role_name\n" +
+            "FROM user_roles ur\n" +
+            "JOIN role r\n" +
+            "ON ur.role_id = r.role_id\n" +
+            "WHERE ur.user_id = '${user_id}' ")
+    @Results(id = "rolesResult", value = {
+            @Result(property = "roleId", column = "role_id"),
+            @Result(property = "roleName", column = "role_name")
+    })
     List<Role> findUserRoles(@Param("user_id") String userId);
 
     @Insert("INSERT INTO [user]\n" +
