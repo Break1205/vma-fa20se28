@@ -2,6 +2,8 @@ package com.fa20se28.vma.controller;
 
 import com.fa20se28.vma.enums.UserStatus;
 import com.fa20se28.vma.request.UserReq;
+import com.fa20se28.vma.request.UserTokenReq;
+import com.fa20se28.vma.response.UserRoleRes;
 import com.fa20se28.vma.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -47,5 +49,10 @@ public class UserController {
     public void updateUserStatusByUserId(@RequestParam UserStatus userStatus,
                                          @PathVariable("user-id") String userid) {
         userService.updateUserStatusByUserId(userStatus, userid);
+    }
+
+    @PostMapping("/role-token")
+    public UserRoleRes getUserRoles(@RequestBody UserTokenReq token) {
+        return userService.getUserRoles(token);
     }
 }

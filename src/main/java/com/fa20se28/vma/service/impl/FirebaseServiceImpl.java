@@ -2,6 +2,7 @@ package com.fa20se28.vma.service.impl;
 
 import com.fa20se28.vma.configuration.exception.InvalidFirebaseTokenException;
 import com.fa20se28.vma.request.UserReq;
+import com.fa20se28.vma.request.UserTokenReq;
 import com.fa20se28.vma.service.FirebaseService;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
@@ -77,4 +78,15 @@ public class FirebaseServiceImpl implements FirebaseService {
             throw new InvalidFirebaseTokenException("Invalid Firebase Token", e, e.getAuthErrorCode());
         }
     }
+
+    @Override
+    public String decodeToken(UserTokenReq token) {
+        try {
+            return FirebaseAuth.getInstance().verifyIdToken(token.getIdToken()).getUid();
+        } catch (FirebaseAuthException e) {
+            throw new InvalidFirebaseTokenException("Invalid Firebase Token", e, e.getAuthErrorCode());
+        }
+    }
+
+
 }

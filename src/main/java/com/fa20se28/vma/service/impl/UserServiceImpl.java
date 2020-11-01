@@ -6,6 +6,8 @@ import com.fa20se28.vma.model.Role;
 import com.fa20se28.vma.model.User;
 import com.fa20se28.vma.model.UserAccount;
 import com.fa20se28.vma.request.UserReq;
+import com.fa20se28.vma.request.UserTokenReq;
+import com.fa20se28.vma.response.UserRoleRes;
 import com.fa20se28.vma.service.FirebaseService;
 import com.fa20se28.vma.service.UserService;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -64,5 +66,10 @@ public class UserServiceImpl implements UserService {
         if (userComponent.deleteUserByUserId(userId) == 1) {
             firebaseService.deleteUserRecord(userId);
         }
+    }
+
+    @Override
+    public UserRoleRes getUserRoles(UserTokenReq token) {
+        return new UserRoleRes(userComponent.findUserRoles(firebaseService.decodeToken(token)));
     }
 }
