@@ -48,4 +48,12 @@ public class Vehicle {
     public void setVehicleDistance(float vehicleDistance) {
         this.vehicleDistance = vehicleDistance;
     }
+
+    @Override
+    public String toString() {
+        return "Vehicle{" +
+                "vehicleId='" + vehicleId + '\'' +
+                ", vehicleStatus=" + vehicleStatus +
+                '}';
+    }
 }

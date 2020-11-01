@@ -191,4 +191,16 @@ public interface VehicleMapper {
             "WHERE " +
             "v.vehicle_id = #{v_id} ")
     VehicleStatus getVehicleStatus(@Param("v_id") String vehicleId);
+
+    @Select("SELECT \n" +
+            "vehicle_id,\n" +
+            "vehicle_status\n" +
+            "FROM vehicle\n" +
+            "WHERE owner_id = '${user_id}' \n" +
+            "AND vehicle_status != 'DELETED'")
+    @Results(id = "notDeletedVehicleResult", value = {
+            @Result(property = "vehicleId", column = "vehicle_id"),
+            @Result(property = "vehicleStatus", column = "vehicle_status")
+    })
+    List<Vehicle> getNotDeletedVehiclesByOwnerId(@Param("user_id") String userId);
 }
