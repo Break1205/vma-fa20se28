@@ -4,7 +4,7 @@ public class Vehicle {
     private String vehicleId;
     private String model;
     private String vehicleTypeName;
-    private String vehicleStatusName;
+    private String vehicleStatus;
     private float vehicleDistance;
 
     public String getVehicleId() {
@@ -31,12 +31,12 @@ public class Vehicle {
         this.vehicleTypeName = vehicleTypeName;
     }
 
-    public String getVehicleStatusName() {
-        return vehicleStatusName;
+    public String getVehicleStatus() {
+        return vehicleStatus;
     }
 
-    public void setVehicleStatusName(String vehicleStatusName) {
-        this.vehicleStatusName = vehicleStatusName;
+    public void setVehicleStatus(String vehicleStatus) {
+        this.vehicleStatus = vehicleStatus;
     }
 
     public float getVehicleDistance() {

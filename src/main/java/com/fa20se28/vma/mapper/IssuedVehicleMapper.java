@@ -12,7 +12,7 @@ public interface IssuedVehicleMapper {
 
     @Update("UPDATE issued_vehicle " +
             "SET returned_date = getdate() " +
-            "WHERE vehicle_id = #{iv_vehicle_id} ")
+            "WHERE vehicle_id = #{v_id} ")
     int withdrawVehicle(
-            @Param("iv_vehicle_id") String vehicleId);
+            @Param("v_id") String vehicleId);
 }

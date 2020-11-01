@@ -89,8 +89,10 @@ public class ExceptionHandlerConfiguration extends ResponseEntityExceptionHandle
             String errorMessage = e.getMessage();
             String formattedMessage = errorMessage.substring(errorMessage.lastIndexOf("SQLServerException"));
             apiError.setDebugMessage(formattedMessage);
-        } else {
-            apiError.setMessage("An internal server error has occured");
+        }
+        else
+        {
+            apiError.setMessage("An internal server error has occurred");
             apiError.setDebugMessage(e.getLocalizedMessage());
         }
         return buildResponseEntity(apiError);
