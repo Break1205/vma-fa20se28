@@ -60,20 +60,40 @@ public class VehicleComponentImpl implements VehicleComponent {
     @Override
     @Transactional
     public void assignVehicle(String vehicleId, String driverId) {
-        int row = issuedVehicleMapper.assignVehicle(vehicleId, driverId);
+        if (!issuedVehicleMapper.isVehicleHasRecords(vehicleId)) {
+            int row = issuedVehicleMapper.assignVehicle(vehicleId, driverId);
 
-        if (row == 0) {
-            throw new DataException("Unknown error occurred. Data not added!");
+            if (row == 0) {
+                throw new DataException("Unknown error occurred. Data not added!");
+            }
+        } else {
+            if (!issuedVehicleMapper.isVehicleHasDriver(vehicleId)) {
+                int row = issuedVehicleMapper.assignVehicle(vehicleId, driverId);
+
+                if (row == 0) {
+                    throw new DataException("Unknown error occurred. Data not added!");
+                }
+            } else {
+                throw new DataException("Vehicle is already assigned!");
+            }
         }
     }
 
     @Override
     @Transactional
     public void withdrawVehicle(String vehicleId) {
-        int row = issuedVehicleMapper.withdrawVehicle(vehicleId);
+        if (!issuedVehicleMapper.isVehicleHasRecords(vehicleId)) {
+            throw new DataException("Vehicle has not been assigned!");
+        } else {
+            if (!issuedVehicleMapper.isVehicleHasDriver(vehicleId)) {
+                throw new DataException("Vehicle has no driver!");
+            } else {
+                int row = issuedVehicleMapper.withdrawVehicle(vehicleId);
 
-        if (row == 0) {
-            throw new DataException("Unknown error occurred. Data not modified!");
+                if (row == 0) {
+                    throw new DataException("Unknown error occurred. Data not modified!");
+                }
+            }
         }
     }
 
@@ -84,6 +104,8 @@ public class VehicleComponentImpl implements VehicleComponent {
             int vehicleRow;
             if (vehicle.getRoleId() == 2) {
                 vehicleRow = vehicleMapper.createVehicle(vehicle, VehicleStatus.PENDING_APPROVAL);
+
+                //Create request here
             } else {
                 vehicleRow = vehicleMapper.createVehicle(vehicle, VehicleStatus.AVAILABLE_NO_DRIVER);
             }

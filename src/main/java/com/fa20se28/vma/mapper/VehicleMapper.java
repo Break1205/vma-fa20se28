@@ -40,7 +40,7 @@ public interface VehicleMapper {
             "v.vehicle_status != '%DELETED%' " +
             "</if> " +
             "<if test = \"v_option == 1\" > " +
-            "v.vehicle_status = '%${v_request.vehicleStatus}%' " +
+            "v.vehicle_status = #{v_request.vehicleStatus} " +
             "</if> " +
             "<if test = \"v_request.vehicleId != null\" > " +
             "AND v.vehicle_id LIKE '%${v_request.vehicleId}%' " +

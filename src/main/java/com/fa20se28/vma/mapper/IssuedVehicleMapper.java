@@ -13,6 +13,22 @@ public interface IssuedVehicleMapper {
     @Update("UPDATE issued_vehicle " +
             "SET returned_date = getdate() " +
             "WHERE vehicle_id = #{v_id} ")
-    int withdrawVehicle(
-            @Param("v_id") String vehicleId);
+    int withdrawVehicle(@Param("v_id") String vehicleId);
+
+    @Select("SELECT TOP 1 " +
+            "CASE WHEN " +
+            "iv.returned_date IS NULL THEN 1 " +
+            "ELSE 0 END Result " +
+            "FROM issued_vehicle iv " +
+            "WHERE iv.vehicle_id = #{v_id} " +
+            "ORDER BY iv.issued_date DESC")
+    boolean isVehicleHasDriver(@Param("v_id") String vehicleId);
+
+    @Select("SELECT " +
+            "CASE WHEN " +
+            "Count(iv.vehicle_id) > 0 THEN 1 " +
+            "ELSE 0 END Result " +
+            "FROM issued_vehicle iv " +
+            "WHERE iv.vehicle_id = #{v_id} ")
+    boolean isVehicleHasRecords(@Param("v_id") String vehicleId);
 }
