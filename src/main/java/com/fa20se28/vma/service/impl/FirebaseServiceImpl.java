@@ -1,7 +1,6 @@
 package com.fa20se28.vma.service.impl;
 
 import com.fa20se28.vma.configuration.exception.InvalidFirebaseTokenException;
-import com.fa20se28.vma.request.DriverReq;
 import com.fa20se28.vma.request.UserReq;
 import com.fa20se28.vma.service.FirebaseService;
 import com.google.auth.oauth2.GoogleCredentials;
@@ -40,22 +39,18 @@ public class FirebaseServiceImpl implements FirebaseService {
     }
 
     @Override
-    public void createUserRecord(UserReq userReq, String role) {
+    public void createUserRecord(UserReq userReq) {
         UserRecord.CreateRequest request = new UserRecord.CreateRequest();
-        if (role.equals("DRIVER")) {
-            DriverReq driverReq = (DriverReq) userReq;
-            request
-                    .setPhoneNumber("+84" + driverReq.getPhoneNumber())
-                    .setDisplayName(driverReq.getFullName())
-                    .setPhotoUrl(driverReq.getImageLink())
-                    .setUid(driverReq.getUserId())
-                    .setDisabled(false);
-
-            try {
-                FirebaseAuth.getInstance().createUser(request);
-            } catch (FirebaseAuthException e) {
-                throw new InvalidFirebaseTokenException("Invalid Firebase Token", e, e.getAuthErrorCode());
-            }
+        request
+                .setPhoneNumber("+84" + userReq.getPhoneNumber())
+                .setDisplayName(userReq.getFullName())
+                .setPhotoUrl(userReq.getImageLink())
+                .setUid(userReq.getUserId())
+                .setDisabled(false);
+        try {
+            FirebaseAuth.getInstance().createUser(request);
+        } catch (FirebaseAuthException e) {
+            throw new InvalidFirebaseTokenException("Invalid Firebase Token", e, e.getAuthErrorCode());
         }
     }
 
@@ -69,11 +64,11 @@ public class FirebaseServiceImpl implements FirebaseService {
     }
 
     @Override
-    public void updateUserRecord(DriverReq driverReq) {
-        UserRecord.UpdateRequest request = new UserRecord.UpdateRequest(driverReq.getUserId())
-                .setPhoneNumber("+84" + driverReq.getPhoneNumber())
-                .setDisplayName(driverReq.getFullName())
-                .setPhotoUrl(driverReq.getImageLink())
+    public void updateUserRecord(UserReq userReq) {
+        UserRecord.UpdateRequest request = new UserRecord.UpdateRequest(userReq.getUserId())
+                .setPhoneNumber("+84" + userReq.getPhoneNumber())
+                .setDisplayName(userReq.getFullName())
+                .setPhotoUrl(userReq.getImageLink())
                 .setDisabled(false);
 
         try {

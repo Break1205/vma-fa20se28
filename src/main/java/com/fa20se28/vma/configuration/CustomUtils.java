@@ -12,8 +12,7 @@ import java.util.Set;
 public class CustomUtils {
 
     // Generate 8 characters random ID
-    public String randomId()
-    {
+    public static String randomId(){
         return RandomStringUtils.randomAlphanumeric(8);
     }
 

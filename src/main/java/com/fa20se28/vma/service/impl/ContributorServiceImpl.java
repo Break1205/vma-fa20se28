@@ -20,45 +20,27 @@ public class ContributorServiceImpl implements ContributorService {
     public ContributorDetailRes getContributorById(String userId) {
         ContributorDetail contributorDetail = contributorComponent.findContributorById(userId);
         ContributorDetailRes contributorDetailRes = new ContributorDetailRes();
-        contributorDetailRes.setUserId(contributorDetail.getUserId());
-        contributorDetailRes.setUserStatusName(contributorDetail.getUserStatusName());
-        contributorDetailRes.setFullName(contributorDetail.getFullName());
-        contributorDetailRes.setPhoneNumber(contributorDetail.getPhoneNumber());
-        contributorDetailRes.setTotalVehicles(contributorDetail.getTotalVehicles());
-        contributorDetailRes.setAddress(contributorDetail.getAddress());
-        contributorDetailRes.setBaseSalary(contributorDetail.getBaseSalary());
-        contributorDetailRes.setDateOfBirth(contributorDetail.getDateOfBirth());
-        contributorDetailRes.setGender(contributorDetail.isGender());
-        contributorDetailRes.setImageLink(contributorDetail.getImageLink());
-        contributorDetailRes.setUserDocumentList(contributorDetail.getUserDocumentList());
+        contributorDetailRes.setContributorDetail(contributorDetail);
         return contributorDetailRes;
     }
 
     @Override
     public ContributorPageRes getContributors(ContributorPageReq contributorPageReq) {
         ContributorPageRes contributorPageRes = new ContributorPageRes();
-        contributorPageRes.setContributorList(contributorComponent
-                .findContributors(
-                        contributorPageReq.getUserId(),
-                        contributorPageReq.getName(),
-                        contributorPageReq.getPhoneNumber(),
-                        contributorPageReq.getUserStatusId(),
-                        contributorPageReq.getMin(),
-                        contributorPageReq.getMax(),
-                        contributorPageReq.getPage()));
+        contributorPageRes.setContributorRes(contributorComponent.findContributors(contributorPageReq));
         return contributorPageRes;
     }
 
     @Override
     public int getTotalContributorsOrTotalFilteredContributors(ContributorPageReq contributorPageReq) {
         if (contributorPageReq.getUserId() != null
-                || contributorPageReq.getName() != null
+                || contributorPageReq.getFullName() != null
                 || contributorPageReq.getPhoneNumber() != null
                 || contributorPageReq.getMin() != null
                 || contributorPageReq.getMax() != null) {
-            return getTotalContributorsWhenFiltering(contributorPageReq);
+            return contributorComponent.findTotalContributorsWhenFilter(contributorPageReq);
         }
-        return getTotalContributors();
+        return contributorComponent.findTotalContributors();
     }
 
     @Override
@@ -69,18 +51,4 @@ public class ContributorServiceImpl implements ContributorService {
         return contributorComponent.findTheHighestTotalVehicleInAllContributors();
     }
 
-    private int getTotalContributors() {
-        return contributorComponent.findTotalContributors();
-    }
-
-    private int getTotalContributorsWhenFiltering(ContributorPageReq contributorPageReq) {
-        return contributorComponent
-                .findTotalContributorsWhenFilter(
-                        contributorPageReq.getUserId(),
-                        contributorPageReq.getName(),
-                        contributorPageReq.getPhoneNumber(),
-                        contributorPageReq.getUserStatusId(),
-                        contributorPageReq.getMin(),
-                        contributorPageReq.getMax());
-    }
 }

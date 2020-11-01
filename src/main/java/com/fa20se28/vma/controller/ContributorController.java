@@ -1,5 +1,6 @@
 package com.fa20se28.vma.controller;
 
+import com.fa20se28.vma.enums.UserStatus;
 import com.fa20se28.vma.request.ContributorPageReq;
 import com.fa20se28.vma.response.ContributorDetailRes;
 import com.fa20se28.vma.response.ContributorPageRes;
@@ -28,21 +29,22 @@ public class ContributorController {
     public ContributorPageRes getContributors(@RequestParam(required = false) String userId,
                                               @RequestParam(required = false) String name,
                                               @RequestParam(required = false) String phoneNumber,
-                                              @RequestParam(required = false) Long userStatusId,
+                                              @RequestParam(required = false) UserStatus userStatus,
                                               @RequestParam(defaultValue = "0") Long min,
                                               @RequestParam(required = false) Long max,
                                               @RequestParam(required = false, defaultValue = "0") int page) {
-        return contributorService.getContributors(new ContributorPageReq(userId, name, phoneNumber, userStatusId, min, max, page));
+        return contributorService.getContributors(new ContributorPageReq(userId, name, phoneNumber, userStatus, min, max, page * 15));
     }
 
     @GetMapping("count")
     public int getTotalContributor(@RequestParam(required = false) String userId,
                                    @RequestParam(required = false) String name,
                                    @RequestParam(required = false) String phoneNumber,
+                                   @RequestParam(required = false) UserStatus userStatus,
                                    @RequestParam(defaultValue = "0") Long min,
                                    @RequestParam(required = false) Long max) {
         return contributorService.getTotalContributorsOrTotalFilteredContributors(
-                new ContributorPageReq(userId, name, phoneNumber, min, max));
+                new ContributorPageReq(userId, name, phoneNumber, userStatus, min, max, 0));
     }
 
     @GetMapping("total-vehicle")

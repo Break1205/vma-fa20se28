@@ -1,5 +1,6 @@
 package com.fa20se28.vma.request;
 
+import com.fa20se28.vma.enums.UserDocumentType;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.util.Date;
@@ -7,14 +8,14 @@ import java.util.List;
 
 public class UserDocumentReq {
     private String userDocumentId;
-    private int userDocumentTypeId;
+    private UserDocumentType userDocumentType;
     private String registeredLocation;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date registeredDate;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date expiryDate;
     private String otherInformation;
-    private List<DocumentImageReq> documentImagesReqList;
+    private List<UserDocumentImageReq> userDocumentImages;
 
     public String getUserDocumentId() {
         return userDocumentId;
@@ -24,12 +25,12 @@ public class UserDocumentReq {
         this.userDocumentId = userDocumentId;
     }
 
-    public int getUserDocumentTypeId() {
-        return userDocumentTypeId;
+    public UserDocumentType getUserDocumentType() {
+        return userDocumentType;
     }
 
-    public void setUserDocumentTypeId(int userDocumentTypeId) {
-        this.userDocumentTypeId = userDocumentTypeId;
+    public void setUserDocumentType(UserDocumentType userDocumentType) {
+        this.userDocumentType = userDocumentType;
     }
 
     public String getRegisteredLocation() {
@@ -64,11 +65,11 @@ public class UserDocumentReq {
         this.otherInformation = otherInformation;
     }
 
-    public List<DocumentImageReq> getDocumentImagesReqList() {
-        return documentImagesReqList;
+    public List<UserDocumentImageReq> getUserDocumentImages() {
+        return userDocumentImages;
     }
 
-    public void setDocumentImagesReqList(List<DocumentImageReq> documentImagesReqList) {
-        this.documentImagesReqList = documentImagesReqList;
+    public void setUserDocumentImages(List<UserDocumentImageReq> userDocumentImages) {
+        this.userDocumentImages = userDocumentImages;
     }
 }

@@ -1,6 +1,7 @@
 package com.fa20se28.vma.configuration;
 
 import com.fa20se28.vma.configuration.exception.InvalidFirebaseTokenException;
+import com.fa20se28.vma.configuration.exception.ResourceNotFoundException;
 import com.fa20se28.vma.configuration.exception.TemplateException;
 import com.fa20se28.vma.configuration.exception.model.ApiError;
 import com.google.firebase.auth.AuthErrorCode;
@@ -71,12 +72,19 @@ public class ExceptionHandlerConfiguration extends ResponseEntityExceptionHandle
         return buildResponseEntity(apiError);
     }
 
+    @ExceptionHandler(ResourceNotFoundException.class)
+    protected ResponseEntity<Object> handleResourceNotFoundException(ResourceNotFoundException e){
+        ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST);
+        apiError.setMessage("Not Found");
+        apiError.setDebugMessage(e.getLocalizedMessage());
+        return buildResponseEntity(apiError);
+    }
+
     // Handle RunTimeException. Triggered when the exception is happened at runtime
     @ExceptionHandler(RuntimeException.class)
     protected ResponseEntity<Object> handleRunTimeException(RuntimeException e) {
         ApiError apiError = new ApiError(HttpStatus.INTERNAL_SERVER_ERROR);
-        if (e.getLocalizedMessage().contains("SQLServerException"))
-        {
+        if (e.getLocalizedMessage().contains("SQLServerException")) {
             apiError.setMessage("Database Error");
             String errorMessage = e.getMessage();
             String formattedMessage = errorMessage.substring(errorMessage.lastIndexOf("SQLServerException"));

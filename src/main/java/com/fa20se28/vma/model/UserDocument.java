@@ -1,5 +1,7 @@
 package com.fa20se28.vma.model;
 
+import com.fa20se28.vma.enums.UserDocumentType;
+
 import java.time.LocalDate;
 import java.util.List;
 
@@ -10,7 +12,7 @@ public class UserDocument {
     private LocalDate registeredDate;
     private LocalDate expiryDate;
     private String otherInformation;
-    private List<DocumentImage> documentImages;
+    private List<UserDocumentImage> userDocumentImages;
 
     public String getUserDocumentId() {
         return userDocumentId;
@@ -52,12 +54,12 @@ public class UserDocument {
         this.expiryDate = expiryDate;
     }
 
-    public List<DocumentImage> getDocumentImages() {
-        return documentImages;
+    public List<UserDocumentImage> getUserDocumentImages() {
+        return userDocumentImages;
     }
 
-    public void setDocumentImages(List<DocumentImage> documentImages) {
-        this.documentImages = documentImages;
+    public void setUserDocumentImages(List<UserDocumentImage> userDocumentImages) {
+        this.userDocumentImages = userDocumentImages;
     }
 
     public String getOtherInformation() {

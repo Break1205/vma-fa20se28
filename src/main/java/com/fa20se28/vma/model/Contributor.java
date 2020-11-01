@@ -1,10 +1,12 @@
 package com.fa20se28.vma.model;
 
+import com.fa20se28.vma.enums.UserStatus;
+
 public class Contributor {
     private String userId;
     private String fullName;
     private String phoneNumber;
-    private String userStatusName;
+    private UserStatus userStatus;
     private int totalVehicles;
 
     public String getUserId() {
@@ -31,12 +33,12 @@ public class Contributor {
         this.phoneNumber = phoneNumber;
     }
 
-    public String getUserStatusName() {
-        return userStatusName;
+    public UserStatus getUserStatus() {
+        return userStatus;
     }
 
-    public void setUserStatusName(String userStatusName) {
-        this.userStatusName = userStatusName;
+    public void setUserStatus(UserStatus userStatus) {
+        this.userStatus = userStatus;
     }
 
     public int getTotalVehicles() {

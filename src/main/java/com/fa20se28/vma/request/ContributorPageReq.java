@@ -1,31 +1,30 @@
 package com.fa20se28.vma.request;
 
+import com.fa20se28.vma.enums.UserStatus;
+
 public class ContributorPageReq {
     private String userId;
-    private String name;
+    private String fullName;
     private String phoneNumber;
-    private Long userStatusId;
+    private UserStatus userStatus;
     private Long min;
     private Long max;
     private int page;
 
-
-    public ContributorPageReq(String userId, String name, String phoneNumber,Long userStatusId, Long min, Long max, int page) {
+    public ContributorPageReq(String userId,
+                              String fullName,
+                              String phoneNumber,
+                              UserStatus userStatus,
+                              Long min,
+                              Long max,
+                              int page) {
         this.userId = userId;
-        this.name = name;
+        this.fullName = fullName;
         this.phoneNumber = phoneNumber;
-        this.userStatusId = userStatusId;
+        this.userStatus = userStatus;
         this.min = min;
         this.max = max;
         this.page = page;
-    }
-
-    public ContributorPageReq(String userId, String name, String phoneNumber, Long min, Long max) {
-        this.userId = userId;
-        this.name = name;
-        this.phoneNumber = phoneNumber;
-        this.min = min;
-        this.max = max;
     }
 
     public String getUserId() {
@@ -36,12 +35,12 @@ public class ContributorPageReq {
         this.userId = userId;
     }
 
-    public String getName() {
-        return name;
+    public String getFullName() {
+        return fullName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 
     public String getPhoneNumber() {
@@ -52,12 +51,12 @@ public class ContributorPageReq {
         this.phoneNumber = phoneNumber;
     }
 
-    public Long getUserStatusId() {
-        return userStatusId;
+    public UserStatus getUserStatus() {
+        return userStatus;
     }
 
-    public void setUserStatusId(Long userStatusId) {
-        this.userStatusId = userStatusId;
+    public void setUserStatus(UserStatus userStatus) {
+        this.userStatus = userStatus;
     }
 
     public Long getMin() {
