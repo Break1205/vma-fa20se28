@@ -1,5 +1,9 @@
 package com.fa20se28.vma.request;
 
+import com.fa20se28.vma.enums.VehicleStatus;
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import java.util.Date;
 import java.util.List;
 
 public class VehicleReq {
@@ -7,14 +11,15 @@ public class VehicleReq {
     private int vehicleTypeId;
     private int brandId;
     private String ownerId;
-    private String vehicleStatus;
+    private VehicleStatus vehicleStatus;
     private int seats;
     private String imageLink;
     private String model;
     private String origin;
     private String chassisNumber;
     private String engineNumber;
-    private String yearOfManufacture;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy")
+    private Date yearOfManufacture;
     private float distanceDriven;
     private List<VehicleDocumentReq> vehicleDocuments;
     private int roleId;
@@ -51,11 +56,11 @@ public class VehicleReq {
         this.ownerId = ownerId;
     }
 
-    public String getVehicleStatus() {
+    public VehicleStatus getVehicleStatus() {
         return vehicleStatus;
     }
 
-    public void setVehicleStatus(String vehicleStatus) {
+    public void setVehicleStatus(VehicleStatus vehicleStatus) {
         this.vehicleStatus = vehicleStatus;
     }
 
@@ -107,11 +112,11 @@ public class VehicleReq {
         this.engineNumber = engineNumber;
     }
 
-    public String getYearOfManufacture() {
+    public Date getYearOfManufacture() {
         return yearOfManufacture;
     }
 
-    public void setYearOfManufacture(String yearOfManufacture) {
+    public void setYearOfManufacture(Date yearOfManufacture) {
         this.yearOfManufacture = yearOfManufacture;
     }
 

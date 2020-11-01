@@ -1,15 +1,16 @@
 package com.fa20se28.vma.model;
 
+import com.fa20se28.vma.enums.VehicleStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-import java.time.LocalDate;
+import java.util.Date;
 
 public class VehicleDetail {
     private String vehicleId;
     private String vehicleTypeName;
     private String brandName;
     private String ownerId;
-    private String vehicleStatus;
+    private VehicleStatus vehicleStatus;
     private int seats;
     private String imageLink;
     private String model;
@@ -17,9 +18,9 @@ public class VehicleDetail {
     private String chassisNumber;
     private String engineNumber;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy")
-    private LocalDate yearOfManufacture;
+    private Date yearOfManufacture;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private LocalDate dateOfRegistration;
+    private Date dateOfRegistration;
     private float distanceDriven;
     private String assignedDriverId;
 
@@ -55,11 +56,11 @@ public class VehicleDetail {
         this.ownerId = ownerId;
     }
 
-    public String getVehicleStatus() {
+    public VehicleStatus getVehicleStatus() {
         return vehicleStatus;
     }
 
-    public void setVehicleStatus(String vehicleStatus) {
+    public void setVehicleStatus(VehicleStatus vehicleStatus) {
         this.vehicleStatus = vehicleStatus;
     }
 
@@ -111,19 +112,19 @@ public class VehicleDetail {
         this.engineNumber = engineNumber;
     }
 
-    public LocalDate getYearOfManufacture() {
+    public Date getYearOfManufacture() {
         return yearOfManufacture;
     }
 
-    public void setYearOfManufacture(LocalDate yearOfManufacture) {
+    public void setYearOfManufacture(Date yearOfManufacture) {
         this.yearOfManufacture = yearOfManufacture;
     }
 
-    public LocalDate getDateOfRegistration() {
+    public Date getDateOfRegistration() {
         return dateOfRegistration;
     }
 
-    public void setDateOfRegistration(LocalDate dateOfRegistration) {
+    public void setDateOfRegistration(Date dateOfRegistration) {
         this.dateOfRegistration = dateOfRegistration;
     }
 

@@ -1,10 +1,12 @@
 package com.fa20se28.vma.request;
 
+import com.fa20se28.vma.enums.VehicleStatus;
+
 public class VehiclePageReq {
     private String vehicleId;
     private String model;
     private int vehicleTypeId;
-    private String vehicleStatus;
+    private VehicleStatus vehicleStatus;
     private float vehicleMinDis;
     private float vehicleMaxDis;
 
@@ -48,11 +50,11 @@ public class VehiclePageReq {
         this.vehicleMaxDis = vehicleMaxDis;
     }
 
-    public String getVehicleStatus() {
+    public VehicleStatus getVehicleStatus() {
         return vehicleStatus;
     }
 
-    public void setVehicleStatus(String vehicleStatus) {
+    public void setVehicleStatus(VehicleStatus vehicleStatus) {
         this.vehicleStatus = vehicleStatus;
     }
 }

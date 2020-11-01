@@ -1,13 +1,19 @@
 package com.fa20se28.vma.request;
 
+import com.fa20se28.vma.enums.VehicleDocumentType;
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import java.util.Date;
 import java.util.List;
 
 public class VehicleDocumentReq {
     private String vehicleDocumentId;
-    private String vehicleDocumentType;
+    private VehicleDocumentType vehicleDocumentType;
     private String registeredLocation;
-    private String registeredDate;
-    private String expiryDate;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    private Date registeredDate;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    private Date expiryDate;
     private List<String> imageLink;
 
     public String getVehicleDocumentId() {
@@ -18,11 +24,11 @@ public class VehicleDocumentReq {
         this.vehicleDocumentId = vehicleDocumentId;
     }
 
-    public String getVehicleDocumentType() {
+    public VehicleDocumentType getVehicleDocumentType() {
         return vehicleDocumentType;
     }
 
-    public void setVehicleDocumentType(String vehicleDocumentType) {
+    public void setVehicleDocumentType(VehicleDocumentType vehicleDocumentType) {
         this.vehicleDocumentType = vehicleDocumentType;
     }
 
@@ -34,19 +40,19 @@ public class VehicleDocumentReq {
         this.registeredLocation = registeredLocation;
     }
 
-    public String getRegisteredDate() {
+    public Date getRegisteredDate() {
         return registeredDate;
     }
 
-    public void setRegisteredDate(String registeredDate) {
+    public void setRegisteredDate(Date registeredDate) {
         this.registeredDate = registeredDate;
     }
 
-    public String getExpiryDate() {
+    public Date getExpiryDate() {
         return expiryDate;
     }
 
-    public void setExpiryDate(String expiryDate) {
+    public void setExpiryDate(Date expiryDate) {
         this.expiryDate = expiryDate;
     }
 

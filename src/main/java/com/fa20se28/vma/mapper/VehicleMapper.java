@@ -1,5 +1,6 @@
 package com.fa20se28.vma.mapper;
 
+import com.fa20se28.vma.enums.VehicleStatus;
 import com.fa20se28.vma.model.Vehicle;
 import com.fa20se28.vma.model.VehicleDetail;
 import com.fa20se28.vma.model.VehicleDropDown;
@@ -39,9 +40,6 @@ public interface VehicleMapper {
             "v.vehicle_status != '%DELETED%' " +
             "</if> " +
             "<if test = \"v_option == 1\" > " +
-            "v.vehicle_status = '%DELETED%' " +
-            "</if> " +
-            "<if test = \"v_option == 3\" > " +
             "v.vehicle_status = '%${v_request.vehicleStatus}%' " +
             "</if> " +
             "<if test = \"v_request.vehicleId != null\" > " +
@@ -154,7 +152,7 @@ public interface VehicleMapper {
             "#{v_request.distanceDriven}) ")
     int createVehicle(
             @Param("v_request") VehicleReq vehicleReq,
-            @Param("v_status") String status);
+            @Param("v_status") VehicleStatus status);
 
     @Update("UPDATE vehicle " +
             "SET " +
@@ -186,4 +184,11 @@ public interface VehicleMapper {
             @Result(property = "distanceDriven", column = "distance_driven"),
     })
     VehicleDetail getVehicleDetails(@Param("v_id") String vehicleId);
+
+    @Select("SELECT " +
+            "v.vehicle_status " +
+            "FROM vehicle v " +
+            "WHERE " +
+            "v.vehicle_id = #{v_id} ")
+    VehicleStatus getVehicleStatus(@Param("v_id") String vehicleId);
 }
