@@ -207,7 +207,7 @@ public interface VehicleMapper {
     })
     List<Vehicle> getNotDeletedVehiclesByOwnerId(@Param("user_id") String userId);
 
-    @Insert("UPDATE vehicle " +
+    @Update("UPDATE vehicle " +
             "SET " +
             "vehicle_type_id = #{v_request.vehicleTypeId}, " +
             "brand_id = #{v_request.brandId}, " +

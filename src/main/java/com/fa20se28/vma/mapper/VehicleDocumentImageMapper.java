@@ -19,7 +19,7 @@ public interface VehicleDocumentImageMapper {
             @Param("vehicle_document_id") String documentId,
             @Param("image_link") String imageLink);
 
-    @Insert("UPDATE vehicle_document_image " +
+    @Update("UPDATE vehicle_document_image " +
             "SET " +
             "image_link = #{d_images.imageLink} " +
             "WHERE " +
