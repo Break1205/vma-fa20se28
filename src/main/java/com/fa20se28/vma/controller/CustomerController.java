@@ -36,8 +36,9 @@ public class CustomerController {
                                         @RequestParam(required = false) String address,
                                         @RequestParam(required = false) String email,
                                         @RequestParam(required = false) String phoneNumber,
+                                        @RequestParam(required = false) Integer isDeleted,
                                         @RequestParam(required = false, defaultValue = "0") int page) {
-        return customerService.getDrivers(new CustomerPageReq(customerName, address, email, phoneNumber, page * 15));
+        return customerService.getDrivers(new CustomerPageReq(customerName, address, email, phoneNumber, isDeleted, page * 15));
     }
 
     @PostMapping
@@ -61,7 +62,8 @@ public class CustomerController {
     public int getTotalCustomers(@RequestParam(required = false) String customerName,
                                  @RequestParam(required = false) String address,
                                  @RequestParam(required = false) String email,
-                                 @RequestParam(required = false) String phoneNumber) {
-        return customerService.getTotalCustomers(new CustomerPageReq(customerName, address, email, phoneNumber, 0));
+                                 @RequestParam(required = false) String phoneNumber,
+                                 @RequestParam(required = false) Integer isDeleted) {
+        return customerService.getTotalCustomers(new CustomerPageReq(customerName, address, email, phoneNumber,isDeleted , 0));
     }
 }

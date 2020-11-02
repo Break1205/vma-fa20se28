@@ -45,7 +45,8 @@ public class CustomerServiceImpl implements CustomerService {
         if (customerPageReq.getCustomerName() != null
                 || customerPageReq.getAddress() != null
                 || customerPageReq.getEmail() != null
-                || customerPageReq.getPhoneNumber() != null) {
+                || customerPageReq.getPhoneNumber() != null
+                || customerPageReq.getIsDeleted() != null) {
             return customerComponent.findTotalCustomersWhenFiltering(customerPageReq);
         }
         return customerComponent.findTotalCustomers();
