@@ -151,7 +151,7 @@ public interface ContributorMapper {
             "JOIN user_roles ur\n" +
             "ON ur.user_id = u.user_id\n" +
             "WHERE ur.role_id = 2\n" +
-            "AND v.vehicle_status = 'DELETED'\n" +
+            "AND v.vehicle_status != 'DELETED'\n" +
             "GROUP BY v.owner_id) as con")
     int findTheHighestTotalVehiclesInAllContributors();
 
@@ -165,7 +165,7 @@ public interface ContributorMapper {
             "JOIN user_roles ur\n" +
             "ON ur.user_id = u.user_id\n" +
             "WHERE ur.role_id = 2\n" +
-            "AND v.vehicle_status = 'DELETED'\n" +
+            "AND v.vehicle_status != 'DELETED'\n" +
             "GROUP BY v.owner_id) as con")
     int findTheLowestTotalVehiclesInAllContributors();
 }

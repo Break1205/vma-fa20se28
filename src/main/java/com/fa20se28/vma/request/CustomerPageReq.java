@@ -5,13 +5,15 @@ public class CustomerPageReq {
     private String address;
     private String email;
     private String phoneNumber;
+    private Integer isDeleted;
     private int page;
 
-    public CustomerPageReq(String customerName, String address, String email, String phoneNumber, int page) {
+    public CustomerPageReq(String customerName, String address, String email, String phoneNumber, Integer isDeleted, int page) {
         this.customerName = customerName;
         this.address = address;
         this.email = email;
         this.phoneNumber = phoneNumber;
+        this.isDeleted = isDeleted;
         this.page = page;
     }
 
@@ -53,5 +55,13 @@ public class CustomerPageReq {
 
     public void setPage(int page) {
         this.page = page;
+    }
+
+    public Integer getIsDeleted() {
+        return isDeleted;
+    }
+
+    public void setIsDeleted(Integer isDeleted) {
+        this.isDeleted = isDeleted;
     }
 }

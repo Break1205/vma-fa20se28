@@ -90,7 +90,21 @@ public interface CustomerMapper {
             "email,\n" +
             "phone_number\n" +
             "FROM customer\n" +
-            "WHERE is_deleted = 0\n" +
+            "WHERE \n" +
+            "<if test = \"CustomerPageReq.isDeleted==null\" >\n" +
+            "is_deleted = 0 \n" +
+            "</if> \n" +
+            "<if test = \"CustomerPageReq.isDeleted==1\" >\n" +
+            "is_deleted = 1 \n" +
+            "</if> \n" +
+            "<if test = \"CustomerPageReq.isDeleted==0\" >\n" +
+            "is_deleted = 0 \n" +
+            "</if> \n" +
+            "<if test = \"CustomerPageReq.isDeleted!=null\" >\n" +
+            "<if test = \"CustomerPageReq.isDeleted!=0 and CustomerPageReq.isDeleted!=1\" >\n" +
+            "is_deleted = #{CustomerPageReq.isDeleted} \n" +
+            "</if> \n" +
+            "</if> \n" +
             "<if test = \"CustomerPageReq.customerName!=null\" >\n" +
             "AND customer_name LIKE N'%${CustomerPageReq.customerName}%' \n" +
             "</if> \n" +
@@ -115,4 +129,51 @@ public interface CustomerMapper {
             @Result(property = "phoneNumber", column = "phone_number")
     })
     List<CustomerRes> findCustomers(@Param("CustomerPageReq") CustomerPageReq customerPageReq);
+
+    @Select({"<script>" +
+            "SELECT count(cu.customer_id) \n" +
+            "FROM (\n" +
+            "SELECT\n" +
+            "customer_id, \n" +
+            "customer_name, \n" +
+            "address, \n" +
+            "email, \n" +
+            "phone_number \n" +
+            "FROM customer \n" +
+            "WHERE \n" +
+            "<if test = \"CustomerPageReq.isDeleted==null\" >\n" +
+            "is_deleted = 0 \n" +
+            "</if> \n" +
+            "<if test = \"CustomerPageReq.isDeleted==1\" >\n" +
+            "is_deleted = 1 \n" +
+            "</if> \n" +
+            "<if test = \"CustomerPageReq.isDeleted==0\" >\n" +
+            "is_deleted = 0 \n" +
+            "</if> \n" +
+            "<if test = \"CustomerPageReq.isDeleted!=null\" >\n" +
+            "<if test = \"CustomerPageReq.isDeleted!=0 and CustomerPageReq.isDeleted!=1\" >\n" +
+            "is_deleted = #{CustomerPageReq.isDeleted} \n" +
+            "</if> \n" +
+            "</if> \n" +
+            "<if test = \"CustomerPageReq.customerName!=null\" > \n" +
+            "AND customer_name LIKE N'%${CustomerPageReq.customerName}%'\n" +
+            "</if>\n" +
+            "<if test = \"CustomerPageReq.address!=null\" > \n" +
+            "AND address LIKE N'%${CustomerPageReq.address}%'\n" +
+            "</if>\n" +
+            "<if test = \"CustomerPageReq.email!=null\" > \n" +
+            "AND email LIKE '%${CustomerPageReq.email}%'\n" +
+            "</if>\n" +
+            "<if test = \"CustomerPageReq.phoneNumber!=null\" > \n" +
+            "AND phone_number LIKE N'%${CustomerPageReq.phoneNumber}%'\n" +
+            "</if>\n" +
+            ") cu" +
+            "</script>"})
+    int findTotalCustomerWhenFiltering(@Param("CustomerPageReq") CustomerPageReq customerPageReq);
+
+    @Select("SELECT \n" +
+            "COUNT(*) \n" +
+            "FROM customer \n" +
+            "WHERE is_deleted = 0")
+    int findTotalCustomer();
 }

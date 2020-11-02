@@ -17,4 +17,8 @@ public interface CustomerComponent {
     List<CustomerRes> findCustomers(CustomerPageReq customerPageReq);
 
     Customer findCustomerByCustomerId(String customerId);
+
+    int findTotalCustomersWhenFiltering(CustomerPageReq customerPageReq);
+
+    int findTotalCustomers();
 }

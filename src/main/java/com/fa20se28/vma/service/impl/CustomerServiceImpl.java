@@ -41,6 +41,18 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
+    public int getTotalCustomers(CustomerPageReq customerPageReq) {
+        if (customerPageReq.getCustomerName() != null
+                || customerPageReq.getAddress() != null
+                || customerPageReq.getEmail() != null
+                || customerPageReq.getPhoneNumber() != null
+                || customerPageReq.getIsDeleted() != null) {
+            return customerComponent.findTotalCustomersWhenFiltering(customerPageReq);
+        }
+        return customerComponent.findTotalCustomers();
+    }
+
+    @Override
     public void deleteCustomerByCustomerId(String customerId) {
         customerComponent.deleteCustomer(customerId);
     }
