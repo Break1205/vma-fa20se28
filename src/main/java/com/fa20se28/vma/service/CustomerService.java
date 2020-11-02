@@ -15,4 +15,6 @@ public interface CustomerService {
     CustomerPageRes getDrivers(CustomerPageReq customerPageReq);
 
     CustomerDetailRes findCustomerByCustomerId(String customerId);
+
+    int getTotalCustomers(CustomerPageReq customerPageReq);
 }

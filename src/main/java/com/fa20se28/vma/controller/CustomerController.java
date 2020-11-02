@@ -56,4 +56,12 @@ public class CustomerController {
     public void deleteCustomer(String customerId) {
         customerService.deleteCustomerByCustomerId(customerId);
     }
+
+    @GetMapping("/count")
+    public int getTotalCustomers(@RequestParam(required = false) String customerName,
+                                 @RequestParam(required = false) String address,
+                                 @RequestParam(required = false) String email,
+                                 @RequestParam(required = false) String phoneNumber) {
+        return customerService.getTotalCustomers(new CustomerPageReq(customerName, address, email, phoneNumber, 0));
+    }
 }
