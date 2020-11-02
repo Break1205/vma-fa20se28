@@ -4,14 +4,8 @@ import com.fa20se28.vma.component.VehicleComponent;
 import com.fa20se28.vma.configuration.exception.DataException;
 import com.fa20se28.vma.enums.VehicleStatus;
 import com.fa20se28.vma.mapper.*;
-import com.fa20se28.vma.model.Vehicle;
-import com.fa20se28.vma.model.VehicleDetail;
-import com.fa20se28.vma.model.VehicleDropDown;
-import com.fa20se28.vma.model.VehicleType;
-import com.fa20se28.vma.request.VehicleDocumentReq;
-import com.fa20se28.vma.request.VehicleDropDownReq;
-import com.fa20se28.vma.request.VehiclePageReq;
-import com.fa20se28.vma.request.VehicleReq;
+import com.fa20se28.vma.model.*;
+import com.fa20se28.vma.request.*;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,17 +15,20 @@ import java.util.List;
 public class VehicleComponentImpl implements VehicleComponent {
     private final VehicleMapper vehicleMapper;
     private final VehicleTypeMapper vehicleTypeMapper;
+    private final BrandMapper brandMapper;
     private final IssuedVehicleMapper issuedVehicleMapper;
     private final VehicleDocumentMapper vehicleDocumentMapper;
     private final VehicleDocumentImageMapper vehicleDocumentImageMapper;
 
     public VehicleComponentImpl(VehicleMapper vehicleMapper,
                                 VehicleTypeMapper vehicleTypeMapper,
+                                BrandMapper brandMapper,
                                 IssuedVehicleMapper issuedVehicleMapper,
                                 VehicleDocumentMapper vehicleDocumentMapper,
                                 VehicleDocumentImageMapper vehicleDocumentImageMapper) {
         this.vehicleMapper = vehicleMapper;
         this.vehicleTypeMapper = vehicleTypeMapper;
+        this.brandMapper = brandMapper;
         this.issuedVehicleMapper = issuedVehicleMapper;
         this.vehicleDocumentMapper = vehicleDocumentMapper;
         this.vehicleDocumentImageMapper = vehicleDocumentImageMapper;
@@ -48,33 +45,42 @@ public class VehicleComponentImpl implements VehicleComponent {
     }
 
     @Override
+    public List<Brand> getBrands() {
+        return brandMapper.getBrands();
+    }
+
+    @Override
     public List<Vehicle> getVehicles(VehiclePageReq request, int viewOption, int pageNum, String ownerId) {
         return vehicleMapper.getVehicles(request, viewOption, pageNum * 15, ownerId);
     }
 
     @Override
-    public List<VehicleDropDown> getVehiclesDropDown(VehicleDropDownReq request, int pageNum, String status, String ownerId) {
-        return vehicleMapper.getAvailableVehicles(request, pageNum, status, ownerId);
+    public List<VehicleDropDown> getVehiclesDropDown(VehicleDropDownReq request, int pageNum, String ownerId) {
+        return vehicleMapper.getVehicleDropDownByStatus(request, pageNum, ownerId);
     }
 
     @Override
     @Transactional
     public void assignVehicle(String vehicleId, String driverId) {
-        if (!issuedVehicleMapper.isVehicleHasRecords(vehicleId)) {
-            int row = issuedVehicleMapper.assignVehicle(vehicleId, driverId);
-
-            if (row == 0) {
-                throw new DataException("Unknown error occurred. Data not added!");
-            }
+        if (vehicleMapper.getVehicleStatus(vehicleId) != VehicleStatus.AVAILABLE_NO_DRIVER) {
+            throw new DataException("Vehicle is unavailable!");
         } else {
-            if (!issuedVehicleMapper.isVehicleHasDriver(vehicleId)) {
+            if (!issuedVehicleMapper.isVehicleHasRecords(vehicleId)) {
                 int row = issuedVehicleMapper.assignVehicle(vehicleId, driverId);
 
                 if (row == 0) {
                     throw new DataException("Unknown error occurred. Data not added!");
                 }
             } else {
-                throw new DataException("Vehicle is already assigned!");
+                if (!issuedVehicleMapper.isVehicleHasDriver(vehicleId)) {
+                    int row = issuedVehicleMapper.assignVehicle(vehicleId, driverId);
+
+                    if (row == 0) {
+                        throw new DataException("Unknown error occurred. Data not added!");
+                    }
+                } else {
+                    throw new DataException("Vehicle is already assigned!");
+                }
             }
         }
     }
@@ -82,16 +88,20 @@ public class VehicleComponentImpl implements VehicleComponent {
     @Override
     @Transactional
     public void withdrawVehicle(String vehicleId) {
-        if (!issuedVehicleMapper.isVehicleHasRecords(vehicleId)) {
-            throw new DataException("Vehicle has not been assigned!");
+        if (vehicleMapper.getVehicleStatus(vehicleId) != VehicleStatus.AVAILABLE) {
+            throw new DataException("Vehicle is still occupied!");
         } else {
-            if (!issuedVehicleMapper.isVehicleHasDriver(vehicleId)) {
-                throw new DataException("Vehicle has no driver!");
+            if (!issuedVehicleMapper.isVehicleHasRecords(vehicleId)) {
+                throw new DataException("Vehicle has not been assigned!");
             } else {
-                int row = issuedVehicleMapper.withdrawVehicle(vehicleId);
+                if (!issuedVehicleMapper.isVehicleHasDriver(vehicleId)) {
+                    throw new DataException("Vehicle has no driver!");
+                } else {
+                    int row = issuedVehicleMapper.withdrawVehicle(vehicleId);
 
-                if (row == 0) {
-                    throw new DataException("Unknown error occurred. Data not modified!");
+                    if (row == 0) {
+                        throw new DataException("Unknown error occurred. Data not modified!");
+                    }
                 }
             }
         }
@@ -116,7 +126,7 @@ public class VehicleComponentImpl implements VehicleComponent {
                     if (!vehicleDocumentMapper.isDocumentExist(doc.getVehicleDocumentId())) {
                         int vehicleDoc = vehicleDocumentMapper.createVehicleDocument(doc, vehicle.getVehicleId());
                         if (vehicleDoc != 0) {
-                            for (String image : doc.getImageLink()) {
+                            for (String image : doc.getImageLinks()) {
                                 int vehicleDocImage = vehicleDocumentImageMapper.createVehicleDocumentImage(doc.getVehicleDocumentId(), image);
                                 if (vehicleDocImage != 0) {
                                     documentImageRowCount++;
@@ -139,6 +149,7 @@ public class VehicleComponentImpl implements VehicleComponent {
     }
 
     @Override
+    @Transactional
     public void deleteVehicle(String vehicleId) {
         if (vehicleMapper.getVehicleStatus(vehicleId) != VehicleStatus.DELETED) {
             int row = vehicleMapper.deleteVehicle(vehicleId);
@@ -154,5 +165,15 @@ public class VehicleComponentImpl implements VehicleComponent {
     @Override
     public VehicleDetail getVehicleDetails(String vehicleId) {
         return vehicleMapper.getVehicleDetails(vehicleId);
+    }
+
+    @Override
+    @Transactional
+    public void updateVehicleDetails(VehicleUpdateReq vehicleUpdateReq) {
+        int row = vehicleMapper.updateVehicle(vehicleUpdateReq);
+
+        if (row == 0) {
+            throw new DataException("Unknown error occurred. Data not modified!");
+        }
     }
 }

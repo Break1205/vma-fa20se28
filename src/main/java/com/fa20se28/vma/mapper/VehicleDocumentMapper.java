@@ -1,7 +1,11 @@
 package com.fa20se28.vma.mapper;
 
+import com.fa20se28.vma.model.VehicleDocument;
 import com.fa20se28.vma.request.VehicleDocumentReq;
+import com.fa20se28.vma.request.VehicleDocumentUpdateReq;
 import org.apache.ibatis.annotations.*;
+
+import java.util.List;
 
 @Mapper
 public interface VehicleDocumentMapper {
@@ -11,10 +15,10 @@ public interface VehicleDocumentMapper {
             "Count(vd.vehicle_document_id) > 0 THEN 1 " +
             "ELSE 0 END " +
             "FROM vehicle_document vd " +
-            "WHERE vd.vehicle_document_id = '%${v_id}%' ")
+            "WHERE vd.vehicle_document_id = #{v_id} ")
     boolean isDocumentExist(@Param("v_id") String vehicleDocumentId);
 
-    @Insert("INSERT INTO vehicle_document" +
+    @Insert("INSERT INTO vehicle_document " +
             "(vehicle_document_id, " +
             "vehicle_id, " +
             "registered_location," +
@@ -34,6 +38,30 @@ public interface VehicleDocumentMapper {
             @Param("d_request") VehicleDocumentReq documentReq,
             @Param("v_id") String vehicleId);
 
-    @Update("")
-    int updateVehicleDocument();
+    @Update("UPDATE vehicle_document " +
+            "SET " +
+            "registered_location = #{d_request.registeredLocation}, " +
+            "registered_date = #{d_request.registeredDate}, " +
+            "expiry_date = #{d_request.expiryDate}, " +
+            "vehicle_document_type = #{d_request.vehicleDocumentType} " +
+            "WHERE " +
+            "vehicle_document_id = #{d_request.vehicleDocumentId} ")
+    int updateVehicleDocument(@Param("d_request") VehicleDocumentUpdateReq documentReq);
+
+    @Select("SELECT " +
+            "vd.vehicle_document_id, " +
+            "vd.vehicle_document_type, " +
+            "vd.registered_location, " +
+            "vd.registered_date, " +
+            "vd.expiry_date " +
+            "FROM vehicle_document vd " +
+            "WHERE vd.vehicle_id = #{v_id} ")
+    @Results(id = "vehicleDocuments", value = {
+            @Result(property = "vehicleDocumentId", column = "vehicle_document_id"),
+            @Result(property = "vehicleDocumentType", column = "vehicle_document_type"),
+            @Result(property = "registeredLocation", column = "registered_location"),
+            @Result(property = "registeredDate", column = "registered_date"),
+            @Result(property = "expiryDate", column = "expiry_date")
+    })
+    List<VehicleDocument> getVehicleDocuments(@Param("v_id") String vehicleId);
 }

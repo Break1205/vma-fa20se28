@@ -1,4 +1,4 @@
-package com.fa20se28.vma.request;
+package com.fa20se28.vma.model;
 
 import com.fa20se28.vma.enums.VehicleDocumentType;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import java.util.Date;
 import java.util.List;
 
-public class VehicleDocumentReq {
+public class VehicleDocument {
     private String vehicleDocumentId;
     private VehicleDocumentType vehicleDocumentType;
     private String registeredLocation;
@@ -14,7 +14,7 @@ public class VehicleDocumentReq {
     private Date registeredDate;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date expiryDate;
-    private List<String> imageLinks;
+    private List<VehicleDocumentImage> imageLink;
 
     public String getVehicleDocumentId() {
         return vehicleDocumentId;
@@ -56,11 +56,11 @@ public class VehicleDocumentReq {
         this.expiryDate = expiryDate;
     }
 
-    public List<String> getImageLinks() {
-        return imageLinks;
+    public List<VehicleDocumentImage> getImageLink() {
+        return imageLink;
     }
 
-    public void setImageLinks(List<String> imageLinks) {
-        this.imageLinks = imageLinks;
+    public void setImageLink(List<VehicleDocumentImage> imageLink) {
+        this.imageLink = imageLink;
     }
 }

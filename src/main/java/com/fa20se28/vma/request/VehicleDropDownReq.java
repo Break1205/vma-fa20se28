@@ -3,12 +3,12 @@ package com.fa20se28.vma.request;
 public class VehicleDropDownReq {
     private String vehicleId;
     private String model;
-    private String vehicleTypeName;
+    private int vehicleTypeId;
 
-    public VehicleDropDownReq(String vehicleId, String model, String vehicleTypeName) {
+    public VehicleDropDownReq(String vehicleId, String model, int vehicleTypeId) {
         this.vehicleId = vehicleId;
         this.model = model;
-        this.vehicleTypeName = vehicleTypeName;
+        this.vehicleTypeId = vehicleTypeId;
     }
 
     public String getVehicleId() {
@@ -27,11 +27,11 @@ public class VehicleDropDownReq {
         this.model = model;
     }
 
-    public String getVehicleTypeName() {
-        return vehicleTypeName;
+    public int getVehicleTypeId() {
+        return vehicleTypeId;
     }
 
-    public void setVehicleTypeName(String vehicleTypeName) {
-        this.vehicleTypeName = vehicleTypeName;
+    public void setVehicleTypeId(int vehicleTypeId) {
+        this.vehicleTypeId = vehicleTypeId;
     }
 }

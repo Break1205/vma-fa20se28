@@ -1,12 +1,10 @@
 package com.fa20se28.vma.component;
 
-import com.fa20se28.vma.model.Vehicle;
-import com.fa20se28.vma.model.VehicleDetail;
-import com.fa20se28.vma.model.VehicleDropDown;
-import com.fa20se28.vma.model.VehicleType;
+import com.fa20se28.vma.model.*;
 import com.fa20se28.vma.request.VehicleDropDownReq;
 import com.fa20se28.vma.request.VehiclePageReq;
 import com.fa20se28.vma.request.VehicleReq;
+import com.fa20se28.vma.request.VehicleUpdateReq;
 
 import java.util.List;
 
@@ -15,9 +13,11 @@ public interface VehicleComponent {
 
     List<VehicleType> getTypes();
 
+    List<Brand> getBrands();
+
     List<Vehicle> getVehicles(VehiclePageReq request, int viewOption, int pageNum, String ownerId);
 
-    List<VehicleDropDown> getVehiclesDropDown(VehicleDropDownReq request, int pageNum, String status, String ownerId);
+    List<VehicleDropDown> getVehiclesDropDown(VehicleDropDownReq request, int pageNum, String ownerId);
 
     void assignVehicle(String vehicleId, String driverId);
 
@@ -28,4 +28,6 @@ public interface VehicleComponent {
     void deleteVehicle(String vehicleId);
 
     VehicleDetail getVehicleDetails(String vehicleId);
+
+    void updateVehicleDetails(VehicleUpdateReq vehicleUpdateReq);
 }

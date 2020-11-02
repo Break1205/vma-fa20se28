@@ -10,6 +10,15 @@ public class VehiclePageReq {
     private float vehicleMinDis;
     private float vehicleMaxDis;
 
+    public VehiclePageReq(String vehicleId, String model, int vehicleTypeId, VehicleStatus vehicleStatus, float vehicleMinDis, float vehicleMaxDis) {
+        this.vehicleId = vehicleId;
+        this.model = model;
+        this.vehicleTypeId = vehicleTypeId;
+        this.vehicleStatus = vehicleStatus;
+        this.vehicleMinDis = vehicleMinDis;
+        this.vehicleMaxDis = vehicleMaxDis;
+    }
+
     public String getVehicleId() {
         return vehicleId;
     }

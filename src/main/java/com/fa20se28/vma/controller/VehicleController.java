@@ -1,12 +1,11 @@
 package com.fa20se28.vma.controller;
 
+import com.fa20se28.vma.enums.VehicleStatus;
 import com.fa20se28.vma.request.VehicleDropDownReq;
 import com.fa20se28.vma.request.VehiclePageReq;
 import com.fa20se28.vma.request.VehicleReq;
-import com.fa20se28.vma.response.VehicleDetailRes;
-import com.fa20se28.vma.response.VehicleDropDownRes;
-import com.fa20se28.vma.response.VehiclePageRes;
-import com.fa20se28.vma.response.VehicleTypesRes;
+import com.fa20se28.vma.request.VehicleUpdateReq;
+import com.fa20se28.vma.response.*;
 import com.fa20se28.vma.service.VehicleService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +19,7 @@ public class VehicleController {
         this.vehicleService = vehicleService;
     }
 
-    @GetMapping("count")
+    @GetMapping("/count")
     public int getTotal(
             @RequestParam(required = false, defaultValue = "0") int viewOption,
             @RequestParam(required = false) String ownerId){
@@ -32,33 +31,47 @@ public class VehicleController {
             @RequestParam(required = false, defaultValue = "0") int viewOption,
             @RequestParam(required = false, defaultValue = "0") int pageNum,
             @RequestParam(required = false) String ownerId,
-            VehiclePageReq request) {
-        return vehicleService.getVehicles(request, viewOption, pageNum, ownerId);
+            @RequestParam(required = false) String vehicleId,
+            @RequestParam(required = false) String model,
+            @RequestParam(required = false, defaultValue = "0") int vehicleTypeId,
+            @RequestParam(required = false) VehicleStatus vehicleStatus,
+            @RequestParam(required = false, defaultValue = "0") float vehicleMinDis,
+            @RequestParam(required = false, defaultValue = "0") float vehicleMaxDis) {
+        return vehicleService.getVehicles(
+                new VehiclePageReq(vehicleId, model, vehicleTypeId, vehicleStatus, vehicleMinDis, vehicleMaxDis),
+                viewOption, pageNum, ownerId);
     }
 
     @GetMapping("/dropdown")
     public VehicleDropDownRes getVehiclesDropDown(
             @RequestParam(required = false, defaultValue = "0") int pageNum,
             @RequestParam(required = false) String ownerId,
-            VehicleDropDownReq request,
-            String status) {
-        return vehicleService.getVehiclesDropDown(request, pageNum, status, ownerId);
+            @RequestParam(required = false) String vehicleId,
+            @RequestParam(required = false) String model,
+            @RequestParam(required = false, defaultValue = "0") int vehicleTypeId) {
+        return vehicleService.getVehiclesDropDown(
+                new VehicleDropDownReq(vehicleId, model, vehicleTypeId), pageNum, ownerId);
     }
 
-    @GetMapping("types")
+    @GetMapping("/types")
     public VehicleTypesRes getTypes(){
         return vehicleService.getTypes();
     }
 
-    @PostMapping("assignment/{vehicle_id}/{driver_id}")
+    @GetMapping("/brands")
+    public BrandRes getBrands() {
+        return vehicleService.getBrands();
+    }
+
+    @PostMapping("/assignment/{vehicle-id}/{driver-id}")
     public void assignDriverWithVehicle(
-            @PathVariable("vehicle_id") String vehicleId,
-            @PathVariable("driver_id") String driverId) {
+            @PathVariable("vehicle-id") String vehicleId,
+            @PathVariable("driver-id") String driverId) {
         vehicleService.assignDriverWithVehicle(vehicleId, driverId);
     }
 
-    @PutMapping("assignment/{vehicle_id}")
-    public void withdrawIssuedVehicle(@PathVariable("vehicle_id") String vehicleId) {
+    @PutMapping("/assignment/{vehicle-id}")
+    public void withdrawIssuedVehicle(@PathVariable("vehicle-id") String vehicleId) {
         vehicleService.withdrawIssuedVehicle(vehicleId);
     }
 
@@ -75,8 +88,13 @@ public class VehicleController {
         vehicleService.deleteVehicle(vehicleId);
     }
 
-    @GetMapping("/{vehicle_id}")
-    public VehicleDetailRes getVehicleById(@PathVariable("vehicle_id") String vehicleId) {
+    @GetMapping("/{vehicle-id}")
+    public VehicleDetailRes getVehicleById(@PathVariable("vehicle-id") String vehicleId) {
         return vehicleService.getVehicleDetails(vehicleId);
+    }
+
+    @PatchMapping
+    public void updateVehicleById(@RequestBody VehicleUpdateReq vehicleUpdateReq) {
+        vehicleService.updateVehicleDetails(vehicleUpdateReq);
     }
 }
