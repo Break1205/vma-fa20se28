@@ -33,7 +33,7 @@ public class UserController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public int createUser(@RequestBody UserReq userReq,
-                          @RequestParam int roleId) {
+                          @RequestParam Long roleId) {
         return userService.createUser(userReq, roleId);
     }
 
@@ -53,6 +53,15 @@ public class UserController {
     public void updateUserStatusByUserId(@RequestParam UserStatus userStatus,
                                          @PathVariable("user-id") String userid) {
         userService.updateUserStatusByUserId(userStatus, userid);
+    }
+
+    @PatchMapping("/{user-id}/roles")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void addNewRoleForUserId(@RequestParam Long roleId,
+                                    @PathVariable("user-id") String userId) {
+        if (roleId != null) {
+            userService.addNewRoleForUser(roleId, userId);
+        }
     }
 
     @PostMapping("/role-token")

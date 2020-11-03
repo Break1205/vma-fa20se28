@@ -1,6 +1,8 @@
 package com.fa20se28.vma.service.impl;
 
 import com.fa20se28.vma.component.UserComponent;
+import com.fa20se28.vma.configuration.exception.DataException;
+import com.fa20se28.vma.configuration.exception.InvalidParamException;
 import com.fa20se28.vma.enums.UserStatus;
 import com.fa20se28.vma.model.Role;
 import com.fa20se28.vma.model.User;
@@ -47,7 +49,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public int createUser(UserReq userReq, int roleId) {
+    public int createUser(UserReq userReq, Long roleId) {
         int success = userComponent.createUserWithRole(userReq, roleId);
         if (success == 1) {
             firebaseService.createUserRecord(userReq);
@@ -85,5 +87,16 @@ public class UserServiceImpl implements UserService {
     @Override
     public int getTotalUserWithOneRoleByRoleId(String roleId, UserPageReq userPageReq) {
         return userComponent.findTotalUserWithOneRoleByRoleId(roleId, userPageReq);
+    }
+
+    @Override
+    public void addNewRoleForUser(Long roleId, String userId) {
+        List<Role> userRoles = userComponent.findUserRoles(userId);
+        for (Role existedRole : userRoles) {
+            if (existedRole.getRoleId().equals(roleId)) {
+                throw new InvalidParamException("User with id: " + userId + " already has role with id " + roleId);
+            }
+        }
+        userComponent.addNewRoleForUser(roleId, userId);
     }
 }

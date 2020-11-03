@@ -32,7 +32,7 @@ public interface UserMapper {
             "#{role_id} " +
             ");")
     int insertRoleForUserId(@Param("user_id") String userId,
-                            @Param("role_id") int roleId);
+                            @Param("role_id") Long roleId);
 
     @Update("UPDATE [user] " +
             "SET user_status = 'DISABLE' " +
