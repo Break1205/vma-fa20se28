@@ -9,10 +9,6 @@ import com.fa20se28.vma.response.*;
 public interface VehicleService {
     int getTotal(int viewOption, String ownerId);
 
-    VehicleTypesRes getTypes();
-
-    BrandRes getBrands();
-
     VehiclePageRes getVehicles(VehiclePageReq request, int viewOption, int pageNum, String ownerId);
 
     VehicleDropDownRes getVehiclesDropDown(VehicleDropDownReq request, int pageNum, String ownerId);

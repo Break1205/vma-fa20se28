@@ -33,7 +33,7 @@ public interface VehicleMapper {
             @Param("v_owner_id") String ownerId);
 
     @Select({"<script> " +
-            "SELECT v.vehicle_id, v.model, vt.vehicle_type_name, v.vehicle_status, v.distance_driven " +
+            "SELECT v.vehicle_id, v.model, vt.vehicle_type_name, v.seats, v.vehicle_status, v.distance_driven " +
             "FROM vehicle v " +
             "JOIN vehicle_type vt ON v.vehicle_type_id = vt.vehicle_type_id " +
             "WHERE " +
@@ -51,6 +51,12 @@ public interface VehicleMapper {
             "</if> " +
             "<if test = \"v_request.vehicleTypeId != 0\" > " +
             "AND vt.vehicle_type_id = #{v_request.vehicleTypeId} " +
+            "</if> " +
+            "<if test = \"v_request.seatsMin != 0\" > " +
+            "AND v.seats &gt;= #{v_request.seatsMin} " +
+            "</if> " +
+            "<if test = \"v_request.seatsMax != 0\" > " +
+            "AND v.seats &lt;= #{v_request.seatsMax} " +
             "</if> " +
             "<if test = \"v_request.vehicleMinDis != 0\" > " +
             "AND v.distance_driven &gt;= #{v_request.vehicleMinDis} " +
@@ -78,7 +84,7 @@ public interface VehicleMapper {
             @Param("v_owner_id") String ownerId);
 
     @Select({"<script> " +
-            "SELECT v.vehicle_id, v.model, vt.vehicle_type_name " +
+            "SELECT v.vehicle_id, v.model, vt.vehicle_type_name, v.seats " +
             "FROM vehicle v " +
             "JOIN vehicle_type vt ON v.vehicle_type_id = vt.vehicle_type_id " +
             "WHERE " +
@@ -94,6 +100,12 @@ public interface VehicleMapper {
             "</if> " +
             "<if test = \"v_request.vehicleTypeId != 0\" > " +
             "AND vt.vehicle_type_id = #{v_request.vehicleTypeId} " +
+            "</if> " +
+            "<if test = \"v_request.seatsMin != 0\" > " +
+            "AND v.seats &gt;= #{v_request.seatsMin} " +
+            "</if> " +
+            "<if test = \"v_request.seatsMax != 0\" > " +
+            "AND v.seats &lt;= #{v_request.seatsMax} " +
             "</if> " +
             "<if test = \"v_owner_id != null\" > " +
             "AND v.owner_id LIKE '%${v_owner_id}%' " +
@@ -224,4 +236,13 @@ public interface VehicleMapper {
             "WHERE " +
             "vehicle_id = #{v_request.vehicleId} ")
     int updateVehicle(@Param("v_request") VehicleUpdateReq vehicleUpdateReq);
+
+    @Update("UPDATE vehicle " +
+            "SET " +
+            "vehicle_status = #{v_request.vehicleStatus} " +
+            "WHERE " +
+            "vehicle_id = #{v_request.vehicleId} ")
+    int updateVehicleStatus(
+            @Param("v_request") String vehicleId,
+            @Param("v_request") VehicleStatus vehicleStatus);
 }

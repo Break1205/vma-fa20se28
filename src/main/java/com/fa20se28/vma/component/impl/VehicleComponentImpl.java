@@ -14,21 +14,16 @@ import java.util.List;
 @Component
 public class VehicleComponentImpl implements VehicleComponent {
     private final VehicleMapper vehicleMapper;
-    private final VehicleTypeMapper vehicleTypeMapper;
-    private final BrandMapper brandMapper;
     private final IssuedVehicleMapper issuedVehicleMapper;
     private final VehicleDocumentMapper vehicleDocumentMapper;
     private final VehicleDocumentImageMapper vehicleDocumentImageMapper;
 
-    public VehicleComponentImpl(VehicleMapper vehicleMapper,
-                                VehicleTypeMapper vehicleTypeMapper,
-                                BrandMapper brandMapper,
-                                IssuedVehicleMapper issuedVehicleMapper,
-                                VehicleDocumentMapper vehicleDocumentMapper,
-                                VehicleDocumentImageMapper vehicleDocumentImageMapper) {
+    public VehicleComponentImpl(
+            VehicleMapper vehicleMapper,
+            IssuedVehicleMapper issuedVehicleMapper,
+            VehicleDocumentMapper vehicleDocumentMapper,
+            VehicleDocumentImageMapper vehicleDocumentImageMapper) {
         this.vehicleMapper = vehicleMapper;
-        this.vehicleTypeMapper = vehicleTypeMapper;
-        this.brandMapper = brandMapper;
         this.issuedVehicleMapper = issuedVehicleMapper;
         this.vehicleDocumentMapper = vehicleDocumentMapper;
         this.vehicleDocumentImageMapper = vehicleDocumentImageMapper;
@@ -39,15 +34,7 @@ public class VehicleComponentImpl implements VehicleComponent {
         return vehicleMapper.getTotal(viewOption, ownerId);
     }
 
-    @Override
-    public List<VehicleType> getTypes() {
-        return vehicleTypeMapper.getTypes();
-    }
 
-    @Override
-    public List<Brand> getBrands() {
-        return brandMapper.getBrands();
-    }
 
     @Override
     public List<Vehicle> getVehicles(VehiclePageReq request, int viewOption, int pageNum, String ownerId) {
@@ -65,22 +52,11 @@ public class VehicleComponentImpl implements VehicleComponent {
         if (vehicleMapper.getVehicleStatus(vehicleId) != VehicleStatus.AVAILABLE_NO_DRIVER) {
             throw new DataException("Vehicle is unavailable!");
         } else {
-            if (!issuedVehicleMapper.isVehicleHasRecords(vehicleId)) {
-                int row = issuedVehicleMapper.assignVehicle(vehicleId, driverId);
+            int assignRow = issuedVehicleMapper.assignVehicle(vehicleId, driverId);
+            int updateStatusRow = vehicleMapper.updateVehicleStatus(vehicleId, VehicleStatus.AVAILABLE);
 
-                if (row == 0) {
-                    throw new DataException("Unknown error occurred. Data not added!");
-                }
-            } else {
-                if (!issuedVehicleMapper.isVehicleHasDriver(vehicleId)) {
-                    int row = issuedVehicleMapper.assignVehicle(vehicleId, driverId);
-
-                    if (row == 0) {
-                        throw new DataException("Unknown error occurred. Data not added!");
-                    }
-                } else {
-                    throw new DataException("Vehicle is already assigned!");
-                }
+            if (assignRow == 0 && updateStatusRow == 0) {
+                throw new DataException("Unknown error occurred. Data not added!");
             }
         }
     }
@@ -91,18 +67,10 @@ public class VehicleComponentImpl implements VehicleComponent {
         if (vehicleMapper.getVehicleStatus(vehicleId) != VehicleStatus.AVAILABLE) {
             throw new DataException("Vehicle is still occupied!");
         } else {
-            if (!issuedVehicleMapper.isVehicleHasRecords(vehicleId)) {
-                throw new DataException("Vehicle has not been assigned!");
-            } else {
-                if (!issuedVehicleMapper.isVehicleHasDriver(vehicleId)) {
-                    throw new DataException("Vehicle has no driver!");
-                } else {
-                    int row = issuedVehicleMapper.withdrawVehicle(vehicleId);
-
-                    if (row == 0) {
-                        throw new DataException("Unknown error occurred. Data not modified!");
-                    }
-                }
+            int withDrawRow = issuedVehicleMapper.withdrawVehicle(vehicleId);
+            int updateStatusRow = vehicleMapper.updateVehicleStatus(vehicleId, VehicleStatus.AVAILABLE_NO_DRIVER);
+            if (withDrawRow == 0 && updateStatusRow == 0) {
+                throw new DataException("Unknown error occurred. Data not modified!");
             }
         }
     }
@@ -114,8 +82,6 @@ public class VehicleComponentImpl implements VehicleComponent {
             int vehicleRow;
             if (vehicle.getRoleId() == 2) {
                 vehicleRow = vehicleMapper.createVehicle(vehicle, VehicleStatus.PENDING_APPROVAL);
-
-                //Create request here
             } else {
                 vehicleRow = vehicleMapper.createVehicle(vehicle, VehicleStatus.AVAILABLE_NO_DRIVER);
             }

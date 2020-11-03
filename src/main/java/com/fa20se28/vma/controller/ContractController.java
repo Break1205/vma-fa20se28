@@ -49,7 +49,7 @@ public class ContractController {
         contractService.updateContractStatus(contractStatus, contractId);
     }
 
-    @PatchMapping("/{contract-id}")
+    @PatchMapping
     void updateContract(@RequestBody ContractUpdateReq contractUpdateReq) {
         contractService.updateContract(contractUpdateReq);
     }

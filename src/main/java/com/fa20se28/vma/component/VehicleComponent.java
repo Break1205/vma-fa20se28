@@ -11,10 +11,6 @@ import java.util.List;
 public interface VehicleComponent {
     int getTotal(int viewOption, String ownerId);
 
-    List<VehicleType> getTypes();
-
-    List<Brand> getBrands();
-
     List<Vehicle> getVehicles(VehiclePageReq request, int viewOption, int pageNum, String ownerId);
 
     List<VehicleDropDown> getVehiclesDropDown(VehicleDropDownReq request, int pageNum, String ownerId);
