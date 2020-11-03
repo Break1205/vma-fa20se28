@@ -23,7 +23,7 @@ public class ContractController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    void createContract(@RequestBody ContractReq contractReq) {
+    public void createContract(@RequestBody ContractReq contractReq) {
         contractService.createContract(contractReq);
     }
 
@@ -43,14 +43,14 @@ public class ContractController {
     }
 
     @PatchMapping("/{contract-id}/status")
-    void updateContractStatus(
+    public void updateContractStatus(
             @PathVariable("contract-id") int contractId,
             @RequestParam ContractStatus contractStatus) {
         contractService.updateContractStatus(contractStatus, contractId);
     }
 
     @PatchMapping
-    void updateContract(@RequestBody ContractUpdateReq contractUpdateReq) {
+    public void updateContract(@RequestBody ContractUpdateReq contractUpdateReq) {
         contractService.updateContract(contractUpdateReq);
     }
 }
