@@ -63,14 +63,14 @@ public class VehicleController {
         return vehicleService.getBrands();
     }
 
-    @PostMapping("/assignment/{vehicle-id}/{driver-id}")
+    @PatchMapping("/assignment/{vehicle-id}/{driver-id}")
     public void assignDriverWithVehicle(
             @PathVariable("vehicle-id") String vehicleId,
             @PathVariable("driver-id") String driverId) {
         vehicleService.assignDriverWithVehicle(vehicleId, driverId);
     }
 
-    @PutMapping("/assignment/{vehicle-id}")
+    @PatchMapping("/assignment/{vehicle-id}")
     public void withdrawIssuedVehicle(@PathVariable("vehicle-id") String vehicleId) {
         vehicleService.withdrawIssuedVehicle(vehicleId);
     }
