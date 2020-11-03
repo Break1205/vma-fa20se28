@@ -12,7 +12,7 @@ public interface UserService extends UserDetailsService {
 
     void updateUserStatusByUserId(UserStatus userStatus, String userid);
 
-    int createUser(UserReq userReq, int roleId);
+    int createUser(UserReq userReq, Long roleId);
 
     void updateUser(UserReq userReq);
 
@@ -23,4 +23,6 @@ public interface UserService extends UserDetailsService {
     UserPageRes getUsersWithOneRoleByRoleId(String roleId, UserPageReq userPageReq);
 
     int getTotalUserWithOneRoleByRoleId(String roleId, UserPageReq userPageReq);
+
+    void addNewRoleForUser(Long roleId, String userid);
 }

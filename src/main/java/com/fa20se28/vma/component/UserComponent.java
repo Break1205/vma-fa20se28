@@ -16,7 +16,7 @@ public interface UserComponent {
 
     List<Role> findUserRoles(String userId);
 
-    int createUserWithRole(UserReq userReq, int roleId);
+    int createUserWithRole(UserReq userReq, Long roleId);
 
     int updateUserByUserId(UserReq userReq);
 
@@ -25,4 +25,6 @@ public interface UserComponent {
     List<UserRes> findUsersWithOneRoleByRoleId(String roleId, UserPageReq userPageReq);
 
     int findTotalUserWithOneRoleByRoleId(String roleId, UserPageReq userPageReq);
+
+    void addNewRoleForUser(Long roleId, String userId);
 }

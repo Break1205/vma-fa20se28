@@ -63,7 +63,7 @@ public class UserComponentImpl implements UserComponent {
 
     @Transactional
     @Override
-    public int createUserWithRole(UserReq userReq, int roleId) {
+    public int createUserWithRole(UserReq userReq, Long roleId) {
         if (insertUser(userReq, roleId)) {
             return 1;
         }
@@ -109,7 +109,7 @@ public class UserComponentImpl implements UserComponent {
         return 0;
     }
 
-    private boolean insertUser(UserReq userReq, int roleId) {
+    private boolean insertUser(UserReq userReq, Long roleId) {
         String generateId = CustomUtils.randomId();
         Optional<User> optionalDriverDetail = userMapper.findUserByUserId(generateId);
         while (optionalDriverDetail.isPresent()) {
@@ -150,5 +150,10 @@ public class UserComponentImpl implements UserComponent {
 
     public int findTotalUserWithOneRoleByRoleId(String roleId, UserPageReq userPageReq) {
         return userMapper.findTotalUsersWithOneRoleByRoleId(roleId, userPageReq);
+    }
+
+    @Override
+    public void addNewRoleForUser(Long roleId, String userId) {
+        userMapper.insertRoleForUserId(userId, roleId);
     }
 }
