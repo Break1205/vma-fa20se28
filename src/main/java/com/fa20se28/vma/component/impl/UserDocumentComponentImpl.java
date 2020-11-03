@@ -16,7 +16,8 @@ public class UserDocumentComponentImpl implements DocumentComponent {
     private final UserDocumentMapper userDocumentMapper;
     private final UserDocumentImageMapper userDocumentImageMapper;
 
-    public UserDocumentComponentImpl(UserDocumentMapper userDocumentMapper, UserDocumentImageMapper userDocumentImageMapper) {
+    public UserDocumentComponentImpl(UserDocumentMapper userDocumentMapper,
+                                     UserDocumentImageMapper userDocumentImageMapper) {
         this.userDocumentMapper = userDocumentMapper;
         this.userDocumentImageMapper = userDocumentImageMapper;
     }
@@ -59,7 +60,8 @@ public class UserDocumentComponentImpl implements DocumentComponent {
         int userDocumentLogRecords = userDocumentMapper.insertDocumentLog(userDocumentReq, userId);
         for (UserDocumentImageReq userDocumentImageReq : userDocumentReq.getUserDocumentImages()) {
             userDocumentImageMapper.updateUserDocumentImage(userDocumentImageReq, userDocumentReq.getUserDocumentId());
-            userDocumentImageLogRecords += userDocumentImageMapper.insertUserDocumentImageLog(userDocumentImageReq, userDocumentReq.getUserDocumentId());
+            userDocumentImageLogRecords += userDocumentImageMapper.insertUserDocumentImageLog(
+                    userDocumentImageReq, userDocumentReq.getUserDocumentId());
         }
         if (userDocumentRecords == 1
                 && userDocumentLogRecords == 1
@@ -69,6 +71,7 @@ public class UserDocumentComponentImpl implements DocumentComponent {
         return 0;
     }
 
+    @Transactional
     @Override
     public void deleteUserDocument(String userDocumentId) {
         userDocumentMapper.deleteUserDocument(userDocumentId);
@@ -81,7 +84,8 @@ public class UserDocumentComponentImpl implements DocumentComponent {
         int userDocumentImageRecords = 0;
         int userDocumentRecords = userDocumentMapper.insertDocument(userDocumentReq, userId);
         for (UserDocumentImageReq userDocumentImageReq : userDocumentReq.getUserDocumentImages()) {
-            userDocumentImageRecords += userDocumentImageMapper.insertUserDocumentImage(userDocumentImageReq, userDocumentReq.getUserDocumentId());
+            userDocumentImageRecords += userDocumentImageMapper.insertUserDocumentImage(
+                    userDocumentImageReq, userDocumentReq.getUserDocumentId());
         }
         if (userDocumentRecords == 1
                 && userDocumentImageRecords >= 0) {
@@ -94,6 +98,16 @@ public class UserDocumentComponentImpl implements DocumentComponent {
     @Transactional
     @Override
     public int updateUserDocumentWithRequest(UserDocumentReq userDocumentReq, String userId) {
+        int userDocumentImageRecords = 0;
+        int userDocumentRecords = userDocumentMapper.updateDocument(userDocumentReq, userId);
+        for (UserDocumentImageReq userDocumentImageReq : userDocumentReq.getUserDocumentImages()) {
+            userDocumentImageRecords += userDocumentImageMapper.updateUserDocumentImage(
+                    userDocumentImageReq, userDocumentReq.getUserDocumentId());
+        }
+        if (userDocumentRecords == 1
+                && userDocumentImageRecords >= 0) {
+            return 1;
+        }
         return 0;
     }
 }

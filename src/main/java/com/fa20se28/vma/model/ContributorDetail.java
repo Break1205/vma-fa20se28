@@ -1,11 +1,12 @@
 package com.fa20se28.vma.model;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
 public class ContributorDetail extends Contributor {
     private boolean gender;
-    private Date dateOfBirth;
+    private LocalDate dateOfBirth;
     private String address;
     private String imageLink;
     private Float baseSalary;
@@ -19,11 +20,11 @@ public class ContributorDetail extends Contributor {
         this.gender = gender;
     }
 
-    public Date getDateOfBirth() {
+    public LocalDate getDateOfBirth() {
         return dateOfBirth;
     }
 
-    public void setDateOfBirth(Date dateOfBirth) {
+    public void setDateOfBirth(LocalDate dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
 

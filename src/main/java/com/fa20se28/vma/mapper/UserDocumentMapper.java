@@ -64,6 +64,7 @@ public interface UserDocumentMapper {
             "#{UserDocumentReq.otherInformation}," +
             "getDate()," +
             "0) ")
+    @Options(keyProperty = "UserDocumentReq.userDocumentId", useGeneratedKeys = true)
     int insertDocument(@Param("UserDocumentReq") UserDocumentReq userDocumentReq,
                        @Param("userId") String userId);
 
