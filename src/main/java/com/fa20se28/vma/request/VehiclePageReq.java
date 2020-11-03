@@ -6,14 +6,18 @@ public class VehiclePageReq {
     private String vehicleId;
     private String model;
     private int vehicleTypeId;
+    private int seatsMin;
+    private int seatsMax;
     private VehicleStatus vehicleStatus;
     private float vehicleMinDis;
     private float vehicleMaxDis;
 
-    public VehiclePageReq(String vehicleId, String model, int vehicleTypeId, VehicleStatus vehicleStatus, float vehicleMinDis, float vehicleMaxDis) {
+    public VehiclePageReq(String vehicleId, String model, int vehicleTypeId, int seatsMin, int seatsMax, VehicleStatus vehicleStatus, float vehicleMinDis, float vehicleMaxDis) {
         this.vehicleId = vehicleId;
         this.model = model;
         this.vehicleTypeId = vehicleTypeId;
+        this.seatsMin = seatsMin;
+        this.seatsMax = seatsMax;
         this.vehicleStatus = vehicleStatus;
         this.vehicleMinDis = vehicleMinDis;
         this.vehicleMaxDis = vehicleMaxDis;
@@ -43,6 +47,30 @@ public class VehiclePageReq {
         this.vehicleTypeId = vehicleTypeId;
     }
 
+    public int getSeatsMin() {
+        return seatsMin;
+    }
+
+    public void setSeatsMin(int seatsMin) {
+        this.seatsMin = seatsMin;
+    }
+
+    public int getSeatsMax() {
+        return seatsMax;
+    }
+
+    public void setSeatsMax(int seatsMax) {
+        this.seatsMax = seatsMax;
+    }
+
+    public VehicleStatus getVehicleStatus() {
+        return vehicleStatus;
+    }
+
+    public void setVehicleStatus(VehicleStatus vehicleStatus) {
+        this.vehicleStatus = vehicleStatus;
+    }
+
     public float getVehicleMinDis() {
         return vehicleMinDis;
     }
@@ -57,13 +85,5 @@ public class VehiclePageReq {
 
     public void setVehicleMaxDis(float vehicleMaxDis) {
         this.vehicleMaxDis = vehicleMaxDis;
-    }
-
-    public VehicleStatus getVehicleStatus() {
-        return vehicleStatus;
-    }
-
-    public void setVehicleStatus(VehicleStatus vehicleStatus) {
-        this.vehicleStatus = vehicleStatus;
     }
 }

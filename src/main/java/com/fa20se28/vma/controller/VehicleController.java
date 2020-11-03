@@ -34,11 +34,13 @@ public class VehicleController {
             @RequestParam(required = false) String vehicleId,
             @RequestParam(required = false) String model,
             @RequestParam(required = false, defaultValue = "0") int vehicleTypeId,
+            @RequestParam(required = false, defaultValue = "0") int seatsMin,
+            @RequestParam(required = false, defaultValue = "0") int seatsMax,
             @RequestParam(required = false) VehicleStatus vehicleStatus,
             @RequestParam(required = false, defaultValue = "0") float vehicleMinDis,
             @RequestParam(required = false, defaultValue = "0") float vehicleMaxDis) {
         return vehicleService.getVehicles(
-                new VehiclePageReq(vehicleId, model, vehicleTypeId, vehicleStatus, vehicleMinDis, vehicleMaxDis),
+                new VehiclePageReq(vehicleId, model, vehicleTypeId, seatsMin, seatsMax, vehicleStatus, vehicleMinDis, vehicleMaxDis),
                 viewOption, pageNum, ownerId);
     }
 
@@ -48,19 +50,11 @@ public class VehicleController {
             @RequestParam(required = false) String ownerId,
             @RequestParam(required = false) String vehicleId,
             @RequestParam(required = false) String model,
-            @RequestParam(required = false, defaultValue = "0") int vehicleTypeId) {
+            @RequestParam(required = false, defaultValue = "0") int vehicleTypeId,
+            @RequestParam(required = false, defaultValue = "0") int seatsMin,
+            @RequestParam(required = false, defaultValue = "0") int seatsMax) {
         return vehicleService.getVehiclesDropDown(
-                new VehicleDropDownReq(vehicleId, model, vehicleTypeId), pageNum, ownerId);
-    }
-
-    @GetMapping("/types")
-    public VehicleTypesRes getTypes(){
-        return vehicleService.getTypes();
-    }
-
-    @GetMapping("/brands")
-    public BrandRes getBrands() {
-        return vehicleService.getBrands();
+                new VehicleDropDownReq(vehicleId, model, vehicleTypeId, seatsMin, seatsMax), pageNum, ownerId);
     }
 
     @PatchMapping("/assignment/{vehicle-id}/{driver-id}")

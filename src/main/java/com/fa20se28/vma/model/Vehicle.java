@@ -6,6 +6,7 @@ public class Vehicle {
     private String vehicleId;
     private String model;
     private String vehicleTypeName;
+    private int seats;
     private VehicleStatus vehicleStatus;
     private float vehicleDistance;
 
@@ -31,6 +32,14 @@ public class Vehicle {
 
     public void setVehicleTypeName(String vehicleTypeName) {
         this.vehicleTypeName = vehicleTypeName;
+    }
+
+    public int getSeats() {
+        return seats;
+    }
+
+    public void setSeats(int seats) {
+        this.seats = seats;
     }
 
     public VehicleStatus getVehicleStatus() {

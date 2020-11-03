@@ -1,10 +1,9 @@
 package com.fa20se28.vma.mapper;
 
 import com.fa20se28.vma.model.VehicleType;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.Results;
-import org.apache.ibatis.annotations.Select;
+import com.fa20se28.vma.request.VehicleTypeReq;
+import com.fa20se28.vma.request.VehicleTypeUpdateReq;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -17,4 +16,16 @@ public interface VehicleTypeMapper {
             @Result(property = "vehicleTypeName", column = "vehicle_type_name"),
     })
     List<VehicleType> getTypes();
+
+    @Insert("INSERT INTO vehicle_type " +
+            "(vehicle_type_name) " +
+            "VALUES " +
+            "(#{v_request.vehicleTypeName}) ")
+    int createType(@Param("v_request") VehicleTypeReq vehicleReq);
+
+    @Update("UPDATE vehicle_type " +
+            "SET " +
+            "vehicle_type_name = #{v_request.vehicleTypeName} " +
+            "WHERE vehicle_type_id = #{v_request.vehicleTypeId} ")
+    int updateType(@Param("v_request") VehicleTypeUpdateReq vehicleTypeUpdateReq);
 }

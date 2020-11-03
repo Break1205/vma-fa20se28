@@ -4,6 +4,7 @@ public class VehicleDropDown {
     private String vehicleId;
     private String model;
     private String vehicleTypeName;
+    private int seats;
 
     public String getVehicleId() {
         return vehicleId;
@@ -27,5 +28,13 @@ public class VehicleDropDown {
 
     public void setVehicleTypeName(String vehicleTypeName) {
         this.vehicleTypeName = vehicleTypeName;
+    }
+
+    public int getSeats() {
+        return seats;
+    }
+
+    public void setSeats(int seats) {
+        this.seats = seats;
     }
 }

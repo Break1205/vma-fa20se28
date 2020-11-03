@@ -37,6 +37,7 @@ public class ContractComponentImpl implements ContractComponent {
     }
 
     @Override
+    @Transactional
     public void updateContractStatus(ContractStatus contractStatus, int contractId) {
         int row = contractMapper.updateStatus(contractStatus, contractId);
 
@@ -46,6 +47,7 @@ public class ContractComponentImpl implements ContractComponent {
     }
 
     @Override
+    @Transactional
     public void updateContract(ContractUpdateReq contractUpdateReq) {
         int row = contractMapper.updateContract(contractUpdateReq);
 
