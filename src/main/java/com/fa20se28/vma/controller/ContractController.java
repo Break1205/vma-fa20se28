@@ -3,6 +3,7 @@ package com.fa20se28.vma.controller;
 import com.fa20se28.vma.enums.ContractStatus;
 import com.fa20se28.vma.request.ContractPageReq;
 import com.fa20se28.vma.request.ContractReq;
+import com.fa20se28.vma.request.ContractUpdateReq;
 import com.fa20se28.vma.response.ContractPageRes;
 import com.fa20se28.vma.service.ContractService;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -14,7 +15,7 @@ import java.util.Date;
 @RestController
 @RequestMapping("/api/v1/contracts")
 public class ContractController {
-    private ContractService contractService;
+    private final ContractService contractService;
 
     public ContractController(ContractService contractService) {
         this.contractService = contractService;
@@ -27,7 +28,7 @@ public class ContractController {
     }
 
     @GetMapping
-    ContractPageRes getContracts(
+    public ContractPageRes getContracts(
             @RequestParam(required = false) String contractOwnerId,
             @RequestParam(required = false) ContractStatus contractStatus,
             @RequestParam(required = false) @DateTimeFormat(pattern="yyyy-MM-dd") Date durationFrom,
@@ -39,5 +40,17 @@ public class ContractController {
         return contractService.getContracts(
                 new ContractPageReq(contractOwnerId, contractStatus, durationFrom, durationTo, totalPriceMin, totalPriceMax),
                 viewOption, pageNum);
+    }
+
+    @PatchMapping("/{contract-id}/status")
+    void updateContractStatus(
+            @PathVariable("contract-id") int contractId,
+            @RequestParam ContractStatus contractStatus) {
+        contractService.updateContractStatus(contractStatus, contractId);
+    }
+
+    @PatchMapping("/{contract-id}")
+    void updateContract(@RequestBody ContractUpdateReq contractUpdateReq) {
+        contractService.updateContract(contractUpdateReq);
     }
 }

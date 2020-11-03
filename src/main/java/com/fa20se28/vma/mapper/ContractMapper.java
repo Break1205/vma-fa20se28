@@ -5,6 +5,7 @@ import com.fa20se28.vma.model.Contract;
 import com.fa20se28.vma.model.ContractLM;
 import com.fa20se28.vma.request.ContractPageReq;
 import com.fa20se28.vma.request.ContractReq;
+import com.fa20se28.vma.request.ContractUpdateReq;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -57,9 +58,8 @@ public interface ContractMapper {
 
     @Select({"<script> " +
             "SELECT " +
-            "c.contract_id, ctm.customer_name, c.contract_status, c.duration_from, c.duration_to, c.total_price " +
+            "c.contract_id, c.contract_owner_id, c.contract_status, c.duration_from, c.duration_to, c.total_price " +
             "FROM contract c " +
-            "JOIN customer ctm ON c.contract_owner_id = ctm.customer_id " +
             "WHERE " +
             "<if test = \"c_option == 0\" > " +
             "c.contract_status != 'CANCELLED' " +
@@ -68,7 +68,7 @@ public interface ContractMapper {
             "c.contract_status = #{c_request.contractStatus} " +
             "</if> " +
             "<if test = \"c_request.contractOwnerId != null\" > " +
-            "AND c.contract_owner_id LIKE '%${c_request.contractOwnerId}%' " +
+            "AND c.contract_owner_id = #{c_request.contractOwnerId} " +
             "</if> " +
             "<if test = \"c_request.durationFrom != null\" > " +
             "AND c.duration_from &gt;= #{c_request.durationFrom} " +
@@ -88,7 +88,7 @@ public interface ContractMapper {
             "</script> "})
     @Results(id = "contracts", value = {
             @Result(property = "contractId", column = "contract_id"),
-            @Result(property = "contractOwnerName", column = "customer_name"),
+            @Result(property = "contractOwnerId", column = "contract_owner_id"),
             @Result(property = "contractStatus", column = "contract_status"),
             @Result(property = "durationFrom", column = "duration_from"),
             @Result(property = "durationTo", column = "duration_to"),
@@ -98,4 +98,28 @@ public interface ContractMapper {
             @Param("c_request") ContractPageReq contractPageReq,
             @Param("c_option") int viewOption,
             @Param("c_offset") int offset);
+
+    @Update("UPDATE contract " +
+            "SET contract_status = #{c_status} " +
+            "WHERE contract_id = #{c_id} ")
+    int updateStatus(
+            @Param("c_status") ContractStatus contractStatus,
+            @Param("c_id") int contractId);
+
+    @Update("UPDATE contract " +
+            "SET " +
+            "signed_date = #{c_request.signedDate},  " +
+            "signed_location = #{c_request.signedLocation},  " +
+            "duration_from = #{c_request.durationFrom},  " +
+            "duration_to = #{c_request.durationTo},  " +
+            "contract_owner_id = #{c_request.contractOwnerId},  " +
+            "departure_location = #{c_request.departureLocation},  " +
+            "departure_time = #{c_request.departureTime},  " +
+            "destination_location = #{c_request.destinationLocation},  " +
+            "destination_time = #{c_request.destinationTime},  " +
+            "total_price = #{c_request.totalPrice},  " +
+            "other_information = #{c_request.otherInformation} " +
+            "WHERE " +
+            "contract_id = #{c_request.contractId} ")
+    int updateContract(@Param("c_request") ContractUpdateReq contractUpdateReq);
 }

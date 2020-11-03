@@ -7,6 +7,7 @@ import com.fa20se28.vma.mapper.ContractMapper;
 import com.fa20se28.vma.model.ContractLM;
 import com.fa20se28.vma.request.ContractPageReq;
 import com.fa20se28.vma.request.ContractReq;
+import com.fa20se28.vma.request.ContractUpdateReq;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,4 +35,24 @@ public class ContractComponentImpl implements ContractComponent {
     public List<ContractLM> getContracts(ContractPageReq contractPageReq, int viewOption, int pageNum) {
         return contractMapper.getContracts(contractPageReq, viewOption, pageNum*15);
     }
+
+    @Override
+    public void updateContractStatus(ContractStatus contractStatus, int contractId) {
+        int row = contractMapper.updateStatus(contractStatus, contractId);
+
+        if (row == 0) {
+            throw new DataException("Unknown error occurred. Data not modified!");
+        }
+    }
+
+    @Override
+    public void updateContract(ContractUpdateReq contractUpdateReq) {
+        int row = contractMapper.updateContract(contractUpdateReq);
+
+        if (row == 0) {
+            throw new DataException("Unknown error occurred. Data not modified!");
+        }
+    }
+
+
 }
