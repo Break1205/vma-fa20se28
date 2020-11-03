@@ -5,8 +5,10 @@ import com.fa20se28.vma.enums.UserStatus;
 import com.fa20se28.vma.model.Role;
 import com.fa20se28.vma.model.User;
 import com.fa20se28.vma.model.UserAccount;
+import com.fa20se28.vma.request.UserPageReq;
 import com.fa20se28.vma.request.UserReq;
 import com.fa20se28.vma.request.UserTokenReq;
+import com.fa20se28.vma.response.UserPageRes;
 import com.fa20se28.vma.response.UserRoleRes;
 import com.fa20se28.vma.service.FirebaseService;
 import com.fa20se28.vma.service.UserService;
@@ -71,5 +73,17 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserRoleRes getUserRoles(UserTokenReq token) {
         return new UserRoleRes(userComponent.findUserRoles(firebaseService.decodeToken(token)));
+    }
+
+    @Override
+    public UserPageRes getUsersWithOneRoleByRoleId(String roleId, UserPageReq userPageReq) {
+        UserPageRes userPageRes = new UserPageRes();
+        userPageRes.setUserRes(userComponent.findUsersWithOneRoleByRoleId(roleId, userPageReq));
+        return userPageRes;
+    }
+
+    @Override
+    public int getTotalUserWithOneRoleByRoleId(String roleId, UserPageReq userPageReq) {
+        return userComponent.findTotalUserWithOneRoleByRoleId(roleId, userPageReq);
     }
 }

@@ -4,7 +4,9 @@ package com.fa20se28.vma.mapper;
 import com.fa20se28.vma.enums.UserStatus;
 import com.fa20se28.vma.model.Role;
 import com.fa20se28.vma.model.User;
+import com.fa20se28.vma.request.UserPageReq;
 import com.fa20se28.vma.request.UserReq;
+import com.fa20se28.vma.response.UserRes;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -105,4 +107,89 @@ public interface UserMapper {
             "base_salary = #{baseSalary} " +
             "WHERE user_id = #{userId}")
     int updateUser(UserReq userReq);
+
+    @Select({"<script>" +
+            "SELECT\n" +
+            "u.user_id, \n" +
+            "u.full_name, \n" +
+            "u.phone_number, \n" +
+            "u.user_status\n" +
+            "FROM\n" +
+            "[user] u\n" +
+            "JOIN user_roles ur\n" +
+            "ON ur.user_id = u.user_id\n" +
+            "WHERE ur.role_id = #{roleId} \n" +
+            "<if test = \"UserPageReq.userId!=null\" >\n" +
+            "AND u.user_id LIKE '%${UserPageReq.userId}%'\n" +
+            "</if> \n" +
+            "<if test = \"UserPageReq.fullName!=null\" >\n" +
+            "AND u.full_name LIKE N'%${UserPageReq.fullName}%'\n" +
+            "</if> \n" +
+            "<if test = \"UserPageReq.phoneNumber!=null\" >\n" +
+            "AND u.phone_number LIKE '%${UserPageReq.phoneNumber}%'\n" +
+            "</if> \n" +
+            "<if test = \"UserPageReq.userStatus!=null\" >\n" +
+            "AND u.user_status = #{UserPageReq.userStatus}\n" +
+            "</if> \n" +
+            "AND u.user_id NOT IN \n" +
+            "(SELECT user_id \n" +
+            "FROM user_roles \n" +
+            "WHERE role_id = \n" +
+            "<if test = \"roleId == 2\" >\n" +
+            "3\n" +
+            "</if> \n" +
+            "<if test = \"roleId == 3\" >\n" +
+            "2\n" +
+            "</if> \n" +
+            ")\n" +
+            "ORDER BY u.user_id ASC\n" +
+            "OFFSET ${UserPageReq.page} ROWS\n" +
+            "FETCH NEXT 15 ROWS ONLY " +
+            "</script>"})
+    @Results(id = "usersWithOnlyOneRoleResult", value = {
+            @Result(property = "userId", column = "user_id"),
+            @Result(property = "fullName", column = "full_name"),
+            @Result(property = "phoneNumber", column = "phone_number"),
+            @Result(property = "userStatus", column = "user_status")
+    })
+    List<UserRes> findUsersWithOneRoleByRoleId(@Param("roleId") String roleId, @Param("UserPageReq") UserPageReq userPageReq);
+
+    @Select({"<script>" +
+            "SELECT COUNT(uur.user_id) " +
+            "FROM (" +
+            "SELECT\n" +
+            "u.user_id, \n" +
+            "u.full_name, \n" +
+            "u.phone_number, \n" +
+            "u.user_status\n" +
+            "FROM\n" +
+            "[user] u\n" +
+            "JOIN user_roles ur\n" +
+            "ON ur.user_id = u.user_id\n" +
+            "WHERE ur.role_id = #{roleId} \n" +
+            "<if test = \"UserPageReq.userId!=null\" >\n" +
+            "AND u.user_id LIKE '%${UserPageReq.userId}%'\n" +
+            "</if> \n" +
+            "<if test = \"UserPageReq.fullName!=null\" >\n" +
+            "AND u.full_name LIKE N'%${UserPageReq.fullName}%'\n" +
+            "</if> \n" +
+            "<if test = \"UserPageReq.phoneNumber!=null\" >\n" +
+            "AND u.phone_number LIKE '%${UserPageReq.phoneNumber}%'\n" +
+            "</if> \n" +
+            "<if test = \"UserPageReq.userStatus!=null\" >\n" +
+            "AND u.user_status = #{UserPageReq.userStatus}\n" +
+            "</if> \n" +
+            "AND u.user_id NOT IN \n" +
+            "(SELECT user_id \n" +
+            "FROM user_roles \n" +
+            "WHERE role_id = \n" +
+            "<if test = \"roleId == 2\" >\n" +
+            "3\n" +
+            "</if> \n" +
+            "<if test = \"roleId == 3\" >\n" +
+            "2\n" +
+            "</if> \n" +
+            ")) uur \n" +
+            "</script>"})
+    int findTotalUsersWithOneRoleByRoleId(@Param("roleId") String roleId, @Param("UserPageReq") UserPageReq userPageReq);
 }

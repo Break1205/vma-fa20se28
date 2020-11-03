@@ -16,7 +16,9 @@ import com.fa20se28.vma.model.User;
 import com.fa20se28.vma.model.Vehicle;
 import com.fa20se28.vma.request.UserDocumentImageReq;
 import com.fa20se28.vma.request.UserDocumentReq;
+import com.fa20se28.vma.request.UserPageReq;
 import com.fa20se28.vma.request.UserReq;
+import com.fa20se28.vma.response.UserRes;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -139,5 +141,14 @@ public class UserComponentImpl implements UserComponent {
     @Override
     public int updateUserStatusByUserId(UserStatus userStatus, String userId) {
         return userMapper.updateUserStatusByUserId(userStatus, userId);
+    }
+
+    @Override
+    public List<UserRes> findUsersWithOneRoleByRoleId(String roleId, UserPageReq userPageReq) {
+        return userMapper.findUsersWithOneRoleByRoleId(roleId, userPageReq);
+    }
+
+    public int findTotalUserWithOneRoleByRoleId(String roleId, UserPageReq userPageReq) {
+        return userMapper.findTotalUsersWithOneRoleByRoleId(roleId, userPageReq);
     }
 }
