@@ -1,27 +1,26 @@
 package com.fa20se28.vma.controller;
 
 import com.fa20se28.vma.request.UserDocumentReq;
+import com.fa20se28.vma.request.VehicleDocumentUpdateReq;
 import com.fa20se28.vma.response.UserDocumentRes;
 import com.fa20se28.vma.response.UserDocumentTypesRes;
+import com.fa20se28.vma.response.VehicleDocumentRes;
 import com.fa20se28.vma.service.DocumentService;
+import com.fa20se28.vma.service.VehicleDocumentService;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1")
 public class DocumentController {
     private final DocumentService documentService;
+    private final VehicleDocumentService vehicleDocumentService;
 
-    public DocumentController(DocumentService documentService) {
+    public DocumentController(
+            DocumentService documentService,
+            VehicleDocumentService vehicleDocumentService) {
         this.documentService = documentService;
+        this.vehicleDocumentService = vehicleDocumentService;
     }
 
     @GetMapping("/documents/users")
@@ -63,5 +62,16 @@ public class DocumentController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteUserDocument(@RequestParam String userDocumentId){
         documentService.deleteUserDocument(userDocumentId);
+    }
+
+    @GetMapping("/vehicles/documents")
+    public VehicleDocumentRes getVehicleDocuments(@RequestParam String vehicleId) {
+        return vehicleDocumentService.getVehicleDocuments(vehicleId);
+    }
+
+    @PatchMapping("/vehicles/documents")
+    public void updateVehicleDocument(@RequestBody VehicleDocumentUpdateReq vehicleDocumentUpdateReq)
+    {
+        vehicleDocumentService.updateVehicleDocument(vehicleDocumentUpdateReq);
     }
 }

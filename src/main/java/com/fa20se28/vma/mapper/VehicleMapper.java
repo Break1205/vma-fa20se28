@@ -7,6 +7,7 @@ import com.fa20se28.vma.model.VehicleDropDown;
 import com.fa20se28.vma.request.VehicleDropDownReq;
 import com.fa20se28.vma.request.VehiclePageReq;
 import com.fa20se28.vma.request.VehicleReq;
+import com.fa20se28.vma.request.VehicleUpdateReq;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -81,21 +82,24 @@ public interface VehicleMapper {
             "FROM vehicle v " +
             "JOIN vehicle_type vt ON v.vehicle_type_id = vt.vehicle_type_id " +
             "WHERE " +
-            "v.vehicle_status = #{v_status} " +
+            "v.vehicle_status IN " +
+            "(SELECT v.vehicle_status " +
+            "FROM vehicle v " +
+            "Where v.vehicle_status = 'AVAILABLE' OR v.vehicle_status = 'AVAILABLE_NO_DRIVER') " +
             "<if test = \"v_request.vehicleId != null\" > " +
             "AND v.vehicle_id LIKE '%${v_request.vehicleId}%' " +
             "</if> " +
             "<if test = \"v_request.model != null\" > " +
             "AND v.model LIKE '%${v_request.model}%' " +
             "</if> " +
-            "<if test = \"v_request.vehicleTypeName != null\" > " +
-            "AND vt.vehicle_type_name LIKE '%${v_request.vehicleTypeName}%' " +
+            "<if test = \"v_request.vehicleTypeId != 0\" > " +
+            "AND vt.vehicle_type_id = #{v_request.vehicleTypeId} " +
             "</if> " +
             "<if test = \"v_owner_id != null\" > " +
             "AND v.owner_id LIKE '%${v_owner_id}%' " +
             "</if> " +
             "AND v.vehicle_id NOT IN " +
-            "(SELECT iv.vehicle_id " +
+            "(SELECT TOP 1 iv.vehicle_id " +
             "FROM issued_vehicle iv " +
             "WHERE iv.returned_date IS NULL) " +
             "ORDER BY v.date_of_registration DESC " +
@@ -106,10 +110,9 @@ public interface VehicleMapper {
             @Result(property = "vehicleId", column = "vehicle_id"),
             @Result(property = "vehicleTypeName", column = "vehicle_type_name")
     })
-    List<VehicleDropDown> getAvailableVehicles(
+    List<VehicleDropDown> getVehicleDropDownByStatus(
             @Param("v_request") VehicleDropDownReq request,
             @Param("v_offset") int offset,
-            @Param("v_status") String status,
             @Param("v_owner_id") String ownerId);
 
     @Select("SELECT " +
@@ -168,7 +171,7 @@ public interface VehicleMapper {
             "JOIN brand b ON b.brand_id = v.brand_id " +
             "WHERE " +
             "v.vehicle_id = #{v_id} ")
-    @Results(id = "vehiclesDetails", value = {
+    @Results(id = "vehicleDetails", value = {
             @Result(property = "vehicleId", column = "vehicle_id"),
             @Result(property = "vehicleTypeName", column = "vehicle_type_name"),
             @Result(property = "brandName", column = "brand_name"),
@@ -203,4 +206,22 @@ public interface VehicleMapper {
             @Result(property = "vehicleStatus", column = "vehicle_status")
     })
     List<Vehicle> getNotDeletedVehiclesByOwnerId(@Param("user_id") String userId);
+
+    @Update("UPDATE vehicle " +
+            "SET " +
+            "vehicle_type_id = #{v_request.vehicleTypeId}, " +
+            "brand_id = #{v_request.brandId}, " +
+            "owner_id = #{v_request.ownerId}, " +
+            "vehicle_status = #{v_request.vehicleStatus}, " +
+            "seats = #{v_request.seats}, " +
+            "image_link = #{v_request.imageLink}, " +
+            "model = #{v_request.model}, " +
+            "origin_of_manufacture = #{v_request.origin}, " +
+            "chassis_number = #{v_request.chassisNumber}, " +
+            "engine_number = #{v_request.engineNumber}, " +
+            "year_of_manufacture = #{v_request.yearOfManufacture}, " +
+            "distance_driven = #{v_request.distanceDriven} " +
+            "WHERE " +
+            "vehicle_id = #{v_request.vehicleId} ")
+    int updateVehicle(@Param("v_request") VehicleUpdateReq vehicleUpdateReq);
 }

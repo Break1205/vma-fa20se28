@@ -4,10 +4,8 @@ import com.fa20se28.vma.component.VehicleComponent;
 import com.fa20se28.vma.request.VehicleDropDownReq;
 import com.fa20se28.vma.request.VehiclePageReq;
 import com.fa20se28.vma.request.VehicleReq;
-import com.fa20se28.vma.response.VehicleDetailRes;
-import com.fa20se28.vma.response.VehicleDropDownRes;
-import com.fa20se28.vma.response.VehiclePageRes;
-import com.fa20se28.vma.response.VehicleTypesRes;
+import com.fa20se28.vma.request.VehicleUpdateReq;
+import com.fa20se28.vma.response.*;
 import com.fa20se28.vma.service.VehicleService;
 import org.springframework.stereotype.Service;
 
@@ -30,13 +28,18 @@ public class VehicleServiceImpl implements VehicleService {
     }
 
     @Override
+    public BrandRes getBrands() {
+        return new BrandRes(vehicleComponent.getBrands());
+    }
+
+    @Override
     public VehiclePageRes getVehicles(VehiclePageReq request, int viewOption, int pageNum, String ownerId) {
         return new VehiclePageRes(vehicleComponent.getVehicles(request, viewOption, pageNum, ownerId));
     }
 
     @Override
-    public VehicleDropDownRes getVehiclesDropDown(VehicleDropDownReq request, int pageNum, String status, String ownerId) {
-        return new VehicleDropDownRes(vehicleComponent.getVehiclesDropDown(request, pageNum, status, ownerId));
+    public VehicleDropDownRes getVehiclesDropDown(VehicleDropDownReq request, int pageNum, String ownerId) {
+        return new VehicleDropDownRes(vehicleComponent.getVehiclesDropDown(request, pageNum, ownerId));
     }
 
     @Override
@@ -62,5 +65,10 @@ public class VehicleServiceImpl implements VehicleService {
     @Override
     public VehicleDetailRes getVehicleDetails(String vehicleId) {
         return new VehicleDetailRes(vehicleComponent.getVehicleDetails(vehicleId));
+    }
+
+    @Override
+    public void updateVehicleDetails(VehicleUpdateReq vehicleUpdateReq) {
+        vehicleComponent.updateVehicleDetails(vehicleUpdateReq);
     }
 }
