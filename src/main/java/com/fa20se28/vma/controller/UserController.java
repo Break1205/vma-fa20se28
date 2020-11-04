@@ -7,6 +7,7 @@ import com.fa20se28.vma.request.UserReq;
 import com.fa20se28.vma.request.UserTokenReq;
 import com.fa20se28.vma.response.UserPageRes;
 import com.fa20se28.vma.response.UserRoleRes;
+import com.fa20se28.vma.response.UserStatusesRes;
 import com.fa20se28.vma.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -96,5 +97,10 @@ public class UserController {
             return userService.getTotalUserWithOneRoleByRoleId(
                     roleId, new UserPageReq(userId, name, phoneNumber, userStatus, 0));
         }
+    }
+
+    @GetMapping("/user-status")
+    public UserStatusesRes getUserStatuses(){
+        return new UserStatusesRes();
     }
 }

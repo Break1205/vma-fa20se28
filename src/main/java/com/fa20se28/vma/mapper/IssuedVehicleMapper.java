@@ -50,6 +50,6 @@ public interface IssuedVehicleMapper {
             @Result(property = "driverId", column = "driver_id"),
             @Result(property = "issuedDate", column = "issued_date"),
             @Result(property = "returnedDate", column = "returned_date"),
-    } )
+    })
     Optional<IssuedVehicle> checkIfTheDriverIsStillDriving(@Param("driver_id") String driverId);
 }

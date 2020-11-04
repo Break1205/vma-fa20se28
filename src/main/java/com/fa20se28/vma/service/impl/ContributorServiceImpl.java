@@ -3,8 +3,11 @@ package com.fa20se28.vma.service.impl;
 import com.fa20se28.vma.component.ContributorComponent;
 import com.fa20se28.vma.model.ContributorDetail;
 import com.fa20se28.vma.request.ContributorPageReq;
+import com.fa20se28.vma.request.UserPageReq;
 import com.fa20se28.vma.response.ContributorDetailRes;
 import com.fa20se28.vma.response.ContributorPageRes;
+import com.fa20se28.vma.response.DriverPageRes;
+import com.fa20se28.vma.response.UserPageRes;
 import com.fa20se28.vma.service.ContributorService;
 import org.springframework.stereotype.Service;
 
@@ -51,4 +54,18 @@ public class ContributorServiceImpl implements ContributorService {
         return contributorComponent.findTheHighestTotalVehicleInAllContributors();
     }
 
+    @Override
+    public UserPageRes getDriversDriveIssuedVehicleOfContributor(String contributorId, UserPageReq userPageReq) {
+        UserPageRes userPageRes = new UserPageRes();
+        userPageRes.setUserRes(
+                contributorComponent
+                        .findDriversDriveIssuedVehicleOfContributor(contributorId, userPageReq));
+        return userPageRes;
+    }
+
+    @Override
+    public int getTotalDriversDriveIssuedVehicleOfContributor(String contributorId, UserPageReq userPageReq) {
+        return contributorComponent
+                .findTotalDriversDriveIssuedVehicleOfContributor(contributorId, userPageReq);
+    }
 }
