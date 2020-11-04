@@ -156,4 +156,14 @@ public class VehicleComponentImpl implements VehicleComponent {
             throw new DataException("Unknown error occurred. Data not modified!");
         }
     }
+
+    @Override
+    @Transactional
+    public void updateVehicleStatus(String vehicleId, VehicleStatus vehicleStatus) {
+        int row = vehicleMapper.updateVehicleStatus(vehicleId, vehicleStatus);
+
+        if (row == 0) {
+            throw new DataException("Unknown error occurred. Data not modified!");
+        }
+    }
 }

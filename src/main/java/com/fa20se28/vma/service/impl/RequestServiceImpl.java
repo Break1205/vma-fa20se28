@@ -9,6 +9,7 @@ import com.fa20se28.vma.enums.RequestStatus;
 import com.fa20se28.vma.enums.RequestType;
 import com.fa20se28.vma.model.DocumentRequestDetail;
 import com.fa20se28.vma.request.RequestReq;
+import com.fa20se28.vma.request.VehicleRequestReq;
 import com.fa20se28.vma.response.DocumentRequestDetailRes;
 import com.fa20se28.vma.service.RequestService;
 import org.springframework.security.core.Authentication;
@@ -136,6 +137,15 @@ public class RequestServiceImpl implements RequestService {
         }
         if (documentRequestDetail.getRequestType().equals(RequestType.DELETE_DOCUMENT)) {
             return requestComponent.updateRequestStatus(documentRequestDetail.getRequestId(), RequestStatus.DENIED);
+        }
+        return 0;
+    }
+
+    @Override
+    public int createVehicleDocumentRequest(VehicleRequestReq vehicleRequestReq) {
+        Authentication authentication = authenticationComponent.getAuthentication();
+        if (requestComponent.createVehicleDocumentRequest(vehicleRequestReq, authentication.getName()) == 1) {
+            return 1;
         }
         return 0;
     }

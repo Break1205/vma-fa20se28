@@ -3,14 +3,9 @@ package com.fa20se28.vma.mapper;
 import com.fa20se28.vma.enums.RequestStatus;
 import com.fa20se28.vma.model.DocumentRequestDetail;
 import com.fa20se28.vma.request.RequestReq;
+import com.fa20se28.vma.request.VehicleRequestReq;
 import com.fa20se28.vma.response.RequestRes;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.Results;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -90,4 +85,24 @@ public interface RequestMapper {
             "SET request_status = #{requestStatus} \n" +
             "WHERE request_id = #{requestId}")
     int updateRequestStatus(@Param("requestId") int requestId,@Param("requestStatus") RequestStatus requestStatus);
+
+    @Insert("INSERT INTO " +
+            "request " +
+            "(user_id, " +
+            "vehicle_document_id, " +
+            "request_status, " +
+            "request_type, " +
+            "create_date, " +
+            "description) " +
+            "VALUES " +
+            "(#{userId}, " +
+            "#{r_vehicle.vehicleDocumentId}, " +
+            "#{r_status}, " +
+            "#{r_vehicle.requestType}, " +
+            "getDate(), " +
+            "#{r_vehicle.description}) ")
+    int insertVehicleRequest(
+            @Param("r_vehicle") VehicleRequestReq requestReq,
+            @Param("r_status") RequestStatus requestStatus,
+            @Param("userId") String userId);
 }

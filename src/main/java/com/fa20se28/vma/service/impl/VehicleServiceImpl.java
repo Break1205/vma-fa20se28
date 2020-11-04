@@ -1,6 +1,7 @@
 package com.fa20se28.vma.service.impl;
 
 import com.fa20se28.vma.component.VehicleComponent;
+import com.fa20se28.vma.enums.VehicleStatus;
 import com.fa20se28.vma.request.VehicleDropDownReq;
 import com.fa20se28.vma.request.VehiclePageReq;
 import com.fa20se28.vma.request.VehicleReq;
@@ -60,5 +61,10 @@ public class VehicleServiceImpl implements VehicleService {
     @Override
     public void updateVehicleDetails(VehicleUpdateReq vehicleUpdateReq) {
         vehicleComponent.updateVehicleDetails(vehicleUpdateReq);
+    }
+
+    @Override
+    public void updateVehicleStatus(String vehicleId, VehicleStatus vehicleStatus) {
+        vehicleComponent.updateVehicleStatus(vehicleId, vehicleStatus);
     }
 }

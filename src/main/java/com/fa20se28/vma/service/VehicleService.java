@@ -1,5 +1,6 @@
 package com.fa20se28.vma.service;
 
+import com.fa20se28.vma.enums.VehicleStatus;
 import com.fa20se28.vma.request.VehicleDropDownReq;
 import com.fa20se28.vma.request.VehiclePageReq;
 import com.fa20se28.vma.request.VehicleReq;
@@ -24,4 +25,6 @@ public interface VehicleService {
     VehicleDetailRes getVehicleDetails(String vehicleId);
 
     void updateVehicleDetails(VehicleUpdateReq vehicleUpdateReq);
+
+    void updateVehicleStatus(String vehicleId, VehicleStatus vehicleStatus);
 }
