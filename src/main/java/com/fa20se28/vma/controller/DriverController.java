@@ -44,5 +44,4 @@ public class DriverController {
                 new DriverPageReq(
                         userId, name, phoneNumber, userStatus, 0));
     }
-
 }

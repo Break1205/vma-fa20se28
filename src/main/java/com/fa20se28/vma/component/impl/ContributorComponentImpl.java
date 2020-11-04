@@ -7,7 +7,9 @@ import com.fa20se28.vma.mapper.UserDocumentMapper;
 import com.fa20se28.vma.mapper.UserMapper;
 import com.fa20se28.vma.model.ContributorDetail;
 import com.fa20se28.vma.request.ContributorPageReq;
+import com.fa20se28.vma.request.UserPageReq;
 import com.fa20se28.vma.response.ContributorRes;
+import com.fa20se28.vma.response.UserRes;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -59,5 +61,15 @@ public class ContributorComponentImpl implements ContributorComponent {
     @Override
     public int findTheLowestTotalVehicleInAllContributors() {
         return contributorMapper.findTheLowestTotalVehiclesInAllContributors();
+    }
+
+    @Override
+    public List<UserRes> findDriversDriveIssuedVehicleOfContributor(String contributorId, UserPageReq userPageReq) {
+        return contributorMapper.findDriversDriveIssuedVehicleOfContributor(contributorId, userPageReq);
+    }
+
+    @Override
+    public int findTotalDriversDriveIssuedVehicleOfContributor(String contributorId, UserPageReq userPageReq) {
+        return contributorMapper.findTotalDriversDriveIssuedVehicleOfContributor(contributorId, userPageReq);
     }
 }
