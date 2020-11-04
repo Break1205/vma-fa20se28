@@ -35,7 +35,6 @@ public class VehicleComponentImpl implements VehicleComponent {
     }
 
 
-
     @Override
     public List<Vehicle> getVehicles(VehiclePageReq request, int viewOption, int pageNum, String ownerId) {
         return vehicleMapper.getVehicles(request, viewOption, pageNum * 15, ownerId);
@@ -117,14 +116,14 @@ public class VehicleComponentImpl implements VehicleComponent {
     @Override
     @Transactional
     public void deleteVehicle(String vehicleId) {
-        if (vehicleMapper.getVehicleStatus(vehicleId) != VehicleStatus.DELETED) {
+        if (vehicleMapper.getVehicleStatus(vehicleId) != VehicleStatus.AVAILABLE_NO_DRIVER) {
+            throw new DataException("Vehicle is still occupied!");
+        } else {
             int row = vehicleMapper.deleteVehicle(vehicleId);
 
             if (row == 0) {
                 throw new DataException("Unknown error occurred. Data not modified!");
             }
-        } else {
-            throw new DataException("Vehicle is already deleted!");
         }
     }
 

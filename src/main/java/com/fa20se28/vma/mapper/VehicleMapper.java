@@ -239,10 +239,10 @@ public interface VehicleMapper {
 
     @Update("UPDATE vehicle " +
             "SET " +
-            "vehicle_status = #{v_request.vehicleStatus} " +
+            "vehicle_status = #{v_status} " +
             "WHERE " +
-            "vehicle_id = #{v_request.vehicleId} ")
+            "vehicle_id = #{v_id} ")
     int updateVehicleStatus(
-            @Param("v_request") String vehicleId,
-            @Param("v_request") VehicleStatus vehicleStatus);
+            @Param("v_id") String vehicleId,
+            @Param("v_status") VehicleStatus vehicleStatus);
 }
