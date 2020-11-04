@@ -60,18 +60,25 @@ public class DocumentController {
 
     @DeleteMapping("/admin/documents")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteUserDocument(@RequestParam String userDocumentId){
+    public void deleteUserDocument(@RequestParam String userDocumentId) {
         documentService.deleteUserDocument(userDocumentId);
     }
 
     @GetMapping("/vehicles/documents")
-    public VehicleDocumentRes getVehicleDocuments(@RequestParam String vehicleId) {
-        return vehicleDocumentService.getVehicleDocuments(vehicleId);
+    public VehicleDocumentRes getVehicleDocuments(
+            @RequestParam String vehicleId,
+            @RequestParam(defaultValue = "1") int viewOption) {
+        return vehicleDocumentService.getVehicleDocuments(vehicleId, viewOption);
     }
 
     @PatchMapping("/vehicles/documents")
-    public void updateVehicleDocument(@RequestBody VehicleDocumentUpdateReq vehicleDocumentUpdateReq)
-    {
+    public void updateVehicleDocument(@RequestBody VehicleDocumentUpdateReq vehicleDocumentUpdateReq) {
         vehicleDocumentService.updateVehicleDocument(vehicleDocumentUpdateReq);
+    }
+
+    @DeleteMapping("/vehicles/documents")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteVehicleDocument(@RequestParam String vehicleDocId) {
+        vehicleDocumentService.deleteDocument(vehicleDocId);
     }
 }

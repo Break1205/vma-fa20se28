@@ -5,6 +5,7 @@ import com.fa20se28.vma.enums.ContractStatus;
 import com.fa20se28.vma.request.ContractPageReq;
 import com.fa20se28.vma.request.ContractReq;
 import com.fa20se28.vma.request.ContractUpdateReq;
+import com.fa20se28.vma.response.ContractDetailRes;
 import com.fa20se28.vma.response.ContractPageRes;
 import com.fa20se28.vma.service.ContractService;
 import org.springframework.stereotype.Service;
@@ -35,5 +36,10 @@ public class ContractServiceImpl implements ContractService {
     @Override
     public void updateContract(ContractUpdateReq contractUpdateReq) {
         contractComponent.updateContract(contractUpdateReq);
+    }
+
+    @Override
+    public ContractDetailRes getContractDetails(int contractId) {
+        return new ContractDetailRes(contractComponent.getContractDetails(contractId));
     }
 }

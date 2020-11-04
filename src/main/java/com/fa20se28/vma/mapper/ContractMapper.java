@@ -2,6 +2,7 @@ package com.fa20se28.vma.mapper;
 
 import com.fa20se28.vma.enums.ContractStatus;
 import com.fa20se28.vma.model.Contract;
+import com.fa20se28.vma.model.ContractDetail;
 import com.fa20se28.vma.model.ContractLM;
 import com.fa20se28.vma.request.ContractPageReq;
 import com.fa20se28.vma.request.ContractReq;
@@ -58,7 +59,7 @@ public interface ContractMapper {
 
     @Select({"<script> " +
             "SELECT " +
-            "c.contract_id, c.contract_owner_id, c.contract_status, c.duration_from, c.duration_to, c.total_price " +
+            "c.contract_id, c.contract_status, c.duration_from, c.duration_to, c.total_price " +
             "FROM contract c " +
             "WHERE " +
             "<if test = \"c_option == 0\" > " +
@@ -66,9 +67,6 @@ public interface ContractMapper {
             "</if> " +
             "<if test = \"c_option == 1\" > " +
             "c.contract_status = #{c_request.contractStatus} " +
-            "</if> " +
-            "<if test = \"c_request.contractOwnerId != null\" > " +
-            "AND c.contract_owner_id = #{c_request.contractOwnerId} " +
             "</if> " +
             "<if test = \"c_request.durationFrom != null\" > " +
             "AND c.duration_from &gt;= #{c_request.durationFrom} " +
@@ -88,7 +86,6 @@ public interface ContractMapper {
             "</script> "})
     @Results(id = "contracts", value = {
             @Result(property = "contractId", column = "contract_id"),
-            @Result(property = "contractOwnerId", column = "contract_owner_id"),
             @Result(property = "contractStatus", column = "contract_status"),
             @Result(property = "durationFrom", column = "duration_from"),
             @Result(property = "durationTo", column = "duration_to"),
@@ -122,4 +119,31 @@ public interface ContractMapper {
             "WHERE " +
             "contract_id = #{c_request.contractId} ")
     int updateContract(@Param("c_request") ContractUpdateReq contractUpdateReq);
+
+    @Select("SELECT " +
+            "c.contract_id, ctm.customer_id, ctm.customer_name, c.signed_date, c.signed_location, " +
+            "c.duration_from, c.duration_to, c.contract_status, " +
+            "c.departure_location, c.departure_time, c.destination_location, c.destination_time, " +
+            "c.total_price, c.other_information " +
+            "FROM contract c " +
+            "JOIN customer ctm ON ctm.customer_id = c.contract_owner_id " +
+            "WHERE " +
+            "c.contract_id = #{c_id} ")
+    @Results(id = "contractDetails", value = {
+            @Result(property = "contractId", column = "contract_id"),
+            @Result(property = "contractOwner.userId", column = "customer_id"),
+            @Result(property = "contractOwner.userName", column = "customer_name"),
+            @Result(property = "signedDate", column = "signed_date"),
+            @Result(property = "signedLocation", column = "signed_location"),
+            @Result(property = "durationFrom", column = "duration_from"),
+            @Result(property = "durationTo", column = "duration_to"),
+            @Result(property = "contractStatus", column = "contract_status"),
+            @Result(property = "departureLocation", column = "departure_location"),
+            @Result(property = "departureDate", column = "departure_time"),
+            @Result(property = "destinationLocation", column = "destination_location"),
+            @Result(property = "destinationDate", column = "destination_time"),
+            @Result(property = "totalPrice", column = "total_price"),
+            @Result(property = "otherInformation", column = "other_information")
+    })
+    ContractDetail getContractDetails(@Param("c_id") int contractId);
 }

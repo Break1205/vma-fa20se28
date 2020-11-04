@@ -25,10 +25,10 @@ public class VehicleDocumentComponentImpl implements VehicleDocumentComponent {
     }
 
     @Override
-    public List<VehicleDocument> getVehicleDocuments(String vehicleId) {
-        List<VehicleDocument> vehicleDocuments = vehicleDocumentMapper.getVehicleDocuments(vehicleId);
+    public List<VehicleDocument> getVehicleDocuments(String vehicleId, int viewOption) {
+        List<VehicleDocument> vehicleDocuments = vehicleDocumentMapper.getVehicleDocuments(vehicleId, viewOption);
         for (VehicleDocument vdoc : vehicleDocuments) {
-            vdoc.setImageLink(vehicleDocumentImageMapper.getImageLinks(vdoc.getVehicleDocumentId()));
+            vdoc.setImageLinks(vehicleDocumentImageMapper.getImageLinks(vdoc.getVehicleDocumentId()));
         }
         return vehicleDocuments;
     }
@@ -43,6 +43,16 @@ public class VehicleDocumentComponentImpl implements VehicleDocumentComponent {
                 vehicleDocumentImageMapper.updateVehicleDocumentImage(vehicleDocumentUpdateReq.getVehicleDocumentId(), image);
             }
         } else {
+            throw new DataException("Unknown error occurred. Data not modified!");
+        }
+    }
+
+    @Override
+    @Transactional
+    public void deleteDocument(String vehicleDocId) {
+        int row = vehicleDocumentMapper.deleteDocument(vehicleDocId);
+
+        if (row != 0) {
             throw new DataException("Unknown error occurred. Data not modified!");
         }
     }

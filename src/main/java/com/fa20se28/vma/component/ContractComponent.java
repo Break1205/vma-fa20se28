@@ -1,6 +1,7 @@
 package com.fa20se28.vma.component;
 
 import com.fa20se28.vma.enums.ContractStatus;
+import com.fa20se28.vma.model.ContractDetail;
 import com.fa20se28.vma.model.ContractLM;
 import com.fa20se28.vma.request.ContractPageReq;
 import com.fa20se28.vma.request.ContractReq;
@@ -16,4 +17,6 @@ public interface ContractComponent {
     void updateContractStatus(ContractStatus contractStatus, int contractId);
 
     void updateContract(ContractUpdateReq contractUpdateReq);
+
+    ContractDetail getContractDetails(int contractId);
 }

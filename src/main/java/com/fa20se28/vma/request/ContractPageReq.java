@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import java.util.Date;
 
 public class ContractPageReq {
-    private String contractOwnerId;
     private ContractStatus contractStatus;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date durationFrom;
@@ -15,21 +14,12 @@ public class ContractPageReq {
     private float totalPriceMin;
     private float totalPriceMax;
 
-    public ContractPageReq(String contractOwnerId, ContractStatus contractStatus, Date durationFrom, Date durationTo, float totalPriceMin, float totalPriceMax) {
-        this.contractOwnerId = contractOwnerId;
+    public ContractPageReq(ContractStatus contractStatus, Date durationFrom, Date durationTo, float totalPriceMin, float totalPriceMax) {
         this.contractStatus = contractStatus;
         this.durationFrom = durationFrom;
         this.durationTo = durationTo;
         this.totalPriceMin = totalPriceMin;
         this.totalPriceMax = totalPriceMax;
-    }
-
-    public String getContractOwnerId() {
-        return contractOwnerId;
-    }
-
-    public void setContractOwnerId(String contractOwnerId) {
-        this.contractOwnerId = contractOwnerId;
     }
 
     public ContractStatus getContractStatus() {

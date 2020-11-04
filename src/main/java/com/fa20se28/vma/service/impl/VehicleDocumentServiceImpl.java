@@ -15,12 +15,17 @@ public class VehicleDocumentServiceImpl implements VehicleDocumentService {
     }
 
     @Override
-    public VehicleDocumentRes getVehicleDocuments(String vehicleId) {
-        return new VehicleDocumentRes(vehicleDocumentComponent.getVehicleDocuments(vehicleId));
+    public VehicleDocumentRes getVehicleDocuments(String vehicleId, int viewOption) {
+        return new VehicleDocumentRes(vehicleDocumentComponent.getVehicleDocuments(vehicleId, viewOption));
     }
 
     @Override
     public void updateVehicleDocument(VehicleDocumentUpdateReq vehicleDocumentUpdateReq) {
         vehicleDocumentComponent.updateVehicleDocument(vehicleDocumentUpdateReq);
+    }
+
+    @Override
+    public void deleteDocument(String vehicleDocId) {
+        vehicleDocumentComponent.deleteDocument(vehicleDocId);
     }
 }

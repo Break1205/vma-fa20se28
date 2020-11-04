@@ -1,6 +1,7 @@
 package com.fa20se28.vma.mapper;
 
 import com.fa20se28.vma.model.IssuedVehicle;
+import com.fa20se28.vma.model.UserBasic;
 import org.apache.ibatis.annotations.*;
 
 import java.util.Optional;
@@ -52,4 +53,16 @@ public interface IssuedVehicleMapper {
             @Result(property = "returnedDate", column = "returned_date"),
     })
     Optional<IssuedVehicle> checkIfTheDriverIsStillDriving(@Param("driver_id") String driverId);
+
+    @Select("SELECT TOP 1 u.[user_id], u.full_name " +
+            "FROM issued_vehicle iv " +
+            "JOIN [user] u ON u.[user_id] = iv.driver_id " +
+            "WHERE iv.vehicle_id = #{v_id} " +
+            "AND iv.returned_date IS NULL " +
+            "ORDER BY iv.issued_date DESC")
+    @Results(id = "assignedDriver", value = {
+            @Result(property = "userId", column = "user_id"),
+            @Result(property = "userName", column = "full_name")
+    })
+    UserBasic getAssignedDriver(@Param("v_id") String vehicleId);
 }

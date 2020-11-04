@@ -4,6 +4,7 @@ import com.fa20se28.vma.enums.ContractStatus;
 import com.fa20se28.vma.request.ContractPageReq;
 import com.fa20se28.vma.request.ContractReq;
 import com.fa20se28.vma.request.ContractUpdateReq;
+import com.fa20se28.vma.response.ContractDetailRes;
 import com.fa20se28.vma.response.ContractPageRes;
 
 public interface ContractService {
@@ -14,4 +15,6 @@ public interface ContractService {
     void updateContractStatus(ContractStatus contractStatus, int contractId);
 
     void updateContract(ContractUpdateReq contractUpdateReq);
+
+    ContractDetailRes getContractDetails(int contractId);
 }
