@@ -25,7 +25,8 @@ public interface VehicleDocumentMapper {
             "registered_date, " +
             "expiry_date, " +
             "create_date, " +
-            "vehicle_document_type) " +
+            "vehicle_document_type, " +
+            "is_deleted) " +
             "VALUES " +
             "(#{d_request.vehicleDocumentId}, " +
             "#{v_id}, " +
@@ -33,10 +34,12 @@ public interface VehicleDocumentMapper {
             "#{d_request.registeredDate}, " +
             "#{d_request.expiryDate}, " +
             "getdate(), " +
-            "#{d_request.vehicleDocumentType}) ")
+            "#{d_request.vehicleDocumentType}, " +
+            "#{d_option}) ")
     int createVehicleDocument(
             @Param("d_request") VehicleDocumentReq documentReq,
-            @Param("v_id") String vehicleId);
+            @Param("v_id") String vehicleId,
+            @Param("d_option") boolean createOption);
 
     @Update("UPDATE vehicle_document " +
             "SET " +
@@ -48,14 +51,22 @@ public interface VehicleDocumentMapper {
             "vehicle_document_id = #{d_request.vehicleDocumentId} ")
     int updateVehicleDocument(@Param("d_request") VehicleDocumentUpdateReq documentReq);
 
-    @Select("SELECT " +
+    @Select({"<script> " +
+            "SELECT " +
             "vd.vehicle_document_id, " +
             "vd.vehicle_document_type, " +
             "vd.registered_location, " +
             "vd.registered_date, " +
             "vd.expiry_date " +
             "FROM vehicle_document vd " +
-            "WHERE vd.vehicle_id = #{v_id} ")
+            "WHERE vd.vehicle_id = #{v_id} " +
+            "<if test = \"d_option == 1\" > " +
+            "AND is_deleted = 0 " +
+            "</if> " +
+            "<if test = \"d_option == 2\" > " +
+            "AND is_deleted = 1 " +
+            "</if> " +
+            "</script> "})
     @Results(id = "vehicleDocuments", value = {
             @Result(property = "vehicleDocumentId", column = "vehicle_document_id"),
             @Result(property = "vehicleDocumentType", column = "vehicle_document_type"),
@@ -63,5 +74,14 @@ public interface VehicleDocumentMapper {
             @Result(property = "registeredDate", column = "registered_date"),
             @Result(property = "expiryDate", column = "expiry_date")
     })
-    List<VehicleDocument> getVehicleDocuments(@Param("v_id") String vehicleId);
+    List<VehicleDocument> getVehicleDocuments(
+            @Param("v_id") String vehicleId,
+            @Param("d_option") int viewOption);
+
+    @Update("UPDATE vehicle_document " +
+            "SET " +
+            "is_deleted = 1 " +
+            "WHERE " +
+            "vehicle_document_id = #{d_id} ")
+    int deleteDocument(@Param("d_id") String vehicleDocumentId);
 }

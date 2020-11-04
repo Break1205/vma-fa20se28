@@ -89,7 +89,14 @@ public class VehicleComponentImpl implements VehicleComponent {
             if (vehicleRow != 0) {
                 for (VehicleDocumentReq doc : vehicle.getVehicleDocuments()) {
                     if (!vehicleDocumentMapper.isDocumentExist(doc.getVehicleDocumentId())) {
-                        int vehicleDoc = vehicleDocumentMapper.createVehicleDocument(doc, vehicle.getVehicleId());
+                        int vehicleDoc;
+                        if (vehicle.getRoleId() == 2) {
+                            vehicleDoc = vehicleDocumentMapper.createVehicleDocument(doc, vehicle.getVehicleId(), true);
+                        }
+                        else
+                        {
+                            vehicleDoc = vehicleDocumentMapper.createVehicleDocument(doc, vehicle.getVehicleId(), false);
+                        }
                         if (vehicleDoc != 0) {
                             for (String image : doc.getImageLinks()) {
                                 int vehicleDocImage = vehicleDocumentImageMapper.createVehicleDocumentImage(doc.getVehicleDocumentId(), image);
