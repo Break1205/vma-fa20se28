@@ -4,6 +4,7 @@ import com.fa20se28.vma.component.ContractComponent;
 import com.fa20se28.vma.configuration.exception.DataException;
 import com.fa20se28.vma.enums.ContractStatus;
 import com.fa20se28.vma.mapper.ContractMapper;
+import com.fa20se28.vma.model.ContractDetail;
 import com.fa20se28.vma.model.ContractLM;
 import com.fa20se28.vma.request.ContractPageReq;
 import com.fa20se28.vma.request.ContractReq;
@@ -56,5 +57,8 @@ public class ContractComponentImpl implements ContractComponent {
         }
     }
 
-
+    @Override
+    public ContractDetail getContractDetails(int contractId) {
+        return contractMapper.getContractDetails(contractId);
+    }
 }

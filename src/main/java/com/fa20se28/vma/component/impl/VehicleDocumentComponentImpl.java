@@ -28,7 +28,7 @@ public class VehicleDocumentComponentImpl implements VehicleDocumentComponent {
     public List<VehicleDocument> getVehicleDocuments(String vehicleId) {
         List<VehicleDocument> vehicleDocuments = vehicleDocumentMapper.getVehicleDocuments(vehicleId);
         for (VehicleDocument vdoc : vehicleDocuments) {
-            vdoc.setImageLink(vehicleDocumentImageMapper.getImageLinks(vdoc.getVehicleDocumentId()));
+            vdoc.setImageLinks(vehicleDocumentImageMapper.getImageLinks(vdoc.getVehicleDocumentId()));
         }
         return vehicleDocuments;
     }

@@ -129,7 +129,15 @@ public class VehicleComponentImpl implements VehicleComponent {
 
     @Override
     public VehicleDetail getVehicleDetails(String vehicleId) {
-        return vehicleMapper.getVehicleDetails(vehicleId);
+        VehicleDetail vehicleDetail = vehicleMapper.getVehicleDetails(vehicleId);
+
+        if (issuedVehicleMapper.isVehicleHasRecords(vehicleId)) {
+            if (issuedVehicleMapper.isVehicleHasDriver(vehicleId)) {
+                vehicleDetail.setAssignedDriver(issuedVehicleMapper.getAssignedDriver(vehicleId));
+            }
+        }
+
+        return vehicleDetail;
     }
 
     @Override

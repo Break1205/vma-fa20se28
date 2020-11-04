@@ -14,7 +14,7 @@ public class VehicleDocument {
     private Date registeredDate;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date expiryDate;
-    private List<VehicleDocumentImage> imageLink;
+    private List<VehicleDocumentImage> imageLinks;
 
     public String getVehicleDocumentId() {
         return vehicleDocumentId;
@@ -56,11 +56,11 @@ public class VehicleDocument {
         this.expiryDate = expiryDate;
     }
 
-    public List<VehicleDocumentImage> getImageLink() {
-        return imageLink;
+    public List<VehicleDocumentImage> getImageLinks() {
+        return imageLinks;
     }
 
-    public void setImageLink(List<VehicleDocumentImage> imageLink) {
-        this.imageLink = imageLink;
+    public void setImageLinks(List<VehicleDocumentImage> imageLinks) {
+        this.imageLinks = imageLinks;
     }
 }

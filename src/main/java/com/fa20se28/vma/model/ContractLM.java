@@ -7,7 +7,6 @@ import java.util.Date;
 
 public class ContractLM {
     private String contractId;
-    private String contractOwnerId;
     private ContractStatus contractStatus;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date durationFrom;
@@ -21,14 +20,6 @@ public class ContractLM {
 
     public void setContractId(String contractId) {
         this.contractId = contractId;
-    }
-
-    public String getContractOwnerId() {
-        return contractOwnerId;
-    }
-
-    public void setContractOwnerId(String contractOwnerId) {
-        this.contractOwnerId = contractOwnerId;
     }
 
     public ContractStatus getContractStatus() {
