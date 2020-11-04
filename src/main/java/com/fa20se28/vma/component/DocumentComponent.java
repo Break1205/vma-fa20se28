@@ -17,4 +17,8 @@ public interface DocumentComponent {
     int updateUserDocumentWithRequest(UserDocumentReq userDocumentReq, String userId);
 
     void deleteUserDocument(String userDocumentId);
+
+    int acceptNewDocumentRequest(String userDocumentId);
+
+    int denyUpdateDocumentRequest(String userDocumentId);
 }

@@ -4,12 +4,15 @@ import com.fa20se28.vma.component.DocumentComponent;
 import com.fa20se28.vma.mapper.UserDocumentImageMapper;
 import com.fa20se28.vma.mapper.UserDocumentMapper;
 import com.fa20se28.vma.model.UserDocument;
+import com.fa20se28.vma.model.UserDocumentDetail;
+import com.fa20se28.vma.model.UserDocumentImageDetail;
 import com.fa20se28.vma.request.UserDocumentImageReq;
 import com.fa20se28.vma.request.UserDocumentReq;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class UserDocumentComponentImpl implements DocumentComponent {
@@ -110,4 +113,53 @@ public class UserDocumentComponentImpl implements DocumentComponent {
         }
         return 0;
     }
+
+    @Override
+    public int acceptNewDocumentRequest(String userDocumentId) {
+        Optional<UserDocumentDetail> optionalUserDocumentDetail =
+                userDocumentMapper.findUserDocumentDetail(userDocumentId);
+        optionalUserDocumentDetail.ifPresent(detail ->
+                detail.setUserDocumentImageDetailList(
+                        userDocumentImageMapper.findUserDocumentImageDetail(userDocumentId)));
+        if (optionalUserDocumentDetail.isPresent()) {
+            int userDocumentLog = userDocumentMapper
+                    .acceptNewUserDocumentLog(optionalUserDocumentDetail.get());
+            int userDocumentImageLog = 0;
+            for (UserDocumentImageDetail imageDetail : optionalUserDocumentDetail.get().getUserDocumentImageDetailList()) {
+                userDocumentImageLog += userDocumentImageMapper
+                        .acceptNewUserDocumentImageLog(imageDetail);
+            }
+            if (userDocumentLog == 1
+                    && userDocumentImageLog >= 0) {
+                return 1;
+            }
+            return 0;
+        }
+        return 0;
+    }
+
+    @Override
+    public int denyUpdateDocumentRequest(String userDocumentId) {
+        Optional<UserDocumentDetail> optionalUserDocumentDetail =
+                userDocumentMapper.findUserDocumentDetailFromLog(userDocumentId);
+        optionalUserDocumentDetail.ifPresent(detail ->
+                detail.setUserDocumentImageDetailList(
+                        userDocumentImageMapper.findUserDocumentImageDetailLog(userDocumentId)));
+        if (optionalUserDocumentDetail.isPresent()) {
+            int userDocumentLog = userDocumentMapper
+                    .denyUpdateUserDocument(optionalUserDocumentDetail.get());
+            int userDocumentImageLog = 0;
+            for (UserDocumentImageDetail imageDetail : optionalUserDocumentDetail.get().getUserDocumentImageDetailList()) {
+                userDocumentImageLog += userDocumentImageMapper
+                        .denyNewUserDocumentImageLog(imageDetail);
+            }
+            if (userDocumentLog == 1
+                    && userDocumentImageLog >= 0) {
+                return 1;
+            }
+            return 0;
+        }
+        return 0;
+    }
 }
+

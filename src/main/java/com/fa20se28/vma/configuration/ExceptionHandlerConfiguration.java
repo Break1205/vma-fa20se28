@@ -2,6 +2,7 @@ package com.fa20se28.vma.configuration;
 
 import com.fa20se28.vma.configuration.exception.InvalidFirebaseTokenException;
 import com.fa20se28.vma.configuration.exception.InvalidParamException;
+import com.fa20se28.vma.configuration.exception.RequestAlreadyHandledException;
 import com.fa20se28.vma.configuration.exception.ResourceIsInUsedException;
 import com.fa20se28.vma.configuration.exception.ResourceNotFoundException;
 import com.fa20se28.vma.configuration.exception.TemplateException;
@@ -75,7 +76,7 @@ public class ExceptionHandlerConfiguration extends ResponseEntityExceptionHandle
     }
 
     @ExceptionHandler(ResourceNotFoundException.class)
-    protected ResponseEntity<Object> handleResourceNotFoundException(ResourceNotFoundException e){
+    protected ResponseEntity<Object> handleResourceNotFoundException(ResourceNotFoundException e) {
         ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST);
         apiError.setMessage("Not Found");
         apiError.setDebugMessage(e.getLocalizedMessage());
@@ -83,15 +84,23 @@ public class ExceptionHandlerConfiguration extends ResponseEntityExceptionHandle
     }
 
     @ExceptionHandler(ResourceIsInUsedException.class)
-    protected ResponseEntity<Object> handleResourceIsInUsedException(ResourceIsInUsedException e){
+    protected ResponseEntity<Object> handleResourceIsInUsedException(ResourceIsInUsedException e) {
         ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST);
         apiError.setMessage("Resource is in used");
         apiError.setDebugMessage(e.getLocalizedMessage());
         return buildResponseEntity(apiError);
     }
 
+    @ExceptionHandler(RequestAlreadyHandledException.class)
+    protected ResponseEntity<Object> handleRequestAlreadyHandledException(RequestAlreadyHandledException e) {
+        ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST);
+        apiError.setMessage("Already handled");
+        apiError.setDebugMessage(e.getLocalizedMessage());
+        return buildResponseEntity(apiError);
+    }
+
     @ExceptionHandler(InvalidParamException.class)
-    protected ResponseEntity<Object> handleInvalidParamException(InvalidParamException e){
+    protected ResponseEntity<Object> handleInvalidParamException(InvalidParamException e) {
         ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST);
         apiError.setMessage("Does not support");
         apiError.setDebugMessage(e.getLocalizedMessage());
@@ -107,9 +116,7 @@ public class ExceptionHandlerConfiguration extends ResponseEntityExceptionHandle
             String errorMessage = e.getMessage();
             String formattedMessage = errorMessage.substring(errorMessage.lastIndexOf("SQLServerException"));
             apiError.setDebugMessage(formattedMessage);
-        }
-        else
-        {
+        } else {
             apiError.setMessage("An internal server error has occurred");
             apiError.setDebugMessage(e.getLocalizedMessage());
         }
