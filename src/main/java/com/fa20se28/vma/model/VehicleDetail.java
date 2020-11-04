@@ -7,9 +7,9 @@ import java.util.Date;
 
 public class VehicleDetail {
     private String vehicleId;
-    private String vehicleTypeName;
-    private String brandName;
-    private String ownerId;
+    private VehicleType vehicleType;
+    private Brand brand;
+    private UserBasic owner;
     private VehicleStatus vehicleStatus;
     private int seats;
     private String imageLink;
@@ -22,7 +22,7 @@ public class VehicleDetail {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date dateOfRegistration;
     private float distanceDriven;
-    private String assignedDriverId;
+    private UserBasic assignedDriver;
 
     public String getVehicleId() {
         return vehicleId;
@@ -32,28 +32,28 @@ public class VehicleDetail {
         this.vehicleId = vehicleId;
     }
 
-    public String getVehicleTypeName() {
-        return vehicleTypeName;
+    public VehicleType getVehicleType() {
+        return vehicleType;
     }
 
-    public void setVehicleTypeName(String vehicleTypeName) {
-        this.vehicleTypeName = vehicleTypeName;
+    public void setVehicleType(VehicleType vehicleType) {
+        this.vehicleType = vehicleType;
     }
 
-    public String getBrandName() {
-        return brandName;
+    public Brand getBrand() {
+        return brand;
     }
 
-    public void setBrandName(String brandName) {
-        this.brandName = brandName;
+    public void setBrand(Brand brand) {
+        this.brand = brand;
     }
 
-    public String getOwnerId() {
-        return ownerId;
+    public UserBasic getOwner() {
+        return owner;
     }
 
-    public void setOwnerId(String ownerId) {
-        this.ownerId = ownerId;
+    public void setOwner(UserBasic owner) {
+        this.owner = owner;
     }
 
     public VehicleStatus getVehicleStatus() {
@@ -136,11 +136,11 @@ public class VehicleDetail {
         this.distanceDriven = distanceDriven;
     }
 
-    public String getAssignedDriverId() {
-        return assignedDriverId;
+    public UserBasic getAssignedDriver() {
+        return assignedDriver;
     }
 
-    public void setAssignedDriverId(String assignedDriverId) {
-        this.assignedDriverId = assignedDriverId;
+    public void setAssignedDriver(UserBasic assignedDriver) {
+        this.assignedDriver = assignedDriver;
     }
 }

@@ -176,18 +176,23 @@ public interface VehicleMapper {
     int deleteVehicle(@Param("v_id") String vehicleId);
 
     @Select("SELECT " +
-            "v.vehicle_id, vt.vehicle_type_name, b.brand_name, v.owner_id, v.vehicle_status, v.seats, v.image_link, v.model, v.origin_of_manufacture, " +
+            "v.vehicle_id, vt.vehicle_type_id,  vt.vehicle_type_name, b.brand_id, b.brand_name, u.[user_id], u.full_name, " +
+            "v.vehicle_status, v.seats, v.image_link, v.model, v.origin_of_manufacture, " +
             "v.chassis_number, v.engine_number, v.year_of_manufacture, v.date_of_registration, v.distance_driven " +
             "FROM vehicle v " +
-            "JOIN vehicle_type vt ON v.vehicle_type_id = vt.vehicle_type_id " +
+            "JOIN vehicle_type vt ON vt.vehicle_type_id = v.vehicle_type_id  " +
             "JOIN brand b ON b.brand_id = v.brand_id " +
+            "JOIN [user] u ON u.user_id = v.owner_id " +
             "WHERE " +
             "v.vehicle_id = #{v_id} ")
     @Results(id = "vehicleDetails", value = {
             @Result(property = "vehicleId", column = "vehicle_id"),
-            @Result(property = "vehicleTypeName", column = "vehicle_type_name"),
-            @Result(property = "brandName", column = "brand_name"),
-            @Result(property = "ownerId", column = "owner_id"),
+            @Result(property = "vehicleType.vehicleTypeId", column = "vehicle_type_id"),
+            @Result(property = "vehicleType.vehicleTypeName", column = "vehicle_type_name"),
+            @Result(property = "brand.brandId", column = "brand_id"),
+            @Result(property = "brand.brandName", column = "brand_name"),
+            @Result(property = "owner.userId", column = "user_id"),
+            @Result(property = "owner.userName", column = "full_name"),
             @Result(property = "vehicleStatus", column = "vehicle_status"),
             @Result(property = "seats", column = "seats"),
             @Result(property = "imageLink", column = "image_link"),
