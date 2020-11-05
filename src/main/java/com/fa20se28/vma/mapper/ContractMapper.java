@@ -59,7 +59,8 @@ public interface ContractMapper {
 
     @Select({"<script> " +
             "SELECT " +
-            "c.contract_id, c.contract_status, c.duration_from, c.duration_to, c.total_price " +
+            "c.contract_id, c.contract_status, c.duration_from, c.duration_to, c.total_price, " +
+            "c.departure_time, c.destination_time " +
             "FROM contract c " +
             "WHERE " +
             "<if test = \"c_option == 0\" > " +
@@ -73,6 +74,12 @@ public interface ContractMapper {
             "</if> " +
             "<if test = \"c_request.durationTo != null\" > " +
             "AND c.duration_to &lt;= #{c_request.durationTo} " +
+            "</if> " +
+            "<if test = \"c_request.departureTime != null\" > " +
+            "AND c.departure_time &gt;= #{c_request.departureTime} " +
+            "</if> " +
+            "<if test = \"c_request.destinationTime != null\" > " +
+            "AND c.destination_time &lt;= #{c_request.destinationTime} " +
             "</if> " +
             "<if test = \"c_request.totalPriceMin != 0\" > " +
             "AND c.total_price &gt;= #{c_request.totalPriceMin} " +
@@ -89,6 +96,8 @@ public interface ContractMapper {
             @Result(property = "contractStatus", column = "contract_status"),
             @Result(property = "durationFrom", column = "duration_from"),
             @Result(property = "durationTo", column = "duration_to"),
+            @Result(property = "departureTime", column = "departure_time"),
+            @Result(property = "destinationTime", column = "destination_time"),
             @Result(property = "totalPrice", column = "total_price")
     })
     List<ContractLM> getContracts(
@@ -139,9 +148,9 @@ public interface ContractMapper {
             @Result(property = "durationTo", column = "duration_to"),
             @Result(property = "contractStatus", column = "contract_status"),
             @Result(property = "departureLocation", column = "departure_location"),
-            @Result(property = "departureDate", column = "departure_time"),
+            @Result(property = "departureTime", column = "departure_time"),
             @Result(property = "destinationLocation", column = "destination_location"),
-            @Result(property = "destinationDate", column = "destination_time"),
+            @Result(property = "destinationTime", column = "destination_time"),
             @Result(property = "totalPrice", column = "total_price"),
             @Result(property = "otherInformation", column = "other_information")
     })
