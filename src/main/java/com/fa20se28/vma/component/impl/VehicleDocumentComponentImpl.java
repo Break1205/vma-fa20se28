@@ -6,6 +6,7 @@ import com.fa20se28.vma.mapper.VehicleDocumentImageMapper;
 import com.fa20se28.vma.mapper.VehicleDocumentMapper;
 import com.fa20se28.vma.model.VehicleDocument;
 import com.fa20se28.vma.model.VehicleDocumentImage;
+import com.fa20se28.vma.request.VehicleDocumentStandaloneReq;
 import com.fa20se28.vma.request.VehicleDocumentUpdateReq;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,6 +32,29 @@ public class VehicleDocumentComponentImpl implements VehicleDocumentComponent {
             vdoc.setImageLinks(vehicleDocumentImageMapper.getImageLinks(vdoc.getVehicleDocumentId()));
         }
         return vehicleDocuments;
+    }
+
+    @Override
+    public void createVehicleDocument(VehicleDocumentStandaloneReq vehicleDocumentStandaloneReq) {
+        if (!vehicleDocumentMapper.isDocumentExist(vehicleDocumentStandaloneReq.getVehicleDocumentReq().getVehicleDocumentId())) {
+            int row;
+
+            if (vehicleDocumentStandaloneReq.getRoleId() == 2) {
+                row = vehicleDocumentMapper.createVehicleDocument(vehicleDocumentStandaloneReq.getVehicleDocumentReq(), vehicleDocumentStandaloneReq.getVehicleId(), true);
+            } else {
+                row = vehicleDocumentMapper.createVehicleDocument(vehicleDocumentStandaloneReq.getVehicleDocumentReq(), vehicleDocumentStandaloneReq.getVehicleId(), false);
+            }
+
+            if (row == 0) {
+                throw new DataException("Unknown error occurred. Data not modified!");
+            } else {
+                for (String image : vehicleDocumentStandaloneReq.getVehicleDocumentReq().getImageLinks()) {
+                    vehicleDocumentImageMapper.createVehicleDocumentImage(vehicleDocumentStandaloneReq.getVehicleDocumentReq().getVehicleDocumentId(), image);
+                }
+            }
+        } else {
+            throw new DataException("Document with ID " + vehicleDocumentStandaloneReq.getVehicleDocumentReq().getVehicleDocumentId() + " already exist!");
+        }
     }
 
     @Override

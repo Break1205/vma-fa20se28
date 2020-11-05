@@ -1,6 +1,7 @@
 package com.fa20se28.vma.service.impl;
 
 import com.fa20se28.vma.component.VehicleDocumentComponent;
+import com.fa20se28.vma.request.VehicleDocumentStandaloneReq;
 import com.fa20se28.vma.request.VehicleDocumentUpdateReq;
 import com.fa20se28.vma.response.VehicleDocumentRes;
 import com.fa20se28.vma.service.VehicleDocumentService;
@@ -17,6 +18,11 @@ public class VehicleDocumentServiceImpl implements VehicleDocumentService {
     @Override
     public VehicleDocumentRes getVehicleDocuments(String vehicleId, int viewOption) {
         return new VehicleDocumentRes(vehicleDocumentComponent.getVehicleDocuments(vehicleId, viewOption));
+    }
+
+    @Override
+    public void createVehicleDocument(VehicleDocumentStandaloneReq vehicleDocumentStandaloneReq) {
+        vehicleDocumentComponent.createVehicleDocument(vehicleDocumentStandaloneReq);
     }
 
     @Override

@@ -4,7 +4,6 @@ import com.fa20se28.vma.enums.RequestStatus;
 import com.fa20se28.vma.request.RequestReq;
 import com.fa20se28.vma.response.DocumentRequestDetailRes;
 import com.fa20se28.vma.response.RequestPageRes;
-import com.fa20se28.vma.service.impl.RequestPageRes;
 import com.fa20se28.vma.request.VehicleRequestReq;
 
 public interface RequestService {

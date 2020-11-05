@@ -1,6 +1,7 @@
 package com.fa20se28.vma.controller;
 
 import com.fa20se28.vma.request.UserDocumentReq;
+import com.fa20se28.vma.request.VehicleDocumentStandaloneReq;
 import com.fa20se28.vma.request.VehicleDocumentUpdateReq;
 import com.fa20se28.vma.response.UserDocumentRes;
 import com.fa20se28.vma.response.UserDocumentTypesRes;
@@ -69,6 +70,13 @@ public class DocumentController {
             @RequestParam String vehicleId,
             @RequestParam(defaultValue = "1") int viewOption) {
         return vehicleDocumentService.getVehicleDocuments(vehicleId, viewOption);
+    }
+
+    @PostMapping("/vehicles/documents")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void createVehicleDocument(
+            @RequestBody VehicleDocumentStandaloneReq vehicleDocumentStandaloneReq) {
+        vehicleDocumentService.createVehicleDocument(vehicleDocumentStandaloneReq);
     }
 
     @PatchMapping("/vehicles/documents")
