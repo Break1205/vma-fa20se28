@@ -6,7 +6,7 @@ import com.fa20se28.vma.request.RequestReq;
 import com.fa20se28.vma.response.DocumentRequestDetailRes;
 import com.fa20se28.vma.response.RequestTypesRes;
 import com.fa20se28.vma.service.RequestService;
-import com.fa20se28.vma.service.impl.RequestPageRes;
+import com.fa20se28.vma.response.RequestPageRes;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -17,8 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1")
