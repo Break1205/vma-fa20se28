@@ -59,6 +59,7 @@ public interface DriverMapper {
             "JOIN user_roles ur\n" +
             "ON ur.user_id = u.user_id\n" +
             "WHERE ur.role_id = 3\n" +
+            "AND iv.returned_date IS NULL \n" +
             "<if test = \"DriverPageReq.userId!=null\" >\n" +
             "AND u.user_id LIKE '%${DriverPageReq.userId}%'\n" +
             "</if> \n" +
@@ -91,6 +92,7 @@ public interface DriverMapper {
             "JOIN user_roles ur\n" +
             "ON ur.user_id = u.user_id\n" +
             "WHERE ur.role_id = 3\n" +
+            "AND iv.returned_date IS NULL \n" +
             "<if test = \"DriverPageReq.userId!=null\" >\n" +
             "AND u.user_id LIKE '%${DriverPageReq.userId}%'\n" +
             "</if> \n" +
