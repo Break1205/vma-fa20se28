@@ -22,7 +22,7 @@ public class VehicleController {
     @GetMapping("/count")
     public int getTotal(
             @RequestParam(required = false, defaultValue = "0") int viewOption,
-            @RequestParam(required = false) String ownerId){
+            @RequestParam(required = false) String ownerId) {
         return vehicleService.getTotal(viewOption, ownerId);
     }
 
@@ -77,8 +77,7 @@ public class VehicleController {
 
     @DeleteMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteVehicle(String vehicleId)
-    {
+    public void deleteVehicle(String vehicleId) {
         vehicleService.deleteVehicle(vehicleId);
     }
 
@@ -90,5 +89,12 @@ public class VehicleController {
     @PatchMapping
     public void updateVehicleById(@RequestBody VehicleUpdateReq vehicleUpdateReq) {
         vehicleService.updateVehicleDetails(vehicleUpdateReq);
+    }
+
+    @PatchMapping("/{vehicle-id}/status")
+    public void updateVehicleStatusById(
+            @PathVariable("vehicle-id") String vehicleId,
+            @RequestBody VehicleStatus vehicleStatus) {
+        vehicleService.updateVehicleStatus(vehicleId, vehicleStatus);
     }
 }

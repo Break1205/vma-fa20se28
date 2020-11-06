@@ -6,6 +6,7 @@ import com.fa20se28.vma.enums.RequestStatus;
 import com.fa20se28.vma.mapper.RequestMapper;
 import com.fa20se28.vma.model.DocumentRequestDetail;
 import com.fa20se28.vma.request.RequestReq;
+import com.fa20se28.vma.request.VehicleRequestReq;
 import com.fa20se28.vma.response.RequestRes;
 import org.springframework.stereotype.Component;
 
@@ -46,5 +47,10 @@ public class RequestComponentImpl implements RequestComponent {
     @Override
     public int updateRequestStatus(int requestId, RequestStatus requestStatus) {
         return requestMapper.updateRequestStatus(requestId, requestStatus);
+    }
+
+    @Override
+    public int createVehicleDocumentRequest(VehicleRequestReq vehicleRequestReq, String userId) {
+        return requestMapper.insertVehicleRequest(vehicleRequestReq, RequestStatus.PENDING, userId);
     }
 }

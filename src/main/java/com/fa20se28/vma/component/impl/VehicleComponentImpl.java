@@ -97,7 +97,9 @@ public class VehicleComponentImpl implements VehicleComponent {
                         {
                             vehicleDoc = vehicleDocumentMapper.createVehicleDocument(doc, vehicle.getVehicleId(), false);
                         }
-                        if (vehicleDoc != 0) {
+                        if (vehicleDoc == 0) {
+                            throw new DataException("Unknown error occurred. Data not modified!");
+                        } else {
                             for (String image : doc.getImageLinks()) {
                                 int vehicleDocImage = vehicleDocumentImageMapper.createVehicleDocumentImage(doc.getVehicleDocumentId(), image);
                                 if (vehicleDocImage != 0) {
@@ -151,6 +153,16 @@ public class VehicleComponentImpl implements VehicleComponent {
     @Transactional
     public void updateVehicleDetails(VehicleUpdateReq vehicleUpdateReq) {
         int row = vehicleMapper.updateVehicle(vehicleUpdateReq);
+
+        if (row == 0) {
+            throw new DataException("Unknown error occurred. Data not modified!");
+        }
+    }
+
+    @Override
+    @Transactional
+    public void updateVehicleStatus(String vehicleId, VehicleStatus vehicleStatus) {
+        int row = vehicleMapper.updateVehicleStatus(vehicleId, vehicleStatus);
 
         if (row == 0) {
             throw new DataException("Unknown error occurred. Data not modified!");

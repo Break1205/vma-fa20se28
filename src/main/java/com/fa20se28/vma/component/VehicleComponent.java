@@ -1,5 +1,6 @@
 package com.fa20se28.vma.component;
 
+import com.fa20se28.vma.enums.VehicleStatus;
 import com.fa20se28.vma.model.*;
 import com.fa20se28.vma.request.VehicleDropDownReq;
 import com.fa20se28.vma.request.VehiclePageReq;
@@ -26,4 +27,6 @@ public interface VehicleComponent {
     VehicleDetail getVehicleDetails(String vehicleId);
 
     void updateVehicleDetails(VehicleUpdateReq vehicleUpdateReq);
+
+    void updateVehicleStatus(String vehicleId, VehicleStatus vehicleStatus);
 }

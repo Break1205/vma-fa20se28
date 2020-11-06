@@ -12,6 +12,10 @@ public class ContractLM {
     private Date durationFrom;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date durationTo;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date departureTime;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date destinationTime;
     private float totalPrice;
 
     public String getContractId() {
@@ -44,6 +48,22 @@ public class ContractLM {
 
     public void setDurationTo(Date durationTo) {
         this.durationTo = durationTo;
+    }
+
+    public Date getDepartureTime() {
+        return departureTime;
+    }
+
+    public void setDepartureTime(Date departureTime) {
+        this.departureTime = departureTime;
+    }
+
+    public Date getDestinationTime() {
+        return destinationTime;
+    }
+
+    public void setDestinationTime(Date destinationTime) {
+        this.destinationTime = destinationTime;
     }
 
     public float getTotalPrice() {
