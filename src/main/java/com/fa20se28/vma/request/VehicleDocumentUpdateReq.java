@@ -17,6 +17,14 @@ public class VehicleDocumentUpdateReq {
     private Date expiryDate;
     private List<VehicleDocumentImage> imageLinks;
 
+    public VehicleDocumentUpdateReq(String vehicleDocumentId, VehicleDocumentType vehicleDocumentType, String registeredLocation, Date registeredDate, Date expiryDate) {
+        this.vehicleDocumentId = vehicleDocumentId;
+        this.vehicleDocumentType = vehicleDocumentType;
+        this.registeredLocation = registeredLocation;
+        this.registeredDate = registeredDate;
+        this.expiryDate = expiryDate;
+    }
+
     public String getVehicleDocumentId() {
         return vehicleDocumentId;
     }

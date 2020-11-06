@@ -22,13 +22,35 @@ public interface VehicleMapper {
             "v.vehicle_status != '%DELETED%' " +
             "</if> " +
             "<if test = \"v_option == 1\" > " +
-            "v.vehicle_status = '%DELETED%' " +
+            "v.vehicle_status = #{v_request.vehicleStatus} " +
+            "</if> " +
+            "<if test = \"v_request.vehicleId != null\" > " +
+            "AND v.vehicle_id LIKE '%${v_request.vehicleId}%' " +
+            "</if> " +
+            "<if test = \"v_request.model != null\" > " +
+            "AND v.model LIKE '%${v_request.model}%' " +
+            "</if> " +
+            "<if test = \"v_request.vehicleTypeId != 0\" > " +
+            "AND vt.vehicle_type_id = #{v_request.vehicleTypeId} " +
+            "</if> " +
+            "<if test = \"v_request.seatsMin != 0\" > " +
+            "AND v.seats &gt;= #{v_request.seatsMin} " +
+            "</if> " +
+            "<if test = \"v_request.seatsMax != 0\" > " +
+            "AND v.seats &lt;= #{v_request.seatsMax} " +
+            "</if> " +
+            "<if test = \"v_request.vehicleMinDis != 0\" > " +
+            "AND v.distance_driven &gt;= #{v_request.vehicleMinDis} " +
+            "</if> " +
+            "<if test = \"v_request.vehicleMaxDis != 0\" > " +
+            "AND v.distance_driven &lt;= #{v_request.vehicleMaxDis} " +
             "</if> " +
             "<if test = \"v_owner_id != null\" > " +
             "AND v.owner_id LIKE '%${v_owner_id}%' " +
             "</if> " +
             "</script>"})
     int getTotal(
+            @Param("v_request") VehiclePageReq request,
             @Param("v_option") int viewOption,
             @Param("v_owner_id") String ownerId);
 

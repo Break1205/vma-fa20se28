@@ -37,4 +37,8 @@ public interface VehicleDocumentImageMapper {
             @Result(property = "imageLink", column = "image_link")
     })
     List<VehicleDocumentImage> getImageLinks(@Param("v_document_id") String documentId);
+
+    @Delete("DELETE FROM vehicle_document_image " +
+            "WHERE vehicle_document_id = #{vehicle_document_id} ")
+    int deleteImages(@Param("vehicle_document_id") String documentId);
 }

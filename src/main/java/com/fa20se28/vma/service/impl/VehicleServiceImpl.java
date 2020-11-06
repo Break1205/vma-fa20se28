@@ -19,8 +19,8 @@ public class VehicleServiceImpl implements VehicleService {
     }
 
     @Override
-    public int getTotal(int viewOption, String ownerId) {
-        return vehicleComponent.getTotal(viewOption, ownerId);
+    public int getTotal(VehiclePageReq request, int viewOption, String ownerId) {
+        return vehicleComponent.getTotal(request, viewOption, ownerId);
     }
 
     @Override

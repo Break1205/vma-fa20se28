@@ -14,4 +14,6 @@ public interface VehicleDocumentComponent {
     void updateVehicleDocument(VehicleDocumentUpdateReq vehicleDocumentUpdateReq);
 
     void deleteDocument(String vehicleDocId);
+
+    void createVehicleDocumentFromRequest(VehicleDocumentStandaloneReq vehicleDocumentStandaloneReq);
 }

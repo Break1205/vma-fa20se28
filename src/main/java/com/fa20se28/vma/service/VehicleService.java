@@ -8,7 +8,7 @@ import com.fa20se28.vma.request.VehicleUpdateReq;
 import com.fa20se28.vma.response.*;
 
 public interface VehicleService {
-    int getTotal(int viewOption, String ownerId);
+    int getTotal(VehiclePageReq request, int viewOption, String ownerId);
 
     VehiclePageRes getVehicles(VehiclePageReq request, int viewOption, int pageNum, String ownerId);
 

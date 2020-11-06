@@ -9,6 +9,7 @@ import com.fa20se28.vma.request.RequestReq;
 import com.fa20se28.vma.request.VehicleRequestReq;
 import com.fa20se28.vma.response.RequestRes;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,6 +23,7 @@ public class RequestComponentImpl implements RequestComponent {
     }
 
     @Override
+    @Transactional
     public int createRequest(RequestReq requestReq, String userId) {
         return requestMapper.insertRequest(requestReq, userId);
     }
@@ -45,11 +47,13 @@ public class RequestComponentImpl implements RequestComponent {
     }
 
     @Override
+    @Transactional
     public int updateRequestStatus(int requestId, RequestStatus requestStatus) {
         return requestMapper.updateRequestStatus(requestId, requestStatus);
     }
 
     @Override
+    @Transactional
     public int createVehicleDocumentRequest(VehicleRequestReq vehicleRequestReq, String userId) {
         return requestMapper.insertVehicleRequest(vehicleRequestReq, RequestStatus.PENDING, userId);
     }

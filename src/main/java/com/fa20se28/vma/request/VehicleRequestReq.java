@@ -5,7 +5,7 @@ import com.fa20se28.vma.enums.RequestType;
 public class VehicleRequestReq {
     private RequestType requestType;
     private String description;
-    private String vehicleDocumentId;
+    private VehicleDocumentStandaloneReq vehicleDocument;
 
     public RequestType getRequestType() {
         return requestType;
@@ -23,11 +23,11 @@ public class VehicleRequestReq {
         this.description = description;
     }
 
-    public String getVehicleDocumentId() {
-        return vehicleDocumentId;
+    public VehicleDocumentStandaloneReq getVehicleDocument() {
+        return vehicleDocument;
     }
 
-    public void setVehicleDocumentId(String vehicleDocumentId) {
-        this.vehicleDocumentId = vehicleDocumentId;
+    public void setVehicleDocument(VehicleDocumentStandaloneReq vehicleDocument) {
+        this.vehicleDocument = vehicleDocument;
     }
 }

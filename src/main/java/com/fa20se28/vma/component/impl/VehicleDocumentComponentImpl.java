@@ -74,10 +74,46 @@ public class VehicleDocumentComponentImpl implements VehicleDocumentComponent {
     @Override
     @Transactional
     public void deleteDocument(String vehicleDocId) {
-        int row = vehicleDocumentMapper.deleteDocument(vehicleDocId);
+        int row = vehicleDocumentMapper.updateDocumentStatus(vehicleDocId,  true);
 
         if (row != 0) {
             throw new DataException("Unknown error occurred. Data not modified!");
+        }
+    }
+
+    @Override
+    @Transactional
+    public void createVehicleDocumentFromRequest(VehicleDocumentStandaloneReq vehicleDocumentStandaloneReq) {
+        if (!vehicleDocumentMapper.isDocumentExist(vehicleDocumentStandaloneReq.getVehicleDocumentReq().getVehicleDocumentId())) {
+            int row = vehicleDocumentMapper.createVehicleDocument(vehicleDocumentStandaloneReq.getVehicleDocumentReq(), vehicleDocumentStandaloneReq.getVehicleId(), true);
+
+            if (row == 0) {
+                throw new DataException("Unknown error occurred. Data not modified!");
+            } else {
+                for (String image : vehicleDocumentStandaloneReq.getVehicleDocumentReq().getImageLinks()) {
+                    vehicleDocumentImageMapper.createVehicleDocumentImage(vehicleDocumentStandaloneReq.getVehicleDocumentReq().getVehicleDocumentId(), image);
+                }
+            }
+        }
+        else {
+            vehicleDocumentMapper.resetInformation(vehicleDocumentStandaloneReq.getVehicleDocumentReq().getVehicleDocumentId());
+            vehicleDocumentImageMapper.deleteImages(vehicleDocumentStandaloneReq.getVehicleDocumentReq().getVehicleDocumentId());
+
+            int row = vehicleDocumentMapper.updateVehicleDocument(
+                    new VehicleDocumentUpdateReq(
+                            vehicleDocumentStandaloneReq.getVehicleDocumentReq().getVehicleDocumentId(),
+                            vehicleDocumentStandaloneReq.getVehicleDocumentReq().getVehicleDocumentType(),
+                            vehicleDocumentStandaloneReq.getVehicleDocumentReq().getRegisteredLocation(),
+                            vehicleDocumentStandaloneReq.getVehicleDocumentReq().getRegisteredDate(),
+                            vehicleDocumentStandaloneReq.getVehicleDocumentReq().getExpiryDate()));
+
+            if (row == 0) {
+                throw new DataException("Unknown error occurred. Data not modified!");
+            } else {
+                for (String image : vehicleDocumentStandaloneReq.getVehicleDocumentReq().getImageLinks()) {
+                    vehicleDocumentImageMapper.createVehicleDocumentImage(vehicleDocumentStandaloneReq.getVehicleDocumentReq().getVehicleDocumentId(), image);
+                }
+            }
         }
     }
 }

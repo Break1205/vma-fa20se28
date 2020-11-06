@@ -80,8 +80,20 @@ public interface VehicleDocumentMapper {
 
     @Update("UPDATE vehicle_document " +
             "SET " +
-            "is_deleted = 1 " +
+            "is_deleted = #{d_option} " +
             "WHERE " +
             "vehicle_document_id = #{d_id} ")
-    int deleteDocument(@Param("d_id") String vehicleDocumentId);
+    int updateDocumentStatus(
+            @Param("d_id") String vehicleDocumentId,
+            @Param("d_option") boolean option);
+
+    @Update("UPDATE vehicle_document " +
+            "SET " +
+            "registered_location = NULL, " +
+            "registered_date = NULL, " +
+            "expiry_date = NULL, " +
+            "vehicle_document_type = NULL " +
+            "WHERE " +
+            "vehicle_document_id = #{d_id} ")
+    int resetInformation(@Param("d_id") String vehicleDocumentId);
 }

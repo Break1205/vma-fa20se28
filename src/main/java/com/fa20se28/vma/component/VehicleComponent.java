@@ -10,7 +10,7 @@ import com.fa20se28.vma.request.VehicleUpdateReq;
 import java.util.List;
 
 public interface VehicleComponent {
-    int getTotal(int viewOption, String ownerId);
+    int getTotal(VehiclePageReq request, int viewOption, String ownerId);
 
     List<Vehicle> getVehicles(VehiclePageReq request, int viewOption, int pageNum, String ownerId);
 

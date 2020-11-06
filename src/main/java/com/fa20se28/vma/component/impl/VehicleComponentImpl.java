@@ -30,8 +30,8 @@ public class VehicleComponentImpl implements VehicleComponent {
     }
 
     @Override
-    public int getTotal(int viewOption, String ownerId) {
-        return vehicleMapper.getTotal(viewOption, ownerId);
+    public int getTotal(VehiclePageReq request, int viewOption, String ownerId) {
+        return vehicleMapper.getTotal(request, viewOption, ownerId);
     }
 
 
@@ -67,6 +67,7 @@ public class VehicleComponentImpl implements VehicleComponent {
             throw new DataException("Vehicle is still occupied!");
         } else {
             int withDrawRow = issuedVehicleMapper.withdrawVehicle(vehicleId);
+
             int updateStatusRow = vehicleMapper.updateVehicleStatus(vehicleId, VehicleStatus.AVAILABLE_NO_DRIVER);
             if (withDrawRow == 0 && updateStatusRow == 0) {
                 throw new DataException("Unknown error occurred. Data not modified!");

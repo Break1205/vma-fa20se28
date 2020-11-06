@@ -89,6 +89,7 @@ public interface RequestMapper {
     @Insert("INSERT INTO " +
             "request " +
             "(user_id, " +
+            "vehicle_id, " +
             "vehicle_document_id, " +
             "request_status, " +
             "request_type, " +
@@ -96,7 +97,8 @@ public interface RequestMapper {
             "description) " +
             "VALUES " +
             "(#{userId}, " +
-            "#{r_vehicle.vehicleDocumentId}, " +
+            "#{r_vehicle.vehicleId}, " +
+            "#{r_vehicle.vehicleDocumentReq.vehicleDocumentId}, " +
             "#{r_status}, " +
             "#{r_vehicle.requestType}, " +
             "getDate(), " +

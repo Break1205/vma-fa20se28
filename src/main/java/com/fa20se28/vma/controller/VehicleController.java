@@ -22,8 +22,18 @@ public class VehicleController {
     @GetMapping("/count")
     public int getTotal(
             @RequestParam(required = false, defaultValue = "0") int viewOption,
-            @RequestParam(required = false) String ownerId) {
-        return vehicleService.getTotal(viewOption, ownerId);
+            @RequestParam(required = false) String ownerId,
+            @RequestParam(required = false) String vehicleId,
+            @RequestParam(required = false) String model,
+            @RequestParam(required = false, defaultValue = "0") int vehicleTypeId,
+            @RequestParam(required = false, defaultValue = "0") int seatsMin,
+            @RequestParam(required = false, defaultValue = "0") int seatsMax,
+            @RequestParam(required = false) VehicleStatus vehicleStatus,
+            @RequestParam(required = false, defaultValue = "0") float vehicleMinDis,
+            @RequestParam(required = false, defaultValue = "0") float vehicleMaxDis) {
+        return vehicleService.getTotal(
+                new VehiclePageReq(vehicleId, model, vehicleTypeId, seatsMin, seatsMax, vehicleStatus, vehicleMinDis, vehicleMaxDis),
+                viewOption, ownerId);
     }
 
     @GetMapping

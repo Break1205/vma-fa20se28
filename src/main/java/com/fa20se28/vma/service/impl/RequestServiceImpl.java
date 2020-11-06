@@ -3,6 +3,7 @@ package com.fa20se28.vma.service.impl;
 import com.fa20se28.vma.component.AuthenticationComponent;
 import com.fa20se28.vma.component.DocumentComponent;
 import com.fa20se28.vma.component.RequestComponent;
+import com.fa20se28.vma.component.VehicleDocumentComponent;
 import com.fa20se28.vma.component.impl.UserDocumentComponentImpl;
 import com.fa20se28.vma.configuration.exception.RequestAlreadyHandledException;
 import com.fa20se28.vma.enums.RequestStatus;
@@ -20,13 +21,15 @@ import org.springframework.stereotype.Service;
 public class RequestServiceImpl implements RequestService {
     private final RequestComponent requestComponent;
     private final DocumentComponent documentComponent;
+    private final VehicleDocumentComponent vehicleDocumentComponent;
     private final AuthenticationComponent authenticationComponent;
 
     public RequestServiceImpl(RequestComponent requestComponent,
                               UserDocumentComponentImpl documentComponent,
-                              AuthenticationComponent authenticationComponent) {
+                              VehicleDocumentComponent vehicleDocumentComponent, AuthenticationComponent authenticationComponent) {
         this.requestComponent = requestComponent;
         this.documentComponent = documentComponent;
+        this.vehicleDocumentComponent = vehicleDocumentComponent;
         this.authenticationComponent = authenticationComponent;
     }
 
@@ -145,9 +148,17 @@ public class RequestServiceImpl implements RequestService {
     @Override
     public int createVehicleDocumentRequest(VehicleRequestReq vehicleRequestReq) {
         Authentication authentication = authenticationComponent.getAuthentication();
+
         if (requestComponent.createVehicleDocumentRequest(vehicleRequestReq, authentication.getName()) == 1) {
+            if (vehicleRequestReq.getRequestType().equals(RequestType.NEW_VEHICLE_DOCUMENT)) {
+                vehicleDocumentComponent.createVehicleDocumentFromRequest(vehicleRequestReq.getVehicleDocument());
+            }
+
             return 1;
         }
+
         return 0;
     }
+
+
 }
