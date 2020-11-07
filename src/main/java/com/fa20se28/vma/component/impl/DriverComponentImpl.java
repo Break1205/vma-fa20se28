@@ -33,7 +33,7 @@ public class DriverComponentImpl implements DriverComponent {
         optionalDriverDetail.ifPresent(detail ->
                 detail.
                         setUserDocumentList(userDocumentMapper.
-                                findUserDocumentByUserId(userId)));
+                                findUserDocumentByUserId(userId, 0)));
         return optionalDriverDetail.orElseThrow(() ->
                 new ResourceNotFoundException("Driver with id: " + userId + " not found"));
     }
