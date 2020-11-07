@@ -2,7 +2,7 @@ package com.fa20se28.vma.request;
 
 public class ContractVehicleReq {
     private int contractId;
-    private int issuedVehicleId;
+    private String vehicleId;
 
     public int getContractId() {
         return contractId;
@@ -12,11 +12,11 @@ public class ContractVehicleReq {
         this.contractId = contractId;
     }
 
-    public int getIssuedVehicleId() {
-        return issuedVehicleId;
+    public String getVehicleId() {
+        return vehicleId;
     }
 
-    public void setIssuedVehicleId(int issuedVehicleId) {
-        this.issuedVehicleId = issuedVehicleId;
+    public void setVehicleId(String vehicleId) {
+        this.vehicleId = vehicleId;
     }
 }

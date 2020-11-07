@@ -1,6 +1,8 @@
 package com.fa20se28.vma.controller;
 
 import com.fa20se28.vma.request.ContractVehiclePassengerReq;
+import com.fa20se28.vma.request.ContractVehicleReq;
+import com.fa20se28.vma.response.ContractVehicleRes;
 import com.fa20se28.vma.response.PassengerRes;
 import com.fa20se28.vma.service.ContractVehicleService;
 import org.springframework.web.bind.annotation.*;
@@ -14,14 +16,23 @@ public class ContractVehicleController {
         this.contractVehicleService = contractVehicleService;
     }
 
-    @GetMapping
+    @GetMapping("/passengers")
     public PassengerRes getPassengerList(@RequestParam int contractVehicleId) {
         return contractVehicleService.getPassengerList(contractVehicleId);
     }
 
-    @PostMapping
-    public void createPassengerList(@RequestBody ContractVehiclePassengerReq contractVehiclePassengerReq)
-    {
+    @PostMapping("/passengers")
+    public void createPassengerList(@RequestBody ContractVehiclePassengerReq contractVehiclePassengerReq) {
         contractVehicleService.createPassengerList(contractVehiclePassengerReq);
+    }
+
+    @PostMapping
+    public void assignVehicleForContract(@RequestBody ContractVehicleReq contractVehicleReq) {
+        contractVehicleService.assignVehicleForContract(contractVehicleReq);
+    }
+
+    @GetMapping
+    public ContractVehicleRes getContractVehiclesByContractId(@RequestParam int contractId) {
+        return contractVehicleService.getContractVehicles(contractId);
     }
 }

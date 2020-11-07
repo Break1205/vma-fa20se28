@@ -10,8 +10,8 @@ import java.util.Optional;
 
 @Mapper
 public interface IssuedVehicleMapper {
-    @Insert("INSERT INTO issued_vehicle(vehicle_id, driver_id, issued_date, returned_date) " +
-            "VALUES (#{iv_vehicle_id}, NULL, NULL, NULL) ")
+    @Insert("INSERT INTO issued_vehicle(vehicle_id, driver_id, issued_date, returned_date, create_date) " +
+            "VALUES (#{iv_vehicle_id}, NULL, NULL, NULL, getdate()) ")
     int createPlaceholder(@Param("iv_vehicle_id") String vehicleId);
 
     @Update({"<script>" +
@@ -38,21 +38,22 @@ public interface IssuedVehicleMapper {
     @Select("SELECT TOP 1 " +
             "CASE WHEN " +
             "iv.returned_date IS NULL " +
-            "AND iv.issued_date IS NOT NULL THEN 1 " +
+            "AND iv.driver_id IS NOT NULL THEN 1 " +
             "ELSE 0 END Result " +
             "FROM issued_vehicle iv " +
             "WHERE iv.vehicle_id = #{v_id} " +
-            "ORDER BY iv.issued_date DESC")
+            "ORDER BY iv.create_date DESC")
     boolean isVehicleHasDriver(@Param("v_id") String vehicleId);
 
     // Unused
-    @Select("SELECT " +
+    @Select("SELECT TOP 1 " +
             "CASE WHEN " +
-            "Count(iv.vehicle_id) > 0 THEN 1 " +
+            "iv.returned_date IS NULL THEN 1 " +
             "ELSE 0 END Result " +
             "FROM issued_vehicle iv " +
-            "WHERE iv.vehicle_id = #{v_id} ")
-    boolean isVehicleHasRecords(@Param("v_id") String vehicleId);
+            "WHERE iv.driver_id = #{dr_id} " +
+            "ORDER BY iv.create_date DESC ")
+    boolean isDriverAlreadyAssigned(@Param("dr_id") String driverId);
 
     @Select("SELECT \n" +
             "issued_vehicle_id, \n" +
@@ -77,7 +78,7 @@ public interface IssuedVehicleMapper {
             "JOIN [user] u ON u.[user_id] = iv.driver_id " +
             "WHERE iv.vehicle_id = #{v_id} " +
             "AND iv.returned_date IS NULL " +
-            "ORDER BY iv.issued_date DESC")
+            "ORDER BY iv.create_date DESC")
     @Results(id = "assignedDriver", value = {
             @Result(property = "userId", column = "user_id"),
             @Result(property = "userName", column = "full_name")
@@ -95,4 +96,10 @@ public interface IssuedVehicleMapper {
             @Result(property = "returnedDate", column = "returned_date")
     })
     List<DriverHistory> getDriverHistory(@Param("v_id") String vehicleId);
+
+    @Select("SELECT TOP 1 iv.issued_vehicle_id " +
+            "FROM issued_vehicle iv " +
+            "WHERE iv.vehicle_id = #{v_id} " +
+            "ORDER BY iv.create_date DESC ")
+    int getCurrentIssuedVehicleId(@Param("v_id") String vehicleId);
 }

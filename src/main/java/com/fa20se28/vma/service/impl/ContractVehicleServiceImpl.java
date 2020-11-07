@@ -2,6 +2,8 @@ package com.fa20se28.vma.service.impl;
 
 import com.fa20se28.vma.component.ContractVehicleComponent;
 import com.fa20se28.vma.request.ContractVehiclePassengerReq;
+import com.fa20se28.vma.request.ContractVehicleReq;
+import com.fa20se28.vma.response.ContractVehicleRes;
 import com.fa20se28.vma.response.PassengerRes;
 import com.fa20se28.vma.service.ContractVehicleService;
 import org.springframework.stereotype.Service;
@@ -22,5 +24,15 @@ public class ContractVehicleServiceImpl implements ContractVehicleService {
     @Override
     public void createPassengerList(ContractVehiclePassengerReq contractVehiclePassengerReq) {
         contractVehicleComponent.createPassengerList(contractVehiclePassengerReq);
+    }
+
+    @Override
+    public void assignVehicleForContract(ContractVehicleReq contractVehicleReq) {
+        contractVehicleComponent.assignVehicleForContract(contractVehicleReq);
+    }
+
+    @Override
+    public ContractVehicleRes getContractVehicles(int contractId) {
+        return new ContractVehicleRes(contractVehicleComponent.getContractVehicles(contractId));
     }
 }
