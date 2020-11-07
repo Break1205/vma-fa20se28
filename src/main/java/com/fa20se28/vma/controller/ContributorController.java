@@ -55,28 +55,4 @@ public class ContributorController {
     public int getTheHighestOrLowestTotalVehicleInAllContributors(@RequestParam int option) {
         return contributorService.getTheHighestOrLowestTotalVehicleInAllContributors(option);
     }
-
-    @GetMapping("/{contributor-id}/drivers")
-    public UserPageRes getDriversDriveIssuedVehicleOfContributor(@PathVariable("contributor-id") String contributorId,
-                                  @RequestParam(required = false) String userId,
-                                  @RequestParam(required = false) String name,
-                                  @RequestParam(required = false) String phoneNumber,
-                                  @RequestParam(required = false) UserStatus userStatus,
-                                  @RequestParam(required = false, defaultValue = "0") int page) {
-        return contributorService.getDriversDriveIssuedVehicleOfContributor(
-                contributorId,
-                new UserPageReq(userId, name, phoneNumber, userStatus, page * 15));
-    }
-
-    @GetMapping("/{contributor-id}/drivers/count")
-    public int getTotalDriversDriveIssuedVehicleOfContributor(@PathVariable("contributor-id") String contributorId,
-                               @RequestParam(required = false) String userId,
-                               @RequestParam(required = false) String name,
-                               @RequestParam(required = false) String phoneNumber,
-                               @RequestParam(required = false) UserStatus userStatus) {
-        return contributorService.getTotalDriversDriveIssuedVehicleOfContributor(
-                contributorId,
-                new UserPageReq(
-                        userId, name, phoneNumber, userStatus, 0));
-    }
 }

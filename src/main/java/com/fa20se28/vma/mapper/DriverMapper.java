@@ -2,7 +2,9 @@ package com.fa20se28.vma.mapper;
 
 import com.fa20se28.vma.model.DriverDetail;
 import com.fa20se28.vma.request.DriverPageReq;
+import com.fa20se28.vma.request.IssuedDriversPageReq;
 import com.fa20se28.vma.response.DriverRes;
+import com.fa20se28.vma.response.IssuedDriversRes;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -107,4 +109,69 @@ public interface DriverMapper {
             "</if> " +
             "</script>"})
     int findTotalDriversWhenFilter(@Param("DriverPageReq") DriverPageReq driverPageReq);
+
+    @Select({"<script>" +
+            "SELECT \n" +
+            "u.user_id, \n" +
+            "u.full_name, \n" +
+            "u.phone_number, \n" +
+            "iv.vehicle_id \n" +
+            "FROM [user] u \n" +
+            "JOIN issued_vehicle iv \n" +
+            "ON u.user_id = iv.driver_id \n" +
+            "JOIN vehicle v \n" +
+            "ON iv.vehicle_id = v.vehicle_id\n" +
+            "WHERE v.owner_id = '${ownerId}'\n" +
+            "AND v.vehicle_status = 'ON_ROUTE'" +
+            "<if test = \"IssuedDriversPageReq.fullName!=null\" > \n" +
+            "AND u.full_name LIKE N'%${IssuedDriversPageReq.fullName}%' \n" +
+            "</if>  \n" +
+            "<if test = \"IssuedDriversPageReq.phoneNumber!=null\" > \n" +
+            "AND u.phone_number LIKE '%${IssuedDriversPageReq.phoneNumber}%' \n" +
+            "</if>  \n" +
+            "<if test = \"IssuedDriversPageReq.vehicleId!=null\" > \n" +
+            "AND iv.vehicle_id = #{IssuedDriversPageReq.vehicleId} \n" +
+            "</if>  \n" +
+            "ORDER BY u.user_id ASC \n" +
+            "OFFSET ${IssuedDriversPageReq.page} ROWS \n" +
+            "FETCH NEXT 15 ROWS ONLY" +
+            "</script>"})
+    @Results(id = "issuedDriverResult", value = {
+            @Result(property = "userId", column = "user_id"),
+            @Result(property = "fullName", column = "full_name"),
+            @Result(property = "phoneNumber", column = "phone_number"),
+            @Result(property = "vehicleId", column = "vehicle_id")
+    })
+    List<IssuedDriversRes> findIssuedDrivers(@Param("ownerId") String ownerId,
+                                             @Param("IssuedDriversPageReq") IssuedDriversPageReq issuedDriversPageReq);
+
+
+    @Select({"<script>" +
+            "SELECT COUNT(id.user_id) \n" +
+            "FROM (\n" +
+            "SELECT\n" +
+            "u.user_id,\n" +
+            "u.full_name,\n" +
+            "u.phone_number,\n" +
+            "iv.vehicle_id\n" +
+            "FROM [user] u\n" +
+            "JOIN issued_vehicle iv\n" +
+            "ON u.user_id = iv.driver_id\n" +
+            "JOIN vehicle v\n" +
+            "ON iv.vehicle_id = v.vehicle_id \n" +
+            "WHERE v.owner_id = '${ownerId}' \n" +
+            "AND v.vehicle_status = 'ON_ROUTE' \n" +
+            "<if test = \"IssuedDriversPageReq.fullName!=null\" >\n" +
+            "AND u.full_name LIKE N'%${IssuedDriversPageReq.fullName}%'\n" +
+            "</if> \n" +
+            "<if test = \"IssuedDriversPageReq.phoneNumber!=null\" >\n" +
+            "AND u.phone_number LIKE '%${IssuedDriversPageReq.phoneNumber}%'\n" +
+            "</if> \n" +
+            "<if test = \"IssuedDriversPageReq.vehicleId!=null\" >\n" +
+            "AND iv.vehicle_id = #{IssuedDriversPageReq.vehicleId}\n" +
+            "</if> " +
+            ") id" +
+            "</script>"})
+    int findTotalIssuedDrivers(@Param("ownerId") String ownerId,
+                               @Param("IssuedDriversPageReq") IssuedDriversPageReq issuedDriversPageReq);
 }

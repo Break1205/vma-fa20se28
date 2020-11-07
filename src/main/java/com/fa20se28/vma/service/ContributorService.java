@@ -16,7 +16,5 @@ public interface ContributorService {
 
     int getTheHighestOrLowestTotalVehicleInAllContributors(int option);
 
-    UserPageRes getDriversDriveIssuedVehicleOfContributor(String contributorId, UserPageReq userPageReq);
 
-    int getTotalDriversDriveIssuedVehicleOfContributor(String contributorId, UserPageReq userPageReq);
 }

@@ -53,19 +53,4 @@ public class ContributorServiceImpl implements ContributorService {
         }
         return contributorComponent.findTheHighestTotalVehicleInAllContributors();
     }
-
-    @Override
-    public UserPageRes getDriversDriveIssuedVehicleOfContributor(String contributorId, UserPageReq userPageReq) {
-        UserPageRes userPageRes = new UserPageRes();
-        userPageRes.setUserRes(
-                contributorComponent
-                        .findDriversDriveIssuedVehicleOfContributor(contributorId, userPageReq));
-        return userPageRes;
-    }
-
-    @Override
-    public int getTotalDriversDriveIssuedVehicleOfContributor(String contributorId, UserPageReq userPageReq) {
-        return contributorComponent
-                .findTotalDriversDriveIssuedVehicleOfContributor(contributorId, userPageReq);
-    }
 }

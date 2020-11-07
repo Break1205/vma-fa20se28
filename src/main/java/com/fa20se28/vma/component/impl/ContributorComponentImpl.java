@@ -62,14 +62,4 @@ public class ContributorComponentImpl implements ContributorComponent {
     public int findTheLowestTotalVehicleInAllContributors() {
         return contributorMapper.findTheLowestTotalVehiclesInAllContributors();
     }
-
-    @Override
-    public List<UserRes> findDriversDriveIssuedVehicleOfContributor(String contributorId, UserPageReq userPageReq) {
-        return contributorMapper.findDriversDriveIssuedVehicleOfContributor(contributorId, userPageReq);
-    }
-
-    @Override
-    public int findTotalDriversDriveIssuedVehicleOfContributor(String contributorId, UserPageReq userPageReq) {
-        return contributorMapper.findTotalDriversDriveIssuedVehicleOfContributor(contributorId, userPageReq);
-    }
 }
