@@ -4,7 +4,7 @@ import com.fa20se28.vma.request.UserDocumentReq;
 import com.fa20se28.vma.response.UserDocumentRes;
 
 public interface DocumentService {
-    UserDocumentRes getUserDocuments(String id);
+    UserDocumentRes getUserDocuments(String id, int option);
 
     int createUserDocument(UserDocumentReq userDocumentReq, String userId);
 

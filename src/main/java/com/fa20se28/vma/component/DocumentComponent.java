@@ -6,7 +6,7 @@ import com.fa20se28.vma.request.UserDocumentReq;
 import java.util.List;
 
 public interface DocumentComponent {
-    List<UserDocument> findUserDocumentByUserId(String id);
+    List<UserDocument> findUserDocumentByUserId(String id, int option);
 
     int createUserDocument(UserDocumentReq userDocumentReq, String userId);
 

@@ -24,39 +24,27 @@ public class DocumentController {
         this.vehicleDocumentService = vehicleDocumentService;
     }
 
-    @GetMapping("/documents/users")
-    public UserDocumentRes getUserDocuments(@RequestParam(required = false) String userId) {
-        return documentService.getUserDocuments(userId);
+    @GetMapping("/users/{user-id}/user-documents")
+    public UserDocumentRes getUserDocuments(@PathVariable("user-id") String userId,
+                                            @RequestParam(defaultValue = "0") int option) {
+        return documentService.getUserDocuments(userId, option);
     }
-
-    @PostMapping("/admin/documents/users")
-    public int createUserDocument(@RequestBody UserDocumentReq userDocumentReq,
-                                  @RequestParam String userId) {
-        return documentService.createUserDocument(userDocumentReq, userId);
-    }
-
-//
-//    @PostMapping("/documents/users")
-//    public int createUserDocumentWithRequest(@RequestBody UserDocumentReq userDocumentReq,
-//                                             @RequestParam String userId) {
-//        return documentService.createUserDocumentWithRequest(userDocumentReq, userId);
-//    }
-
-    @PutMapping("/admin/documents/users")
-    public int updateUserDocument(@RequestBody UserDocumentReq userDocumentReq,
-                                  @RequestParam String userId) {
-        return documentService.updateUserDocument(userDocumentReq, userId);
-    }
-
-//    @PutMapping("/documents/users")
-//    public int updateUserDocumentWithRequest(@RequestBody UserDocumentReq userDocumentReq,
-//                                             @RequestParam String userId) {
-//        return documentService.updateUserDocumentWithRequest(userDocumentReq, userId);
-//    }
 
     @GetMapping("/documents/types")
     public UserDocumentTypesRes getUserDocumentTypes() {
         return new UserDocumentTypesRes();
+    }
+
+    @PostMapping("/admin/user/{user-id}/documents")
+    public int createUserDocument(@RequestBody UserDocumentReq userDocumentReq,
+                                  @PathVariable("user-id") String userId) {
+        return documentService.createUserDocument(userDocumentReq, userId);
+    }
+
+    @PutMapping("/admin/user/{user-id}/documents")
+    public int updateUserDocument(@RequestBody UserDocumentReq userDocumentReq,
+                                  @PathVariable("user-id") String userId) {
+        return documentService.updateUserDocument(userDocumentReq, userId);
     }
 
     @DeleteMapping("/admin/documents")

@@ -11,7 +11,8 @@ import java.util.Optional;
 
 @Mapper
 public interface UserDocumentMapper {
-    @Select("SELECT " +
+    @Select({"<script>"+
+            "SELECT " +
             "ud.user_document_id, " +
             "ud.user_document_type, " +
             "ud.registered_location, " +
@@ -20,7 +21,18 @@ public interface UserDocumentMapper {
             "ud.other_information " +
             "FROM user_document ud " +
             "WHERE ud.user_id = '${user_id}' " +
-            "AND ud.is_deleted = 0")
+            "<if test = \"option==0\" > " +
+            "AND ud.is_deleted = 0 " +
+            "</if> " +
+            "<if test = \"option==1\" > " +
+            "AND ud.is_deleted = 1 " +
+            "</if> "+
+            "<if test = \"option!=null\" >\n" +
+            "<if test = \"option!=0 and option!=1\" >\n" +
+            "AND ud.is_deleted = 0 \n" +
+            "</if> \n" +
+            "</if> \n" +
+            "</script>"})
     @Results(id = "userDocumentResult", value = {
             @Result(property = "userDocumentId", column = "user_document_id"),
             @Result(property = "userDocumentType", column = "user_document_type"),
@@ -31,7 +43,7 @@ public interface UserDocumentMapper {
             @Result(property = "userDocumentImages", column = "user_document_id",
                     many = @Many(select = "findDocumentImagesByUserDocumentId")),
     })
-    List<UserDocument> findUserDocumentByUserId(@Param("user_id") String userId);
+    List<UserDocument> findUserDocumentByUserId(@Param("user_id") String userId,@Param("option") int option);
 
     @Select("SELECT " +
             "di.user_document_image_id, " +

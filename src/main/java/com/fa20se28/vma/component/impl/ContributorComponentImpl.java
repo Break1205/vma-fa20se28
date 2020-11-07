@@ -7,9 +7,7 @@ import com.fa20se28.vma.mapper.UserDocumentMapper;
 import com.fa20se28.vma.mapper.UserMapper;
 import com.fa20se28.vma.model.ContributorDetail;
 import com.fa20se28.vma.request.ContributorPageReq;
-import com.fa20se28.vma.request.UserPageReq;
 import com.fa20se28.vma.response.ContributorRes;
-import com.fa20se28.vma.response.UserRes;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -31,7 +29,7 @@ public class ContributorComponentImpl implements ContributorComponent {
     public ContributorDetail findContributorById(String userId) {
         Optional<ContributorDetail> optionalContributorDetail = contributorMapper.findContributorById(userId);
         optionalContributorDetail.ifPresent(contributorDetail ->
-                contributorDetail.setUserDocumentList(userDocumentMapper.findUserDocumentByUserId(userId)));
+                contributorDetail.setUserDocumentList(userDocumentMapper.findUserDocumentByUserId(userId, 0)));
         return optionalContributorDetail.orElseThrow(() ->
                 new ResourceNotFoundException("Contributor with id: " + userId + " not found"));
     }
