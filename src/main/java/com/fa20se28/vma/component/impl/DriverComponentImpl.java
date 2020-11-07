@@ -7,7 +7,9 @@ import com.fa20se28.vma.mapper.UserDocumentMapper;
 import com.fa20se28.vma.mapper.UserMapper;
 import com.fa20se28.vma.model.DriverDetail;
 import com.fa20se28.vma.request.DriverPageReq;
+import com.fa20se28.vma.request.IssuedDriversPageReq;
 import com.fa20se28.vma.response.DriverRes;
+import com.fa20se28.vma.response.IssuedDriversRes;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -51,5 +53,13 @@ public class DriverComponentImpl implements DriverComponent {
         return driverMapper.findTotalDriversWhenFilter(driverPageReq);
     }
 
+    @Override
+    public List<IssuedDriversRes> findIssuedDrivers(String contributorId, IssuedDriversPageReq issuedDriversPageReq) {
+        return driverMapper.findIssuedDrivers(contributorId, issuedDriversPageReq);
+    }
 
+    @Override
+    public int findTotalIssuedDrivers(String contributorId, IssuedDriversPageReq issuedDriversPageReq) {
+        return driverMapper.findTotalIssuedDrivers(contributorId, issuedDriversPageReq);
+    }
 }

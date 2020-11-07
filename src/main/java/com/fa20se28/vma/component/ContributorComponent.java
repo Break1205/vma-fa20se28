@@ -20,8 +20,4 @@ public interface ContributorComponent {
     int findTheHighestTotalVehicleInAllContributors();
 
     int findTheLowestTotalVehicleInAllContributors();
-
-    List<UserRes> findDriversDriveIssuedVehicleOfContributor(String contributorId, UserPageReq userPageReq);
-
-    int findTotalDriversDriveIssuedVehicleOfContributor(String contributorId, UserPageReq userPageReq);
 }
