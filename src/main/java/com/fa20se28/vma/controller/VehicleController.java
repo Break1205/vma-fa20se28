@@ -107,4 +107,9 @@ public class VehicleController {
             @RequestBody VehicleStatus vehicleStatus) {
         vehicleService.updateVehicleStatus(vehicleId, vehicleStatus);
     }
+
+    @GetMapping("/{vehicle-id}/drivers")
+    public DriverHistoryRes getDriverHistoryByVehicleId(@PathVariable("vehicle-id") String vehicleId) {
+        return vehicleService.getDriverHistory(vehicleId);
+    }
 }

@@ -25,7 +25,7 @@ public class ContractComponentImpl implements ContractComponent {
     @Override
     @Transactional
     public void createContract(ContractReq contractReq) {
-        int row = contractMapper.createContract(contractReq, ContractStatus.UNFINISHED);
+        int row = contractMapper.createContract(contractReq, ContractStatus.NOT_STARTED);
 
         if (row == 0) {
             throw new DataException("Unknown error occurred. Data not modified!");

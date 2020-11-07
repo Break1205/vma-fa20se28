@@ -51,7 +51,7 @@ public class VehicleComponentImpl implements VehicleComponent {
         if (vehicleMapper.getVehicleStatus(vehicleId) != VehicleStatus.AVAILABLE_NO_DRIVER) {
             throw new DataException("Vehicle is unavailable!");
         } else {
-            int assignRow = issuedVehicleMapper.assignVehicle(vehicleId, driverId);
+            int assignRow = issuedVehicleMapper.updateIssuedVehicle(vehicleId, driverId, 0);
             int updateStatusRow = vehicleMapper.updateVehicleStatus(vehicleId, VehicleStatus.AVAILABLE);
 
             if (assignRow == 0 && updateStatusRow == 0) {
@@ -66,10 +66,11 @@ public class VehicleComponentImpl implements VehicleComponent {
         if (vehicleMapper.getVehicleStatus(vehicleId) != VehicleStatus.AVAILABLE) {
             throw new DataException("Vehicle is still occupied!");
         } else {
-            int withDrawRow = issuedVehicleMapper.withdrawVehicle(vehicleId);
-
+            int withDrawRow = issuedVehicleMapper.updateIssuedVehicle(vehicleId, null, 1);
+            int createPlaceHolderRow = issuedVehicleMapper.createPlaceholder(vehicleId);
             int updateStatusRow = vehicleMapper.updateVehicleStatus(vehicleId, VehicleStatus.AVAILABLE_NO_DRIVER);
-            if (withDrawRow == 0 && updateStatusRow == 0) {
+
+            if (withDrawRow == 0 && updateStatusRow == 0 && createPlaceHolderRow == 0) {
                 throw new DataException("Unknown error occurred. Data not modified!");
             }
         }
@@ -93,9 +94,7 @@ public class VehicleComponentImpl implements VehicleComponent {
                         int vehicleDoc;
                         if (vehicle.getRoleId() == 2) {
                             vehicleDoc = vehicleDocumentMapper.createVehicleDocument(doc, vehicle.getVehicleId(), true);
-                        }
-                        else
-                        {
+                        } else {
                             vehicleDoc = vehicleDocumentMapper.createVehicleDocument(doc, vehicle.getVehicleId(), false);
                         }
                         if (vehicleDoc == 0) {
@@ -108,6 +107,7 @@ public class VehicleComponentImpl implements VehicleComponent {
                                 }
                             }
                             documentRowCount++;
+                            issuedVehicleMapper.createPlaceholder(vehicle.getVehicleId());
                         }
                     } else {
                         throw new DataException("Document with ID " + doc.getVehicleDocumentId() + " already exist!");
@@ -141,10 +141,8 @@ public class VehicleComponentImpl implements VehicleComponent {
     public VehicleDetail getVehicleDetails(String vehicleId) {
         VehicleDetail vehicleDetail = vehicleMapper.getVehicleDetails(vehicleId);
 
-        if (issuedVehicleMapper.isVehicleHasRecords(vehicleId)) {
-            if (issuedVehicleMapper.isVehicleHasDriver(vehicleId)) {
-                vehicleDetail.setAssignedDriver(issuedVehicleMapper.getAssignedDriver(vehicleId));
-            }
+        if (issuedVehicleMapper.isVehicleHasDriver(vehicleId)) {
+            vehicleDetail.setAssignedDriver(issuedVehicleMapper.getAssignedDriver(vehicleId));
         }
 
         return vehicleDetail;
@@ -168,5 +166,10 @@ public class VehicleComponentImpl implements VehicleComponent {
         if (row == 0) {
             throw new DataException("Unknown error occurred. Data not modified!");
         }
+    }
+
+    @Override
+    public List<DriverHistory> getDriverHistory(String vehicleId) {
+        return issuedVehicleMapper.getDriverHistory(vehicleId);
     }
 }

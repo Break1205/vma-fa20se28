@@ -67,4 +67,9 @@ public class VehicleServiceImpl implements VehicleService {
     public void updateVehicleStatus(String vehicleId, VehicleStatus vehicleStatus) {
         vehicleComponent.updateVehicleStatus(vehicleId, vehicleStatus);
     }
+
+    @Override
+    public DriverHistoryRes getDriverHistory(String vehicleId) {
+        return new DriverHistoryRes(vehicleComponent.getDriverHistory(vehicleId));
+    }
 }
