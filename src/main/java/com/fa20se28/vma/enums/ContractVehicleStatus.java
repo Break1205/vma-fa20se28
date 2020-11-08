@@ -4,5 +4,6 @@ public enum ContractVehicleStatus {
     NOT_STARTED,
     ON_SCHEDULE,
     DELAYED,
-    COMPLETED
+    COMPLETED,
+    DROPPED
 }

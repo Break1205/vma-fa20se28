@@ -64,6 +64,8 @@ public interface RequestMapper {
             "request_id, \n" +
             "user_id,\n" +
             "user_document_id, \n" +
+            "vehicle_id,\n" +
+            "vehicle_document_id, \n" +
             "request_status, \n" +
             "request_type, \n" +
             "description, \n" +
@@ -74,6 +76,8 @@ public interface RequestMapper {
             @Result(property = "requestId", column = "request_id"),
             @Result(property = "userId", column = "user_id"),
             @Result(property = "userDocumentId", column = "user_document_id"),
+            @Result(property = "vehicleId", column = "vehicle_id"),
+            @Result(property = "vehicleDocumentId", column = "vehicle_document_id"),
             @Result(property = "requestStatus", column = "request_status"),
             @Result(property = "requestType", column = "request_type"),
             @Result(property = "description", column = "description"),
@@ -97,14 +101,14 @@ public interface RequestMapper {
             "description) " +
             "VALUES " +
             "(#{userId}, " +
-            "#{r_vehicle.vehicleId}, " +
-            "#{r_vehicle.vehicleDocumentReq.vehicleDocumentId}, " +
+            "#{r_vehicle_document.vehicleDocument.vehicleId}, " +
+            "#{r_vehicle_document.vehicleDocument.vehicleDocumentReq.vehicleDocumentId}, " +
             "#{r_status}, " +
-            "#{r_vehicle.requestType}, " +
+            "#{r_vehicle_document.requestType}, " +
             "getDate(), " +
-            "#{r_vehicle.description}) ")
+            "#{r_vehicle_document.description}) ")
     int insertVehicleRequest(
-            @Param("r_vehicle") VehicleRequestReq requestReq,
+            @Param("r_vehicle_document") VehicleRequestReq requestReq,
             @Param("r_status") RequestStatus requestStatus,
             @Param("userId") String userId);
 }

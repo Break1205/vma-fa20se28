@@ -9,6 +9,8 @@ public class DocumentRequestDetail {
     private int requestId;
     private String userId;
     private String userDocumentId;
+    private String vehicleId;
+    private String vehicleDocumentId;
     private RequestStatus requestStatus;
     private RequestType requestType;
     private String description;
@@ -36,6 +38,22 @@ public class DocumentRequestDetail {
 
     public void setUserDocumentId(String userDocumentId) {
         this.userDocumentId = userDocumentId;
+    }
+
+    public String getVehicleId() {
+        return vehicleId;
+    }
+
+    public void setVehicleId(String vehicleId) {
+        this.vehicleId = vehicleId;
+    }
+
+    public String getVehicleDocumentId() {
+        return vehicleDocumentId;
+    }
+
+    public void setVehicleDocumentId(String vehicleDocumentId) {
+        this.vehicleDocumentId = vehicleDocumentId;
     }
 
     public RequestStatus getRequestStatus() {
