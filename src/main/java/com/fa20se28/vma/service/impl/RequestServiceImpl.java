@@ -9,6 +9,7 @@ import com.fa20se28.vma.configuration.exception.RequestAlreadyHandledException;
 import com.fa20se28.vma.enums.RequestStatus;
 import com.fa20se28.vma.enums.RequestType;
 import com.fa20se28.vma.model.DocumentRequestDetail;
+import com.fa20se28.vma.request.RequestPageReq;
 import com.fa20se28.vma.request.RequestReq;
 import com.fa20se28.vma.request.VehicleRequestReq;
 import com.fa20se28.vma.response.DocumentRequestDetailRes;
@@ -78,9 +79,9 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public RequestPageRes getPendingRequests(int page) {
+    public RequestPageRes getPendingRequests(RequestPageReq requestPageReq) {
         RequestPageRes requestPageRes = new RequestPageRes();
-        requestPageRes.setRequestRes(requestComponent.findPendingRequests(page));
+        requestPageRes.setRequestRes(requestComponent.findPendingRequests(requestPageReq));
         return requestPageRes;
     }
 

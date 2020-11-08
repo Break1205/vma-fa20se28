@@ -2,6 +2,7 @@ package com.fa20se28.vma.controller;
 
 import com.fa20se28.vma.enums.RequestStatus;
 import com.fa20se28.vma.enums.RequestType;
+import com.fa20se28.vma.request.RequestPageReq;
 import com.fa20se28.vma.request.RequestReq;
 import com.fa20se28.vma.request.VehicleRequestReq;
 import com.fa20se28.vma.response.DocumentRequestDetailRes;
@@ -20,6 +21,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -47,13 +50,17 @@ public class RequestController {
     }
 
     @GetMapping("/requests/types")
-    public RequestTypesRes getRequestTypes(){
+    public RequestTypesRes getRequestTypes() {
         return new RequestTypesRes();
     }
 
     @GetMapping("/requests")
-    public RequestPageRes getPendingRequest(@RequestParam(defaultValue = "0") int page) {
-        return requestService.getPendingRequests(page * 15);
+    public RequestPageRes getPendingRequest(@RequestParam(defaultValue = "0") int page,
+                                            @RequestParam(required = false) String userId,
+                                            @RequestParam(required = false) RequestType requestType,
+                                            @RequestParam(required = false) String fromDate,
+                                            @RequestParam(required = false) String toDate) {
+        return requestService.getPendingRequests(new RequestPageReq(userId, requestType, fromDate, toDate, page * 15));
     }
 
     @GetMapping("/requests/count")
