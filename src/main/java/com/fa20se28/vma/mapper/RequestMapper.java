@@ -2,6 +2,7 @@ package com.fa20se28.vma.mapper;
 
 import com.fa20se28.vma.enums.RequestStatus;
 import com.fa20se28.vma.model.DocumentRequestDetail;
+import com.fa20se28.vma.request.RequestPageReq;
 import com.fa20se28.vma.request.RequestReq;
 import com.fa20se28.vma.request.VehicleRequestReq;
 import com.fa20se28.vma.response.RequestRes;
@@ -31,23 +32,40 @@ public interface RequestMapper {
     int insertRequest(@Param("RequestReq") RequestReq requestReq,
                       @Param("userId") String userId);
 
-    @Select("SELECT \n" +
-            "request_id, \n" +
-            "user_id, \n" +
-            "request_type,\n" +
-            "create_date\n" +
-            "FROM request \n" +
-            "WHERE request_status = 'PENDING' \n" +
-            "ORDER BY create_date ASC \n" +
-            "OFFSET #{page} ROWS  \n" +
-            "FETCH NEXT 15 ROWS ONLY ")
+    @Select({"<script>" +
+            "SELECT \n" +
+            "request_id,\n" +
+            "user_id,\n" +
+            "request_type, \n" +
+            "create_date \n" +
+            "FROM request\n" +
+            "WHERE request_status = 'PENDING'\n" +
+            "<if test = \"RequestPageReq.userId!=null\" >\n" +
+            "AND user_id LIKE '%${RequestPageReq.userId}%'\n" +
+            "</if> \n" +
+            "<if test = \"RequestPageReq.requestType!=null\" >\n" +
+            "AND request_type LIKE N'%${RequestPageReq.requestType}%'\n" +
+            "</if> \n" +
+            "<if test = \"RequestPageReq.fromDate!=null and RequestPageReq.toDate!=null\" >\n" +
+            "AND create_date BETWEEN '${RequestPageReq.fromDate}' AND '${RequestPageReq.toDate}'\n" +
+            "</if> \n" +
+            "<if test = \"RequestPageReq.fromDate!=null and RequestPageReq.toDate==null\" >\n" +
+            "AND create_date &gt; '${RequestPageReq.fromDate}' \n" +
+            "</if> \n" +
+            "<if test = \"RequestPageReq.fromDate==null and RequestPageReq.toDate!=null\" >\n" +
+            "AND create_date &lt; '${RequestPageReq.toDate}' \n" +
+            "</if> \n" +
+            "ORDER BY create_date ASC\n" +
+            "OFFSET #{RequestPageReq.page} ROWS \n" +
+            "FETCH NEXT 15 ROWS ONLY " +
+            "</script>"})
     @Results(id = "pendingRequestsResult", value = {
             @Result(property = "requestId", column = "request_id"),
             @Result(property = "userId", column = "user_id"),
             @Result(property = "requestType", column = "request_type"),
             @Result(property = "createDate", column = "create_date")
     })
-    List<RequestRes> findPendingRequest(int page);
+    List<RequestRes> findPendingRequest(@Param("RequestPageReq") RequestPageReq requestPageReq);
 
     @Select("SELECT COUNT(ur.request_id) " +
             "FROM (" +

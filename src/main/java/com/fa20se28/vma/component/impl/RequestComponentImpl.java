@@ -5,6 +5,7 @@ import com.fa20se28.vma.configuration.exception.ResourceNotFoundException;
 import com.fa20se28.vma.enums.RequestStatus;
 import com.fa20se28.vma.mapper.RequestMapper;
 import com.fa20se28.vma.model.DocumentRequestDetail;
+import com.fa20se28.vma.request.RequestPageReq;
 import com.fa20se28.vma.request.RequestReq;
 import com.fa20se28.vma.request.VehicleRequestReq;
 import com.fa20se28.vma.response.RequestRes;
@@ -29,8 +30,8 @@ public class RequestComponentImpl implements RequestComponent {
     }
 
     @Override
-    public List<RequestRes> findPendingRequests(int page) {
-        return requestMapper.findPendingRequest(page);
+    public List<RequestRes> findPendingRequests(RequestPageReq requestPageReq) {
+        return requestMapper.findPendingRequest(requestPageReq);
     }
 
     @Override
