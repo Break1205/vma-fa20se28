@@ -27,13 +27,14 @@ public interface ContractVehicleMapper {
     @Update("")
     int updateContractedVehicleStatus();
 
-    @Select("SELECT v.vehicle_id, vt.vehicle_type_id, vt.vehicle_type_name, v.seats " +
+    @Select("SELECT cv.contract_vehicle_id, v.vehicle_id, vt.vehicle_type_id, vt.vehicle_type_name, v.seats " +
             "FROM contract_vehicles cv " +
             "JOIN issued_vehicle iv ON cv.issued_vehicle_id = iv.issued_vehicle_id " +
             "JOIN vehicle v ON iv.vehicle_id = v.vehicle_id " +
             "JOIN vehicle_type vt ON vt.vehicle_type_id = v.vehicle_type_id " +
             "WHERE cv.contract_id = #{cv_id} ")
     @Results(id = "contractVehicleResult", value = {
+            @Result(property = "contractVehicleId", column = "contract_vehicle_id"),
             @Result(property = "vehicleId", column = "vehicle_id"),
             @Result(property = "vehicleType.vehicleTypeId", column = "vehicle_type_id"),
             @Result(property = "vehicleType.vehicleTypeName", column = "vehicle_type_name"),

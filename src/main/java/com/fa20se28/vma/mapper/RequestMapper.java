@@ -97,14 +97,14 @@ public interface RequestMapper {
             "description) " +
             "VALUES " +
             "(#{userId}, " +
-            "#{r_vehicle.vehicleId}, " +
-            "#{r_vehicle.vehicleDocumentReq.vehicleDocumentId}, " +
+            "#{r_vehicle_document.vehicleDocument.vehicleId}, " +
+            "#{r_vehicle_document.vehicleDocument.vehicleDocumentReq.vehicleDocumentId}, " +
             "#{r_status}, " +
-            "#{r_vehicle.requestType}, " +
+            "#{r_vehicle_document.requestType}, " +
             "getDate(), " +
-            "#{r_vehicle.description}) ")
+            "#{r_vehicle_document.description}) ")
     int insertVehicleRequest(
-            @Param("r_vehicle") VehicleRequestReq requestReq,
+            @Param("r_vehicle_document") VehicleRequestReq requestReq,
             @Param("r_status") RequestStatus requestStatus,
             @Param("userId") String userId);
 }

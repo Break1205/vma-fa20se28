@@ -1,9 +1,18 @@
 package com.fa20se28.vma.model;
 
 public class VehicleBasic {
+    private int contractVehicleId;
     private String vehicleId;
     private VehicleType vehicleType;
     private int seats;
+
+    public int getContractVehicleId() {
+        return contractVehicleId;
+    }
+
+    public void setContractVehicleId(int contractVehicleId) {
+        this.contractVehicleId = contractVehicleId;
+    }
 
     public String getVehicleId() {
         return vehicleId;
