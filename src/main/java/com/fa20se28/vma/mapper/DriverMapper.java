@@ -48,50 +48,49 @@ public interface DriverMapper {
     Optional<DriverDetail> findDriverById(@Param("user_id") String userId);
 
     @Select({"<script>" +
+            "SELECT \n" +
+            "drivers.user_id, \n" +
+            "drivers.full_name, \n" +
+            "drivers.phone_number, \n" +
+            "drivers.user_status, \n" +
+            "ISNULL(vehicles.vehicle_id,'') vehicle_id\n" +
+            "FROM\n" +
+            "( \n" +
             "SELECT\n" +
-            "drivers.user_id,\n" +
-            "drivers.full_name,\n" +
-            "drivers.phone_number,\n" +
-            "drivers.user_status,\n" +
-            "ISNULL(vehicles.vehicle_id,'') vehicle_id \n" +
-            "FROM \n" +
-            "(\n" +
-            "SELECT \n" +
-            "u.user_id,\n" +
-            "full_name,\n" +
-            "phone_number,\n" +
-            "user_status \n" +
-            "FROM \n" +
-            "[user] u \n" +
-            "LEFT JOIN issued_vehicle iv \n" +
-            "ON u.user_id= iv.driver_id \n" +
-            "LEFT JOIN user_roles ur \n" +
-            "ON ur.user_id = u.user_id \n" +
+            "u.user_id, \n" +
+            "full_name, \n" +
+            "phone_number, \n" +
+            "user_status\n" +
+            "FROM\n" +
+            "[user] u\n" +
+            "JOIN user_roles ur\n" +
+            "ON ur.user_id = u.user_id\n" +
             "WHERE ur.role_id = 3 \n" +
-            "<if test = \"DriverPageReq.userId!=null\" > \n" +
-            "AND u.user_id LIKE '%${DriverPageReq.userId}%' \n" +
-            "</if>\n" +
-            "<if test = \"DriverPageReq.fullName!=null\" > \n" +
-            "AND u.full_name LIKE N'%${DriverPageReq.fullName}%' \n" +
-            "</if>\n" +
-            "<if test = \"DriverPageReq.phoneNumber!=null\" > \n" +
-            "AND u.phone_number LIKE '%${DriverPageReq.phoneNumber}%' \n" +
-            "</if>\n" +
-            "<if test = \"DriverPageReq.userStatus!=null\" > \n" +
-            "AND u.user_status = #{DriverPageReq.userStatus} \n" +
-            "</if>\n" +
-            ") drivers \n" +
-            "LEFT JOIN\n" +
-            "(\n" +
-            "SELECT \n" +
-            "v.vehicle_id, \n" +
-            "iv.driver_id\n" +
-            "FROM vehicle v\n" +
-            "JOIN issued_vehicle iv \n" +
-            "ON v.vehicle_id = iv.vehicle_id\n" +
-            "WHERE v.vehicle_status IN ('AVAILABLE','ON_ROUTE') \n" +
-            ") vehicles \n" +
-            "ON drivers.user_id = vehicles.driver_id \n" +
+            "<if test = \"DriverPageReq.userId!=null\" >  \n" +
+            "AND u.user_id LIKE '%${DriverPageReq.userId}%'  \n" +
+            "</if> \n" +
+            "<if test = \"DriverPageReq.fullName!=null\" >  \n" +
+            "AND u.full_name LIKE N'%${DriverPageReq.fullName}%'  \n" +
+            "</if> \n" +
+            "<if test = \"DriverPageReq.phoneNumber!=null\" >  \n" +
+            "AND u.phone_number LIKE '%${DriverPageReq.phoneNumber}%'  \n" +
+            "</if> \n" +
+            "<if test = \"DriverPageReq.userStatus!=null\" >  \n" +
+            "AND u.user_status = #{DriverPageReq.userStatus}  \n" +
+            "</if> \n" +
+            ") drivers\n" +
+            "LEFT JOIN \n" +
+            "( \n" +
+            "SELECT\n" +
+            "v.vehicle_id,\n" +
+            "iv.driver_id \n" +
+            "FROM vehicle v \n" +
+            "JOIN issued_vehicle iv\n" +
+            "ON v.vehicle_id = iv.vehicle_id \n" +
+            "WHERE v.vehicle_status IN ('AVAILABLE','ON_ROUTE')\n" +
+            "AND iv.returned_date IS NULL\n" +
+            ") vehicles\n" +
+            "ON drivers.user_id = vehicles.driver_id " +
             "ORDER BY drivers.user_id ASC \n" +
             "OFFSET #{DriverPageReq.page} ROWS \n" +
             "FETCH NEXT 15 ROWS ONLY " +
@@ -112,7 +111,7 @@ public interface DriverMapper {
             "drivers.full_name,\n" +
             "drivers.phone_number,\n" +
             "drivers.user_status,\n" +
-            "vehicles.vehicle_id\n" +
+            "ISNULL(vehicles.vehicle_id,'') vehicle_id \n" +
             "FROM \n" +
             "(\n" +
             "SELECT \n" +
@@ -122,11 +121,9 @@ public interface DriverMapper {
             "user_status \n" +
             "FROM \n" +
             "[user] u \n" +
-            "LEFT JOIN issued_vehicle iv \n" +
-            "ON u.user_id= iv.driver_id \n" +
-            "LEFT JOIN user_roles ur \n" +
+            "JOIN user_roles ur \n" +
             "ON ur.user_id = u.user_id \n" +
-            "WHERE ur.role_id = 3 \n" +
+            "WHERE ur.role_id = 3\n" +
             "<if test = \"DriverPageReq.userId!=null\" > \n" +
             "AND u.user_id LIKE '%${DriverPageReq.userId}%' \n" +
             "</if>\n" +
@@ -149,6 +146,7 @@ public interface DriverMapper {
             "JOIN issued_vehicle iv \n" +
             "ON v.vehicle_id = iv.vehicle_id\n" +
             "WHERE v.vehicle_status IN ('AVAILABLE','ON_ROUTE') \n" +
+            "AND iv.returned_date IS NULL \n" +
             ") vehicles \n" +
             "ON drivers.user_id = vehicles.driver_id ) c\n" +
             "</script>"})
