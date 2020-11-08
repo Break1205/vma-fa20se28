@@ -6,6 +6,7 @@ import com.fa20se28.vma.request.VehicleDocumentUpdateReq;
 import com.fa20se28.vma.response.UserDocumentRes;
 import com.fa20se28.vma.response.UserDocumentTypesRes;
 import com.fa20se28.vma.response.VehicleDocumentRes;
+import com.fa20se28.vma.response.VehicleDocumentTypeRes;
 import com.fa20se28.vma.service.DocumentService;
 import com.fa20se28.vma.service.VehicleDocumentService;
 import org.springframework.http.HttpStatus;
@@ -76,5 +77,10 @@ public class DocumentController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteVehicleDocument(@RequestParam String vehicleDocId) {
         vehicleDocumentService.deleteDocument(vehicleDocId);
+    }
+
+    @GetMapping("/vehicles/documents/types")
+    public VehicleDocumentTypeRes getVehicleDocumentTypes() {
+        return new VehicleDocumentTypeRes();
     }
 }

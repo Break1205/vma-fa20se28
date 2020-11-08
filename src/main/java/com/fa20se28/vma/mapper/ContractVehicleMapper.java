@@ -21,11 +21,12 @@ public interface ContractVehicleMapper {
             @Param("cv_iv_id") int issuedVehicleId,
             @Param("cv_status") ContractVehicleStatus vehicleStatus);
 
-    @Update("")
-    int updateContractedVehicleInfo();
-
-    @Update("")
-    int updateContractedVehicleStatus();
+    @Update("UPDATE contract_vehicles " +
+            "SET contract_vehicle_status = #{cv_status} " +
+            "WHERE contract_vehicle_id = #{cv_cid} ")
+    int updateContractedVehicleStatus(
+            @Param("cv_cid") int contractVehicleId,
+            @Param("cv_status") ContractVehicleStatus vehicleStatus);
 
     @Select("SELECT cv.contract_vehicle_id, v.vehicle_id, vt.vehicle_type_id, vt.vehicle_type_name, v.seats " +
             "FROM contract_vehicles cv " +
