@@ -80,23 +80,15 @@ public class VehicleComponentImpl implements VehicleComponent {
     @Transactional
     public void createVehicle(VehicleReq vehicle) {
         if (!vehicleMapper.isVehicleExist(vehicle.getVehicleId())) {
-            int vehicleRow;
-            if (vehicle.getRoleId() == 2) {
-                vehicleRow = vehicleMapper.createVehicle(vehicle, VehicleStatus.PENDING_APPROVAL);
-            } else {
-                vehicleRow = vehicleMapper.createVehicle(vehicle, VehicleStatus.AVAILABLE_NO_DRIVER);
-            }
+            int vehicleRow = vehicleMapper.createVehicle(vehicle, VehicleStatus.AVAILABLE_NO_DRIVER);
             int documentRowCount = 0;
             int documentImageRowCount = 0;
+
             if (vehicleRow != 0) {
                 for (VehicleDocumentReq doc : vehicle.getVehicleDocuments()) {
                     if (!vehicleDocumentMapper.isDocumentExist(doc.getVehicleDocumentId())) {
-                        int vehicleDoc;
-                        if (vehicle.getRoleId() == 2) {
-                            vehicleDoc = vehicleDocumentMapper.createVehicleDocument(doc, vehicle.getVehicleId(), true);
-                        } else {
-                            vehicleDoc = vehicleDocumentMapper.createVehicleDocument(doc, vehicle.getVehicleId(), false);
-                        }
+                        int vehicleDoc = vehicleDocumentMapper.createVehicleDocument(doc, vehicle.getVehicleId(), false);
+
                         if (vehicleDoc == 0) {
                             throw new DataException("Unknown error occurred. Data not modified!");
                         } else {

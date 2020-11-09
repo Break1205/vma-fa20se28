@@ -37,13 +37,7 @@ public class VehicleDocumentComponentImpl implements VehicleDocumentComponent {
     @Override
     public void createVehicleDocument(VehicleDocumentStandaloneReq vehicleDocumentStandaloneReq) {
         if (!vehicleDocumentMapper.isDocumentExist(vehicleDocumentStandaloneReq.getVehicleDocumentReq().getVehicleDocumentId())) {
-            int row;
-
-            if (vehicleDocumentStandaloneReq.getRoleId() == 2) {
-                row = vehicleDocumentMapper.createVehicleDocument(vehicleDocumentStandaloneReq.getVehicleDocumentReq(), vehicleDocumentStandaloneReq.getVehicleId(), true);
-            } else {
-                row = vehicleDocumentMapper.createVehicleDocument(vehicleDocumentStandaloneReq.getVehicleDocumentReq(), vehicleDocumentStandaloneReq.getVehicleId(), false);
-            }
+            int row = vehicleDocumentMapper.createVehicleDocument(vehicleDocumentStandaloneReq.getVehicleDocumentReq(), vehicleDocumentStandaloneReq.getVehicleId(), false);
 
             if (row == 0) {
                 throw new DataException("Unknown error occurred. Data not modified!");
