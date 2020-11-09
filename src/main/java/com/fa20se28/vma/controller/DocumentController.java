@@ -3,11 +3,7 @@ package com.fa20se28.vma.controller;
 import com.fa20se28.vma.request.UserDocumentReq;
 import com.fa20se28.vma.request.VehicleDocumentStandaloneReq;
 import com.fa20se28.vma.request.VehicleDocumentUpdateReq;
-import com.fa20se28.vma.response.UserDocumentDetailRes;
-import com.fa20se28.vma.response.UserDocumentRes;
-import com.fa20se28.vma.response.UserDocumentTypesRes;
-import com.fa20se28.vma.response.VehicleDocumentRes;
-import com.fa20se28.vma.response.VehicleDocumentTypeRes;
+import com.fa20se28.vma.response.*;
 import com.fa20se28.vma.service.UserDocumentService;
 import com.fa20se28.vma.service.VehicleDocumentService;
 import org.springframework.http.HttpStatus;
@@ -33,7 +29,7 @@ public class DocumentController {
     }
 
     @GetMapping("/user-documents/{user-document-id}")
-    public UserDocumentDetailRes getUserDocumentDetail(@PathVariable("user-document-id") String userDocumentId){
+    public UserDocumentDetailRes getUserDocumentDetail(@PathVariable("user-document-id") String userDocumentId) {
         return userDocumentService.getUserDocumentDetailById(userDocumentId);
     }
 
@@ -88,5 +84,10 @@ public class DocumentController {
     @GetMapping("/vehicles/documents/types")
     public VehicleDocumentTypeRes getVehicleDocumentTypes() {
         return new VehicleDocumentTypeRes();
+    }
+
+    @GetMapping("/vehicles/documents/{document-id}")
+    public VehicleDocumentSingleRes getVehicleDocumentById(@PathVariable("document-id") String vehicleDocId) {
+        return vehicleDocumentService.getVehicleDocument(vehicleDocId);
     }
 }
