@@ -20,7 +20,7 @@ public interface VehicleComponent {
 
     void withdrawVehicle(String vehicleId);
 
-    void createVehicle(VehicleReq vehicle, int roleId);
+    void createVehicle(VehicleReq vehicle);
 
     void deleteVehicle(String vehicleId);
 
