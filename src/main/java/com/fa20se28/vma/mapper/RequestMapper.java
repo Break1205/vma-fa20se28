@@ -101,21 +101,25 @@ public interface RequestMapper {
             "</script> "})
     int findTotalRequests(@Param("RequestPageReq") RequestPageReq requestPageReq);
 
-    @Select("SELECT \n" +
-            "request_id, \n" +
-            "user_id,\n" +
-            "user_document_id, \n" +
-            "vehicle_id,\n" +
-            "vehicle_document_id, \n" +
-            "request_status, \n" +
-            "request_type, \n" +
-            "description, \n" +
-            "create_date\n" +
+    @Select("SELECT  \n" +
+            "request_id,  \n" +
+            "u.user_id, \n" +
+            "u.full_name,\n" +
+            "user_document_id,  \n" +
+            "vehicle_id, \n" +
+            "vehicle_document_id,  \n" +
+            "request_status,  \n" +
+            "request_type,  \n" +
+            "description,  \n" +
+            "u.create_date \n" +
             "FROM request \n" +
+            "JOIN [user] u\n" +
+            "on request.user_id = u.user_id\n" +
             "WHERE request_id = #{request_id}")
     @Results(id = "documentRequestResult", value = {
             @Result(property = "requestId", column = "request_id"),
             @Result(property = "userId", column = "user_id"),
+            @Result(property = "fullName", column = "full_name"),
             @Result(property = "userDocumentId", column = "user_document_id"),
             @Result(property = "vehicleId", column = "vehicle_id"),
             @Result(property = "vehicleDocumentId", column = "vehicle_document_id"),

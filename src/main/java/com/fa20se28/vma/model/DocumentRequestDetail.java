@@ -8,6 +8,7 @@ import java.time.LocalDate;
 public class DocumentRequestDetail {
     private int requestId;
     private String userId;
+    private String fullName;
     private String userDocumentId;
     private String vehicleId;
     private String vehicleDocumentId;
@@ -86,5 +87,13 @@ public class DocumentRequestDetail {
 
     public void setCreateDate(LocalDate createDate) {
         this.createDate = createDate;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 }
