@@ -3,11 +3,12 @@ package com.fa20se28.vma.controller;
 import com.fa20se28.vma.request.UserDocumentReq;
 import com.fa20se28.vma.request.VehicleDocumentStandaloneReq;
 import com.fa20se28.vma.request.VehicleDocumentUpdateReq;
+import com.fa20se28.vma.response.UserDocumentDetailRes;
 import com.fa20se28.vma.response.UserDocumentRes;
 import com.fa20se28.vma.response.UserDocumentTypesRes;
 import com.fa20se28.vma.response.VehicleDocumentRes;
 import com.fa20se28.vma.response.VehicleDocumentTypeRes;
-import com.fa20se28.vma.service.DocumentService;
+import com.fa20se28.vma.service.UserDocumentService;
 import com.fa20se28.vma.service.VehicleDocumentService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -15,43 +16,48 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1")
 public class DocumentController {
-    private final DocumentService documentService;
+    private final UserDocumentService userDocumentService;
     private final VehicleDocumentService vehicleDocumentService;
 
     public DocumentController(
-            DocumentService documentService,
+            UserDocumentService userDocumentService,
             VehicleDocumentService vehicleDocumentService) {
-        this.documentService = documentService;
+        this.userDocumentService = userDocumentService;
         this.vehicleDocumentService = vehicleDocumentService;
     }
 
     @GetMapping("/users/{user-id}/user-documents")
     public UserDocumentRes getUserDocuments(@PathVariable("user-id") String userId,
                                             @RequestParam(defaultValue = "0") int option) {
-        return documentService.getUserDocuments(userId, option);
+        return userDocumentService.getUserDocuments(userId, option);
     }
 
-    @GetMapping("/documents/types")
+    @GetMapping("/user-documents/{user-document-id}")
+    public UserDocumentDetailRes getUserDocumentDetail(@PathVariable("user-document-id") String userDocumentId){
+        return userDocumentService.getUserDocumentDetailById(userDocumentId);
+    }
+
+    @GetMapping("/user-documents/types")
     public UserDocumentTypesRes getUserDocumentTypes() {
         return new UserDocumentTypesRes();
     }
 
-    @PostMapping("/admin/user/{user-id}/documents")
+    @PostMapping("/admin/user/{user-id}/user-documents")
     public int createUserDocument(@RequestBody UserDocumentReq userDocumentReq,
                                   @PathVariable("user-id") String userId) {
-        return documentService.createUserDocument(userDocumentReq, userId);
+        return userDocumentService.createUserDocument(userDocumentReq, userId);
     }
 
-    @PutMapping("/admin/user/{user-id}/documents")
+    @PutMapping("/admin/user/{user-id}/user-documents")
     public int updateUserDocument(@RequestBody UserDocumentReq userDocumentReq,
                                   @PathVariable("user-id") String userId) {
-        return documentService.updateUserDocument(userDocumentReq, userId);
+        return userDocumentService.updateUserDocument(userDocumentReq, userId);
     }
 
-    @DeleteMapping("/admin/documents")
+    @DeleteMapping("/admin/user-documents")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteUserDocument(@RequestParam String userDocumentId) {
-        documentService.deleteUserDocument(userDocumentId);
+        userDocumentService.deleteUserDocument(userDocumentId);
     }
 
     @GetMapping("/vehicles/documents")

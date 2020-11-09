@@ -1,12 +1,11 @@
-package com.fa20se28.vma.component;
+package com.fa20se28.vma.service;
 
-import com.fa20se28.vma.model.UserDocument;
 import com.fa20se28.vma.request.UserDocumentReq;
+import com.fa20se28.vma.response.UserDocumentDetailRes;
+import com.fa20se28.vma.response.UserDocumentRes;
 
-import java.util.List;
-
-public interface DocumentComponent {
-    List<UserDocument> findUserDocumentByUserId(String id, int option);
+public interface UserDocumentService {
+    UserDocumentRes getUserDocuments(String id, int option);
 
     int createUserDocument(UserDocumentReq userDocumentReq, String userId);
 
@@ -18,7 +17,5 @@ public interface DocumentComponent {
 
     void deleteUserDocument(String userDocumentId);
 
-    int acceptNewDocumentRequest(String userDocumentId);
-
-    int denyUpdateDocumentRequest(String userDocumentId);
+    UserDocumentDetailRes getUserDocumentDetailById(String userDocumentId);
 }

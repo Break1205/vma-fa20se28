@@ -30,13 +30,13 @@ public class RequestComponentImpl implements RequestComponent {
     }
 
     @Override
-    public List<RequestRes> findPendingRequests(RequestPageReq requestPageReq) {
-        return requestMapper.findPendingRequest(requestPageReq);
+    public List<RequestRes> findRequests(RequestPageReq requestPageReq) {
+        return requestMapper.findRequests(requestPageReq);
     }
 
     @Override
-    public int findTotalPendingRequests() {
-        return requestMapper.findTotalPendingRequests();
+    public int findTotalRequests(RequestPageReq requestPageReq) {
+        return requestMapper.findTotalRequests(requestPageReq);
     }
 
     @Override

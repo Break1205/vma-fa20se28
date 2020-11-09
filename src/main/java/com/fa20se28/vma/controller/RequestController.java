@@ -20,10 +20,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import org.springframework.web.bind.annotation.*;
-
-import java.time.LocalDate;
-
 @RestController
 @RequestMapping("/api/v1")
 public class RequestController {
@@ -55,17 +51,22 @@ public class RequestController {
     }
 
     @GetMapping("/requests")
-    public RequestPageRes getPendingRequest(@RequestParam(defaultValue = "0") int page,
-                                            @RequestParam(required = false) String userId,
-                                            @RequestParam(required = false) RequestType requestType,
-                                            @RequestParam(required = false) String fromDate,
-                                            @RequestParam(required = false) String toDate) {
-        return requestService.getPendingRequests(new RequestPageReq(userId, requestType, fromDate, toDate, page * 15));
+    public RequestPageRes getRequests(@RequestParam(defaultValue = "0") int page,
+                                      @RequestParam(required = false) String userId,
+                                      @RequestParam(required = false) RequestType requestType,
+                                      @RequestParam(required = false) RequestStatus requestStatus,
+                                      @RequestParam(required = false) String fromDate,
+                                      @RequestParam(required = false) String toDate) {
+        return requestService.getRequests(new RequestPageReq(userId, requestType, requestStatus, fromDate, toDate, page * 15));
     }
 
     @GetMapping("/requests/count")
-    public int getTotalPendingRequest() {
-        return requestService.getTotalPendingRequests();
+    public int getTotalRequests(@RequestParam(required = false) String userId,
+                                @RequestParam(required = false) RequestType requestType,
+                                @RequestParam(required = false) RequestStatus requestStatus,
+                                @RequestParam(required = false) String fromDate,
+                                @RequestParam(required = false) String toDate) {
+        return requestService.getTotalRequests(new RequestPageReq(userId, requestType, requestStatus, fromDate, toDate, 0));
     }
 
     @GetMapping("/document-requests/{request-id}")

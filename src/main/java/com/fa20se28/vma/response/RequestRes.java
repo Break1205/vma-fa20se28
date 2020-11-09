@@ -2,13 +2,13 @@ package com.fa20se28.vma.response;
 
 import com.fa20se28.vma.enums.RequestType;
 
-import java.time.LocalDate;
+import java.util.Date;
 
 public class RequestRes {
     private Long requestId;
     private String userId;
     private RequestType requestType;
-    private LocalDate createDate;
+    private Date createDate;
 
     public Long getRequestId() {
         return requestId;
@@ -34,11 +34,11 @@ public class RequestRes {
         this.requestType = requestType;
     }
 
-    public LocalDate getCreateDate() {
+    public Date getCreateDate() {
         return createDate;
     }
 
-    public void setCreateDate(LocalDate createDate) {
+    public void setCreateDate(Date createDate) {
         this.createDate = createDate;
     }
 }

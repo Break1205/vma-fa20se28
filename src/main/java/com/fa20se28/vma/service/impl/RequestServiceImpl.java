@@ -1,7 +1,7 @@
 package com.fa20se28.vma.service.impl;
 
 import com.fa20se28.vma.component.AuthenticationComponent;
-import com.fa20se28.vma.component.DocumentComponent;
+import com.fa20se28.vma.component.UserDocumentComponent;
 import com.fa20se28.vma.component.RequestComponent;
 import com.fa20se28.vma.component.VehicleDocumentComponent;
 import com.fa20se28.vma.component.impl.UserDocumentComponentImpl;
@@ -21,7 +21,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class RequestServiceImpl implements RequestService {
     private final RequestComponent requestComponent;
-    private final DocumentComponent documentComponent;
+    private final UserDocumentComponent userDocumentComponent;
     private final VehicleDocumentComponent vehicleDocumentComponent;
     private final AuthenticationComponent authenticationComponent;
 
@@ -29,7 +29,7 @@ public class RequestServiceImpl implements RequestService {
                               UserDocumentComponentImpl documentComponent,
                               VehicleDocumentComponent vehicleDocumentComponent, AuthenticationComponent authenticationComponent) {
         this.requestComponent = requestComponent;
-        this.documentComponent = documentComponent;
+        this.userDocumentComponent = documentComponent;
         this.vehicleDocumentComponent = vehicleDocumentComponent;
         this.authenticationComponent = authenticationComponent;
     }
@@ -37,7 +37,7 @@ public class RequestServiceImpl implements RequestService {
     @Override
     public int createNewDocumentRequest(RequestReq requestReq) {
         Authentication authentication = authenticationComponent.getAuthentication();
-        if (documentComponent.createUserDocumentWithRequest(
+        if (userDocumentComponent.createUserDocumentWithRequest(
                 requestReq.getUserDocumentReq(), authentication.getName()) == 1) {
             if (requestComponent
                     .createRequest(
@@ -53,7 +53,7 @@ public class RequestServiceImpl implements RequestService {
     @Override
     public int createUpdateDocumentRequest(RequestReq requestReq) {
         Authentication authentication = authenticationComponent.getAuthentication();
-        if (documentComponent.updateUserDocumentWithRequest(
+        if (userDocumentComponent.updateUserDocumentWithRequest(
                 requestReq.getUserDocumentReq(), authentication.getName()) == 1) {
             if (requestComponent
                     .createRequest(
@@ -79,15 +79,15 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public RequestPageRes getPendingRequests(RequestPageReq requestPageReq) {
+    public RequestPageRes getRequests(RequestPageReq requestPageReq) {
         RequestPageRes requestPageRes = new RequestPageRes();
-        requestPageRes.setRequestRes(requestComponent.findPendingRequests(requestPageReq));
+        requestPageRes.setRequestRes(requestComponent.findRequests(requestPageReq));
         return requestPageRes;
     }
 
     @Override
-    public int getTotalPendingRequests() {
-        return requestComponent.findTotalPendingRequests();
+    public int getTotalRequests(RequestPageReq requestPageReq) {
+        return requestComponent.findTotalRequests(requestPageReq);
     }
 
     @Override
@@ -114,17 +114,17 @@ public class RequestServiceImpl implements RequestService {
 
     private int acceptRequest(DocumentRequestDetail documentRequestDetail) {
         if (documentRequestDetail.getRequestType().equals(RequestType.NEW_DOCUMENT)) {
-            if (documentComponent.acceptNewDocumentRequest(documentRequestDetail.getUserDocumentId()) == 1) {
+            if (userDocumentComponent.acceptNewDocumentRequest(documentRequestDetail.getUserDocumentId()) == 1) {
                 return requestComponent.updateRequestStatus(documentRequestDetail.getRequestId(), RequestStatus.ACCEPTED);
             }
         }
         if (documentRequestDetail.getRequestType().equals(RequestType.UPDATE_DOCUMENT)) {
-            if (documentComponent.acceptNewDocumentRequest(documentRequestDetail.getUserDocumentId()) == 1) {
+            if (userDocumentComponent.acceptNewDocumentRequest(documentRequestDetail.getUserDocumentId()) == 1) {
                 return requestComponent.updateRequestStatus(documentRequestDetail.getRequestId(), RequestStatus.ACCEPTED);
             }
         }
         if (documentRequestDetail.getRequestType().equals(RequestType.DELETE_DOCUMENT)) {
-            documentComponent.deleteUserDocument(documentRequestDetail.getUserDocumentId());
+            userDocumentComponent.deleteUserDocument(documentRequestDetail.getUserDocumentId());
             return requestComponent.updateRequestStatus(documentRequestDetail.getRequestId(), RequestStatus.ACCEPTED);
         }
         return 0;
@@ -132,11 +132,11 @@ public class RequestServiceImpl implements RequestService {
 
     private int denyRequest(DocumentRequestDetail documentRequestDetail) {
         if (documentRequestDetail.getRequestType().equals(RequestType.NEW_DOCUMENT)) {
-            documentComponent.deleteUserDocument(documentRequestDetail.getUserDocumentId());
+            userDocumentComponent.deleteUserDocument(documentRequestDetail.getUserDocumentId());
             return requestComponent.updateRequestStatus(documentRequestDetail.getRequestId(), RequestStatus.DENIED);
         }
         if (documentRequestDetail.getRequestType().equals(RequestType.UPDATE_DOCUMENT)) {
-            if (documentComponent.denyUpdateDocumentRequest(documentRequestDetail.getUserDocumentId()) == 1) {
+            if (userDocumentComponent.denyUpdateDocumentRequest(documentRequestDetail.getUserDocumentId()) == 1) {
                 return requestComponent.updateRequestStatus(documentRequestDetail.getRequestId(), RequestStatus.DENIED);
             }
         }
