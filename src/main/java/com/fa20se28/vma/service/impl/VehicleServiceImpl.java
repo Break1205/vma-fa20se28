@@ -1,7 +1,9 @@
 package com.fa20se28.vma.service.impl;
 
+import com.fa20se28.vma.component.ContractVehicleComponent;
 import com.fa20se28.vma.component.VehicleComponent;
 import com.fa20se28.vma.enums.VehicleStatus;
+import com.fa20se28.vma.model.AssignedVehicle;
 import com.fa20se28.vma.request.VehicleDropDownReq;
 import com.fa20se28.vma.request.VehiclePageReq;
 import com.fa20se28.vma.request.VehicleReq;
@@ -13,9 +15,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class VehicleServiceImpl implements VehicleService {
     private final VehicleComponent vehicleComponent;
+    private final ContractVehicleComponent contractVehicleComponent;
 
-    public VehicleServiceImpl(VehicleComponent vehicleComponent) {
+    public VehicleServiceImpl(VehicleComponent vehicleComponent, ContractVehicleComponent contractVehicleComponent) {
         this.vehicleComponent = vehicleComponent;
+        this.contractVehicleComponent = contractVehicleComponent;
     }
 
     @Override
@@ -71,5 +75,17 @@ public class VehicleServiceImpl implements VehicleService {
     @Override
     public DriverHistoryRes getDriverHistory(String vehicleId) {
         return new DriverHistoryRes(vehicleComponent.getDriverHistory(vehicleId));
+    }
+
+    @Override
+    public VehicleCurrentRes getCurrentlyAssignedVehicle(String driverId) {
+        AssignedVehicle assignedVehicle = vehicleComponent.getCurrentlyAssignedVehicle(driverId);
+
+        return new VehicleCurrentRes(
+                assignedVehicle,
+                contractVehicleComponent.getVehicleTrips(
+                        assignedVehicle.getIssuedVehicleId(),
+                        assignedVehicle.getIssuedDate(),
+                        assignedVehicle.getReturnedDate()));
     }
 }

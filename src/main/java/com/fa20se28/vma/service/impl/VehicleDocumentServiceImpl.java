@@ -4,6 +4,7 @@ import com.fa20se28.vma.component.VehicleDocumentComponent;
 import com.fa20se28.vma.request.VehicleDocumentStandaloneReq;
 import com.fa20se28.vma.request.VehicleDocumentUpdateReq;
 import com.fa20se28.vma.response.VehicleDocumentRes;
+import com.fa20se28.vma.response.VehicleDocumentSingleRes;
 import com.fa20se28.vma.service.VehicleDocumentService;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +19,11 @@ public class VehicleDocumentServiceImpl implements VehicleDocumentService {
     @Override
     public VehicleDocumentRes getVehicleDocuments(String vehicleId, int viewOption) {
         return new VehicleDocumentRes(vehicleDocumentComponent.getVehicleDocuments(vehicleId, viewOption));
+    }
+
+    @Override
+    public VehicleDocumentSingleRes getVehicleDocument(String vehicleDocId) {
+        return new VehicleDocumentSingleRes(vehicleDocumentComponent.getVehicleDocument(vehicleDocId));
     }
 
     @Override

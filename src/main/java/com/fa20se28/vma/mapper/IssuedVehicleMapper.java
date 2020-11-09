@@ -3,6 +3,7 @@ package com.fa20se28.vma.mapper;
 import com.fa20se28.vma.model.DriverHistory;
 import com.fa20se28.vma.model.IssuedVehicle;
 import com.fa20se28.vma.model.UserBasic;
+import com.fa20se28.vma.model.AssignedVehicle;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -102,4 +103,16 @@ public interface IssuedVehicleMapper {
             "WHERE iv.vehicle_id = #{v_id} " +
             "ORDER BY iv.create_date DESC ")
     int getCurrentIssuedVehicleId(@Param("v_id") String vehicleId);
+
+    @Select("SELECT iv.issued_vehicle_id, iv.vehicle_id, iv.issued_date, iv.returned_date " +
+            "FROM issued_vehicle iv " +
+            "WHERE iv.driver_id = #{dv_id} " +
+            "AND iv.returned_date IS NULL ")
+    @Results(id = "assignedVehicleResult", value = {
+            @Result(property = "issuedVehicleId", column = "issued_vehicle_id"),
+            @Result(property = "vehicleId", column = "vehicle_id"),
+            @Result(property = "issuedDate", column = "issued_date"),
+            @Result(property = "returnedDate", column = "returned_date")
+    })
+    AssignedVehicle getCurrentlyAssignedVehicle(@Param("dv_id") String driverId);
 }

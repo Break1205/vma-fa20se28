@@ -116,4 +116,12 @@ public class VehicleDocumentComponentImpl implements VehicleDocumentComponent {
             }
         }
     }
+
+    @Override
+    public VehicleDocument getVehicleDocument(String vehicleDocId) {
+        VehicleDocument vehicleDocument = vehicleDocumentMapper.getVehicleDocumentById(vehicleDocId);
+        vehicleDocument.setImageLinks(vehicleDocumentImageMapper.getImageLinks(vehicleDocument.getVehicleDocumentId()));
+
+        return vehicleDocument;
+    }
 }

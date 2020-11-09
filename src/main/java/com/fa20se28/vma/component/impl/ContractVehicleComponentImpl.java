@@ -9,11 +9,13 @@ import com.fa20se28.vma.mapper.IssuedVehicleMapper;
 import com.fa20se28.vma.mapper.PassengerMapper;
 import com.fa20se28.vma.mapper.VehicleMapper;
 import com.fa20se28.vma.model.Passenger;
+import com.fa20se28.vma.model.TripHistory;
 import com.fa20se28.vma.model.VehicleBasic;
 import com.fa20se28.vma.request.*;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 
 @Component
@@ -112,5 +114,8 @@ public class ContractVehicleComponentImpl implements ContractVehicleComponent {
 
     }
 
-
+    @Override
+    public List<TripHistory> getVehicleTrips(int issuedVehicleId, Date departureTime, Date destinationTime) {
+        return contractVehicleMapper.getVehicleTrips(issuedVehicleId, departureTime, destinationTime);
+    }
 }

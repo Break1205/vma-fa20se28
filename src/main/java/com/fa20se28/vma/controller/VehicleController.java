@@ -117,4 +117,9 @@ public class VehicleController {
     public VehicleStatusRes getVehicleStatus() {
         return new VehicleStatusRes();
     }
+
+    @GetMapping("/drivers/{driver-id}")
+    public VehicleCurrentRes getCurrentlyAssignedVehicleByDriverId(@PathVariable("driver-id") String driverId) {
+        return vehicleService.getCurrentlyAssignedVehicle(driverId);
+    }
 }
