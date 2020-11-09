@@ -41,4 +41,14 @@ public interface VehicleDocumentImageMapper {
     @Delete("DELETE FROM vehicle_document_image " +
             "WHERE vehicle_document_id = #{vehicle_document_id} ")
     int deleteImages(@Param("vehicle_document_id") String documentId);
+
+    @Insert("INSERT INTO vehicle_document_image_log " +
+            "(vehicle_document_log_id, " +
+            "image_link) " +
+            "VALUES " +
+            "(#{vdl_id}, " +
+            "#{image_link}) ")
+    int moveDeniedVehicleDocumentImage(
+            @Param("vdl_id") int vehicleDocumentLogId,
+            @Param("image_link") String imageLink);
 }

@@ -90,7 +90,6 @@ public class VehicleDocumentComponentImpl implements VehicleDocumentComponent {
             }
         }
         else {
-            vehicleDocumentMapper.resetInformation(vehicleDocumentStandaloneReq.getVehicleDocumentReq().getVehicleDocumentId());
             vehicleDocumentImageMapper.deleteImages(vehicleDocumentStandaloneReq.getVehicleDocumentReq().getVehicleDocumentId());
 
             int row = vehicleDocumentMapper.updateVehicleDocument(
@@ -117,5 +116,36 @@ public class VehicleDocumentComponentImpl implements VehicleDocumentComponent {
         vehicleDocument.setImageLinks(vehicleDocumentImageMapper.getImageLinks(vehicleDocument.getVehicleDocumentId()));
 
         return vehicleDocument;
+    }
+
+    @Override
+    @Transactional
+    public void acceptDocument(String vehicleDocId) {
+        int row = vehicleDocumentMapper.updateDocumentStatus(vehicleDocId, false);
+
+        if (row == 0) {
+            throw new DataException("Unknown error occurred. Data not modified!");
+        }
+    }
+
+    @Override
+    @Transactional
+    public void denyDocument(int requestId, String vehicleId, String vehicleDocId) {
+        VehicleDocument vehicleDocument = vehicleDocumentMapper.getVehicleDocumentById(vehicleDocId);
+
+        int moveDocRow = vehicleDocumentMapper.moveDeniedVehicleDocumentToLog(vehicleDocument, vehicleId, requestId);
+        int moveImageRow = 0;
+
+        int requestDocLogId = vehicleDocumentMapper.findVehicleDocumentLogByRequestId(requestId);
+
+        List<VehicleDocumentImage> vehicleDocumentImages = vehicleDocumentImageMapper.getImageLinks(vehicleDocument.getVehicleDocumentId());
+        for (VehicleDocumentImage image: vehicleDocumentImages) {
+            vehicleDocumentImageMapper.moveDeniedVehicleDocumentImage(requestDocLogId, image.getImageLink());
+            moveImageRow++;
+        }
+
+        if (moveDocRow == 0 && moveImageRow == 0) {
+            throw new DataException("Unknown error occurred. Data not modified!");
+        }
     }
 }

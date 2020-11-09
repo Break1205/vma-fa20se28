@@ -127,6 +127,14 @@ public class RequestServiceImpl implements RequestService {
             userDocumentComponent.deleteUserDocument(documentRequestDetail.getUserDocumentId());
             return requestComponent.updateRequestStatus(documentRequestDetail.getRequestId(), RequestStatus.ACCEPTED);
         }
+        if (documentRequestDetail.getRequestType().equals(RequestType.NEW_VEHICLE_DOCUMENT)) {
+            vehicleDocumentComponent.acceptDocument(documentRequestDetail.getVehicleDocumentId());
+            return requestComponent.updateRequestStatus(documentRequestDetail.getRequestId(), RequestStatus.ACCEPTED);
+        }
+        if (documentRequestDetail.getRequestType().equals(RequestType.DELETE_VEHICLE_DOCUMENT)) {
+            vehicleDocumentComponent.deleteDocument(documentRequestDetail.getVehicleDocumentId());
+            return requestComponent.updateRequestStatus(documentRequestDetail.getRequestId(), RequestStatus.ACCEPTED);
+        }
         return 0;
     }
 
@@ -141,6 +149,16 @@ public class RequestServiceImpl implements RequestService {
             }
         }
         if (documentRequestDetail.getRequestType().equals(RequestType.DELETE_DOCUMENT)) {
+            return requestComponent.updateRequestStatus(documentRequestDetail.getRequestId(), RequestStatus.DENIED);
+        }
+        if (documentRequestDetail.getRequestType().equals(RequestType.NEW_VEHICLE_DOCUMENT)) {
+            vehicleDocumentComponent.denyDocument(
+                    documentRequestDetail.getRequestId(),
+                    documentRequestDetail.getVehicleId(),
+                    documentRequestDetail.getVehicleDocumentId());
+            return requestComponent.updateRequestStatus(documentRequestDetail.getRequestId(), RequestStatus.DENIED);
+        }
+        if (documentRequestDetail.getRequestType().equals(RequestType.DELETE_VEHICLE_DOCUMENT)) {
             return requestComponent.updateRequestStatus(documentRequestDetail.getRequestId(), RequestStatus.DENIED);
         }
         return 0;
