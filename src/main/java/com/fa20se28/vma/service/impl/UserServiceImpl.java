@@ -1,7 +1,6 @@
 package com.fa20se28.vma.service.impl;
 
 import com.fa20se28.vma.component.UserComponent;
-import com.fa20se28.vma.configuration.exception.DataException;
 import com.fa20se28.vma.configuration.exception.InvalidParamException;
 import com.fa20se28.vma.enums.UserStatus;
 import com.fa20se28.vma.model.Role;
@@ -31,7 +30,7 @@ public class UserServiceImpl implements UserService {
         this.firebaseService = firebaseService;
     }
 
-    //TODO
+    //TODO password
     @Override
     public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
         User user = userComponent.findUserByUserId(userId);
