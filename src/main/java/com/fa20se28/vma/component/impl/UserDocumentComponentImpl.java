@@ -1,6 +1,7 @@
 package com.fa20se28.vma.component.impl;
 
-import com.fa20se28.vma.component.DocumentComponent;
+import com.fa20se28.vma.component.UserDocumentComponent;
+import com.fa20se28.vma.configuration.exception.ResourceNotFoundException;
 import com.fa20se28.vma.mapper.UserDocumentImageMapper;
 import com.fa20se28.vma.mapper.UserDocumentMapper;
 import com.fa20se28.vma.model.UserDocument;
@@ -15,7 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
-public class UserDocumentComponentImpl implements DocumentComponent {
+public class UserDocumentComponentImpl implements UserDocumentComponent {
     private final UserDocumentMapper userDocumentMapper;
     private final UserDocumentImageMapper userDocumentImageMapper;
 
@@ -160,6 +161,15 @@ public class UserDocumentComponentImpl implements DocumentComponent {
             return 0;
         }
         return 0;
+    }
+
+    @Override
+    public UserDocumentDetail findUserDocumentDetailById(String userDocumentId) {
+        Optional<UserDocumentDetail> optionalUserDocumentDetail = userDocumentMapper.findUserDocumentDetail(userDocumentId);
+        optionalUserDocumentDetail.ifPresent(detail ->
+                detail.setUserDocumentImageDetailList(
+                        userDocumentImageMapper.findUserDocumentImageDetail(userDocumentId)));
+        return optionalUserDocumentDetail.orElseThrow(() -> new ResourceNotFoundException("User document with id: " + userDocumentId + " not found"));
     }
 }
 
