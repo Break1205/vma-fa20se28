@@ -29,4 +29,6 @@ public interface VehicleService {
     void updateVehicleStatus(String vehicleId, VehicleStatus vehicleStatus);
 
     DriverHistoryRes getDriverHistory(String vehicleId);
+
+    VehicleCurrentRes getCurrentlyAssignedVehicle(String driverId);
 }

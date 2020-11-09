@@ -1,9 +1,11 @@
 package com.fa20se28.vma.mapper;
 
 import com.fa20se28.vma.enums.ContractVehicleStatus;
+import com.fa20se28.vma.model.TripHistory;
 import com.fa20se28.vma.model.VehicleBasic;
 import org.apache.ibatis.annotations.*;
 
+import java.util.Date;
 import java.util.List;
 
 @Mapper
@@ -42,4 +44,26 @@ public interface ContractVehicleMapper {
             @Result(property = "seats", column = "seats")
     })
     List<VehicleBasic> getContractVehicles(@Param("cv_id") int contractId);
+
+    @Select({"<script> " +
+            "SELECT cv.contract_id, cv.contract_vehicle_id, cv.contract_vehicle_status, c.departure_time, c.destination_time " +
+            "FROM contract_vehicles cv " +
+            "JOIN contract c ON cv.contract_id = c.contract_id " +
+            "WHERE cv.issued_vehicle_id = #{cv_iv_id} " +
+            "AND c.departure_time >= #{cv_dep_time} " +
+            "<if test = \"cv_des_time != null\" > " +
+            "AND c.destination_time &lt;= #{cv_des_time} " +
+            "</if> " +
+            "</script>"})
+    @Results(id = "tripsResult", value = {
+            @Result(property = "contractId", column = "contract_id"),
+            @Result(property = "contractVehicleId", column = "contract_vehicle_id"),
+            @Result(property = "departureTime", column = "departure_time"),
+            @Result(property = "destinationTime", column = "destination_time"),
+            @Result(property = "contractVehicleStatus", column = "contract_vehicle_status")
+    })
+    List<TripHistory> getVehicleTrips(
+            @Param("cv_iv_id") int issuedVehicleId,
+            @Param("cv_dep_time") Date departureTime,
+            @Param("cv_des_time") Date destinationTime);
 }

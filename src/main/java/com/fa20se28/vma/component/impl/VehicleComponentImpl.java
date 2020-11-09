@@ -172,4 +172,9 @@ public class VehicleComponentImpl implements VehicleComponent {
     public List<DriverHistory> getDriverHistory(String vehicleId) {
         return issuedVehicleMapper.getDriverHistory(vehicleId);
     }
+
+    @Override
+    public AssignedVehicle getCurrentlyAssignedVehicle(String driverId) {
+        return issuedVehicleMapper.getCurrentlyAssignedVehicle(driverId);
+    }
 }

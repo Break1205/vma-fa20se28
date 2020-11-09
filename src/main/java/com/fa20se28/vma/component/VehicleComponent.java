@@ -31,4 +31,6 @@ public interface VehicleComponent {
     void updateVehicleStatus(String vehicleId, VehicleStatus vehicleStatus);
 
     List<DriverHistory> getDriverHistory(String vehicleId);
+
+    AssignedVehicle getCurrentlyAssignedVehicle(String driverId);
 }
