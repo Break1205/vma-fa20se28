@@ -35,11 +35,11 @@ public class VehicleDocumentComponentImpl implements VehicleDocumentComponent {
     }
 
     @Override
-    public void createVehicleDocument(VehicleDocumentStandaloneReq vehicleDocumentStandaloneReq) {
+    public void createVehicleDocument(VehicleDocumentStandaloneReq vehicleDocumentStandaloneReq, int roleId) {
         if (!vehicleDocumentMapper.isDocumentExist(vehicleDocumentStandaloneReq.getVehicleDocumentReq().getVehicleDocumentId())) {
             int row;
 
-            if (vehicleDocumentStandaloneReq.getRoleId() == 2) {
+            if (roleId == 2) {
                 row = vehicleDocumentMapper.createVehicleDocument(vehicleDocumentStandaloneReq.getVehicleDocumentReq(), vehicleDocumentStandaloneReq.getVehicleId(), true);
             } else {
                 row = vehicleDocumentMapper.createVehicleDocument(vehicleDocumentStandaloneReq.getVehicleDocumentReq(), vehicleDocumentStandaloneReq.getVehicleId(), false);

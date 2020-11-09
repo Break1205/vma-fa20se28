@@ -49,7 +49,7 @@ public class VehicleServiceImpl implements VehicleService {
 
     @Override
     public void createVehicle(VehicleReq vehicle) {
-        vehicleComponent.createVehicle(vehicle);
+        vehicleComponent.createVehicle(vehicle, 1);
     }
 
     @Override

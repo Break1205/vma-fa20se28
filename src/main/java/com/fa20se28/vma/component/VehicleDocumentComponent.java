@@ -9,7 +9,7 @@ import java.util.List;
 public interface VehicleDocumentComponent {
     List<VehicleDocument> getVehicleDocuments(String vehicleDocId, int viewOption);
 
-    void createVehicleDocument(VehicleDocumentStandaloneReq vehicleDocumentStandaloneReq);
+    void createVehicleDocument(VehicleDocumentStandaloneReq vehicleDocumentStandaloneReq, int roleId);
 
     void updateVehicleDocument(VehicleDocumentUpdateReq vehicleDocumentUpdateReq);
 

@@ -20,7 +20,6 @@ public class VehicleReq {
     private Date yearOfManufacture;
     private float distanceDriven;
     private List<VehicleDocumentReq> vehicleDocuments;
-    private int roleId;
 
     public String getVehicleId() {
         return vehicleId;
@@ -124,13 +123,5 @@ public class VehicleReq {
 
     public void setVehicleDocuments(List<VehicleDocumentReq> vehicleDocuments) {
         this.vehicleDocuments = vehicleDocuments;
-    }
-
-    public int getRoleId() {
-        return roleId;
-    }
-
-    public void setRoleId(int roleId) {
-        this.roleId = roleId;
     }
 }

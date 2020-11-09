@@ -78,10 +78,10 @@ public class VehicleComponentImpl implements VehicleComponent {
 
     @Override
     @Transactional
-    public void createVehicle(VehicleReq vehicle) {
+    public void createVehicle(VehicleReq vehicle, int roleId) {
         if (!vehicleMapper.isVehicleExist(vehicle.getVehicleId())) {
             int vehicleRow;
-            if (vehicle.getRoleId() == 2) {
+            if (roleId == 2) {
                 vehicleRow = vehicleMapper.createVehicle(vehicle, VehicleStatus.PENDING_APPROVAL);
             } else {
                 vehicleRow = vehicleMapper.createVehicle(vehicle, VehicleStatus.AVAILABLE_NO_DRIVER);
@@ -92,7 +92,7 @@ public class VehicleComponentImpl implements VehicleComponent {
                 for (VehicleDocumentReq doc : vehicle.getVehicleDocuments()) {
                     if (!vehicleDocumentMapper.isDocumentExist(doc.getVehicleDocumentId())) {
                         int vehicleDoc;
-                        if (vehicle.getRoleId() == 2) {
+                        if (roleId == 2) {
                             vehicleDoc = vehicleDocumentMapper.createVehicleDocument(doc, vehicle.getVehicleId(), true);
                         } else {
                             vehicleDoc = vehicleDocumentMapper.createVehicleDocument(doc, vehicle.getVehicleId(), false);

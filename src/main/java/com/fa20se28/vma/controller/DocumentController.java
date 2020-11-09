@@ -65,8 +65,7 @@ public class DocumentController {
 
     @PostMapping("/vehicles/documents")
     @ResponseStatus(HttpStatus.CREATED)
-    public void createVehicleDocument(
-            @RequestBody VehicleDocumentStandaloneReq vehicleDocumentStandaloneReq) {
+    public void createVehicleDocument(@RequestBody VehicleDocumentStandaloneReq vehicleDocumentStandaloneReq) {
         vehicleDocumentService.createVehicleDocument(vehicleDocumentStandaloneReq);
     }
 
