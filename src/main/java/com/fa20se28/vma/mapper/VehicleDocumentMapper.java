@@ -96,4 +96,16 @@ public interface VehicleDocumentMapper {
             "WHERE " +
             "vehicle_document_id = #{d_id} ")
     int resetInformation(@Param("d_id") String vehicleDocumentId);
+
+    @Select("SELECT " +
+            "vd.vehicle_document_id, " +
+            "vd.vehicle_document_type, " +
+            "vd.registered_location, " +
+            "vd.registered_date, " +
+            "vd.expiry_date " +
+            "FROM vehicle_document vd " +
+            "WHERE vd.vehicle_document_id = #{d_id} ")
+    @ResultMap("vehicleDocuments")
+    VehicleDocument getVehicleDocumentById(
+            @Param("d_id") String documentId);
 }

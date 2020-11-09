@@ -6,6 +6,7 @@ import com.fa20se28.vma.request.ContractReq;
 import com.fa20se28.vma.request.ContractUpdateReq;
 import com.fa20se28.vma.response.ContractDetailRes;
 import com.fa20se28.vma.response.ContractPageRes;
+import com.fa20se28.vma.response.ContractStatusRes;
 import com.fa20se28.vma.service.ContractService;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -59,5 +60,10 @@ public class ContractController {
     @GetMapping("/{contract-id}")
     public ContractDetailRes getContractById(@PathVariable("contract-id") int contractId) {
         return contractService.getContractDetails(contractId);
+    }
+
+    @GetMapping("/status")
+    public ContractStatusRes getContractStatus() {
+        return new ContractStatusRes();
     }
 }

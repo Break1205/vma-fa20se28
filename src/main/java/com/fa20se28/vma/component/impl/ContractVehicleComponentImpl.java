@@ -10,9 +10,7 @@ import com.fa20se28.vma.mapper.PassengerMapper;
 import com.fa20se28.vma.mapper.VehicleMapper;
 import com.fa20se28.vma.model.Passenger;
 import com.fa20se28.vma.model.VehicleBasic;
-import com.fa20se28.vma.request.ContractVehiclePassengerReq;
-import com.fa20se28.vma.request.ContractVehicleReq;
-import com.fa20se28.vma.request.PassengerReq;
+import com.fa20se28.vma.request.*;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -73,4 +71,46 @@ public class ContractVehicleComponentImpl implements ContractVehicleComponent {
     public List<VehicleBasic> getContractVehicles(int contractId) {
         return contractVehicleMapper.getContractVehicles(contractId);
     }
+
+    @Override
+    @Transactional
+    public void updateContractVehicleStatus(ContractVehicleStatusUpdateReq contractVehicleStatusUpdateReq) {
+        int row = contractVehicleMapper.updateContractedVehicleStatus(
+                contractVehicleStatusUpdateReq.getContractVehicleId(),
+                contractVehicleStatusUpdateReq.getVehicleStatus());
+
+        if (row == 0) {
+            throw new DataException("Unknown error occurred. Data not modified!");
+        }
+    }
+
+    @Override
+    @Transactional
+    public void startAndEndTrip(TripReq tripReq) {
+        int contractVehicleRow;
+        int vehicleRow;
+
+        if (!tripReq.isOption()) {
+            if (!vehicleMapper.getVehicleStatus(tripReq.getVehicleId()).equals(VehicleStatus.AVAILABLE)) {
+                throw new DataException("Vehicle is still occupied!");
+            } else {
+                contractVehicleRow = contractVehicleMapper.updateContractedVehicleStatus(tripReq.getContractVehicleId(), ContractVehicleStatus.IN_PROGRESS);
+                vehicleRow = vehicleMapper.updateVehicleStatus(tripReq.getVehicleId(), VehicleStatus.ON_ROUTE);
+            }
+        } else {
+            if (!vehicleMapper.getVehicleStatus(tripReq.getVehicleId()).equals(VehicleStatus.ON_ROUTE)) {
+                throw new DataException("Vehicle is not used!");
+            } else {
+                contractVehicleRow = contractVehicleMapper.updateContractedVehicleStatus(tripReq.getContractVehicleId(), ContractVehicleStatus.COMPLETED);
+                vehicleRow = vehicleMapper.updateVehicleStatus(tripReq.getVehicleId(), VehicleStatus.AVAILABLE);
+            }
+        }
+
+        if (contractVehicleRow == 0 && vehicleRow == 0) {
+            throw new DataException("Unknown error occurred. Data not modified!");
+        }
+
+    }
+
+
 }

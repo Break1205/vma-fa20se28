@@ -76,7 +76,7 @@ public class VehicleDocumentComponentImpl implements VehicleDocumentComponent {
     public void deleteDocument(String vehicleDocId) {
         int row = vehicleDocumentMapper.updateDocumentStatus(vehicleDocId,  true);
 
-        if (row != 0) {
+        if (row == 0) {
             throw new DataException("Unknown error occurred. Data not modified!");
         }
     }

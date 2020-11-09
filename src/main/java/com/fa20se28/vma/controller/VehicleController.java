@@ -112,4 +112,9 @@ public class VehicleController {
     public DriverHistoryRes getDriverHistoryByVehicleId(@PathVariable("vehicle-id") String vehicleId) {
         return vehicleService.getDriverHistory(vehicleId);
     }
+
+    @GetMapping("/status")
+    public VehicleStatusRes getVehicleStatus() {
+        return new VehicleStatusRes();
+    }
 }

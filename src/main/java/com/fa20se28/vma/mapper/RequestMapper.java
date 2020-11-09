@@ -39,9 +39,12 @@ public interface RequestMapper {
             "request_type, \n" +
             "create_date \n" +
             "FROM request\n" +
-            "WHERE request_status = 'PENDING'\n" +
+            "WHERE 1=1\n" +
             "<if test = \"RequestPageReq.userId!=null\" >\n" +
             "AND user_id LIKE '%${RequestPageReq.userId}%'\n" +
+            "</if> \n" +
+            "<if test = \"RequestPageReq.requestStatus!=null\" >\n" +
+            "AND request_status LIKE '%${RequestPageReq.requestStatus}%'\n" +
             "</if> \n" +
             "<if test = \"RequestPageReq.requestType!=null\" >\n" +
             "AND request_type LIKE N'%${RequestPageReq.requestType}%'\n" +
@@ -59,24 +62,44 @@ public interface RequestMapper {
             "OFFSET #{RequestPageReq.page} ROWS \n" +
             "FETCH NEXT 15 ROWS ONLY " +
             "</script>"})
-    @Results(id = "pendingRequestsResult", value = {
+    @Results(id = "requestsResult", value = {
             @Result(property = "requestId", column = "request_id"),
             @Result(property = "userId", column = "user_id"),
             @Result(property = "requestType", column = "request_type"),
             @Result(property = "createDate", column = "create_date")
     })
-    List<RequestRes> findPendingRequest(@Param("RequestPageReq") RequestPageReq requestPageReq);
+    List<RequestRes> findRequests(@Param("RequestPageReq") RequestPageReq requestPageReq);
 
-    @Select("SELECT COUNT(ur.request_id) " +
+    @Select({"<script> "+
+            "SELECT COUNT(rc.request_id) " +
             "FROM (" +
-            "SELECT \n" +
+            "SELECT  \n" +
             "request_id, \n" +
             "user_id, \n" +
-            "request_type,\n" +
-            "create_date\n" +
+            "request_type,  \n" +
+            "create_date  \n" +
             "FROM request \n" +
-            "WHERE request_status = 'PENDING') ur \n")
-    int findTotalPendingRequests();
+            "WHERE 1=1 \n" +
+            "<if test = \"RequestPageReq.userId!=null\" > \n" +
+            "AND user_id LIKE '%${RequestPageReq.userId}%' \n" +
+            "</if>  \n" +
+            "<if test = \"RequestPageReq.requestStatus!=null\" > \n" +
+            "AND request_status LIKE '%${RequestPageReq.requestStatus}%' \n" +
+            "</if>  \n" +
+            "<if test = \"RequestPageReq.requestType!=null\" > \n" +
+            "AND request_type LIKE N'%${RequestPageReq.requestType}%' \n" +
+            "</if>  \n" +
+            "<if test = \"RequestPageReq.fromDate!=null and RequestPageReq.toDate!=null\" > \n" +
+            "AND create_date BETWEEN '${RequestPageReq.fromDate}' AND '${RequestPageReq.toDate}' \n" +
+            "</if>  \n" +
+            "<if test = \"RequestPageReq.fromDate!=null and RequestPageReq.toDate==null\" > \n" +
+            "AND create_date &gt; '${RequestPageReq.fromDate}'  \n" +
+            "</if>  \n" +
+            "<if test = \"RequestPageReq.fromDate==null and RequestPageReq.toDate!=null\" > \n" +
+            "AND create_date &lt; '${RequestPageReq.toDate}'  \n" +
+            "</if> ) rc \n" +
+            "</script> "})
+    int findTotalRequests(@Param("RequestPageReq") RequestPageReq requestPageReq);
 
     @Select("SELECT \n" +
             "request_id, \n" +
@@ -106,7 +129,7 @@ public interface RequestMapper {
     @Update("UPDATE request \n" +
             "SET request_status = #{requestStatus} \n" +
             "WHERE request_id = #{requestId}")
-    int updateRequestStatus(@Param("requestId") int requestId,@Param("requestStatus") RequestStatus requestStatus);
+    int updateRequestStatus(@Param("requestId") int requestId, @Param("requestStatus") RequestStatus requestStatus);
 
     @Insert("INSERT INTO " +
             "request " +
