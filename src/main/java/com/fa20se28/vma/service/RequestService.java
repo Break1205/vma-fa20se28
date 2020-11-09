@@ -14,9 +14,9 @@ public interface RequestService {
 
     int createDeleteDocumentRequest(RequestReq requestReq);
 
-    RequestPageRes getPendingRequests(RequestPageReq requestPageReq);
+    RequestPageRes getRequests(RequestPageReq requestPageReq);
 
-    int getTotalPendingRequests();
+    int getTotalRequests(RequestPageReq requestPageReq);
 
     DocumentRequestDetailRes getDocumentRequestById(int requestId);
 

@@ -12,9 +12,9 @@ import java.util.List;
 public interface RequestComponent {
     int createRequest(RequestReq requestReq, String userId);
 
-    List<RequestRes> findPendingRequests(RequestPageReq page);
+    List<RequestRes> findRequests(RequestPageReq page);
 
-    int findTotalPendingRequests();
+    int findTotalRequests(RequestPageReq requestPageReq);
 
     DocumentRequestDetail findDocumentRequestById(int requestId);
 

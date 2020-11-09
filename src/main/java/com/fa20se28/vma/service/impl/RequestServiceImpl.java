@@ -79,15 +79,15 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public RequestPageRes getPendingRequests(RequestPageReq requestPageReq) {
+    public RequestPageRes getRequests(RequestPageReq requestPageReq) {
         RequestPageRes requestPageRes = new RequestPageRes();
-        requestPageRes.setRequestRes(requestComponent.findPendingRequests(requestPageReq));
+        requestPageRes.setRequestRes(requestComponent.findRequests(requestPageReq));
         return requestPageRes;
     }
 
     @Override
-    public int getTotalPendingRequests() {
-        return requestComponent.findTotalPendingRequests();
+    public int getTotalRequests(RequestPageReq requestPageReq) {
+        return requestComponent.findTotalRequests(requestPageReq);
     }
 
     @Override
