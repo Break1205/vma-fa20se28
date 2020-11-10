@@ -120,13 +120,13 @@ public class UserDocumentComponentImpl implements UserDocumentComponent {
         Optional<UserDocumentDetail> optionalUserDocumentDetail =
                 userDocumentMapper.findUserDocumentDetail(userDocumentId);
         optionalUserDocumentDetail.ifPresent(detail ->
-                detail.setUserDocumentImageDetailList(
+                detail.setUserDocumentImages(
                         userDocumentImageMapper.findUserDocumentImageDetail(userDocumentId)));
         if (optionalUserDocumentDetail.isPresent()) {
             int userDocumentLog = userDocumentMapper
                     .acceptNewUserDocumentLog(optionalUserDocumentDetail.get());
             int userDocumentImageLog = 0;
-            for (UserDocumentImageDetail imageDetail : optionalUserDocumentDetail.get().getUserDocumentImageDetailList()) {
+            for (UserDocumentImageDetail imageDetail : optionalUserDocumentDetail.get().getUserDocumentImages()) {
                 userDocumentImageLog += userDocumentImageMapper
                         .acceptNewUserDocumentImageLog(imageDetail);
             }
@@ -144,13 +144,13 @@ public class UserDocumentComponentImpl implements UserDocumentComponent {
         Optional<UserDocumentDetail> optionalUserDocumentDetail =
                 userDocumentMapper.findUserDocumentDetailFromLog(userDocumentId);
         optionalUserDocumentDetail.ifPresent(detail ->
-                detail.setUserDocumentImageDetailList(
+                detail.setUserDocumentImages(
                         userDocumentImageMapper.findUserDocumentImageDetailLog(userDocumentId)));
         if (optionalUserDocumentDetail.isPresent()) {
             int userDocumentLog = userDocumentMapper
                     .denyUpdateUserDocument(optionalUserDocumentDetail.get());
             int userDocumentImageLog = 0;
-            for (UserDocumentImageDetail imageDetail : optionalUserDocumentDetail.get().getUserDocumentImageDetailList()) {
+            for (UserDocumentImageDetail imageDetail : optionalUserDocumentDetail.get().getUserDocumentImages()) {
                 userDocumentImageLog += userDocumentImageMapper
                         .denyNewUserDocumentImageLog(imageDetail);
             }
@@ -167,7 +167,7 @@ public class UserDocumentComponentImpl implements UserDocumentComponent {
     public UserDocumentDetail findUserDocumentDetailById(String userDocumentId) {
         Optional<UserDocumentDetail> optionalUserDocumentDetail = userDocumentMapper.findUserDocumentDetail(userDocumentId);
         optionalUserDocumentDetail.ifPresent(detail ->
-                detail.setUserDocumentImageDetailList(
+                detail.setUserDocumentImages(
                         userDocumentImageMapper.findUserDocumentImageDetail(userDocumentId)));
         return optionalUserDocumentDetail.orElseThrow(() -> new ResourceNotFoundException("User document with id: " + userDocumentId + " not found"));
     }

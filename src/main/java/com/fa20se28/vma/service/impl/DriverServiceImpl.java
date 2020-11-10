@@ -7,7 +7,6 @@ import com.fa20se28.vma.request.IssuedDriversPageReq;
 import com.fa20se28.vma.response.DriverDetailRes;
 import com.fa20se28.vma.response.DriverPageRes;
 import com.fa20se28.vma.response.IssuedDriversPageRes;
-import com.fa20se28.vma.response.UserPageRes;
 import com.fa20se28.vma.service.DriverService;
 import org.springframework.stereotype.Service;
 

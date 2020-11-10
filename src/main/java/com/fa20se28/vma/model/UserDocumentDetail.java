@@ -15,7 +15,7 @@ public class UserDocumentDetail {
     private Date createDate;
     private String otherInformation;
     private UserDocumentType userDocumentType;
-    private List<UserDocumentImageDetail> userDocumentImageDetailList;
+    private List<UserDocumentImageDetail> userDocumentImages;
 
     public String getUserDocumentId() {
         return userDocumentId;
@@ -81,11 +81,11 @@ public class UserDocumentDetail {
         this.userDocumentType = userDocumentType;
     }
 
-    public List<UserDocumentImageDetail> getUserDocumentImageDetailList() {
-        return userDocumentImageDetailList;
+    public List<UserDocumentImageDetail> getUserDocumentImages() {
+        return userDocumentImages;
     }
 
-    public void setUserDocumentImageDetailList(List<UserDocumentImageDetail> userDocumentImageDetailList) {
-        this.userDocumentImageDetailList = userDocumentImageDetailList;
+    public void setUserDocumentImages(List<UserDocumentImageDetail> userDocumentImages) {
+        this.userDocumentImages = userDocumentImages;
     }
 }
