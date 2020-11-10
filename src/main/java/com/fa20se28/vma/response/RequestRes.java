@@ -1,5 +1,6 @@
 package com.fa20se28.vma.response;
 
+import com.fa20se28.vma.enums.RequestStatus;
 import com.fa20se28.vma.enums.RequestType;
 
 import java.util.Date;
@@ -8,6 +9,7 @@ public class RequestRes {
     private Long requestId;
     private String userId;
     private RequestType requestType;
+    private RequestStatus requestStatus;
     private Date createDate;
 
     public Long getRequestId() {
@@ -24,6 +26,14 @@ public class RequestRes {
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    public RequestStatus getRequestStatus() {
+        return requestStatus;
+    }
+
+    public void setRequestStatus(RequestStatus requestStatus) {
+        this.requestStatus = requestStatus;
     }
 
     public RequestType getRequestType() {

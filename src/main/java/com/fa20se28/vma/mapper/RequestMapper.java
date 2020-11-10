@@ -37,6 +37,7 @@ public interface RequestMapper {
             "request_id,\n" +
             "user_id,\n" +
             "request_type, \n" +
+            "request_status, \n" +
             "create_date \n" +
             "FROM request\n" +
             "WHERE 1=1\n" +
@@ -66,6 +67,7 @@ public interface RequestMapper {
             @Result(property = "requestId", column = "request_id"),
             @Result(property = "userId", column = "user_id"),
             @Result(property = "requestType", column = "request_type"),
+            @Result(property = "requestStatus", column = "request_status"),
             @Result(property = "createDate", column = "create_date")
     })
     List<RequestRes> findRequests(@Param("RequestPageReq") RequestPageReq requestPageReq);
