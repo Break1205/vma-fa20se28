@@ -8,10 +8,10 @@ import com.fa20se28.vma.service.UserDocumentService;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserUserDocumentServiceImpl implements UserDocumentService {
+public class UserDocumentServiceImpl implements UserDocumentService {
     private final UserDocumentComponent userDocumentComponent;
 
-    public UserUserDocumentServiceImpl(UserDocumentComponent userDocumentComponent) {
+    public UserDocumentServiceImpl(UserDocumentComponent userDocumentComponent) {
         this.userDocumentComponent = userDocumentComponent;
     }
 
