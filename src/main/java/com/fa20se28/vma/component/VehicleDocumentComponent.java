@@ -18,4 +18,8 @@ public interface VehicleDocumentComponent {
     void createVehicleDocumentFromRequest(VehicleDocumentStandaloneReq vehicleDocumentStandaloneReq);
 
     VehicleDocument getVehicleDocument(String vehicleDocId);
+
+    void acceptDocument(String vehicleDocId);
+
+    void denyDocument(int requestId, String vehicleId, String vehicleDocId);
 }

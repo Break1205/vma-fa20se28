@@ -87,16 +87,6 @@ public interface VehicleDocumentMapper {
             @Param("d_id") String vehicleDocumentId,
             @Param("d_option") boolean option);
 
-    @Update("UPDATE vehicle_document " +
-            "SET " +
-            "registered_location = NULL, " +
-            "registered_date = NULL, " +
-            "expiry_date = NULL, " +
-            "vehicle_document_type = NULL " +
-            "WHERE " +
-            "vehicle_document_id = #{d_id} ")
-    int resetInformation(@Param("d_id") String vehicleDocumentId);
-
     @Select("SELECT " +
             "vd.vehicle_document_id, " +
             "vd.vehicle_document_type, " +
@@ -108,4 +98,30 @@ public interface VehicleDocumentMapper {
     @ResultMap("vehicleDocuments")
     VehicleDocument getVehicleDocumentById(
             @Param("d_id") String documentId);
+
+    @Insert("INSERT INTO vehicle_document_log " +
+            "(vehicle_document_id, " +
+            "vehicle_id, " +
+            "registered_location," +
+            "registered_date, " +
+            "expiry_date, " +
+            "vehicle_document_type, " +
+            "request_id) " +
+            "VALUES " +
+            "(#{doc.vehicleDocumentId}, " +
+            "#{v_id}, " +
+            "#{doc.registeredLocation}, " +
+            "#{doc.registeredDate}, " +
+            "#{doc.expiryDate}, " +
+            "#{doc.vehicleDocumentType}," +
+            "#{r_id}) ")
+    int moveDeniedVehicleDocumentToLog(
+            @Param("doc") VehicleDocument vDocument,
+            @Param("v_id") String vehicleId,
+            @Param("r_id") int requestId);
+
+    @Select("SELECT vdl.vehicle_document_log_id " +
+            "FROM vehicle_document_log vdl " +
+            "WHERE vdl.request_id = #{r_id} ")
+    int findVehicleDocumentLogByRequestId(@Param("r_id") int requestId);
 }
