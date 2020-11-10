@@ -26,15 +26,8 @@ public class ReportController {
     @GetMapping
     public void exportReportByType(HttpServletResponse response,
                                    @RequestParam(required = false) String year,
-                                   @RequestParam String month,
-                                   @RequestParam(required = false, defaultValue = "MONTHLY_REVENUE") ReportType reportType) throws IOException {
-        response.setContentType("application/octet-stream");
-        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
-        String currentDateTime = dateFormatter.format(new Date());
-
-        String headerKey = "Content-Disposition";
-        String headerValue = "attachment; filename=report_" + currentDateTime + ".xls";
-        response.setHeader(headerKey, headerValue);
+                                   @RequestParam(required = false) String month,
+                                   @RequestParam(required = false, defaultValue = "MONTH_SCHEDULE") ReportType reportType) throws IOException {
         reportService.exportReportByType(response, new ReportReq(year, month, reportType));
     }
 }

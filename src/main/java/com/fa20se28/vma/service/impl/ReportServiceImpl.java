@@ -7,6 +7,9 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 @Service
 public class ReportServiceImpl implements ReportService {
@@ -19,6 +22,13 @@ public class ReportServiceImpl implements ReportService {
 
     @Override
     public void exportReportByType(HttpServletResponse response, ReportReq reportReq) throws IOException {
-        reportComponent.exportReportByType(response,reportReq);
+        response.setContentType("application/octet-stream");
+        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+        String currentDateTime = dateFormatter.format(new Date());
+
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=REPORT_" + reportReq.getReportType() + "_" + currentDateTime + ".xls";
+        response.setHeader(headerKey, headerValue);
+        reportComponent.exportReportByType(response, reportReq);
     }
 }
