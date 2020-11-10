@@ -1,14 +1,10 @@
 package com.fa20se28.vma.component;
 
 import com.fa20se28.vma.model.Passenger;
-import com.fa20se28.vma.model.TripHistory;
+import com.fa20se28.vma.model.Trip;
 import com.fa20se28.vma.model.VehicleBasic;
-import com.fa20se28.vma.request.ContractVehiclePassengerReq;
-import com.fa20se28.vma.request.ContractVehicleReq;
-import com.fa20se28.vma.request.ContractVehicleStatusUpdateReq;
-import com.fa20se28.vma.request.TripReq;
+import com.fa20se28.vma.request.*;
 
-import java.util.Date;
 import java.util.List;
 
 public interface ContractVehicleComponent {
@@ -24,5 +20,5 @@ public interface ContractVehicleComponent {
 
     void startAndEndTrip(TripReq tripReq);
 
-    List<TripHistory> getVehicleTrips(int issuedVehicleId, Date departureTime, Date destinationTime);
+    List<Trip> getVehicleTrips(TripListReq tripListReq);
 }

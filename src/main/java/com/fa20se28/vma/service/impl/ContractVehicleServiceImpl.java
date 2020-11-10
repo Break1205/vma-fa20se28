@@ -1,12 +1,10 @@
 package com.fa20se28.vma.service.impl;
 
 import com.fa20se28.vma.component.ContractVehicleComponent;
-import com.fa20se28.vma.request.ContractVehiclePassengerReq;
-import com.fa20se28.vma.request.ContractVehicleReq;
-import com.fa20se28.vma.request.ContractVehicleStatusUpdateReq;
-import com.fa20se28.vma.request.TripReq;
+import com.fa20se28.vma.request.*;
 import com.fa20se28.vma.response.ContractVehicleRes;
 import com.fa20se28.vma.response.PassengerRes;
+import com.fa20se28.vma.response.TripListRes;
 import com.fa20se28.vma.service.ContractVehicleService;
 import org.springframework.stereotype.Service;
 
@@ -46,5 +44,10 @@ public class ContractVehicleServiceImpl implements ContractVehicleService {
     @Override
     public void startAndEndTrip(TripReq tripReq) {
         contractVehicleComponent.startAndEndTrip(tripReq);
+    }
+
+    @Override
+    public TripListRes getTrips(TripListReq tripListReq) {
+        return new TripListRes(contractVehicleComponent.getVehicleTrips(tripListReq));
     }
 }

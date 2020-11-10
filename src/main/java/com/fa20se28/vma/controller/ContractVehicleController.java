@@ -1,14 +1,15 @@
 package com.fa20se28.vma.controller;
 
-import com.fa20se28.vma.request.ContractVehiclePassengerReq;
-import com.fa20se28.vma.request.ContractVehicleReq;
-import com.fa20se28.vma.request.ContractVehicleStatusUpdateReq;
-import com.fa20se28.vma.request.TripReq;
+import com.fa20se28.vma.request.*;
 import com.fa20se28.vma.response.ContractVehicleRes;
 import com.fa20se28.vma.response.ContractVehicleStatusRes;
 import com.fa20se28.vma.response.PassengerRes;
+import com.fa20se28.vma.response.TripListRes;
 import com.fa20se28.vma.service.ContractVehicleService;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Date;
 
 @RestController
 @RequestMapping("/api/v1/contracts/vehicles")
@@ -52,5 +53,13 @@ public class ContractVehicleController {
     @GetMapping("/status")
     public ContractVehicleStatusRes getContractVehicleStatus() {
         return new ContractVehicleStatusRes();
+    }
+
+    @GetMapping("/{issued-vehicle-id}/trips")
+    public TripListRes getTrips(
+            @PathVariable("issued-vehicle-id") int issuedVehicleId,
+            @RequestParam(required = false) @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss") Date departureTime,
+            @RequestParam(required = false) @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss") Date destinationTime) {
+        return contractVehicleService.getTrips(new TripListReq(issuedVehicleId, departureTime, destinationTime));
     }
 }

@@ -114,5 +114,5 @@ public interface IssuedVehicleMapper {
             @Result(property = "issuedDate", column = "issued_date"),
             @Result(property = "returnedDate", column = "returned_date")
     })
-    AssignedVehicle getCurrentlyAssignedVehicle(@Param("dv_id") String driverId);
+    AssignedVehicle getCurrentlyAssignedVehicleByDriverId(@Param("dv_id") String driverId);
 }

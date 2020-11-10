@@ -167,6 +167,6 @@ public class VehicleComponentImpl implements VehicleComponent {
 
     @Override
     public AssignedVehicle getCurrentlyAssignedVehicle(String driverId) {
-        return issuedVehicleMapper.getCurrentlyAssignedVehicle(driverId);
+        return issuedVehicleMapper.getCurrentlyAssignedVehicleByDriverId(driverId);
     }
 }

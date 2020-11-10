@@ -1,7 +1,7 @@
 package com.fa20se28.vma.mapper;
 
 import com.fa20se28.vma.enums.ContractVehicleStatus;
-import com.fa20se28.vma.model.TripHistory;
+import com.fa20se28.vma.model.Trip;
 import com.fa20se28.vma.model.VehicleBasic;
 import org.apache.ibatis.annotations.*;
 
@@ -50,7 +50,9 @@ public interface ContractVehicleMapper {
             "FROM contract_vehicles cv " +
             "JOIN contract c ON cv.contract_id = c.contract_id " +
             "WHERE cv.issued_vehicle_id = #{cv_iv_id} " +
-            "AND c.departure_time >= #{cv_dep_time} " +
+            "<if test = \"cv_dep_time != null\" > " +
+            "AND c.departure_time &gt;= #{cv_dep_time} " +
+            "</if> " +
             "<if test = \"cv_des_time != null\" > " +
             "AND c.destination_time &lt;= #{cv_des_time} " +
             "</if> " +
@@ -62,8 +64,20 @@ public interface ContractVehicleMapper {
             @Result(property = "destinationTime", column = "destination_time"),
             @Result(property = "contractVehicleStatus", column = "contract_vehicle_status")
     })
-    List<TripHistory> getVehicleTrips(
+    List<Trip> getVehicleTrips(
             @Param("cv_iv_id") int issuedVehicleId,
             @Param("cv_dep_time") Date departureTime,
             @Param("cv_des_time") Date destinationTime);
+
+    @Select("SELECT " +
+            "CASE WHEN " +
+            "COUNT(cv.contract_vehicle_id) > 0 THEN 1 " +
+            "ELSE 0 END Result " +
+            "FROM contract_vehicles cv " +
+            "JOIN contract c ON cv.contract_id = c.contract_id " +
+            "WHERE cv.issued_vehicle_id = #{cv_iv_id} " +
+            "AND cv.contract_id = #{cv_id} ")
+    boolean checkIfVehicleIsAlreadyAssignedToContract(
+            @Param("cv_iv_id") int issuedVehicleId,
+            @Param("cv_id") int contractId);
 }

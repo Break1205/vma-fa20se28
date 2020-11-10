@@ -4,29 +4,25 @@ import com.fa20se28.vma.component.ContractVehicleComponent;
 import com.fa20se28.vma.configuration.exception.DataException;
 import com.fa20se28.vma.enums.ContractVehicleStatus;
 import com.fa20se28.vma.enums.VehicleStatus;
-import com.fa20se28.vma.mapper.ContractVehicleMapper;
-import com.fa20se28.vma.mapper.IssuedVehicleMapper;
-import com.fa20se28.vma.mapper.PassengerMapper;
-import com.fa20se28.vma.mapper.VehicleMapper;
-import com.fa20se28.vma.model.Passenger;
-import com.fa20se28.vma.model.TripHistory;
-import com.fa20se28.vma.model.VehicleBasic;
+import com.fa20se28.vma.mapper.*;
+import com.fa20se28.vma.model.*;
 import com.fa20se28.vma.request.*;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
 import java.util.List;
 
 @Component
 public class ContractVehicleComponentImpl implements ContractVehicleComponent {
     private final PassengerMapper passengerMapper;
+    private final ContractMapper contractMapper;
     private final ContractVehicleMapper contractVehicleMapper;
     private final IssuedVehicleMapper issuedVehicleMapper;
     private final VehicleMapper vehicleMapper;
 
-    public ContractVehicleComponentImpl(PassengerMapper passengerMapper, ContractVehicleMapper contractVehicleMapper, IssuedVehicleMapper issuedVehicleMapper, VehicleMapper vehicleMapper) {
+    public ContractVehicleComponentImpl(PassengerMapper passengerMapper, ContractMapper contractMapper, ContractVehicleMapper contractVehicleMapper, IssuedVehicleMapper issuedVehicleMapper, VehicleMapper vehicleMapper) {
         this.passengerMapper = passengerMapper;
+        this.contractMapper = contractMapper;
         this.contractVehicleMapper = contractVehicleMapper;
         this.issuedVehicleMapper = issuedVehicleMapper;
         this.vehicleMapper = vehicleMapper;
@@ -57,13 +53,19 @@ public class ContractVehicleComponentImpl implements ContractVehicleComponent {
         if (!vehicleMapper.getVehicleStatus(vehicleId).equals(VehicleStatus.AVAILABLE)) {
             throw new DataException("Vehicle is still occupied!");
         } else {
-            int row = contractVehicleMapper.assignVehicleForContract(
-                    contractVehicleReq.getContractId(),
-                    issuedVehicleMapper.getCurrentIssuedVehicleId(vehicleId),
-                    ContractVehicleStatus.NOT_STARTED);
+            int currentIssuedId = issuedVehicleMapper.getCurrentIssuedVehicleId(vehicleId);
 
-            if (row == 0) {
-                throw new DataException("Unknown error occurred. Data not modified!");
+            if (contractVehicleMapper.checkIfVehicleIsAlreadyAssignedToContract(currentIssuedId, contractVehicleReq.getContractId())) {
+                throw new DataException("Vehicle is already assigned to the contract!");
+            } else {
+                int row = contractVehicleMapper.assignVehicleForContract(
+                        contractVehicleReq.getContractId(),
+                        currentIssuedId,
+                        ContractVehicleStatus.NOT_STARTED);
+
+                if (row == 0) {
+                    throw new DataException("Unknown error occurred. Data not modified!");
+                }
             }
         }
 
@@ -115,7 +117,10 @@ public class ContractVehicleComponentImpl implements ContractVehicleComponent {
     }
 
     @Override
-    public List<TripHistory> getVehicleTrips(int issuedVehicleId, Date departureTime, Date destinationTime) {
-        return contractVehicleMapper.getVehicleTrips(issuedVehicleId, departureTime, destinationTime);
+    public List<Trip> getVehicleTrips(TripListReq tripListReq) {
+        return contractVehicleMapper.getVehicleTrips(
+                tripListReq.getIssuedVehicleId(),
+                tripListReq.getDepartureTime(),
+                tripListReq.getDestinationTime());
     }
 }
