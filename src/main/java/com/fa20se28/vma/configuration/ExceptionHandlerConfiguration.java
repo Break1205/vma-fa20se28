@@ -1,7 +1,13 @@
 package com.fa20se28.vma.configuration;
 
+import com.fa20se28.vma.configuration.exception.InvalidFirebaseTokenException;
+import com.fa20se28.vma.configuration.exception.InvalidParamException;
+import com.fa20se28.vma.configuration.exception.RequestAlreadyHandledException;
+import com.fa20se28.vma.configuration.exception.ResourceIsInUsedException;
+import com.fa20se28.vma.configuration.exception.ResourceNotFoundException;
 import com.fa20se28.vma.configuration.exception.TemplateException;
 import com.fa20se28.vma.configuration.exception.model.ApiError;
+import com.google.firebase.auth.AuthErrorCode;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
@@ -62,18 +68,101 @@ public class ExceptionHandlerConfiguration extends ResponseEntityExceptionHandle
 
     // Handle other exceptions
     @ExceptionHandler(IllegalArgumentException.class)
-    protected  ResponseEntity<Object> handleException(IllegalArgumentException e)
-    {
+    protected ResponseEntity<Object> handleException(IllegalArgumentException e) {
         ApiError apiError = new ApiError(HttpStatus.INTERNAL_SERVER_ERROR);
-        apiError.setMessage("An error has occured");
+        apiError.setMessage("An error has occurred");
         apiError.setDebugMessage(e.getLocalizedMessage());
         return buildResponseEntity(apiError);
     }
 
+    @ExceptionHandler(ResourceNotFoundException.class)
+    protected ResponseEntity<Object> handleResourceNotFoundException(ResourceNotFoundException e) {
+        ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST);
+        apiError.setMessage("Not Found");
+        apiError.setDebugMessage(e.getLocalizedMessage());
+        return buildResponseEntity(apiError);
+    }
+
+    @ExceptionHandler(ResourceIsInUsedException.class)
+    protected ResponseEntity<Object> handleResourceIsInUsedException(ResourceIsInUsedException e) {
+        ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST);
+        apiError.setMessage("Resource is in used");
+        apiError.setDebugMessage(e.getLocalizedMessage());
+        return buildResponseEntity(apiError);
+    }
+
+    @ExceptionHandler(RequestAlreadyHandledException.class)
+    protected ResponseEntity<Object> handleRequestAlreadyHandledException(RequestAlreadyHandledException e) {
+        ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST);
+        apiError.setMessage("Already handled");
+        apiError.setDebugMessage(e.getLocalizedMessage());
+        return buildResponseEntity(apiError);
+    }
+
+    @ExceptionHandler(InvalidParamException.class)
+    protected ResponseEntity<Object> handleInvalidParamException(InvalidParamException e) {
+        ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST);
+        apiError.setMessage("Does not support");
+        apiError.setDebugMessage(e.getLocalizedMessage());
+        return buildResponseEntity(apiError);
+    }
+
+    // Handle RunTimeException. Triggered when the exception is happened at runtime
+    @ExceptionHandler(RuntimeException.class)
+    protected ResponseEntity<Object> handleRunTimeException(RuntimeException e) {
+        ApiError apiError = new ApiError(HttpStatus.INTERNAL_SERVER_ERROR);
+        if (e.getLocalizedMessage().contains("SQLServerException")) {
+            apiError.setMessage("Database Error");
+            String errorMessage = e.getMessage();
+            String formattedMessage = errorMessage.substring(errorMessage.lastIndexOf("SQLServerException"));
+            apiError.setDebugMessage(formattedMessage);
+        } else {
+            apiError.setMessage("An internal server error has occurred");
+            apiError.setDebugMessage(e.getLocalizedMessage());
+        }
+        return buildResponseEntity(apiError);
+    }
+
+    @ExceptionHandler(InvalidFirebaseTokenException.class)
+    protected ResponseEntity<Object> handleInvalidFirebaseTokenException(InvalidFirebaseTokenException e) {
+        ApiError apiError = new ApiError(HttpStatus.UNAUTHORIZED);
+        apiError.setDebugMessage(e.getLocalizedMessage());
+        apiError.setMessage(checkFirebaseExceptionType(e.authErrorCode));
+        return buildResponseEntity(apiError);
+    }
+
+    private String checkFirebaseExceptionType(AuthErrorCode authErrorCode) {
+        String message = "";
+        if (authErrorCode.equals(AuthErrorCode.CERTIFICATE_FETCH_FAILED)) {
+            message = "Failed to retrieve public key";
+        }
+        if (authErrorCode.equals(AuthErrorCode.EXPIRED_ID_TOKEN)) {
+            message = "The Token is expired";
+        }
+        if (authErrorCode.equals(AuthErrorCode.INVALID_ID_TOKEN)) {
+            message = "The ID token is invalid";
+        }
+        if (authErrorCode.equals(AuthErrorCode.PHONE_NUMBER_ALREADY_EXISTS)) {
+            message = "A user already exists with the provided phone number";
+        }
+        if (authErrorCode.equals(AuthErrorCode.UID_ALREADY_EXISTS)) {
+            message = "A user already exists with the provided UID";
+        }
+        if (authErrorCode.equals(AuthErrorCode.INVALID_ID_TOKEN)) {
+            message = "The ID token is invalid";
+        }
+        if (authErrorCode.equals(AuthErrorCode.UNAUTHORIZED_CONTINUE_URL)) {
+            message = "The domain of the continue URL is not whitelisted";
+        }
+        if (authErrorCode.equals(AuthErrorCode.USER_NOT_FOUND)) {
+            message = "No user record found for the given ID";
+        }
+        return message;
+    }
+
     // Exception Template.
     @ExceptionHandler(TemplateException.class)
-    protected ResponseEntity<Object> handleTemplateException(TemplateException ex)
-    {
+    protected ResponseEntity<Object> handleTemplateException(TemplateException ex) {
         ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST);
         apiError.setMessage(ex.getLocalizedMessage());
         return buildResponseEntity(apiError);

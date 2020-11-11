@@ -1,20 +1,26 @@
 package com.fa20se28.vma.request;
 
+import com.fa20se28.vma.enums.VehicleStatus;
+
 public class VehiclePageReq {
     private String vehicleId;
     private String model;
-    private String vehicleType;
-    private Float vehicleMinDis;
-    private Float vehicleMaxDis;
-    private String vehicleStatus;
+    private int vehicleTypeId;
+    private int seatsMin;
+    private int seatsMax;
+    private VehicleStatus vehicleStatus;
+    private float vehicleMinDis;
+    private float vehicleMaxDis;
 
-    public VehiclePageReq(String vehicleId, String model, String vehicleType, Float vehicleMinDis, Float vehicleMaxDis, String vehicleStatus) {
+    public VehiclePageReq(String vehicleId, String model, int vehicleTypeId, int seatsMin, int seatsMax, VehicleStatus vehicleStatus, float vehicleMinDis, float vehicleMaxDis) {
         this.vehicleId = vehicleId;
         this.model = model;
-        this.vehicleType = vehicleType;
+        this.vehicleTypeId = vehicleTypeId;
+        this.seatsMin = seatsMin;
+        this.seatsMax = seatsMax;
+        this.vehicleStatus = vehicleStatus;
         this.vehicleMinDis = vehicleMinDis;
         this.vehicleMaxDis = vehicleMaxDis;
-        this.vehicleStatus = vehicleStatus;
     }
 
     public String getVehicleId() {
@@ -33,35 +39,51 @@ public class VehiclePageReq {
         this.model = model;
     }
 
-    public String getVehicleType() {
-        return vehicleType;
+    public int getVehicleTypeId() {
+        return vehicleTypeId;
     }
 
-    public void setVehicleType(String vehicleType) {
-        this.vehicleType = vehicleType;
+    public void setVehicleTypeId(int vehicleTypeId) {
+        this.vehicleTypeId = vehicleTypeId;
     }
 
-    public Float getVehicleMinDis() {
-        return vehicleMinDis;
+    public int getSeatsMin() {
+        return seatsMin;
     }
 
-    public void setVehicleMinDis(Float vehicleMinDis) {
-        this.vehicleMinDis = vehicleMinDis;
+    public void setSeatsMin(int seatsMin) {
+        this.seatsMin = seatsMin;
     }
 
-    public Float getVehicleMaxDis() {
-        return vehicleMaxDis;
+    public int getSeatsMax() {
+        return seatsMax;
     }
 
-    public void setVehicleMaxDis(Float vehicleMaxDis) {
-        this.vehicleMaxDis = vehicleMaxDis;
+    public void setSeatsMax(int seatsMax) {
+        this.seatsMax = seatsMax;
     }
 
-    public String getVehicleStatus() {
+    public VehicleStatus getVehicleStatus() {
         return vehicleStatus;
     }
 
-    public void setVehicleStatus(String vehicleStatus) {
+    public void setVehicleStatus(VehicleStatus vehicleStatus) {
         this.vehicleStatus = vehicleStatus;
+    }
+
+    public float getVehicleMinDis() {
+        return vehicleMinDis;
+    }
+
+    public void setVehicleMinDis(float vehicleMinDis) {
+        this.vehicleMinDis = vehicleMinDis;
+    }
+
+    public float getVehicleMaxDis() {
+        return vehicleMaxDis;
+    }
+
+    public void setVehicleMaxDis(float vehicleMaxDis) {
+        this.vehicleMaxDis = vehicleMaxDis;
     }
 }

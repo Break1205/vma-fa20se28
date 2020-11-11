@@ -1,17 +1,15 @@
 package com.fa20se28.vma.response;
 
-import com.fa20se28.vma.model.Driver;
-
 import java.util.List;
 
 public class DriverPageRes {
-    private List<Driver> driverList;
+    private List<DriverRes> driverRes;
 
-    public List<Driver> getDriverList() {
-        return driverList;
+    public List<DriverRes> getDriverRes() {
+        return driverRes;
     }
 
-    public void setDriverList(List<Driver> driverList) {
-        this.driverList = driverList;
+    public void setDriverRes(List<DriverRes> driverRes) {
+        this.driverRes = driverRes;
     }
 }

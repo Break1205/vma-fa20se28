@@ -1,25 +1,20 @@
 package com.fa20se28.vma.request;
 
+import com.fa20se28.vma.enums.UserStatus;
+
 public class DriverPageReq {
     private String userId;
-    private String name;
+    private String fullName;
     private String phoneNumber;
-    private Long userStatusId;
+    private UserStatus userStatus;
     private int page;
 
-    public DriverPageReq(String userId, String name, String phoneNumber, Long userStatusId, int page) {
+    public DriverPageReq(String userId, String fullName, String phoneNumber, UserStatus userStatus, int page) {
         this.userId = userId;
-        this.name = name;
+        this.fullName = fullName;
         this.phoneNumber = phoneNumber;
-        this.userStatusId = userStatusId;
+        this.userStatus = userStatus;
         this.page = page;
-    }
-
-    public DriverPageReq(String userId, String name, String phoneNumber, Long userStatusId) {
-        this.userId = userId;
-        this.name = name;
-        this.phoneNumber = phoneNumber;
-        this.userStatusId = userStatusId;
     }
 
     public String getUserId() {
@@ -30,12 +25,12 @@ public class DriverPageReq {
         this.userId = userId;
     }
 
-    public String getName() {
-        return name;
+    public String getFullName() {
+        return fullName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 
     public String getPhoneNumber() {
@@ -46,12 +41,12 @@ public class DriverPageReq {
         this.phoneNumber = phoneNumber;
     }
 
-    public Long getUserStatusId() {
-        return userStatusId;
+    public UserStatus getUserStatus() {
+        return userStatus;
     }
 
-    public void setUserStatusId(Long userStatusId) {
-        this.userStatusId = userStatusId;
+    public void setUserStatus(UserStatus userStatus) {
+        this.userStatus = userStatus;
     }
 
     public int getPage() {
@@ -61,4 +56,5 @@ public class DriverPageReq {
     public void setPage(int page) {
         this.page = page;
     }
+
 }

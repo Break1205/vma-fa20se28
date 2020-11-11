@@ -1,21 +1,13 @@
 package com.fa20se28.vma.response;
 
-import com.fa20se28.vma.model.VehicleStatus;
+import com.fa20se28.vma.enums.VehicleStatus;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class VehicleStatusRes {
-    private List<VehicleStatus> statusList;
-
-    public VehicleStatusRes(List<VehicleStatus> statusList) {
-        this.statusList = statusList;
-    }
-
-    public List<VehicleStatus> getStatusList() {
-        return statusList;
-    }
-
-    public void setStatusList(List<VehicleStatus> statusList) {
-        this.statusList = statusList;
+    public List<VehicleStatus> getVehicleStatus() {
+        return Stream.of(VehicleStatus.values()).collect(Collectors.toList());
     }
 }

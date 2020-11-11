@@ -1,11 +1,13 @@
 package com.fa20se28.vma.model;
 
+import com.fa20se28.vma.enums.UserStatus;
+
 public class Driver {
     private String userId;
     private String fullName;
     private String phoneNumber;
     private String vehicleId;
-    private String userStatusName;
+    private UserStatus userStatus;
 
     public String getUserId() {
         return userId;
@@ -39,11 +41,11 @@ public class Driver {
         this.vehicleId = vehicleId;
     }
 
-    public String getUserStatusName() {
-        return userStatusName;
+    public UserStatus getUserStatus() {
+        return userStatus;
     }
 
-    public void setUserStatusName(String userStatusName) {
-        this.userStatusName = userStatusName;
+    public void setUserStatus(UserStatus userStatus) {
+        this.userStatus = userStatus;
     }
 }

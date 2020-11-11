@@ -1,9 +1,12 @@
 package com.fa20se28.vma.model;
 
+import com.fa20se28.vma.enums.VehicleStatus;
+
 public class Vehicle {
     private String vehicleId;
     private String model;
-    private VehicleType vehicleType;
+    private String vehicleTypeName;
+    private int seats;
     private VehicleStatus vehicleStatus;
     private float vehicleDistance;
 
@@ -23,12 +26,20 @@ public class Vehicle {
         this.model = model;
     }
 
-    public VehicleType getVehicleType() {
-        return vehicleType;
+    public String getVehicleTypeName() {
+        return vehicleTypeName;
     }
 
-    public void setVehicleType(VehicleType vehicleType) {
-        this.vehicleType = vehicleType;
+    public void setVehicleTypeName(String vehicleTypeName) {
+        this.vehicleTypeName = vehicleTypeName;
+    }
+
+    public int getSeats() {
+        return seats;
+    }
+
+    public void setSeats(int seats) {
+        this.seats = seats;
     }
 
     public VehicleStatus getVehicleStatus() {
@@ -45,5 +56,13 @@ public class Vehicle {
 
     public void setVehicleDistance(float vehicleDistance) {
         this.vehicleDistance = vehicleDistance;
+    }
+
+    @Override
+    public String toString() {
+        return "Vehicle{" +
+                "vehicleId='" + vehicleId + '\'' +
+                ", vehicleStatus=" + vehicleStatus +
+                '}';
     }
 }

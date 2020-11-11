@@ -1,14 +1,17 @@
 package com.fa20se28.vma.component.impl;
 
 import com.fa20se28.vma.component.ContributorComponent;
+import com.fa20se28.vma.configuration.exception.ResourceNotFoundException;
 import com.fa20se28.vma.mapper.ContributorMapper;
 import com.fa20se28.vma.mapper.UserDocumentMapper;
 import com.fa20se28.vma.mapper.UserMapper;
-import com.fa20se28.vma.model.Contributor;
 import com.fa20se28.vma.model.ContributorDetail;
+import com.fa20se28.vma.request.ContributorPageReq;
+import com.fa20se28.vma.response.ContributorRes;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class ContributorComponentImpl implements ContributorComponent {
@@ -24,28 +27,17 @@ public class ContributorComponentImpl implements ContributorComponent {
 
     @Override
     public ContributorDetail findContributorById(String userId) {
-        ContributorDetail contributorDetail = contributorMapper.findContributorById(userId);
-        contributorDetail.setUserDocumentList(userDocumentMapper.findUserDocumentByUserId(userId));
-        return contributorDetail;
+        Optional<ContributorDetail> optionalContributorDetail = contributorMapper.findContributorById(userId);
+        optionalContributorDetail.ifPresent(contributorDetail ->
+                contributorDetail.setUserDocumentList(userDocumentMapper.findUserDocumentByUserId(userId, 0)));
+        return optionalContributorDetail.orElseThrow(() ->
+                new ResourceNotFoundException("Contributor with id: " + userId + " not found"));
     }
 
     @Override
-    public List<Contributor> findContributors(
-            String userId,
-            String name,
-            String phoneNumber,
-            Long userStatusId,
-            Long min,
-            Long max,
-            int page) {
-        return contributorMapper.findContributorsByUserIdAndFullNameAndPhoneNumberAndTotalVehicle(
-                userId,
-                name,
-                phoneNumber,
-                userStatusId,
-                min,
-                max,
-                page * 15);
+    public List<ContributorRes> findContributors(
+            ContributorPageReq contributorPageReq) {
+        return contributorMapper.findContributorsWhenFilter(contributorPageReq);
     }
 
     @Override
@@ -55,8 +47,8 @@ public class ContributorComponentImpl implements ContributorComponent {
 
 
     @Override
-    public int findTotalContributorsWhenFilter(String userId, String name, String phoneNumber, Long userStatusId, Long min, Long max) {
-        return contributorMapper.findTotalContributorsWhenFilter(userId, name, phoneNumber, userStatusId, min, max);
+    public int findTotalContributorsWhenFilter(ContributorPageReq contributorPageReq) {
+        return contributorMapper.findTotalContributorsWhenFilter(contributorPageReq);
     }
 
     @Override

@@ -1,16 +1,18 @@
 package com.fa20se28.vma.model;
 
-import java.util.Date;
+import com.fa20se28.vma.enums.UserDocumentType;
+
+import java.time.LocalDate;
 import java.util.List;
 
 public class UserDocument {
     private String userDocumentId;
-    private String userDocumentType;
-    private String userId;
-    private String registerLocation;
-    private Date registerDate;
-    private Date expiryDate;
-    private List<DocumentImage> documentImages;
+    private UserDocumentType userDocumentType;
+    private String registeredLocation;
+    private LocalDate registeredDate;
+    private LocalDate expiryDate;
+    private String otherInformation;
+    private List<UserDocumentImage> userDocumentImages;
 
     public String getUserDocumentId() {
         return userDocumentId;
@@ -20,51 +22,51 @@ public class UserDocument {
         this.userDocumentId = userDocumentId;
     }
 
-    public String getUserDocumentType() {
+    public UserDocumentType getUserDocumentType() {
         return userDocumentType;
     }
 
-    public void setUserDocumentType(String userDocumentType) {
+    public void setUserDocumentType(UserDocumentType userDocumentType) {
         this.userDocumentType = userDocumentType;
     }
 
-    public String getUserId() {
-        return userId;
+    public String getRegisteredLocation() {
+        return registeredLocation;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setRegisteredLocation(String registeredLocation) {
+        this.registeredLocation = registeredLocation;
     }
 
-    public String getRegisterLocation() {
-        return registerLocation;
+    public LocalDate getRegisteredDate() {
+        return registeredDate;
     }
 
-    public void setRegisterLocation(String registerLocation) {
-        this.registerLocation = registerLocation;
+    public void setRegisteredDate(LocalDate registeredDate) {
+        this.registeredDate = registeredDate;
     }
 
-    public Date getRegisterDate() {
-        return registerDate;
-    }
-
-    public void setRegisterDate(Date registerDate) {
-        this.registerDate = registerDate;
-    }
-
-    public Date getExpiryDate() {
+    public LocalDate getExpiryDate() {
         return expiryDate;
     }
 
-    public void setExpiryDate(Date expiryDate) {
+    public void setExpiryDate(LocalDate expiryDate) {
         this.expiryDate = expiryDate;
     }
 
-    public List<DocumentImage> getDocumentImages() {
-        return documentImages;
+    public List<UserDocumentImage> getUserDocumentImages() {
+        return userDocumentImages;
     }
 
-    public void setDocumentImages(List<DocumentImage> documentImages) {
-        this.documentImages = documentImages;
+    public void setUserDocumentImages(List<UserDocumentImage> userDocumentImages) {
+        this.userDocumentImages = userDocumentImages;
+    }
+
+    public String getOtherInformation() {
+        return otherInformation;
+    }
+
+    public void setOtherInformation(String otherInformation) {
+        this.otherInformation = otherInformation;
     }
 }
