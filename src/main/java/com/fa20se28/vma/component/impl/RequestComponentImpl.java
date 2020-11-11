@@ -5,9 +5,7 @@ import com.fa20se28.vma.configuration.exception.ResourceNotFoundException;
 import com.fa20se28.vma.enums.RequestStatus;
 import com.fa20se28.vma.mapper.RequestMapper;
 import com.fa20se28.vma.model.DocumentRequestDetail;
-import com.fa20se28.vma.request.RequestPageReq;
-import com.fa20se28.vma.request.RequestReq;
-import com.fa20se28.vma.request.VehicleRequestReq;
+import com.fa20se28.vma.request.*;
 import com.fa20se28.vma.response.RequestRes;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -55,7 +53,13 @@ public class RequestComponentImpl implements RequestComponent {
 
     @Override
     @Transactional
-    public int createVehicleDocumentRequest(VehicleRequestReq vehicleRequestReq, String userId) {
+    public int createVehicleDocumentRequest(VehicleDocumentRequestReq vehicleDocumentRequestReq, String userId) {
+        return requestMapper.insertVehicleDocumentRequest(vehicleDocumentRequestReq, RequestStatus.PENDING, userId);
+    }
+
+    @Override
+    @Transactional
+    public int createVehicleRequest(VehicleRequestReq vehicleRequestReq, String userId) {
         return requestMapper.insertVehicleRequest(vehicleRequestReq, RequestStatus.PENDING, userId);
     }
 }

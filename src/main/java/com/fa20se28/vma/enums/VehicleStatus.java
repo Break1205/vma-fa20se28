@@ -6,5 +6,6 @@ public enum VehicleStatus {
     ON_ROUTE,
     MAINTENANCE,
     PENDING_APPROVAL,
-    DELETED
+    DELETED,
+    REJECTED
 }
