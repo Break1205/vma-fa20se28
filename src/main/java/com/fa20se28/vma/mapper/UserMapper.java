@@ -118,7 +118,8 @@ public interface UserMapper {
             "[user] u\n" +
             "JOIN user_roles ur\n" +
             "ON ur.user_id = u.user_id\n" +
-            "WHERE ur.role_id = #{roleId} \n" +
+            "WHERE u.user_status != 'DISABLE' " +
+            "AND ur.role_id = #{roleId} \n" +
             "<if test = \"UserPageReq.userId!=null\" >\n" +
             "AND u.user_id LIKE '%${UserPageReq.userId}%'\n" +
             "</if> \n" +
@@ -134,7 +135,8 @@ public interface UserMapper {
             "AND u.user_id NOT IN \n" +
             "(SELECT user_id \n" +
             "FROM user_roles \n" +
-            "WHERE role_id = \n" +
+            "WHERE " +
+            "role_id = \n" +
             "<if test = \"roleId == 2\" >\n" +
             "3\n" +
             "</if> \n" +
@@ -166,7 +168,8 @@ public interface UserMapper {
             "[user] u\n" +
             "JOIN user_roles ur\n" +
             "ON ur.user_id = u.user_id\n" +
-            "WHERE ur.role_id = #{roleId} \n" +
+            "WHERE u.user_status != 'DISABLE' " +
+            "AND ur.role_id = #{roleId} \n" +
             "<if test = \"UserPageReq.userId!=null\" >\n" +
             "AND u.user_id LIKE '%${UserPageReq.userId}%'\n" +
             "</if> \n" +
@@ -182,7 +185,8 @@ public interface UserMapper {
             "AND u.user_id NOT IN \n" +
             "(SELECT user_id \n" +
             "FROM user_roles \n" +
-            "WHERE role_id = \n" +
+            "WHERE " +
+            "role_id = \n" +
             "<if test = \"roleId == 2\" >\n" +
             "3\n" +
             "</if> \n" +
