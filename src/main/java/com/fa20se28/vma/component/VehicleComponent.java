@@ -12,7 +12,7 @@ import java.util.List;
 public interface VehicleComponent {
     int getTotal(VehiclePageReq request, int viewOption, String ownerId);
 
-    List<Vehicle> getVehicles(VehiclePageReq request, int viewOption, int pageNum, String ownerId);
+    List<Vehicle> getVehicles(VehiclePageReq request, int viewOption, int pageNum, String ownerId, int takeAll);
 
     List<VehicleDropDown> getVehiclesDropDown(VehicleDropDownReq request, int pageNum, String ownerId);
 

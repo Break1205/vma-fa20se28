@@ -36,8 +36,8 @@ public class VehicleComponentImpl implements VehicleComponent {
 
 
     @Override
-    public List<Vehicle> getVehicles(VehiclePageReq request, int viewOption, int pageNum, String ownerId) {
-        return vehicleMapper.getVehicles(request, viewOption, pageNum * 15, ownerId);
+    public List<Vehicle> getVehicles(VehiclePageReq request, int viewOption, int pageNum, String ownerId, int takeAll) {
+        return vehicleMapper.getVehicles(request, viewOption, pageNum * 15, ownerId, takeAll);
     }
 
     @Override
