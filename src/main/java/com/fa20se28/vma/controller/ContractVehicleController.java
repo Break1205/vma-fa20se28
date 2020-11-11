@@ -1,5 +1,6 @@
 package com.fa20se28.vma.controller;
 
+import com.fa20se28.vma.enums.ContractVehicleStatus;
 import com.fa20se28.vma.request.*;
 import com.fa20se28.vma.response.ContractVehicleRes;
 import com.fa20se28.vma.response.ContractVehicleStatusRes;
@@ -59,7 +60,8 @@ public class ContractVehicleController {
     public TripListRes getTrips(
             @PathVariable("issued-vehicle-id") int issuedVehicleId,
             @RequestParam(required = false) @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss") Date departureTime,
-            @RequestParam(required = false) @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss") Date destinationTime) {
-        return contractVehicleService.getTrips(new TripListReq(issuedVehicleId, departureTime, destinationTime));
+            @RequestParam(required = false) @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss") Date destinationTime,
+            @RequestParam(required = false) ContractVehicleStatus vehicleStatus) {
+        return contractVehicleService.getTrips(new TripListReq(issuedVehicleId, departureTime, destinationTime, vehicleStatus));
     }
 }

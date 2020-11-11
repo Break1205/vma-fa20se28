@@ -56,6 +56,9 @@ public interface ContractVehicleMapper {
             "<if test = \"cv_des_time != null\" > " +
             "AND c.destination_time &lt;= #{cv_des_time} " +
             "</if> " +
+            "<if test = \"cv_status != null\" > " +
+            "AND cv.contract_vehicle_status = #{cv_status} " +
+            "</if> " +
             "</script>"})
     @Results(id = "tripsResult", value = {
             @Result(property = "contractId", column = "contract_id"),
@@ -67,7 +70,8 @@ public interface ContractVehicleMapper {
     List<Trip> getVehicleTrips(
             @Param("cv_iv_id") int issuedVehicleId,
             @Param("cv_dep_time") Date departureTime,
-            @Param("cv_des_time") Date destinationTime);
+            @Param("cv_des_time") Date destinationTime,
+            @Param("cv_status") ContractVehicleStatus vehicleStatus);
 
     @Select("SELECT " +
             "CASE WHEN " +

@@ -14,8 +14,10 @@ public class ContractLM {
     private Date durationTo;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private Date departureTime;
+    private String departureLocation;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private Date destinationTime;
+    private String destinationLocation;
     private float totalPrice;
 
     public String getContractId() {
@@ -58,12 +60,28 @@ public class ContractLM {
         this.departureTime = departureTime;
     }
 
+    public String getDepartureLocation() {
+        return departureLocation;
+    }
+
+    public void setDepartureLocation(String departureLocation) {
+        this.departureLocation = departureLocation;
+    }
+
     public Date getDestinationTime() {
         return destinationTime;
     }
 
     public void setDestinationTime(Date destinationTime) {
         this.destinationTime = destinationTime;
+    }
+
+    public String getDestinationLocation() {
+        return destinationLocation;
+    }
+
+    public void setDestinationLocation(String destinationLocation) {
+        this.destinationLocation = destinationLocation;
     }
 
     public float getTotalPrice() {

@@ -60,7 +60,7 @@ public interface ContractMapper {
     @Select({"<script> " +
             "SELECT " +
             "c.contract_id, c.contract_status, c.duration_from, c.duration_to, c.total_price, " +
-            "c.departure_time, c.destination_time " +
+            "c.departure_time, c.destination_time, c.departure_location, c.destination_location " +
             "FROM contract c " +
             "WHERE " +
             "<if test = \"c_option == 0\" > " +
@@ -78,8 +78,14 @@ public interface ContractMapper {
             "<if test = \"c_request.departureTime != null\" > " +
             "AND c.departure_time &gt;= #{c_request.departureTime} " +
             "</if> " +
+            "<if test = \"c_request.departureLocation != null\" > " +
+            "AND c.departure_location LIKE  '%${c_request.departureLocation}%' " +
+            "</if> " +
             "<if test = \"c_request.destinationTime != null\" > " +
             "AND c.destination_time &lt;= #{c_request.destinationTime} " +
+            "</if> " +
+            "<if test = \"c_request.destinationLocation != null\" > " +
+            "AND c.destination_location LIKE  '%${c_request.destinationLocation}%' " +
             "</if> " +
             "<if test = \"c_request.totalPriceMin != 0\" > " +
             "AND c.total_price &gt;= #{c_request.totalPriceMin} " +
@@ -97,7 +103,9 @@ public interface ContractMapper {
             @Result(property = "durationFrom", column = "duration_from"),
             @Result(property = "durationTo", column = "duration_to"),
             @Result(property = "departureTime", column = "departure_time"),
+            @Result(property = "departureLocation", column = "departure_location"),
             @Result(property = "destinationTime", column = "destination_time"),
+            @Result(property = "destinationLocation", column = "destination_location"),
             @Result(property = "totalPrice", column = "total_price")
     })
     List<ContractLM> getContracts(

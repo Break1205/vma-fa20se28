@@ -35,13 +35,15 @@ public class ContractController {
             @RequestParam(required = false) @DateTimeFormat(pattern="yyyy-MM-dd") Date durationFrom,
             @RequestParam(required = false) @DateTimeFormat(pattern="yyyy-MM-dd") Date durationTo,
             @RequestParam(required = false) @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss") Date departureTime,
+            @RequestParam(required = false) String departureLocation,
             @RequestParam(required = false) @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss") Date destinationTime,
+            @RequestParam(required = false) String destinationLocation,
             @RequestParam(required = false, defaultValue = "0") float totalPriceMin,
             @RequestParam(required = false, defaultValue = "0") float totalPriceMax,
             @RequestParam(required = false, defaultValue = "0") int viewOption,
             @RequestParam(required = false, defaultValue = "0") int pageNum) {
         return contractService.getContracts(
-                new ContractPageReq(contractStatus, durationFrom, durationTo, departureTime, destinationTime, totalPriceMin, totalPriceMax),
+                new ContractPageReq(contractStatus, durationFrom, durationTo, departureTime, departureLocation, destinationTime, destinationLocation, totalPriceMin, totalPriceMax),
                 viewOption, pageNum);
     }
 

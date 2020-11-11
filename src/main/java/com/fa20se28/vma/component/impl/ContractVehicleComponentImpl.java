@@ -121,6 +121,7 @@ public class ContractVehicleComponentImpl implements ContractVehicleComponent {
         return contractVehicleMapper.getVehicleTrips(
                 tripListReq.getIssuedVehicleId(),
                 tripListReq.getDepartureTime(),
-                tripListReq.getDestinationTime());
+                tripListReq.getDestinationTime(),
+                tripListReq.getVehicleStatus());
     }
 }
