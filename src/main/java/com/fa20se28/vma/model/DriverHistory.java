@@ -1,15 +1,11 @@
 package com.fa20se28.vma.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-
-import java.util.Date;
+import java.time.LocalDate;
 
 public class DriverHistory {
     private UserBasic driver;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private Date issuedDate;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private Date returnedDate;
+    private LocalDate issuedDate;
+    private LocalDate returnedDate;
 
     public UserBasic getDriver() {
         return driver;
@@ -19,19 +15,19 @@ public class DriverHistory {
         this.driver = driver;
     }
 
-    public Date getIssuedDate() {
+    public LocalDate getIssuedDate() {
         return issuedDate;
     }
 
-    public void setIssuedDate(Date issuedDate) {
+    public void setIssuedDate(LocalDate issuedDate) {
         this.issuedDate = issuedDate;
     }
 
-    public Date getReturnedDate() {
+    public LocalDate getReturnedDate() {
         return returnedDate;
     }
 
-    public void setReturnedDate(Date returnedDate) {
+    public void setReturnedDate(LocalDate returnedDate) {
         this.returnedDate = returnedDate;
     }
 }

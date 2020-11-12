@@ -3,7 +3,7 @@ package com.fa20se28.vma.model;
 import com.fa20se28.vma.enums.VehicleStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public class VehicleDetail {
     private String vehicleId;
@@ -18,9 +18,8 @@ public class VehicleDetail {
     private String chassisNumber;
     private String engineNumber;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy")
-    private Date yearOfManufacture;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private Date dateOfRegistration;
+    private LocalDate yearOfManufacture;
+    private LocalDate dateOfRegistration;
     private float distanceDriven;
     private UserBasic assignedDriver;
 
@@ -112,19 +111,19 @@ public class VehicleDetail {
         this.engineNumber = engineNumber;
     }
 
-    public Date getYearOfManufacture() {
+    public LocalDate getYearOfManufacture() {
         return yearOfManufacture;
     }
 
-    public void setYearOfManufacture(Date yearOfManufacture) {
+    public void setYearOfManufacture(LocalDate yearOfManufacture) {
         this.yearOfManufacture = yearOfManufacture;
     }
 
-    public Date getDateOfRegistration() {
+    public LocalDate getDateOfRegistration() {
         return dateOfRegistration;
     }
 
-    public void setDateOfRegistration(Date dateOfRegistration) {
+    public void setDateOfRegistration(LocalDate dateOfRegistration) {
         this.dateOfRegistration = dateOfRegistration;
     }
 

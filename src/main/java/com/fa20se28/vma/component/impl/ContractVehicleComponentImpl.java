@@ -110,7 +110,7 @@ public class ContractVehicleComponentImpl implements ContractVehicleComponent {
             }
         }
 
-        if (contractVehicleRow == 0 && vehicleRow == 0) {
+        if (contractVehicleRow == 0 || vehicleRow == 0) {
             throw new DataException("Unknown error occurred. Data not modified!");
         }
 
@@ -121,6 +121,7 @@ public class ContractVehicleComponentImpl implements ContractVehicleComponent {
         return contractVehicleMapper.getVehicleTrips(
                 tripListReq.getIssuedVehicleId(),
                 tripListReq.getDepartureTime(),
-                tripListReq.getDestinationTime());
+                tripListReq.getDestinationTime(),
+                tripListReq.getVehicleStatus());
     }
 }

@@ -1,14 +1,11 @@
 package com.fa20se28.vma.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-
-import java.util.Date;
+import java.time.LocalDate;
 
 public class Passenger {
     private String fullName;
     private String phoneNumber;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private Date dateOfBirth;
+    private LocalDate dateOfBirth;
     private String address;
 
     public String getFullName() {
@@ -27,11 +24,11 @@ public class Passenger {
         this.phoneNumber = phoneNumber;
     }
 
-    public Date getDateOfBirth() {
+    public LocalDate getDateOfBirth() {
         return dateOfBirth;
     }
 
-    public void setDateOfBirth(Date dateOfBirth) {
+    public void setDateOfBirth(LocalDate dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
 

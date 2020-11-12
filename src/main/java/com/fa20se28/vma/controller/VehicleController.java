@@ -48,10 +48,14 @@ public class VehicleController {
             @RequestParam(required = false, defaultValue = "0") int seatsMax,
             @RequestParam(required = false) VehicleStatus vehicleStatus,
             @RequestParam(required = false, defaultValue = "0") float vehicleMinDis,
-            @RequestParam(required = false, defaultValue = "0") float vehicleMaxDis) {
+            @RequestParam(required = false, defaultValue = "0") float vehicleMaxDis,
+            @RequestParam(required = false, defaultValue = "0") int takeAll) {
         return vehicleService.getVehicles(
-                new VehiclePageReq(vehicleId, model, vehicleTypeId, seatsMin, seatsMax, vehicleStatus, vehicleMinDis, vehicleMaxDis),
-                viewOption, pageNum, ownerId);
+                new VehiclePageReq(
+                        vehicleId, model, vehicleTypeId,
+                        seatsMin, seatsMax, vehicleStatus,
+                        vehicleMinDis, vehicleMaxDis),
+                viewOption, pageNum, ownerId, takeAll);
     }
 
     @GetMapping("/dropdown")

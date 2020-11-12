@@ -27,8 +27,8 @@ public class VehicleServiceImpl implements VehicleService {
     }
 
     @Override
-    public VehiclePageRes getVehicles(VehiclePageReq request, int viewOption, int pageNum, String ownerId) {
-        return new VehiclePageRes(vehicleComponent.getVehicles(request, viewOption, pageNum, ownerId));
+    public VehiclePageRes getVehicles(VehiclePageReq request, int viewOption, int pageNum, String ownerId, int takeAll) {
+        return new VehiclePageRes(vehicleComponent.getVehicles(request, viewOption, pageNum, ownerId, takeAll));
     }
 
     @Override
@@ -48,7 +48,7 @@ public class VehicleServiceImpl implements VehicleService {
 
     @Override
     public void createVehicle(VehicleReq vehicle) {
-        vehicleComponent.createVehicle(vehicle);
+        vehicleComponent.createVehicle(vehicle, false);
     }
 
     @Override

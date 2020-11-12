@@ -12,7 +12,7 @@ import java.util.List;
 public interface VehicleComponent {
     int getTotal(VehiclePageReq request, int viewOption, String ownerId);
 
-    List<Vehicle> getVehicles(VehiclePageReq request, int viewOption, int pageNum, String ownerId);
+    List<Vehicle> getVehicles(VehiclePageReq request, int viewOption, int pageNum, String ownerId, int takeAll);
 
     List<VehicleDropDown> getVehiclesDropDown(VehicleDropDownReq request, int pageNum, String ownerId);
 
@@ -20,7 +20,7 @@ public interface VehicleComponent {
 
     void withdrawVehicle(String vehicleId);
 
-    void createVehicle(VehicleReq vehicle);
+    void createVehicle(VehicleReq vehicle, boolean notAdmin);
 
     void deleteVehicle(String vehicleId);
 
@@ -33,4 +33,10 @@ public interface VehicleComponent {
     List<DriverHistory> getDriverHistory(String vehicleId);
 
     AssignedVehicle getCurrentlyAssignedVehicle(String driverId);
+
+    void createVehicleFromRequest(VehicleReq vehicle);
+
+    void acceptVehicle(String vehicleId);
+
+    void denyVehicle(String vehicleId, int requestId);
 }

@@ -91,7 +91,9 @@ public interface VehicleMapper {
             "</if> " +
             "ORDER BY v.date_of_registration DESC " +
             "OFFSET ${v_offset} ROWS " +
+            "<if test = \"v_take_all != 1\" > " +
             "FETCH NEXT 15 ROWS ONLY " +
+            "</if> " +
             "</script> "})
     @Results(id = "vehicles", value = {
             @Result(property = "vehicleId", column = "vehicle_id"),
@@ -103,7 +105,8 @@ public interface VehicleMapper {
             @Param("v_request") VehiclePageReq request,
             @Param("v_option") int viewOption,
             @Param("v_offset") int offset,
-            @Param("v_owner_id") String ownerId);
+            @Param("v_owner_id") String ownerId,
+            @Param("v_take_all") int takeAll);
 
     @Select({"<script> " +
             "SELECT v.vehicle_id, v.model, vt.vehicle_type_name, v.seats " +

@@ -7,5 +7,4 @@ import java.io.IOException;
 
 public interface ReportComponent {
     void exportReportByType(HttpServletResponse response, ReportReq reportReq) throws IOException;
-
 }

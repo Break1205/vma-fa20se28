@@ -4,6 +4,7 @@ import com.fa20se28.vma.enums.RequestStatus;
 import com.fa20se28.vma.enums.RequestType;
 import com.fa20se28.vma.request.RequestPageReq;
 import com.fa20se28.vma.request.RequestReq;
+import com.fa20se28.vma.request.VehicleDocumentRequestReq;
 import com.fa20se28.vma.request.VehicleRequestReq;
 import com.fa20se28.vma.response.DocumentRequestDetailRes;
 import com.fa20se28.vma.response.RequestTypesRes;
@@ -82,9 +83,18 @@ public class RequestController {
 
     @PostMapping("/vehicle-document-requests")
     @ResponseStatus(HttpStatus.CREATED)
+    public int createVehicleDocumentRequest(@RequestBody VehicleDocumentRequestReq vehicleDocumentRequestReq) {
+        if (vehicleDocumentRequestReq.getRequestType() != null) {
+            return requestService.createVehicleDocumentRequest(vehicleDocumentRequestReq);
+        }
+        return 0;
+    }
+
+    @PostMapping("/vehicle-requests")
+    @ResponseStatus(HttpStatus.CREATED)
     public int createVehicleRequest(@RequestBody VehicleRequestReq vehicleRequestReq) {
         if (vehicleRequestReq.getRequestType() != null) {
-            return requestService.createVehicleDocumentRequest(vehicleRequestReq);
+            return requestService.createVehicleRequest(vehicleRequestReq);
         }
         return 0;
     }

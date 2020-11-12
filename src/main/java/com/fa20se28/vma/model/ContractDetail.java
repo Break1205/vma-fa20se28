@@ -3,25 +3,23 @@ package com.fa20se28.vma.model;
 import com.fa20se28.vma.enums.ContractStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class ContractDetail {
     private int contractId;
     private UserBasic contractOwner;
     private ContractStatus contractStatus;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private Date signedDate;
+    private LocalDate signedDate;
     private String signedLocation;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private Date durationFrom;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private Date durationTo;
+    private LocalDate durationFrom;
+    private LocalDate durationTo;
     private String departureLocation;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date departureTime;
+    private LocalDateTime departureTime;
     private String destinationLocation;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date destinationTime;
+    private LocalDateTime destinationTime;
     private float totalPrice;
     private String otherInformation;
 
@@ -49,11 +47,11 @@ public class ContractDetail {
         this.contractStatus = contractStatus;
     }
 
-    public Date getSignedDate() {
+    public LocalDate getSignedDate() {
         return signedDate;
     }
 
-    public void setSignedDate(Date signedDate) {
+    public void setSignedDate(LocalDate signedDate) {
         this.signedDate = signedDate;
     }
 
@@ -65,19 +63,19 @@ public class ContractDetail {
         this.signedLocation = signedLocation;
     }
 
-    public Date getDurationFrom() {
+    public LocalDate getDurationFrom() {
         return durationFrom;
     }
 
-    public void setDurationFrom(Date durationFrom) {
+    public void setDurationFrom(LocalDate durationFrom) {
         this.durationFrom = durationFrom;
     }
 
-    public Date getDurationTo() {
+    public LocalDate getDurationTo() {
         return durationTo;
     }
 
-    public void setDurationTo(Date durationTo) {
+    public void setDurationTo(LocalDate durationTo) {
         this.durationTo = durationTo;
     }
 
@@ -89,11 +87,11 @@ public class ContractDetail {
         this.departureLocation = departureLocation;
     }
 
-    public Date getDepartureTime() {
+    public LocalDateTime getDepartureTime() {
         return departureTime;
     }
 
-    public void setDepartureTime(Date departureTime) {
+    public void setDepartureTime(LocalDateTime departureTime) {
         this.departureTime = departureTime;
     }
 
@@ -105,11 +103,11 @@ public class ContractDetail {
         this.destinationLocation = destinationLocation;
     }
 
-    public Date getDestinationTime() {
+    public LocalDateTime getDestinationTime() {
         return destinationTime;
     }
 
-    public void setDestinationTime(Date destinationTime) {
+    public void setDestinationTime(LocalDateTime destinationTime) {
         this.destinationTime = destinationTime;
     }
 
