@@ -1,9 +1,11 @@
 package com.fa20se28.vma.component.impl;
 
 import com.fa20se28.vma.component.ReportComponent;
+import com.fa20se28.vma.enums.ReportType;
 import com.fa20se28.vma.mapper.ReportMapper;
 import com.fa20se28.vma.model.Schedule;
 import com.fa20se28.vma.model.ScheduleDetail;
+import com.fa20se28.vma.model.VehicleReport;
 import com.fa20se28.vma.request.ReportReq;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
@@ -26,7 +28,6 @@ import java.util.List;
 public class ReportComponentImpl implements ReportComponent {
     private final Workbook workbook;
     private Sheet sheet;
-    private final CellStyle style;
     private final ReportMapper reportMapper;
     private static final int TITLE_ROW = 0;
     private static final int HEADER_ROW = 1;
@@ -34,11 +35,6 @@ public class ReportComponentImpl implements ReportComponent {
     public ReportComponentImpl(ReportMapper reportMapper) {
         this.reportMapper = reportMapper;
         workbook = new HSSFWorkbook();
-        style = workbook.createCellStyle();
-        Font font = workbook.createFont();
-        font.setBold(true);
-        font.setFontHeight((short) 320);
-        style.setFont(font);
     }
 
     @Override
@@ -47,26 +43,42 @@ public class ReportComponentImpl implements ReportComponent {
     }
 
     private void export(HttpServletResponse response, ReportReq reportReq) throws IOException {
+        writeTitleLine(reportReq);
         writeHeaderLine(reportReq);
-        writeMonthScheduleDataLines(reportReq);
+        writeDataLines(reportReq);
 
         ServletOutputStream outputStream = response.getOutputStream();
         workbook.write(outputStream);
         workbook.close();
-
         outputStream.close();
     }
 
-    private void writeHeaderLine(ReportReq reportReq) {
+    private void writeTitleLine(ReportReq reportReq) {
         sheet = workbook.createSheet(reportReq.getReportType().toString());
+        CellStyle style = workbook.createCellStyle();
+        Font font = workbook.createFont();
+        font.setBold(true);
+        font.setFontHeight((short) 400);
+        style.setFont(font);
         Row row = sheet.createRow(TITLE_ROW);
         sheet.addMergedRegion(new CellRangeAddress(TITLE_ROW, TITLE_ROW, 0, 4));
         createCell(row, 0, reportReq.getReportType().toString(), style);
-        writeMonthScheduleHeaderLine();
-
     }
 
-    private void writeMonthScheduleHeaderLine() {
+    private void writeHeaderLine(ReportReq reportReq) {
+        CellStyle style = workbook.createCellStyle();
+        Font font = workbook.createFont();
+        font.setBold(true);
+        font.setFontHeight((short) 320);
+        style.setFont(font);
+        if (reportReq.getReportType().equals(ReportType.SCHEDULE)) {
+            writeScheduleHeaderLine(style);
+        } else if (reportReq.getReportType().equals(ReportType.VEHICLES)) {
+            writeVehiclesHeaderLine(style);
+        }
+    }
+
+    private void writeScheduleHeaderLine(CellStyle style) {
         Row row = sheet.createRow(HEADER_ROW);
         createCell(row, 0, "No", style);
         createCell(row, 1, "Contract Id", style);
@@ -81,15 +93,38 @@ public class ReportComponentImpl implements ReportComponent {
         createCell(row, 10, "Contributor Id", style);
     }
 
+    private void writeVehiclesHeaderLine(CellStyle style) {
 
-    private void writeMonthScheduleDataLines(ReportReq reportReq) {
-        int rowCount = HEADER_ROW + 1;
-        int numberOfData = 0;
+        int totalVehicle = reportMapper.getTotalVehicleForReport();
+
+        Row totalVehicleRow = sheet.createRow(HEADER_ROW);
+        createCell(totalVehicleRow, 1, "Total Vehicles: ", style);
+        createCell(totalVehicleRow, 2, totalVehicle, style);
+
+        Row row = sheet.createRow(HEADER_ROW + 1);
+        createCell(row, 0, "No", style);
+        createCell(row, 1, "Vehicle Id", style);
+        createCell(row, 2, "Type", style);
+        createCell(row, 3, "Brand", style);
+        createCell(row, 4, "Owner Id", style);
+        createCell(row, 5, "Owner Name", style);
+    }
+
+    private void writeDataLines(ReportReq reportReq) {
         CellStyle style = workbook.createCellStyle();
         Font font = workbook.createFont();
         font.setFontHeight((short) 280);
         style.setFont(font);
+        if (reportReq.getReportType().equals(ReportType.SCHEDULE)) {
+            writeScheduleDataLines(reportReq, style);
+        } else if (reportReq.getReportType().equals(ReportType.VEHICLES)) {
+            writeVehicleDataLines(style);
+        }
+    }
 
+    private void writeScheduleDataLines(ReportReq reportReq, CellStyle style) {
+        int rowCount = HEADER_ROW + 1;
+        int numberOfData = 1;
         List<LocalDate> firstAndLastDaysInMonth = getFirstAndLastDayInAMonth(reportReq);
         List<Schedule> schedules =
                 reportMapper.getListSchedule(
@@ -117,6 +152,30 @@ public class ReportComponentImpl implements ReportComponent {
                 }
             }
         }
+        Row row = sheet.createRow(++rowCount);
+        createCell(row, 4, "Total Value", style);
+        Cell valueCell = row.createCell(5);
+        valueCell.setCellFormula("SUM(F3:F" + (rowCount - 1) + ")");
+        valueCell.setCellStyle(style);
+    }
+
+    private void writeVehicleDataLines(CellStyle style) {
+        int rowCount = HEADER_ROW + 2;
+        int numberOfData = 1;
+
+        List<VehicleReport> vehicleReports = reportMapper.getVehiclesForReport();
+        for (VehicleReport vehicleReport : vehicleReports) {
+            Row row = sheet.createRow(rowCount++);
+            int columnCount = 0;
+            createCell(row, columnCount++, numberOfData++, style);
+            createCell(row, columnCount++, vehicleReport.getVehicleId(), style);
+            createCell(row, columnCount++, vehicleReport.getVehicleType(), style);
+            createCell(row, columnCount++, vehicleReport.getBrand(), style);
+            createCell(row, columnCount++, vehicleReport.getOwnerId(), style);
+            createCell(row, columnCount, vehicleReport.getOwnerName(), style);
+        }
+
+
     }
 
     private void createCell(Row row, int columnCount, Object value, CellStyle style) {

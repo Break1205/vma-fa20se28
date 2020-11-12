@@ -7,6 +7,8 @@ public class ReportReq {
     private String month;
     private ReportType reportType;
 
+
+
     public ReportReq(String year, String month, ReportType reportType) {
         this.year = year;
         this.month = month;

@@ -1,7 +1,9 @@
 package com.fa20se28.vma.mapper;
 
+import com.fa20se28.vma.model.MaintenanceReport;
 import com.fa20se28.vma.model.Schedule;
 import com.fa20se28.vma.model.ScheduleDetail;
+import com.fa20se28.vma.model.VehicleReport;
 import org.apache.ibatis.annotations.Many;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -57,4 +59,62 @@ public interface ReportMapper {
             @Result(property = "contributorId", column = "contributor_id")
     })
     List<ScheduleDetail> getScheduleDetails(@Param("contractId") String contractId);
+
+    @Select("SELECT \n" +
+            "v.vehicle_id,\n" +
+            "vt.vehicle_type_name, \n" +
+            "b.brand_name, \n" +
+            "u.user_id, \n" +
+            "u.full_name\n" +
+            "FROM vehicle v\n" +
+            "JOIN vehicle_type vt \n" +
+            "ON v.vehicle_type_id = vt.vehicle_type_id \n" +
+            "JOIN brand b \n" +
+            "ON v.brand_id = b.brand_id \n" +
+            "JOIN [user] u \n" +
+            "ON u.user_id = v.owner_id \n" +
+            "WHERE v.vehicle_status != 'DELETED' " +
+            "ORDER BY u.user_id")
+    @Results(id = "vehicleReportResult", value = {
+            @Result(property = "vehicleId", column = "vehicle_id"),
+            @Result(property = "vehicleType", column = "vehicle_type_name"),
+            @Result(property = "brand", column = "brand_name"),
+            @Result(property = "ownerId", column = "user_id"),
+            @Result(property = "ownerName", column = "full_name")
+    })
+    List<VehicleReport> getVehiclesForReport();
+
+    @Select("SELECT COUNT(cv.vehicle_id) \n" +
+            "FROM (\n" +
+            "SELECT \n" +
+            "v.vehicle_id,\n" +
+            "vt.vehicle_type_name, \n" +
+            "b.brand_name, \n" +
+            "u.user_id, \n" +
+            "u.full_name\n" +
+            "FROM vehicle v\n" +
+            "JOIN vehicle_type vt \n" +
+            "ON v.vehicle_type_id = vt.vehicle_type_id \n" +
+            "JOIN brand b \n" +
+            "ON v.brand_id = b.brand_id \n" +
+            "JOIN [user] u \n" +
+            "ON u.user_id = v.owner_id \n" +
+            "WHERE v.vehicle_status != 'DELETED') cv")
+    int getTotalVehicleForReport();
+
+    @Select("SELECT \n" +
+            "maintenance_date, \n" +
+            "maintenance_type, \n" +
+            "cost\n" +
+            "FROM maintenance \n" +
+            "WHERE vehicle_id = #{vehicleId}\n" +
+            "AND maintenance_date between '${firstDayOfMonth}' AND '${lastDayOfMonth}' \n")
+    @Results(id = "maintenanceReportResult", value = {
+            @Result(property = "maintenanceDate", column = "maintenance_date"),
+            @Result(property = "maintenanceType", column = "maintenance_type"),
+            @Result(property = "cost", column = "cost")
+    })
+    List<MaintenanceReport> getMaintenanceByVehicleIdForReport(@Param("firstDayOfMonth") String firstDayOfMonth,
+                                                               @Param("lastDayOfMonth") String lastDayOfMonth,
+                                                               @Param("vehicleId") String vehicleId);
 }

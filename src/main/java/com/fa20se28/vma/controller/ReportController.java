@@ -10,9 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 @RestController
 @RequestMapping("/api/v1/reports")
@@ -23,11 +20,15 @@ public class ReportController {
         this.reportService = reportService;
     }
 
-    @GetMapping
-    public void exportReportByType(HttpServletResponse response,
-                                   @RequestParam(required = false) String year,
-                                   @RequestParam(required = false) String month,
-                                   @RequestParam(required = false, defaultValue = "MONTH_SCHEDULE") ReportType reportType) throws IOException {
-        reportService.exportReportByType(response, new ReportReq(year, month, reportType));
+    @GetMapping("schedule")
+    public void exportScheduleReport(HttpServletResponse response,
+                                     @RequestParam(required = false) String year,
+                                     @RequestParam(required = false) String month) throws IOException {
+        reportService.exportReportByType(response, new ReportReq(year, month, ReportType.SCHEDULE));
+    }
+
+    @GetMapping("vehicles")
+    public void exportVehiclesReport(HttpServletResponse response) throws IOException {
+        reportService.exportReportByType(response, new ReportReq("", "", ReportType.VEHICLES));
     }
 }
