@@ -1,5 +1,6 @@
 package com.fa20se28.vma.mapper;
 
+import com.fa20se28.vma.model.MaintenanceReport;
 import com.fa20se28.vma.model.Schedule;
 import com.fa20se28.vma.model.ScheduleDetail;
 import com.fa20se28.vma.model.VehicleReport;
@@ -100,4 +101,20 @@ public interface ReportMapper {
             "ON u.user_id = v.owner_id \n" +
             "WHERE v.vehicle_status != 'DELETED') cv")
     int getTotalVehicleForReport();
+
+    @Select("SELECT \n" +
+            "maintenance_date, \n" +
+            "maintenance_type, \n" +
+            "cost\n" +
+            "FROM maintenance \n" +
+            "WHERE vehicle_id = #{vehicleId}\n" +
+            "AND maintenance_date between '${firstDayOfMonth}' AND '${lastDayOfMonth}' \n")
+    @Results(id = "maintenanceReportResult", value = {
+            @Result(property = "maintenanceDate", column = "maintenance_date"),
+            @Result(property = "maintenanceType", column = "maintenance_type"),
+            @Result(property = "cost", column = "cost")
+    })
+    List<MaintenanceReport> getMaintenanceByVehicleIdForReport(@Param("firstDayOfMonth") String firstDayOfMonth,
+                                                               @Param("lastDayOfMonth") String lastDayOfMonth,
+                                                               @Param("vehicleId") String vehicleId);
 }
