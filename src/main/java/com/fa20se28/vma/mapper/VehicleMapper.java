@@ -17,6 +17,7 @@ public interface VehicleMapper {
     @Select({"<script> " +
             "SELECT COUNT(v.vehicle_id) " +
             "FROM vehicle v " +
+            "JOIN vehicle_type vt ON v.vehicle_type_id = vt.vehicle_type_id " +
             "WHERE " +
             "<if test = \"v_option == 0\" > " +
             "v.vehicle_status != '%DELETED%' " +
