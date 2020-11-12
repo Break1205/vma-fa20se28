@@ -1,9 +1,6 @@
 package com.fa20se28.vma.service.impl;
 
-import com.fa20se28.vma.component.AuthenticationComponent;
-import com.fa20se28.vma.component.UserDocumentComponent;
-import com.fa20se28.vma.component.RequestComponent;
-import com.fa20se28.vma.component.VehicleDocumentComponent;
+import com.fa20se28.vma.component.*;
 import com.fa20se28.vma.component.impl.UserDocumentComponentImpl;
 import com.fa20se28.vma.configuration.exception.RequestAlreadyHandledException;
 import com.fa20se28.vma.enums.RequestStatus;
@@ -11,6 +8,7 @@ import com.fa20se28.vma.enums.RequestType;
 import com.fa20se28.vma.model.DocumentRequestDetail;
 import com.fa20se28.vma.request.RequestPageReq;
 import com.fa20se28.vma.request.RequestReq;
+import com.fa20se28.vma.request.VehicleDocumentRequestReq;
 import com.fa20se28.vma.request.VehicleRequestReq;
 import com.fa20se28.vma.response.DocumentRequestDetailRes;
 import com.fa20se28.vma.response.RequestPageRes;
@@ -22,14 +20,16 @@ import org.springframework.stereotype.Service;
 public class RequestServiceImpl implements RequestService {
     private final RequestComponent requestComponent;
     private final UserDocumentComponent userDocumentComponent;
+    private final VehicleComponent vehicleComponent;
     private final VehicleDocumentComponent vehicleDocumentComponent;
     private final AuthenticationComponent authenticationComponent;
 
     public RequestServiceImpl(RequestComponent requestComponent,
                               UserDocumentComponentImpl documentComponent,
-                              VehicleDocumentComponent vehicleDocumentComponent, AuthenticationComponent authenticationComponent) {
+                              VehicleComponent vehicleComponent, VehicleDocumentComponent vehicleDocumentComponent, AuthenticationComponent authenticationComponent) {
         this.requestComponent = requestComponent;
         this.userDocumentComponent = documentComponent;
+        this.vehicleComponent = vehicleComponent;
         this.vehicleDocumentComponent = vehicleDocumentComponent;
         this.authenticationComponent = authenticationComponent;
     }
@@ -135,6 +135,15 @@ public class RequestServiceImpl implements RequestService {
             vehicleDocumentComponent.deleteDocument(documentRequestDetail.getVehicleDocumentId());
             return requestComponent.updateRequestStatus(documentRequestDetail.getRequestId(), RequestStatus.ACCEPTED);
         }
+        if (documentRequestDetail.getRequestType().equals(RequestType.ADD_NEW_VEHICLE)) {
+            vehicleComponent.acceptVehicle(documentRequestDetail.getVehicleId());
+            return requestComponent.updateRequestStatus(documentRequestDetail.getRequestId(), RequestStatus.ACCEPTED);
+        }
+        if (documentRequestDetail.getRequestType().equals(RequestType.WITHDRAW_VEHICLE)) {
+            vehicleComponent.deleteVehicle(documentRequestDetail.getVehicleId());
+            return requestComponent.updateRequestStatus(documentRequestDetail.getRequestId(), RequestStatus.ACCEPTED);
+        }
+
         return 0;
     }
 
@@ -165,12 +174,12 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public int createVehicleDocumentRequest(VehicleRequestReq vehicleRequestReq) {
+    public int createVehicleDocumentRequest(VehicleDocumentRequestReq vehicleDocumentRequestReq) {
         Authentication authentication = authenticationComponent.getAuthentication();
 
-        if (requestComponent.createVehicleDocumentRequest(vehicleRequestReq, authentication.getName()) == 1) {
-            if (vehicleRequestReq.getRequestType().equals(RequestType.NEW_VEHICLE_DOCUMENT)) {
-                vehicleDocumentComponent.createVehicleDocumentFromRequest(vehicleRequestReq.getVehicleDocument());
+        if (requestComponent.createVehicleDocumentRequest(vehicleDocumentRequestReq, "Xqn16TjK") == 1) {
+            if (vehicleDocumentRequestReq.getRequestType().equals(RequestType.NEW_VEHICLE_DOCUMENT)) {
+                vehicleDocumentComponent.createVehicleDocumentFromRequest(vehicleDocumentRequestReq.getVehicleDocument());
             }
 
             return 1;
@@ -179,5 +188,18 @@ public class RequestServiceImpl implements RequestService {
         return 0;
     }
 
+    @Override
+    public int createVehicleRequest(VehicleRequestReq vehicleRequestReq) {
+        Authentication authentication = authenticationComponent.getAuthentication();
 
+        if (vehicleRequestReq.getRequestType().equals(RequestType.ADD_NEW_VEHICLE)) {
+            vehicleComponent.createVehicleFromRequest(vehicleRequestReq.getVehicleReq());
+        }
+
+        if (requestComponent.createVehicleRequest(vehicleRequestReq, "22ciWTO1") == 1) {
+            return 1;
+        }
+
+        return 0;
+    }
 }

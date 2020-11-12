@@ -21,6 +21,22 @@ public class VehicleUpdateReq {
     private Date yearOfManufacture;
     private float distanceDriven;
 
+    public VehicleUpdateReq(String vehicleId, int vehicleTypeId, int brandId, String ownerId, VehicleStatus vehicleStatus, int seats, String imageLink, String model, String origin, String chassisNumber, String engineNumber, Date yearOfManufacture, float distanceDriven) {
+        this.vehicleId = vehicleId;
+        this.vehicleTypeId = vehicleTypeId;
+        this.brandId = brandId;
+        this.ownerId = ownerId;
+        this.vehicleStatus = vehicleStatus;
+        this.seats = seats;
+        this.imageLink = imageLink;
+        this.model = model;
+        this.origin = origin;
+        this.chassisNumber = chassisNumber;
+        this.engineNumber = engineNumber;
+        this.yearOfManufacture = yearOfManufacture;
+        this.distanceDriven = distanceDriven;
+    }
+
     public String getVehicleId() {
         return vehicleId;
     }

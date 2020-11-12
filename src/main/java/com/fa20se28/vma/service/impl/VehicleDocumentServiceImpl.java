@@ -28,7 +28,7 @@ public class VehicleDocumentServiceImpl implements VehicleDocumentService {
 
     @Override
     public void createVehicleDocument(VehicleDocumentStandaloneReq vehicleDocumentStandaloneReq) {
-        vehicleDocumentComponent.createVehicleDocument(vehicleDocumentStandaloneReq);
+        vehicleDocumentComponent.createVehicleDocument(vehicleDocumentStandaloneReq, false);
     }
 
     @Override

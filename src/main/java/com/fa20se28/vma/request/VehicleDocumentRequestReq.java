@@ -2,10 +2,10 @@ package com.fa20se28.vma.request;
 
 import com.fa20se28.vma.enums.RequestType;
 
-public class VehicleRequestReq {
+public class VehicleDocumentRequestReq {
     private RequestType requestType;
     private String description;
-    private VehicleReq vehicleReq;
+    private VehicleDocumentStandaloneReq vehicleDocument;
 
     public RequestType getRequestType() {
         return requestType;
@@ -23,11 +23,11 @@ public class VehicleRequestReq {
         this.description = description;
     }
 
-    public VehicleReq getVehicleReq() {
-        return vehicleReq;
+    public VehicleDocumentStandaloneReq getVehicleDocument() {
+        return vehicleDocument;
     }
 
-    public void setVehicleReq(VehicleReq vehicleReq) {
-        this.vehicleReq = vehicleReq;
+    public void setVehicleDocument(VehicleDocumentStandaloneReq vehicleDocument) {
+        this.vehicleDocument = vehicleDocument;
     }
 }

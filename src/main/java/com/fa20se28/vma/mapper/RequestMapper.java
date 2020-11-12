@@ -2,9 +2,7 @@ package com.fa20se28.vma.mapper;
 
 import com.fa20se28.vma.enums.RequestStatus;
 import com.fa20se28.vma.model.DocumentRequestDetail;
-import com.fa20se28.vma.request.RequestPageReq;
-import com.fa20se28.vma.request.RequestReq;
-import com.fa20se28.vma.request.VehicleRequestReq;
+import com.fa20se28.vma.request.*;
 import com.fa20se28.vma.response.RequestRes;
 import org.apache.ibatis.annotations.*;
 
@@ -154,8 +152,30 @@ public interface RequestMapper {
             "#{r_vehicle_document.requestType}, " +
             "getDate(), " +
             "#{r_vehicle_document.description}) ")
+    int insertVehicleDocumentRequest(
+            @Param("r_vehicle_document") VehicleDocumentRequestReq requestReq,
+            @Param("r_status") RequestStatus requestStatus,
+            @Param("userId") String userId);
+
+    @Insert("INSERT INTO " +
+            "request " +
+            "(user_id, " +
+            "vehicle_id, " +
+            "vehicle_document_id, " +
+            "request_status, " +
+            "request_type, " +
+            "create_date, " +
+            "description) " +
+            "VALUES " +
+            "(#{userId}, " +
+            "#{r_vehicle.vehicleReq.vehicleId}, " +
+            "NULL, " +
+            "#{r_status}, " +
+            "#{r_vehicle.requestType}, " +
+            "getDate(), " +
+            "#{r_vehicle.description}) ")
     int insertVehicleRequest(
-            @Param("r_vehicle_document") VehicleRequestReq requestReq,
+            @Param("r_vehicle") VehicleRequestReq vehicleRequestReq,
             @Param("r_status") RequestStatus requestStatus,
             @Param("userId") String userId);
 }
