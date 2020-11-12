@@ -19,24 +19,28 @@ import org.springframework.stereotype.Service;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 @Service
 public class FirebaseServiceImpl implements FirebaseService {
-    @Value("${firebase.credential.resource-path}")
-    private String keyPath;
+    private static final String CONFIG_FILE = "googleConfig.json";
 
     @Bean
     @Primary
-    public void firebaseInitialization() throws IOException {
-        Resource resource = new ClassPathResource(keyPath);
-        FileInputStream serviceAccount = new FileInputStream(resource.getFile());
+    public void firebaseInitialization() {
+        try {
+            FirebaseOptions options = new FirebaseOptions.Builder()
+                    .setCredentials(GoogleCredentials.
+                            fromStream(new ClassPathResource(CONFIG_FILE).getInputStream()))
+                    .setDatabaseUrl("https://vma-fa20se28.firebaseio.com").build();
+            if (FirebaseApp.getApps().isEmpty()) {
+                FirebaseApp.initializeApp(options);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-        FirebaseOptions options = new FirebaseOptions.Builder()
-                .setCredentials(GoogleCredentials.fromStream(serviceAccount))
-                .setDatabaseUrl("https://vma-fa20se28.firebaseio.com")
-                .build();
 
-        FirebaseApp.initializeApp(options);
     }
 
     @Override
