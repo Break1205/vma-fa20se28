@@ -119,9 +119,4 @@ public interface VehicleDocumentMapper {
             @Param("doc") VehicleDocument vDocument,
             @Param("v_id") String vehicleId,
             @Param("r_id") int requestId);
-
-    @Select("SELECT vdl.vehicle_document_log_id " +
-            "FROM vehicle_document_log vdl " +
-            "WHERE vdl.request_id = #{r_id} ")
-    int findVehicleDocumentLogByRequestId(@Param("r_id") int requestId);
 }

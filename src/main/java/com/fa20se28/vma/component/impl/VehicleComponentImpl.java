@@ -2,6 +2,7 @@ package com.fa20se28.vma.component.impl;
 
 import com.fa20se28.vma.component.VehicleComponent;
 import com.fa20se28.vma.configuration.exception.DataException;
+import com.fa20se28.vma.configuration.exception.ResourceIsInUsedException;
 import com.fa20se28.vma.enums.VehicleStatus;
 import com.fa20se28.vma.mapper.*;
 import com.fa20se28.vma.model.*;
@@ -181,6 +182,12 @@ public class VehicleComponentImpl implements VehicleComponent {
         if (!vehicleMapper.isVehicleExist(vehicle.getVehicleId())) {
             createVehicle(vehicle, true);
         } else {
+            if (vehicleMapper.getVehicleStatus(vehicle.getVehicleId()) != VehicleStatus.PENDING_APPROVAL
+                && vehicleMapper.getVehicleStatus(vehicle.getVehicleId()) != VehicleStatus.REJECTED
+                    && vehicleMapper.getVehicleStatus(vehicle.getVehicleId()) != VehicleStatus.DELETED) {
+                throw new ResourceIsInUsedException("Vehicle is already approved!");
+            }
+
             int updateVehicleRow = vehicleMapper.updateVehicle(
                     new VehicleUpdateReq(vehicle.getVehicleId(), vehicle.getVehicleTypeId(), vehicle.getBrandId(), vehicle.getOwnerId(),
                             VehicleStatus.PENDING_APPROVAL, vehicle.getSeats(), vehicle.getImageLink(), vehicle.getModel(),
@@ -237,7 +244,37 @@ public class VehicleComponentImpl implements VehicleComponent {
     }
 
     @Override
+    @Transactional
     public void denyVehicle(String vehicleId, int requestId) {
+        int vehicleStatusUpdateRow = vehicleMapper.updateVehicleStatus(vehicleId, VehicleStatus.REJECTED);
 
+        if (vehicleStatusUpdateRow == 0) {
+            throw new DataException("Unknown error occurred. Data not added!");
+        }
+
+        VehicleDetail vehicleDetail = vehicleMapper.getVehicleDetails(vehicleId);
+        int vehicleLogRow = vehicleMapper.moveDeniedVehicleToLog(vehicleDetail, requestId);
+
+        if (vehicleLogRow == 0) {
+            throw new DataException("Unknown error occurred. Data not added!");
+        } else {
+            for (VehicleDocument doc: vehicleDocumentMapper.getVehicleDocuments(vehicleId, 1)) {
+                int moveDocRow = vehicleDocumentMapper.moveDeniedVehicleDocumentToLog(doc, vehicleId, requestId);
+                int moveImageRow = 0;
+                int deleteImageRow = 0;
+
+                List<VehicleDocumentImage> vehicleDocumentImages = vehicleDocumentImageMapper.getImageLinks(doc.getVehicleDocumentId(), 0);
+                for (VehicleDocumentImage image : vehicleDocumentImages) {
+                    vehicleDocumentImageMapper.moveDeniedVehicleDocumentImageToLog(image.getVehicleDocumentImageId(), requestId);
+                    vehicleDocumentImageMapper.deleteImages(image.getVehicleDocumentImageId());
+                    deleteImageRow++;
+                    moveImageRow++;
+                }
+
+                if (moveDocRow == 0 || moveImageRow == 0 || deleteImageRow == 0) {
+                    throw new DataException("Unknown error occurred. Data not modified!");
+                }
+            }
+        }
     }
 }

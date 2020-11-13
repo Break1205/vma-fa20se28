@@ -170,6 +170,13 @@ public class RequestServiceImpl implements RequestService {
         if (documentRequestDetail.getRequestType().equals(RequestType.DELETE_VEHICLE_DOCUMENT)) {
             return requestComponent.updateRequestStatus(documentRequestDetail.getRequestId(), RequestStatus.DENIED);
         }
+        if (documentRequestDetail.getRequestType().equals(RequestType.ADD_NEW_VEHICLE)) {
+            vehicleComponent.denyVehicle(documentRequestDetail.getVehicleId(), documentRequestDetail.getRequestId());
+            return requestComponent.updateRequestStatus(documentRequestDetail.getRequestId(), RequestStatus.DENIED);
+        }
+        if (documentRequestDetail.getRequestType().equals(RequestType.WITHDRAW_VEHICLE)) {
+            return requestComponent.updateRequestStatus(documentRequestDetail.getRequestId(), RequestStatus.DENIED);
+        }
         return 0;
     }
 
@@ -177,7 +184,7 @@ public class RequestServiceImpl implements RequestService {
     public int createVehicleDocumentRequest(VehicleDocumentRequestReq vehicleDocumentRequestReq) {
         Authentication authentication = authenticationComponent.getAuthentication();
 
-        if (requestComponent.createVehicleDocumentRequest(vehicleDocumentRequestReq, "Xqn16TjK") == 1) {
+        if (requestComponent.createVehicleDocumentRequest(vehicleDocumentRequestReq, authentication.getName()) == 1) {
             if (vehicleDocumentRequestReq.getRequestType().equals(RequestType.NEW_VEHICLE_DOCUMENT)) {
                 vehicleDocumentComponent.createVehicleDocumentFromRequest(vehicleDocumentRequestReq.getVehicleDocument());
             }
@@ -196,7 +203,7 @@ public class RequestServiceImpl implements RequestService {
             vehicleComponent.createVehicleFromRequest(vehicleRequestReq.getVehicleReq());
         }
 
-        if (requestComponent.createVehicleRequest(vehicleRequestReq, "22ciWTO1") == 1) {
+        if (requestComponent.createVehicleRequest(vehicleRequestReq, authentication.getName()) == 1) {
             return 1;
         }
 
