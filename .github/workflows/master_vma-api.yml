@@ -1,7 +1,7 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
-name: Build and deploy WAR app to Azure Web App - vma-api
+name: Build and deploy JAR app to Azure Web App - vma-api
 
 on:
   push:
@@ -28,5 +28,5 @@ jobs:
       with:
         app-name: 'vma-api'
         slot-name: 'production'
-        publish-profile: ${{ secrets.AzureAppService_PublishProfile_96a2ed3a00f44500b12f45c2d87142cd }}
-        package: '${{ github.workspace }}/target/*.war'
+        publish-profile: ${{ secrets.AzureAppService_PublishProfile_4882c62c94514303b02ff667d40c1371 }}
+        package: '${{ github.workspace }}/target/*.jar'
