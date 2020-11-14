@@ -2,10 +2,7 @@ package com.fa20se28.vma.controller;
 
 import com.fa20se28.vma.enums.RequestStatus;
 import com.fa20se28.vma.enums.RequestType;
-import com.fa20se28.vma.request.RequestPageReq;
-import com.fa20se28.vma.request.RequestReq;
-import com.fa20se28.vma.request.VehicleDocumentRequestReq;
-import com.fa20se28.vma.request.VehicleRequestReq;
+import com.fa20se28.vma.request.*;
 import com.fa20se28.vma.response.DocumentRequestDetailRes;
 import com.fa20se28.vma.response.RequestTypesRes;
 import com.fa20se28.vma.service.RequestService;
@@ -30,7 +27,7 @@ public class RequestController {
         this.requestService = requestService;
     }
 
-    @PostMapping("/document-requests")
+    @PostMapping("/requests/users/document")
     @ResponseStatus(HttpStatus.CREATED)
     public int createRequest(@RequestBody RequestReq requestReq) {
         if (requestReq.getRequestType() != null) {
@@ -70,18 +67,18 @@ public class RequestController {
         return requestService.getTotalRequests(new RequestPageReq(userId, requestType, requestStatus, fromDate, toDate, 0));
     }
 
-    @GetMapping("/document-requests/{request-id}")
+    @GetMapping("/requests/{request-id}")
     public DocumentRequestDetailRes getDocumentRequestById(@PathVariable("request-id") int requestId) {
         return requestService.getDocumentRequestById(requestId);
     }
 
-    @PatchMapping("/document-requests/{request-id}")
+    @PatchMapping("/requests/{request-id}")
     public int updateDocumentRequestStatusByRequestId(@PathVariable("request-id") int requestId,
                                                       @RequestParam RequestStatus requestStatus) {
         return requestService.updateDocumentRequestStatusByRequestId(requestId, requestStatus);
     }
 
-    @PostMapping("/vehicle-document-requests")
+    @PostMapping("/requests/vehicles/documents")
     @ResponseStatus(HttpStatus.CREATED)
     public int createVehicleDocumentRequest(@RequestBody VehicleDocumentRequestReq vehicleDocumentRequestReq) {
         if (vehicleDocumentRequestReq.getRequestType() != null) {
@@ -90,11 +87,32 @@ public class RequestController {
         return 0;
     }
 
-    @PostMapping("/vehicle-requests")
+    @PostMapping("/requests/vehicles")
     @ResponseStatus(HttpStatus.CREATED)
     public int createVehicleRequest(@RequestBody VehicleRequestReq vehicleRequestReq) {
         if (vehicleRequestReq.getRequestType() != null) {
             return requestService.createVehicleRequest(vehicleRequestReq);
+        }
+        return 0;
+    }
+
+    @PostMapping("/requests/vehicles/change")
+    @ResponseStatus(HttpStatus.CREATED)
+    public int createVehicleChangeRequest(@RequestBody VehicleChangeRequestReq vehicleChangeRequestReq) {
+        if (vehicleChangeRequestReq.getRequestType() != null) {
+            return requestService.createVehicleChangeRequest(vehicleChangeRequestReq);
+        }
+        return 0;
+    }
+
+    @PatchMapping("/requests/{request-id}/change")
+    @ResponseStatus(HttpStatus.CREATED)
+    public int acceptVehicleChangeRequest(@PathVariable("request-id") int requestId,
+                                   @RequestParam String driverId,
+                                   @RequestParam String targetVehicleId,
+                                   @RequestParam RequestStatus requestStatus) {
+        if (requestService.acceptVehicleChangeRequest(driverId, targetVehicleId) == 1) {
+            return requestService.updateDocumentRequestStatusByRequestId(requestId, requestStatus);
         }
         return 0;
     }

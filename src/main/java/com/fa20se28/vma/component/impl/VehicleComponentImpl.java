@@ -89,6 +89,7 @@ public class VehicleComponentImpl implements VehicleComponent {
             }
             int documentRowCount = 0;
             int documentImageRowCount = 0;
+            int placeholderRow = 0;
 
             if (vehicleRow != 0) {
                 for (VehicleDocumentReq doc : vehicle.getVehicleDocuments()) {
@@ -105,7 +106,7 @@ public class VehicleComponentImpl implements VehicleComponent {
                                 }
                             }
                             documentRowCount++;
-                            issuedVehicleMapper.createPlaceholder(vehicle.getVehicleId());
+                            placeholderRow = issuedVehicleMapper.createPlaceholder(vehicle.getVehicleId());
                         }
                     } else {
                         throw new DataException("Document with ID " + doc.getVehicleDocumentId() + " already exist!");
@@ -113,7 +114,7 @@ public class VehicleComponentImpl implements VehicleComponent {
                 }
             }
 
-            if (vehicleRow == 0 || documentRowCount == 0 || documentImageRowCount == 0) {
+            if (vehicleRow == 0 || documentRowCount == 0 || documentImageRowCount == 0 || placeholderRow == 0) {
                 throw new DataException("Unknown error occurred. Data not added!");
             }
         } else {
@@ -235,10 +236,10 @@ public class VehicleComponentImpl implements VehicleComponent {
     @Override
     @Transactional
     public void acceptVehicle(String vehicleId) {
-        issuedVehicleMapper.createPlaceholder(vehicleId);
+        int placeholderRow = issuedVehicleMapper.createPlaceholder(vehicleId);
         int vehicleStatusRow = vehicleMapper.updateVehicleStatus(vehicleId, VehicleStatus.AVAILABLE_NO_DRIVER);
 
-        if (vehicleStatusRow ==  0) {
+        if (vehicleStatusRow ==  0 || placeholderRow == 0) {
             throw new DataException("Unknown error occurred. Data not added!");
         }
     }

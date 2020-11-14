@@ -1,12 +1,9 @@
 package com.fa20se28.vma.service;
 
 import com.fa20se28.vma.enums.RequestStatus;
-import com.fa20se28.vma.request.RequestPageReq;
-import com.fa20se28.vma.request.RequestReq;
-import com.fa20se28.vma.request.VehicleRequestReq;
+import com.fa20se28.vma.request.*;
 import com.fa20se28.vma.response.DocumentRequestDetailRes;
 import com.fa20se28.vma.response.RequestPageRes;
-import com.fa20se28.vma.request.VehicleDocumentRequestReq;
 
 public interface RequestService {
     int createNewDocumentRequest(RequestReq requestReq);
@@ -26,4 +23,8 @@ public interface RequestService {
     int createVehicleDocumentRequest(VehicleDocumentRequestReq vehicleDocumentRequestReq);
 
     int createVehicleRequest(VehicleRequestReq vehicleRequestReq);
+
+    int createVehicleChangeRequest(VehicleChangeRequestReq vehicleChangeRequestReq);
+
+    int acceptVehicleChangeRequest(String driverId, String targetVehicleId);
 }

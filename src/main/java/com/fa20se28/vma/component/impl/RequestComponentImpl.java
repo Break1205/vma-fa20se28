@@ -24,7 +24,13 @@ public class RequestComponentImpl implements RequestComponent {
     @Override
     @Transactional
     public int createRequest(RequestReq requestReq, String userId) {
-        return requestMapper.insertRequest(requestReq, userId);
+        return requestMapper.insertRequest(
+                userId,
+                requestReq.getUserDocumentReq().getUserDocumentId(),
+                null, null,
+                RequestStatus.PENDING,
+                requestReq.getRequestType(),
+                requestReq.getDescription());
     }
 
     @Override
@@ -54,12 +60,34 @@ public class RequestComponentImpl implements RequestComponent {
     @Override
     @Transactional
     public int createVehicleDocumentRequest(VehicleDocumentRequestReq vehicleDocumentRequestReq, String userId) {
-        return requestMapper.insertVehicleDocumentRequest(vehicleDocumentRequestReq, RequestStatus.PENDING, userId);
+        return requestMapper.insertRequest(
+                userId, null,
+                vehicleDocumentRequestReq.getVehicleDocument().getVehicleId(),
+                vehicleDocumentRequestReq.getVehicleDocument().getVehicleDocumentReq().getVehicleDocumentId(),
+                RequestStatus.PENDING,
+                vehicleDocumentRequestReq.getRequestType(),
+                vehicleDocumentRequestReq.getDescription());
     }
 
     @Override
     @Transactional
     public int createVehicleRequest(VehicleRequestReq vehicleRequestReq, String userId) {
-        return requestMapper.insertVehicleRequest(vehicleRequestReq, RequestStatus.PENDING, userId);
+        return requestMapper.insertRequest(
+                userId, null,
+                vehicleRequestReq.getVehicleReq().getVehicleId(),
+                null,
+                RequestStatus.PENDING,
+                vehicleRequestReq.getRequestType(),
+                vehicleRequestReq.getDescription());
+    }
+
+    @Override
+    @Transactional
+    public int createVehicleChangeRequest(VehicleChangeRequestReq vehicleChangeRequestReq, String userId) {
+        return requestMapper.insertRequest(
+                userId, null, null, null,
+                RequestStatus.PENDING,
+                vehicleChangeRequestReq.getRequestType(),
+                vehicleChangeRequestReq.getDescription());
     }
 }

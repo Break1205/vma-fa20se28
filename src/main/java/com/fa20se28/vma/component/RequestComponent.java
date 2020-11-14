@@ -21,4 +21,6 @@ public interface RequestComponent {
     int createVehicleDocumentRequest(VehicleDocumentRequestReq vehicleDocumentRequestReq, String userId);
 
     int createVehicleRequest(VehicleRequestReq vehicleRequestReq, String userId);
+
+    int createVehicleChangeRequest(VehicleChangeRequestReq vehicleChangeRequestReq, String userId);
 }
