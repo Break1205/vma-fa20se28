@@ -14,7 +14,7 @@ public interface DriverService {
 
     int getTotalDriversOrTotalFilteredDriver(DriverPageReq driverPageReq);
 
-    IssuedDriversPageRes getIssuedDrivers(String contributorId, IssuedDriversPageReq issuedDriversPageReq);
+    IssuedDriversPageRes getIssuedDrivers(IssuedDriversPageReq issuedDriversPageReq);
 
-    int getTotalIssuedDrivers(String contributorId, IssuedDriversPageReq issuedDriversPageReq);
+    int getTotalIssuedDrivers(IssuedDriversPageReq issuedDriversPageReq);
 }
