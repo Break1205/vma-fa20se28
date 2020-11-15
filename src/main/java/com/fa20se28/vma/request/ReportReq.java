@@ -1,34 +1,43 @@
 package com.fa20se28.vma.request;
 
+import com.fa20se28.vma.enums.Quarter;
 import com.fa20se28.vma.enums.ReportType;
 
 public class ReportReq {
-    private String year;
-    private String month;
+    private String vehicleId;
+    private Integer year;
+    private Quarter quarter;
     private ReportType reportType;
 
-
-
-    public ReportReq(String year, String month, ReportType reportType) {
+    public ReportReq(String vehicleId, Integer year, Quarter quarter, ReportType reportType) {
+        this.vehicleId = vehicleId;
         this.year = year;
-        this.month = month;
+        this.quarter = quarter;
         this.reportType = reportType;
     }
 
-    public String getYear() {
+    public String getVehicleId() {
+        return vehicleId;
+    }
+
+    public void setVehicleId(String vehicleId) {
+        this.vehicleId = vehicleId;
+    }
+
+    public Integer getYear() {
         return year;
     }
 
-    public void setYear(String year) {
+    public void setYear(Integer year) {
         this.year = year;
     }
 
-    public String getMonth() {
-        return month;
+    public Quarter getQuarter() {
+        return quarter;
     }
 
-    public void setMonth(String month) {
-        this.month = month;
+    public void setQuarter(Quarter quarter) {
+        this.quarter = quarter;
     }
 
     public ReportType getReportType() {
