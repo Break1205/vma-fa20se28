@@ -5,6 +5,7 @@ import com.fa20se28.vma.model.Trip;
 import com.fa20se28.vma.model.VehicleBasic;
 import org.apache.ibatis.annotations.*;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -84,4 +85,18 @@ public interface ContractVehicleMapper {
     boolean checkIfVehicleIsAlreadyAssignedToContract(
             @Param("cv_iv_id") int issuedVehicleId,
             @Param("cv_id") int contractId);
+
+    @Select("SELECT " +
+            "CASE WHEN " +
+            "COUNT(cv.contract_vehicle_id) > 0 THEN 1 " +
+            "ELSE 0 END Result " +
+            "FROM contract_vehicles cv " +
+            "JOIN contract c ON cv.contract_id = c.contract_id " +
+            "WHERE cv.issued_vehicle_id = #{cv_iv_id} " +
+            "AND c.duration_from < #{c_end} " +
+            "AND c.duration_to >= #{c_start} ")
+    boolean checkIfVehicleIsBusy(
+            @Param("cv_iv_id") int issuedVehicleId,
+            @Param("c_start") LocalDate durationFrom,
+            @Param("c_end") LocalDate durationTo);
 }

@@ -48,13 +48,12 @@ public class ContractVehicleComponentImpl implements ContractVehicleComponent {
     @Override
     @Transactional
     public void assignVehicleForContract(ContractVehicleReq contractVehicleReq) {
-        String vehicleId = contractVehicleReq.getVehicleId();
+        int currentIssuedId = issuedVehicleMapper.getCurrentIssuedVehicleId(contractVehicleReq.getVehicleId());
+        ContractDetail contractDetail = contractMapper.getContractDetails(contractVehicleReq.getContractId());
 
-        if (!vehicleMapper.getVehicleStatus(vehicleId).equals(VehicleStatus.AVAILABLE)) {
+        if (contractVehicleMapper.checkIfVehicleIsBusy(currentIssuedId, contractDetail.getDurationFrom(), contractDetail.getDurationTo())) {
             throw new DataException("Vehicle is still occupied!");
         } else {
-            int currentIssuedId = issuedVehicleMapper.getCurrentIssuedVehicleId(vehicleId);
-
             if (contractVehicleMapper.checkIfVehicleIsAlreadyAssignedToContract(currentIssuedId, contractVehicleReq.getContractId())) {
                 throw new DataException("Vehicle is already assigned to the contract!");
             } else {

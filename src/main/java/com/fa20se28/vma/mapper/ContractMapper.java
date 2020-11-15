@@ -36,6 +36,8 @@ public interface ContractMapper {
             "departure_time, " +
             "destination_location, " +
             "destination_time, " +
+            "estimated_passenger_count, " +
+            "estimated_vehicle_count, " +
             "total_price, " +
             "other_information, " +
             "create_date) " +
@@ -50,6 +52,8 @@ public interface ContractMapper {
             "#{c_request.departureTime}, " +
             "#{c_request.destinationLocation}, " +
             "#{c_request.destinationTime}, " +
+            "#{c_request.estimatedPassengerCount}, " +
+            "#{c_request.estimatedVehicleCount}, " +
             "#{c_request.totalPrice}, " +
             "#{c_request.otherInformation}, " +
             "getdate()) ")
@@ -131,6 +135,8 @@ public interface ContractMapper {
             "departure_time = #{c_request.departureTime},  " +
             "destination_location = #{c_request.destinationLocation},  " +
             "destination_time = #{c_request.destinationTime},  " +
+            "estimated_passenger_count = #{c_request.estimatedPassengerCount}, " +
+            "estimated_vehicle_count = #{c_request.estimatedVehicleCount}, " +
             "total_price = #{c_request.totalPrice},  " +
             "other_information = #{c_request.otherInformation} " +
             "WHERE " +
@@ -141,7 +147,7 @@ public interface ContractMapper {
             "c.contract_id, ctm.customer_id, ctm.customer_name, c.signed_date, c.signed_location, " +
             "c.duration_from, c.duration_to, c.contract_status, " +
             "c.departure_location, c.departure_time, c.destination_location, c.destination_time, " +
-            "c.total_price, c.other_information " +
+            "c.estimated_passenger_count, c.estimated_vehicle_count, c.total_price, c.other_information " +
             "FROM contract c " +
             "JOIN customer ctm ON ctm.customer_id = c.contract_owner_id " +
             "WHERE " +
@@ -159,6 +165,8 @@ public interface ContractMapper {
             @Result(property = "departureTime", column = "departure_time"),
             @Result(property = "destinationLocation", column = "destination_location"),
             @Result(property = "destinationTime", column = "destination_time"),
+            @Result(property = "estimatedPassengerCount", column = "estimated_passenger_count"),
+            @Result(property = "estimatedVehicleCount", column = "estimated_vehicle_count"),
             @Result(property = "totalPrice", column = "total_price"),
             @Result(property = "otherInformation", column = "other_information")
     })
