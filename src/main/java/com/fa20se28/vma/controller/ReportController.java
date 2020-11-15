@@ -40,11 +40,18 @@ public class ReportController {
         }
     }
 
-    @GetMapping("maintenance")
-    public void exportMaintenanceReport(HttpServletResponse response,
-                                        @RequestParam(required = false) String vehicleId,
-                                        @RequestParam(required = false) Quarter quarter,
-                                        @RequestParam(required = false) Integer year) throws IOException {
+    @GetMapping("maintenances")
+    public void exportMaintenancesReport(HttpServletResponse response,
+                                         @RequestParam(required = false) String vehicleId,
+                                         @RequestParam(required = false) Quarter quarter,
+                                         @RequestParam(required = false) Integer year) throws IOException {
         reportService.exportReportByType(response, new ReportReq(vehicleId, year, quarter, ReportType.MAINTENANCE));
+    }
+
+    @GetMapping("contracts")
+    public void exportContractsReport(HttpServletResponse response,
+                                      @RequestParam(required = false) Quarter quarter,
+                                      @RequestParam(required = false) Integer year) throws IOException {
+        reportService.exportReportByType(response, new ReportReq(null, year, quarter, ReportType.CONTRACTS));
     }
 }

@@ -1,5 +1,6 @@
 package com.fa20se28.vma.mapper;
 
+import com.fa20se28.vma.model.ContractReport;
 import com.fa20se28.vma.model.MaintenanceReport;
 import com.fa20se28.vma.model.Schedule;
 import com.fa20se28.vma.model.ScheduleDetail;
@@ -154,4 +155,39 @@ public interface ReportMapper {
     List<VehicleRevenueExpense> getVehicleRevenueExpenseForReport(@Param("firstDayOfMonth") String firstDayOfMonth,
                                                                   @Param("lastDayOfMonth") String lastDayOfMonth,
                                                                   @Param("vehicleId") String vehicleId);
+
+    @Select("SELECT \n" +
+            "contract_id, \n" +
+            "total_price contract_value,\n" +
+            "departure_location, \n" +
+            "destination_location, \n" +
+            "destination_time, \n" +
+            "cu.customer_id, \n" +
+            "cu.customer_name, \n" +
+            "cu.phone_number,\n" +
+            "cu.email,\n" +
+            "cu.fax,\n" +
+            "cu.account_number,\n" +
+            "cu.tax_code\n" +
+            "FROM contract c\n" +
+            "JOIN customer cu \n" +
+            "ON c.contract_owner_id = cu.customer_id \n" +
+            "WHERE c.contract_status = 'FINISHED'\n" +
+            "AND c.destination_time between '${firstDayOfMonth}' AND '${lastDayOfMonth}' ")
+    @Results(id = "contractReportResult", value = {
+            @Result(property = "contractId", column = "contract_id"),
+            @Result(property = "contractValue", column = "contract_value"),
+            @Result(property = "departureLocation", column = "departure_location"),
+            @Result(property = "destinationLocation", column = "destination_location"),
+            @Result(property = "destinationTime", column = "destination_time"),
+            @Result(property = "customerId", column = "customer_id"),
+            @Result(property = "customerName", column = "customer_name"),
+            @Result(property = "phoneNumber", column = "phone_number"),
+            @Result(property = "email", column = "email"),
+            @Result(property = "fax", column = "fax"),
+            @Result(property = "accountNumber", column = "account_number"),
+            @Result(property = "taxCode", column = "tax_code"),
+    })
+    List<ContractReport> getContractsReport(@Param("firstDayOfMonth") String firstDayOfMonth,
+                                            @Param("lastDayOfMonth") String lastDayOfMonth);
 }

@@ -4,6 +4,7 @@ import com.fa20se28.vma.component.ReportComponent;
 import com.fa20se28.vma.enums.Quarter;
 import com.fa20se28.vma.enums.ReportType;
 import com.fa20se28.vma.mapper.ReportMapper;
+import com.fa20se28.vma.model.ContractReport;
 import com.fa20se28.vma.model.MaintenanceReport;
 import com.fa20se28.vma.model.Schedule;
 import com.fa20se28.vma.model.ScheduleDetail;
@@ -87,6 +88,9 @@ public class ReportComponentImpl implements ReportComponent {
         } else if (reportReq.getReportType().equals(ReportType.MAINTENANCE)) {
             firstAndLast = getFirstAndLastDayInAMonth(reportReq);
             writeMaintenanceHeaderLine(style);
+        } else if (reportReq.getReportType().equals(ReportType.CONTRACTS)) {
+            firstAndLast = getFirstAndLastDayInAMonth(reportReq);
+            writeContractsHeaderLine(style);
         }
     }
 
@@ -103,6 +107,8 @@ public class ReportComponentImpl implements ReportComponent {
             writeVehicleRevenueExpenseDataLine(reportReq, style);
         } else if (reportReq.getReportType().equals(ReportType.MAINTENANCE)) {
             writeMaintenanceDataLine(reportReq, style);
+        } else if (reportReq.getReportType().equals(ReportType.CONTRACTS)) {
+            writeContractsDataLine(style);
         }
     }
 
@@ -285,6 +291,61 @@ public class ReportComponentImpl implements ReportComponent {
     }
 
     // end Maintenance
+
+    // Contracts
+
+    private void writeContractsHeaderLine(CellStyle style) {
+        Row rowFromAndTo = sheet.createRow(HEADER_ROW);
+
+        createCell(rowFromAndTo, 0, "From", style);
+        createCell(rowFromAndTo, 1, firstAndLast.get(0).toString(), style);
+        createCell(rowFromAndTo, 2, "To", style);
+        createCell(rowFromAndTo, 3, firstAndLast.get(1).toString(), style);
+
+        Row row = sheet.createRow(HEADER_ROW + 1);
+
+        createCell(row, 0, "No", style);
+        createCell(row, 1, "Contract Id", style);
+        createCell(row, 2, "Contract Value", style);
+        createCell(row, 3, "Departure Location", style);
+        createCell(row, 4, "Destination Location", style);
+        createCell(row, 5, "Destination Time", style);
+        createCell(row, 6, "Customer Id", style);
+        createCell(row, 7, "Customer Name", style);
+        createCell(row, 8, "Phone Number", style);
+        createCell(row, 9, "Email", style);
+        createCell(row, 10, "Fax", style);
+        createCell(row, 11, "Account Number", style);
+        createCell(row, 12, "Tax Code", style);
+    }
+
+    private void writeContractsDataLine(CellStyle style) {
+        int rowCount = HEADER_ROW + 2;
+        int numberOfData = 1;
+
+        List<ContractReport> contractReports =
+                reportMapper.getContractsReport(
+                        firstAndLast.get(0).toString(),
+                        firstAndLast.get(1).toString());
+
+        for (ContractReport contractReport : contractReports) {
+            Row row = sheet.createRow(rowCount++);
+            int columnCount = 0;
+            createCell(row, columnCount++, numberOfData++, style);
+            createCell(row, columnCount++, contractReport.getContractId(), style);
+            createCell(row, columnCount++, contractReport.getContractValue(), style);
+            createCell(row, columnCount++, contractReport.getDepartureLocation(), style);
+            createCell(row, columnCount++, contractReport.getDestinationLocation(), style);
+            createCell(row, columnCount++, contractReport.getDestinationTime().toString(), style);
+            createCell(row, columnCount++, contractReport.getCustomerId(), style);
+            createCell(row, columnCount++, contractReport.getCustomerName(), style);
+            createCell(row, columnCount++, contractReport.getPhoneNumber(), style);
+            createCell(row, columnCount++, contractReport.getEmail(), style);
+            createCell(row, columnCount++, contractReport.getFax(), style);
+            createCell(row, columnCount++, contractReport.getAccountNumber(), style);
+            createCell(row, columnCount, contractReport.getTaxCode(), style);
+        }
+    }
 
     private void createCell(Row row, int columnCount, Object value, CellStyle style) {
         sheet.autoSizeColumn(columnCount);
