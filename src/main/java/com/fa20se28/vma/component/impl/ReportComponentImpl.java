@@ -1,6 +1,7 @@
 package com.fa20se28.vma.component.impl;
 
 import com.fa20se28.vma.component.ReportComponent;
+import com.fa20se28.vma.enums.Quarter;
 import com.fa20se28.vma.enums.ReportType;
 import com.fa20se28.vma.mapper.ReportMapper;
 import com.fa20se28.vma.model.Schedule;
@@ -21,12 +22,13 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
 
 @Component
 public class ReportComponentImpl implements ReportComponent {
-    private final Workbook workbook;
+    private Workbook workbook;
     private Sheet sheet;
     private final ReportMapper reportMapper;
     private static final int TITLE_ROW = 0;
@@ -34,7 +36,6 @@ public class ReportComponentImpl implements ReportComponent {
 
     public ReportComponentImpl(ReportMapper reportMapper) {
         this.reportMapper = reportMapper;
-        workbook = new HSSFWorkbook();
     }
 
     @Override
@@ -43,9 +44,11 @@ public class ReportComponentImpl implements ReportComponent {
     }
 
     private void export(HttpServletResponse response, ReportReq reportReq) throws IOException {
+        workbook = new HSSFWorkbook();
+        List<LocalDate> firstAndLast = getFirstAndLastDayInAMonth(reportReq);
         writeTitleLine(reportReq);
-        writeHeaderLine(reportReq);
-        writeDataLines(reportReq);
+        writeHeaderLine(reportReq, firstAndLast);
+        writeDataLines(reportReq, firstAndLast);
 
         ServletOutputStream outputStream = response.getOutputStream();
         workbook.write(outputStream);
@@ -65,21 +68,39 @@ public class ReportComponentImpl implements ReportComponent {
         createCell(row, 0, reportReq.getReportType().toString(), style);
     }
 
-    private void writeHeaderLine(ReportReq reportReq) {
+    private void writeHeaderLine(ReportReq reportReq, List<LocalDate> firstAndLast) {
         CellStyle style = workbook.createCellStyle();
         Font font = workbook.createFont();
         font.setBold(true);
         font.setFontHeight((short) 320);
         style.setFont(font);
-        if (reportReq.getReportType().equals(ReportType.SCHEDULE)) {
-            writeScheduleHeaderLine(style);
-        } else if (reportReq.getReportType().equals(ReportType.VEHICLES)) {
+        if (reportReq.getReportType().equals(ReportType.VEHICLES)) {
             writeVehiclesHeaderLine(style);
+        } else if (reportReq.getReportType().equals(ReportType.SCHEDULE)) {
+            writeScheduleHeaderLine(style, firstAndLast);
         }
     }
 
-    private void writeScheduleHeaderLine(CellStyle style) {
-        Row row = sheet.createRow(HEADER_ROW);
+    private void writeDataLines(ReportReq reportReq, List<LocalDate> firstAndLast) {
+        CellStyle style = workbook.createCellStyle();
+        Font font = workbook.createFont();
+        font.setFontHeight((short) 280);
+        style.setFont(font);
+        if (reportReq.getReportType().equals(ReportType.SCHEDULE)) {
+            writeScheduleDataLines(reportReq, style, firstAndLast);
+        } else if (reportReq.getReportType().equals(ReportType.VEHICLES)) {
+            writeVehicleDataLines(style);
+        }
+    }
+
+    // Schedule
+    private void writeScheduleHeaderLine(CellStyle style, List<LocalDate> firstAndLast) {
+        Row rowFromAndTo = sheet.createRow(HEADER_ROW);
+        createCell(rowFromAndTo, 0, "From", style);
+        createCell(rowFromAndTo, 1, firstAndLast.get(0).toString(), style);
+        createCell(rowFromAndTo, 2, "To", style);
+        createCell(rowFromAndTo, 3, firstAndLast.get(1).toString(), style);
+        Row row = sheet.createRow(HEADER_ROW + 1);
         createCell(row, 0, "No", style);
         createCell(row, 1, "Contract Id", style);
         createCell(row, 2, "Date", style);
@@ -93,43 +114,13 @@ public class ReportComponentImpl implements ReportComponent {
         createCell(row, 10, "Contributor Id", style);
     }
 
-    private void writeVehiclesHeaderLine(CellStyle style) {
-
-        int totalVehicle = reportMapper.getTotalVehicleForReport();
-
-        Row totalVehicleRow = sheet.createRow(HEADER_ROW);
-        createCell(totalVehicleRow, 1, "Total Vehicles: ", style);
-        createCell(totalVehicleRow, 2, totalVehicle, style);
-
-        Row row = sheet.createRow(HEADER_ROW + 1);
-        createCell(row, 0, "No", style);
-        createCell(row, 1, "Vehicle Id", style);
-        createCell(row, 2, "Type", style);
-        createCell(row, 3, "Brand", style);
-        createCell(row, 4, "Owner Id", style);
-        createCell(row, 5, "Owner Name", style);
-    }
-
-    private void writeDataLines(ReportReq reportReq) {
-        CellStyle style = workbook.createCellStyle();
-        Font font = workbook.createFont();
-        font.setFontHeight((short) 280);
-        style.setFont(font);
-        if (reportReq.getReportType().equals(ReportType.SCHEDULE)) {
-            writeScheduleDataLines(reportReq, style);
-        } else if (reportReq.getReportType().equals(ReportType.VEHICLES)) {
-            writeVehicleDataLines(style);
-        }
-    }
-
-    private void writeScheduleDataLines(ReportReq reportReq, CellStyle style) {
-        int rowCount = HEADER_ROW + 1;
+    private void writeScheduleDataLines(ReportReq reportReq, CellStyle style, List<LocalDate> firstAndLast) {
+        int rowCount = HEADER_ROW + 2;
         int numberOfData = 1;
-        List<LocalDate> firstAndLastDaysInMonth = getFirstAndLastDayInAMonth(reportReq);
         List<Schedule> schedules =
                 reportMapper.getListSchedule(
-                        firstAndLastDaysInMonth.get(0).toString(),
-                        firstAndLastDaysInMonth.get(1).toString());
+                        firstAndLast.get(0).toString(),
+                        firstAndLast.get(1).toString());
 
         for (Schedule schedule : schedules) {
             Row row = sheet.createRow(rowCount++);
@@ -159,6 +150,26 @@ public class ReportComponentImpl implements ReportComponent {
         valueCell.setCellStyle(style);
     }
 
+    // end Schedule
+
+
+    // Vehicle
+    private void writeVehiclesHeaderLine(CellStyle style) {
+        int totalVehicle = reportMapper.getTotalVehicleForReport();
+
+        Row totalVehicleRow = sheet.createRow(HEADER_ROW);
+        createCell(totalVehicleRow, 1, "Total Vehicles: ", style);
+        createCell(totalVehicleRow, 2, totalVehicle, style);
+
+        Row row = sheet.createRow(HEADER_ROW + 1);
+        createCell(row, 0, "No", style);
+        createCell(row, 1, "Vehicle Id", style);
+        createCell(row, 2, "Type", style);
+        createCell(row, 3, "Brand", style);
+        createCell(row, 4, "Owner Id", style);
+        createCell(row, 5, "Owner Name", style);
+    }
+
     private void writeVehicleDataLines(CellStyle style) {
         int rowCount = HEADER_ROW + 2;
         int numberOfData = 1;
@@ -174,8 +185,6 @@ public class ReportComponentImpl implements ReportComponent {
             createCell(row, columnCount++, vehicleReport.getOwnerId(), style);
             createCell(row, columnCount, vehicleReport.getOwnerName(), style);
         }
-
-
     }
 
     private void createCell(Row row, int columnCount, Object value, CellStyle style) {
@@ -195,13 +204,33 @@ public class ReportComponentImpl implements ReportComponent {
 
     private List<LocalDate> getFirstAndLastDayInAMonth(ReportReq reportReq) {
         LocalDate currentDate = LocalDate.now();
-        int year = reportReq.getYear() != null ? Integer.parseInt(reportReq.getYear()) : currentDate.getYear();
-        int month = reportReq.getMonth() != null ? Integer.parseInt(reportReq.getMonth()) : currentDate.getMonthValue();
-        LocalDate firstDayOfMonth = LocalDate.of(year, month, 1);
-        LocalDate lastDayOfMonth = currentDate.withDayOfMonth(currentDate.lengthOfMonth());
+        int year = reportReq.getYear() != null ? reportReq.getYear() : currentDate.getYear();
+        Month firstMonthOfQuarter = currentDate.getMonth();
+        Month lastMonthOfQuarter = currentDate.getMonth();
+        if (reportReq.getQuarter() == null) {
+            firstMonthOfQuarter = Month.JANUARY;
+            lastMonthOfQuarter = Month.DECEMBER;
+        } else if (reportReq.getQuarter() == Quarter.FIRST) {
+            firstMonthOfQuarter = Month.JANUARY;
+            lastMonthOfQuarter = Month.MARCH;
+        } else if (reportReq.getQuarter() == Quarter.SECOND) {
+            firstMonthOfQuarter = Month.APRIL;
+            lastMonthOfQuarter = Month.JUNE;
+        } else if (reportReq.getQuarter() == Quarter.THIRD) {
+            firstMonthOfQuarter = Month.JULY;
+            lastMonthOfQuarter = Month.SEPTEMBER;
+        } else if (reportReq.getQuarter() == Quarter.FOURTH) {
+            firstMonthOfQuarter = Month.OCTOBER;
+            lastMonthOfQuarter = Month.DECEMBER;
+        }
+        LocalDate firstDayOfQuarter = LocalDate.of(year, firstMonthOfQuarter, 1);
+        LocalDate lastDayOfQuarter = LocalDate.of(
+                year,
+                lastMonthOfQuarter,
+                lastMonthOfQuarter.length(firstDayOfQuarter.isLeapYear()));
         List<LocalDate> firstAndLast = new ArrayList<>();
-        firstAndLast.add(firstDayOfMonth);
-        firstAndLast.add(lastDayOfMonth);
+        firstAndLast.add(firstDayOfQuarter);
+        firstAndLast.add(lastDayOfQuarter);
         return firstAndLast;
     }
 }
