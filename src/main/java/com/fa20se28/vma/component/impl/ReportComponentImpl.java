@@ -7,6 +7,7 @@ import com.fa20se28.vma.mapper.ReportMapper;
 import com.fa20se28.vma.model.Schedule;
 import com.fa20se28.vma.model.ScheduleDetail;
 import com.fa20se28.vma.model.VehicleReport;
+import com.fa20se28.vma.model.VehicleRevenueExpense;
 import com.fa20se28.vma.request.ReportReq;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
@@ -30,6 +31,7 @@ import java.util.List;
 public class ReportComponentImpl implements ReportComponent {
     private Workbook workbook;
     private Sheet sheet;
+    private List<LocalDate> firstAndLast;
     private final ReportMapper reportMapper;
     private static final int TITLE_ROW = 0;
     private static final int HEADER_ROW = 1;
@@ -45,10 +47,9 @@ public class ReportComponentImpl implements ReportComponent {
 
     private void export(HttpServletResponse response, ReportReq reportReq) throws IOException {
         workbook = new HSSFWorkbook();
-        List<LocalDate> firstAndLast = getFirstAndLastDayInAMonth(reportReq);
         writeTitleLine(reportReq);
-        writeHeaderLine(reportReq, firstAndLast);
-        writeDataLines(reportReq, firstAndLast);
+        writeHeaderLine(reportReq);
+        writeDataLines(reportReq);
 
         ServletOutputStream outputStream = response.getOutputStream();
         workbook.write(outputStream);
@@ -68,7 +69,7 @@ public class ReportComponentImpl implements ReportComponent {
         createCell(row, 0, reportReq.getReportType().toString(), style);
     }
 
-    private void writeHeaderLine(ReportReq reportReq, List<LocalDate> firstAndLast) {
+    private void writeHeaderLine(ReportReq reportReq) {
         CellStyle style = workbook.createCellStyle();
         Font font = workbook.createFont();
         font.setBold(true);
@@ -77,30 +78,39 @@ public class ReportComponentImpl implements ReportComponent {
         if (reportReq.getReportType().equals(ReportType.VEHICLES)) {
             writeVehiclesHeaderLine(style);
         } else if (reportReq.getReportType().equals(ReportType.SCHEDULE)) {
-            writeScheduleHeaderLine(style, firstAndLast);
+            firstAndLast = getFirstAndLastDayInAMonth(reportReq);
+            writeScheduleHeaderLine(style);
+        } else if (reportReq.getReportType().equals(ReportType.VEHICLE_REVENUE_EXPENSE)) {
+            firstAndLast = getFirstAndLastDayInAMonth(reportReq);
+            writeVehicleRevenueExpenseHeaderLine(style);
         }
     }
 
-    private void writeDataLines(ReportReq reportReq, List<LocalDate> firstAndLast) {
+    private void writeDataLines(ReportReq reportReq) {
         CellStyle style = workbook.createCellStyle();
         Font font = workbook.createFont();
         font.setFontHeight((short) 280);
         style.setFont(font);
-        if (reportReq.getReportType().equals(ReportType.SCHEDULE)) {
-            writeScheduleDataLines(reportReq, style, firstAndLast);
-        } else if (reportReq.getReportType().equals(ReportType.VEHICLES)) {
+        if (reportReq.getReportType().equals(ReportType.VEHICLES)) {
             writeVehicleDataLines(style);
+        } else if (reportReq.getReportType().equals(ReportType.SCHEDULE)) {
+            writeScheduleDataLines(reportReq, style);
+        } else if (reportReq.getReportType().equals(ReportType.VEHICLE_REVENUE_EXPENSE)) {
+            writeVehicleRevenueExpenseDataLine(reportReq, style);
         }
     }
 
     // Schedule
-    private void writeScheduleHeaderLine(CellStyle style, List<LocalDate> firstAndLast) {
+    private void writeScheduleHeaderLine(CellStyle style) {
         Row rowFromAndTo = sheet.createRow(HEADER_ROW);
+
         createCell(rowFromAndTo, 0, "From", style);
         createCell(rowFromAndTo, 1, firstAndLast.get(0).toString(), style);
         createCell(rowFromAndTo, 2, "To", style);
         createCell(rowFromAndTo, 3, firstAndLast.get(1).toString(), style);
+
         Row row = sheet.createRow(HEADER_ROW + 1);
+
         createCell(row, 0, "No", style);
         createCell(row, 1, "Contract Id", style);
         createCell(row, 2, "Date", style);
@@ -114,7 +124,7 @@ public class ReportComponentImpl implements ReportComponent {
         createCell(row, 10, "Contributor Id", style);
     }
 
-    private void writeScheduleDataLines(ReportReq reportReq, CellStyle style, List<LocalDate> firstAndLast) {
+    private void writeScheduleDataLines(ReportReq reportReq, CellStyle style) {
         int rowCount = HEADER_ROW + 2;
         int numberOfData = 1;
         List<Schedule> schedules =
@@ -186,6 +196,50 @@ public class ReportComponentImpl implements ReportComponent {
             createCell(row, columnCount, vehicleReport.getOwnerName(), style);
         }
     }
+    // end Vehicles
+
+
+    // Vehicle Revenue Expense
+    private void writeVehicleRevenueExpenseHeaderLine(CellStyle style) {
+        Row rowFromAndTo = sheet.createRow(HEADER_ROW);
+
+        createCell(rowFromAndTo, 0, "From", style);
+        createCell(rowFromAndTo, 1, firstAndLast.get(0).toString(), style);
+        createCell(rowFromAndTo, 2, "To", style);
+        createCell(rowFromAndTo, 3, firstAndLast.get(1).toString(), style);
+
+        Row row = sheet.createRow(HEADER_ROW + 1);
+
+        createCell(row, 0, "No", style);
+        createCell(row, 1, "Date", style);
+        createCell(row, 2, "Type", style);
+        createCell(row, 3, "Value", style);
+        createCell(row, 4, "Contract Id", style);
+        createCell(row, 5, "Customer Id", style);
+    }
+
+    private void writeVehicleRevenueExpenseDataLine(ReportReq reportReq, CellStyle style) {
+        int rowCount = HEADER_ROW + 2;
+        int numberOfData = 1;
+
+        List<VehicleRevenueExpense> vehicleRevenueExpenses =
+                reportMapper.getVehicleRevenueExpenseForReport(
+                        firstAndLast.get(0).toString(),
+                        firstAndLast.get(1).toString(),
+                        reportReq.getVehicleId());
+        for (VehicleRevenueExpense vehicleRevenueExpense : vehicleRevenueExpenses) {
+            Row row = sheet.createRow(rowCount++);
+            int columnCount = 0;
+            createCell(row, columnCount++, numberOfData++, style);
+            createCell(row, columnCount++, vehicleRevenueExpense.getDate().toString(), style);
+            createCell(row, columnCount++, vehicleRevenueExpense.getType(), style);
+            createCell(row, columnCount++, vehicleRevenueExpense.getValue(), style);
+            createCell(row, columnCount++, vehicleRevenueExpense.getContractId(), style);
+            createCell(row, columnCount, vehicleRevenueExpense.getCustomerId(), style);
+        }
+    }
+
+    // end Vehicle Revenue Expense
 
     private void createCell(Row row, int columnCount, Object value, CellStyle style) {
         sheet.autoSizeColumn(columnCount);
