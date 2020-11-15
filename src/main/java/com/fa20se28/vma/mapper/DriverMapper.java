@@ -174,29 +174,37 @@ public interface DriverMapper {
 
     @Select({"<script>" +
             "SELECT \n" +
-            "u.user_id, \n" +
-            "u.full_name, \n" +
-            "u.phone_number, \n" +
-            "iv.vehicle_id \n" +
-            "FROM [user] u \n" +
+            "u.user_id,\n" +
+            "u.full_name,\n" +
+            "u.phone_number,\n" +
+            "iv.vehicle_id\n" +
+            "FROM [user] u\n" +
+            "JOIN (\n" +
+            "SELECT \n" +
+            "v.vehicle_id, \n" +
+            "driver_id\n" +
+            "FROM vehicle v\n" +
             "JOIN issued_vehicle iv \n" +
+            "ON v.vehicle_id = iv.vehicle_id \n" +
+            "JOIN [user] u \n" +
+            "ON v.owner_id = u.user_id \n" +
+            "WHERE owner_id = '${ownerId}' \n" +
+            "AND v.vehicle_status IN ('ON_ROUTE','AVAILABLE') \n" +
+            "AND iv.returned_date IS NULL ) iv\n" +
             "ON u.user_id = iv.driver_id \n" +
-            "JOIN vehicle v \n" +
-            "ON iv.vehicle_id = v.vehicle_id\n" +
-            "WHERE v.owner_id = '${ownerId}'\n" +
-            "AND v.vehicle_status = 'ON_ROUTE'" +
-            "<if test = \"IssuedDriversPageReq.fullName!=null\" > \n" +
+            "WHERE 1=1 \n" +
+            "<if test = \"IssuedDriversPageReq.fullName!=null\" >\n" +
             "AND u.full_name LIKE N'%${IssuedDriversPageReq.fullName}%' \n" +
-            "</if>  \n" +
+            "</if> \n" +
             "<if test = \"IssuedDriversPageReq.phoneNumber!=null\" > \n" +
             "AND u.phone_number LIKE '%${IssuedDriversPageReq.phoneNumber}%' \n" +
-            "</if>  \n" +
+            "</if> \n" +
             "<if test = \"IssuedDriversPageReq.vehicleId!=null\" > \n" +
             "AND iv.vehicle_id = #{IssuedDriversPageReq.vehicleId} \n" +
-            "</if>  \n" +
-            "ORDER BY u.user_id ASC \n" +
-            "OFFSET ${IssuedDriversPageReq.page} ROWS \n" +
-            "FETCH NEXT 15 ROWS ONLY" +
+            "</if> \n" +
+            "ORDER BY u.user_id ASC\n" +
+            "OFFSET ${IssuedDriversPageReq.page} ROWS\n" +
+            "FETCH NEXT 15 ROWS ONLY " +
             "</script>"})
     @Results(id = "issuedDriverResult", value = {
             @Result(property = "userId", column = "user_id"),
@@ -211,27 +219,35 @@ public interface DriverMapper {
     @Select({"<script>" +
             "SELECT COUNT(id.user_id) \n" +
             "FROM (\n" +
-            "SELECT\n" +
+            "SELECT \n" +
             "u.user_id,\n" +
             "u.full_name,\n" +
             "u.phone_number,\n" +
             "iv.vehicle_id\n" +
             "FROM [user] u\n" +
-            "JOIN issued_vehicle iv\n" +
-            "ON u.user_id = iv.driver_id\n" +
-            "JOIN vehicle v\n" +
-            "ON iv.vehicle_id = v.vehicle_id \n" +
-            "WHERE v.owner_id = '${ownerId}' \n" +
-            "AND v.vehicle_status = 'ON_ROUTE' \n" +
+            "JOIN (\n" +
+            "SELECT \n" +
+            "v.vehicle_id, \n" +
+            "driver_id\n" +
+            "FROM vehicle v\n" +
+            "JOIN issued_vehicle iv \n" +
+            "ON v.vehicle_id = iv.vehicle_id \n" +
+            "JOIN [user] u \n" +
+            "ON v.owner_id = u.user_id \n" +
+            "WHERE owner_id = '${ownerId}' \n" +
+            "AND v.vehicle_status IN ('ON_ROUTE','AVAILABLE') \n" +
+            "AND iv.returned_date IS NULL ) iv\n" +
+            "ON u.user_id = iv.driver_id \n" +
+            "WHERE 1=1 \n" +
             "<if test = \"IssuedDriversPageReq.fullName!=null\" >\n" +
-            "AND u.full_name LIKE N'%${IssuedDriversPageReq.fullName}%'\n" +
+            "AND u.full_name LIKE N'%${IssuedDriversPageReq.fullName}%' \n" +
             "</if> \n" +
-            "<if test = \"IssuedDriversPageReq.phoneNumber!=null\" >\n" +
-            "AND u.phone_number LIKE '%${IssuedDriversPageReq.phoneNumber}%'\n" +
+            "<if test = \"IssuedDriversPageReq.phoneNumber!=null\" > \n" +
+            "AND u.phone_number LIKE '%${IssuedDriversPageReq.phoneNumber}%' \n" +
             "</if> \n" +
-            "<if test = \"IssuedDriversPageReq.vehicleId!=null\" >\n" +
-            "AND iv.vehicle_id = #{IssuedDriversPageReq.vehicleId}\n" +
-            "</if> " +
+            "<if test = \"IssuedDriversPageReq.vehicleId!=null\" > \n" +
+            "AND iv.vehicle_id = #{IssuedDriversPageReq.vehicleId} \n" +
+            "</if> \n" +
             ") id" +
             "</script>"})
     int findTotalIssuedDrivers(@Param("ownerId") String ownerId,

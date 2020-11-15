@@ -1,8 +1,9 @@
 package com.fa20se28.vma.mapper;
 
 import com.fa20se28.vma.enums.RequestStatus;
+import com.fa20se28.vma.enums.RequestType;
 import com.fa20se28.vma.model.DocumentRequestDetail;
-import com.fa20se28.vma.request.*;
+import com.fa20se28.vma.request.RequestPageReq;
 import com.fa20se28.vma.response.RequestRes;
 import org.apache.ibatis.annotations.*;
 
@@ -11,24 +12,33 @@ import java.util.Optional;
 
 @Mapper
 public interface RequestMapper {
-    @Insert("INSERT INTO \n" +
-            "request\n" +
-            "(user_id,\n" +
-            "user_document_id,\n" +
-            "request_status,\n" +
-            "request_type,\n" +
-            "create_date,\n" +
-            "description) \n" +
-            "VALUES \n" +
-            "(\n" +
-            "#{userId},\n" +
-            "'${RequestReq.userDocumentReq.userDocumentId}',\n" +
-            "'PENDING',\n" +
-            "#{RequestReq.requestType},\n" +
-            "getDate(),\n" +
-            "#{RequestReq.description})")
-    int insertRequest(@Param("RequestReq") RequestReq requestReq,
-                      @Param("userId") String userId);
+    @Insert("INSERT INTO " +
+            "request " +
+            "(user_id, " +
+            "user_document_id, " +
+            "vehicle_id, " +
+            "vehicle_document_id, " +
+            "request_status, " +
+            "request_type, " +
+            "create_date, " +
+            "description) " +
+            "VALUES " +
+            "(#{r_u_id}, " +
+            "#{r_ud_id}, " +
+            "#{r_v_id}, " +
+            "#{r_vd_id}, " +
+            "#{r_status}, " +
+            "#{r_req_type}, " +
+            "getDate(), " +
+            "#{r_desc}) ")
+    int insertRequest(
+            @Param("r_u_id") String userId,
+            @Param("r_ud_id") String userDocumentId,
+            @Param("r_v_id") String vehicleId,
+            @Param("r_vd_id") String vehicleDocId,
+            @Param("r_status") RequestStatus requestStatus,
+            @Param("r_req_type") RequestType requestType,
+            @Param("r_desc") String desc);
 
     @Select({"<script>" +
             "SELECT \n" +
@@ -134,48 +144,4 @@ public interface RequestMapper {
             "SET request_status = #{requestStatus} \n" +
             "WHERE request_id = #{requestId}")
     int updateRequestStatus(@Param("requestId") int requestId, @Param("requestStatus") RequestStatus requestStatus);
-
-    @Insert("INSERT INTO " +
-            "request " +
-            "(user_id, " +
-            "vehicle_id, " +
-            "vehicle_document_id, " +
-            "request_status, " +
-            "request_type, " +
-            "create_date, " +
-            "description) " +
-            "VALUES " +
-            "(#{userId}, " +
-            "#{r_vehicle_document.vehicleDocument.vehicleId}, " +
-            "#{r_vehicle_document.vehicleDocument.vehicleDocumentReq.vehicleDocumentId}, " +
-            "#{r_status}, " +
-            "#{r_vehicle_document.requestType}, " +
-            "getDate(), " +
-            "#{r_vehicle_document.description}) ")
-    int insertVehicleDocumentRequest(
-            @Param("r_vehicle_document") VehicleDocumentRequestReq requestReq,
-            @Param("r_status") RequestStatus requestStatus,
-            @Param("userId") String userId);
-
-    @Insert("INSERT INTO " +
-            "request " +
-            "(user_id, " +
-            "vehicle_id, " +
-            "vehicle_document_id, " +
-            "request_status, " +
-            "request_type, " +
-            "create_date, " +
-            "description) " +
-            "VALUES " +
-            "(#{userId}, " +
-            "#{r_vehicle.vehicleReq.vehicleId}, " +
-            "NULL, " +
-            "#{r_status}, " +
-            "#{r_vehicle.requestType}, " +
-            "getDate(), " +
-            "#{r_vehicle.description}) ")
-    int insertVehicleRequest(
-            @Param("r_vehicle") VehicleRequestReq vehicleRequestReq,
-            @Param("r_status") RequestStatus requestStatus,
-            @Param("userId") String userId);
 }

@@ -5,11 +5,9 @@ import com.fa20se28.vma.component.impl.UserDocumentComponentImpl;
 import com.fa20se28.vma.configuration.exception.RequestAlreadyHandledException;
 import com.fa20se28.vma.enums.RequestStatus;
 import com.fa20se28.vma.enums.RequestType;
+import com.fa20se28.vma.model.AssignedVehicle;
 import com.fa20se28.vma.model.DocumentRequestDetail;
-import com.fa20se28.vma.request.RequestPageReq;
-import com.fa20se28.vma.request.RequestReq;
-import com.fa20se28.vma.request.VehicleDocumentRequestReq;
-import com.fa20se28.vma.request.VehicleRequestReq;
+import com.fa20se28.vma.request.*;
 import com.fa20se28.vma.response.DocumentRequestDetailRes;
 import com.fa20se28.vma.response.RequestPageRes;
 import com.fa20se28.vma.service.RequestService;
@@ -143,6 +141,9 @@ public class RequestServiceImpl implements RequestService {
             vehicleComponent.deleteVehicle(documentRequestDetail.getVehicleId());
             return requestComponent.updateRequestStatus(documentRequestDetail.getRequestId(), RequestStatus.ACCEPTED);
         }
+        if (documentRequestDetail.getRequestType().equals(RequestType.CHANGE_VEHICLE)) {
+            return requestComponent.updateRequestStatus(documentRequestDetail.getRequestId(), RequestStatus.ACCEPTED);
+        }
 
         return 0;
     }
@@ -170,6 +171,16 @@ public class RequestServiceImpl implements RequestService {
         if (documentRequestDetail.getRequestType().equals(RequestType.DELETE_VEHICLE_DOCUMENT)) {
             return requestComponent.updateRequestStatus(documentRequestDetail.getRequestId(), RequestStatus.DENIED);
         }
+        if (documentRequestDetail.getRequestType().equals(RequestType.ADD_NEW_VEHICLE)) {
+            vehicleComponent.denyVehicle(documentRequestDetail.getVehicleId(), documentRequestDetail.getRequestId());
+            return requestComponent.updateRequestStatus(documentRequestDetail.getRequestId(), RequestStatus.DENIED);
+        }
+        if (documentRequestDetail.getRequestType().equals(RequestType.WITHDRAW_VEHICLE)) {
+            return requestComponent.updateRequestStatus(documentRequestDetail.getRequestId(), RequestStatus.DENIED);
+        }
+        if (documentRequestDetail.getRequestType().equals(RequestType.CHANGE_VEHICLE)) {
+            return requestComponent.updateRequestStatus(documentRequestDetail.getRequestId(), RequestStatus.DENIED);
+        }
         return 0;
     }
 
@@ -177,7 +188,7 @@ public class RequestServiceImpl implements RequestService {
     public int createVehicleDocumentRequest(VehicleDocumentRequestReq vehicleDocumentRequestReq) {
         Authentication authentication = authenticationComponent.getAuthentication();
 
-        if (requestComponent.createVehicleDocumentRequest(vehicleDocumentRequestReq, "Xqn16TjK") == 1) {
+        if (requestComponent.createVehicleDocumentRequest(vehicleDocumentRequestReq, authentication.getName()) == 1) {
             if (vehicleDocumentRequestReq.getRequestType().equals(RequestType.NEW_VEHICLE_DOCUMENT)) {
                 vehicleDocumentComponent.createVehicleDocumentFromRequest(vehicleDocumentRequestReq.getVehicleDocument());
             }
@@ -196,10 +207,34 @@ public class RequestServiceImpl implements RequestService {
             vehicleComponent.createVehicleFromRequest(vehicleRequestReq.getVehicleReq());
         }
 
-        if (requestComponent.createVehicleRequest(vehicleRequestReq, "22ciWTO1") == 1) {
+        if (requestComponent.createVehicleRequest(vehicleRequestReq, authentication.getName()) == 1) {
             return 1;
         }
 
+        return 0;
+    }
+
+    @Override
+    public int createVehicleChangeRequest(VehicleChangeRequestReq vehicleChangeRequestReq) {
+        Authentication authentication = authenticationComponent.getAuthentication();
+
+        if (requestComponent.createVehicleChangeRequest(vehicleChangeRequestReq, authentication.getName()) == 1) {
+            return 1;
+        }
+
+        return 0;
+    }
+
+    @Override
+    public int acceptVehicleChangeRequest(String driverId, String targetVehicleId) {
+        AssignedVehicle assignedVehicle = vehicleComponent.getCurrentlyAssignedVehicle(driverId);
+
+        if (assignedVehicle != null) {
+            vehicleComponent.withdrawVehicle(assignedVehicle.getVehicleId());
+            vehicleComponent.assignVehicle(targetVehicleId, driverId);
+
+            return 1;
+        }
         return 0;
     }
 }

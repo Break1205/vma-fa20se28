@@ -276,4 +276,38 @@ public interface VehicleMapper {
     int updateVehicleStatus(
             @Param("v_id") String vehicleId,
             @Param("v_status") VehicleStatus vehicleStatus);
+
+    @Insert("INSERT INTO vehicle_log " +
+            "(vehicle_id, " +
+            "vehicle_type_id," +
+            "brand_id, " +
+            "owner_id, " +
+            "seats, " +
+            "image_link, " +
+            "model, " +
+            "origin_of_manufacture, " +
+            "chassis_number, " +
+            "engine_number, " +
+            "year_of_manufacture, " +
+            "date_of_registration, " +
+            "distance_driven," +
+            "request_id) " +
+            "VALUES " +
+            "(#{v_rejected.vehicleId}, " +
+            "#{v_rejected.vehicleType.vehicleTypeId}, " +
+            "#{v_rejected.brand.brandId}, " +
+            "#{v_rejected.owner.userId}, " +
+            "#{v_rejected.seats}, " +
+            "#{v_rejected.imageLink}, " +
+            "#{v_rejected.model}, " +
+            "#{v_rejected.origin}, " +
+            "#{v_rejected.chassisNumber}, " +
+            "#{v_rejected.engineNumber}, " +
+            "#{v_rejected.yearOfManufacture}, " +
+            "#{v_rejected.dateOfRegistration}, " +
+            "#{v_rejected.distanceDriven}," +
+            "#{r_id}) ")
+    int moveDeniedVehicleToLog(
+            @Param("v_rejected") VehicleDetail vehicle,
+            @Param("r_id") int requestId);
 }
