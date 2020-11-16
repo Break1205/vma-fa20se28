@@ -4,6 +4,7 @@ import com.fa20se28.vma.component.ReportComponent;
 import com.fa20se28.vma.enums.Quarter;
 import com.fa20se28.vma.enums.ReportType;
 import com.fa20se28.vma.mapper.ReportMapper;
+import com.fa20se28.vma.model.ByteArrayInputStreamWrapper;
 import com.fa20se28.vma.model.ContractReport;
 import com.fa20se28.vma.model.ContributorIncome;
 import com.fa20se28.vma.model.MaintenanceReport;
@@ -22,8 +23,8 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.Month;
@@ -44,20 +45,24 @@ public class ReportComponentImpl implements ReportComponent {
     }
 
     @Override
-    public void exportReportByType(HttpServletResponse response, ReportReq reportReq) throws IOException {
-        export(response, reportReq);
+    public ByteArrayInputStreamWrapper exportReportByType(ReportReq reportReq) throws IOException {
+        return export(reportReq);
     }
 
-    private void export(HttpServletResponse response, ReportReq reportReq) throws IOException {
+    private ByteArrayInputStreamWrapper export(ReportReq reportReq) throws IOException {
         workbook = new HSSFWorkbook();
         writeTitleLine(reportReq);
         writeHeaderLine(reportReq);
         writeDataLines(reportReq);
 
-        ServletOutputStream outputStream = response.getOutputStream();
-        workbook.write(outputStream);
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        workbook.write(out);
         workbook.close();
-        outputStream.close();
+        ByteArrayInputStreamWrapper inputStreamWrapper = new ByteArrayInputStreamWrapper();
+        inputStreamWrapper.setByteArrayInputStream(new ByteArrayInputStream(out.toByteArray()));
+        inputStreamWrapper.setByteCount(out.toByteArray().length);
+        out.close();
+        return inputStreamWrapper;
     }
 
     private void writeTitleLine(ReportReq reportReq) {
