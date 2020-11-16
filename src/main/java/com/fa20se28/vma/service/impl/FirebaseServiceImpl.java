@@ -39,8 +39,6 @@ public class FirebaseServiceImpl implements FirebaseService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
     }
 
     @Override

@@ -25,33 +25,54 @@ public class ReportController {
     public void exportScheduleReport(HttpServletResponse response,
                                      @RequestParam(required = false) Quarter quarter,
                                      @RequestParam(required = false) Integer year) throws IOException {
-        reportService.exportReportByType(response, new ReportReq(null, year, quarter, ReportType.SCHEDULE));
+        reportService.exportReportByType(response,
+                new ReportReq(null, null, year, quarter, ReportType.SCHEDULE));
     }
 
     @GetMapping("vehicles")
-    public void exportVehiclesReport(HttpServletResponse response,
-                                     @RequestParam(required = false) String vehicleId,
-                                     @RequestParam(required = false) Quarter quarter,
-                                     @RequestParam(required = false) Integer year) throws IOException {
-        if (vehicleId != null) {
-//            reportService.exportReportByType(response, new ReportReq(vehicleId, year, quarter, ReportType.VEHICLE_REVENUE_EXPENSE));
-        } else {
-            reportService.exportReportByType(response, new ReportReq(null, null, null, ReportType.VEHICLES));
-        }
+    public void exportVehiclesReport(HttpServletResponse response) throws IOException {
+        reportService.exportReportByType(response,
+                new ReportReq(null, null, null, null, ReportType.VEHICLES));
     }
+
 
     @GetMapping("maintenances")
     public void exportMaintenancesReport(HttpServletResponse response,
                                          @RequestParam(required = false) String vehicleId,
                                          @RequestParam(required = false) Quarter quarter,
                                          @RequestParam(required = false) Integer year) throws IOException {
-        reportService.exportReportByType(response, new ReportReq(vehicleId, year, quarter, ReportType.MAINTENANCE));
+        reportService.exportReportByType(response,
+                new ReportReq(null, vehicleId, year, quarter, ReportType.MAINTENANCE));
     }
 
     @GetMapping("contracts")
     public void exportContractsReport(HttpServletResponse response,
                                       @RequestParam(required = false) Quarter quarter,
                                       @RequestParam(required = false) Integer year) throws IOException {
-        reportService.exportReportByType(response, new ReportReq(null, year, quarter, ReportType.CONTRACTS));
+        reportService.exportReportByType(response,
+                new ReportReq(null, null, year, quarter, ReportType.CONTRACTS));
+    }
+
+    @GetMapping("revenue-expense")
+    public void exportRevenueExpenseReport(HttpServletResponse response,
+                                           @RequestParam(required = false) String vehicleId,
+                                           @RequestParam(required = false) Quarter quarter,
+                                           @RequestParam(required = false) Integer year) throws IOException {
+        if (vehicleId != null) {
+            reportService.exportReportByType(response,
+                    new ReportReq(null, vehicleId, year, quarter, ReportType.VEHICLE_REVENUE_EXPENSE));
+        } else {
+            reportService.exportReportByType(response,
+                    new ReportReq(null, null, year, quarter, ReportType.COMPANY_REVENUE_EXPENSE));
+        }
+    }
+
+    @GetMapping("contributor-income")
+    public void exportContributorIncomeReport(HttpServletResponse response,
+                                              @RequestParam(required = false) String contributorId,
+                                              @RequestParam(required = false) Quarter quarter,
+                                              @RequestParam(required = false) Integer year) throws IOException {
+        reportService.exportReportByType(response,
+                new ReportReq(contributorId, null, year, quarter, ReportType.CONTRIBUTOR_INCOME));
     }
 }
