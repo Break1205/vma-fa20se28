@@ -14,6 +14,8 @@ public interface ContractComponent {
 
     List<ContractLM> getContracts(ContractPageReq contractPageReq, int viewOption, int pageNum);
 
+    int getTotalContracts(ContractPageReq contractPageReq, int viewOption);
+
     void updateContractStatus(ContractStatus contractStatus, int contractId);
 
     void updateContract(ContractUpdateReq contractUpdateReq);

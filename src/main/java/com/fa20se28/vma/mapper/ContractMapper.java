@@ -117,6 +117,46 @@ public interface ContractMapper {
             @Param("c_option") int viewOption,
             @Param("c_offset") int offset);
 
+    @Select({"<script> " +
+            "SELECT " +
+            "COUNT (c.contract_id) " +
+            "FROM contract c " +
+            "WHERE " +
+            "<if test = \"c_option == 0\" > " +
+            "c.contract_status != 'CANCELLED' " +
+            "</if> " +
+            "<if test = \"c_option == 1\" > " +
+            "c.contract_status = #{c_request.contractStatus} " +
+            "</if> " +
+            "<if test = \"c_request.durationFrom != null\" > " +
+            "AND c.duration_from &gt;= #{c_request.durationFrom} " +
+            "</if> " +
+            "<if test = \"c_request.durationTo != null\" > " +
+            "AND c.duration_to &lt;= #{c_request.durationTo} " +
+            "</if> " +
+            "<if test = \"c_request.departureTime != null\" > " +
+            "AND c.departure_time &gt;= #{c_request.departureTime} " +
+            "</if> " +
+            "<if test = \"c_request.departureLocation != null\" > " +
+            "AND c.departure_location LIKE  '%${c_request.departureLocation}%' " +
+            "</if> " +
+            "<if test = \"c_request.destinationTime != null\" > " +
+            "AND c.destination_time &lt;= #{c_request.destinationTime} " +
+            "</if> " +
+            "<if test = \"c_request.destinationLocation != null\" > " +
+            "AND c.destination_location LIKE  '%${c_request.destinationLocation}%' " +
+            "</if> " +
+            "<if test = \"c_request.totalPriceMin != 0\" > " +
+            "AND c.total_price &gt;= #{c_request.totalPriceMin} " +
+            "</if> " +
+            "<if test = \"c_request.totalPriceMax != 0\" > " +
+            "AND c.total_price &lt;= #{c_request.totalPriceMax} " +
+            "</if> " +
+            "</script> "})
+    int getContractCount(
+            @Param("c_request") ContractPageReq contractPageReq,
+            @Param("c_option") int viewOption);
+
     @Update("UPDATE contract " +
             "SET contract_status = #{c_status} " +
             "WHERE contract_id = #{c_id} ")
@@ -147,7 +187,9 @@ public interface ContractMapper {
             "c.contract_id, ctm.customer_id, ctm.customer_name, c.signed_date, c.signed_location, " +
             "c.duration_from, c.duration_to, c.contract_status, " +
             "c.departure_location, c.departure_time, c.destination_location, c.destination_time, " +
-            "c.estimated_passenger_count, c.estimated_vehicle_count, c.total_price, c.other_information " +
+            "c.estimated_passenger_count, c.estimated_vehicle_count, " +
+            "c.actual_passenger_count, c.actual_vehicle_count, " +
+            "c.total_price, c.other_information " +
             "FROM contract c " +
             "JOIN customer ctm ON ctm.customer_id = c.contract_owner_id " +
             "WHERE " +
@@ -167,6 +209,8 @@ public interface ContractMapper {
             @Result(property = "destinationTime", column = "destination_time"),
             @Result(property = "estimatedPassengerCount", column = "estimated_passenger_count"),
             @Result(property = "estimatedVehicleCount", column = "estimated_vehicle_count"),
+            @Result(property = "actualPassengerCount", column = "actual_passenger_count"),
+            @Result(property = "actualVehicleCount", column = "actual_vehicle_count"),
             @Result(property = "totalPrice", column = "total_price"),
             @Result(property = "otherInformation", column = "other_information")
     })

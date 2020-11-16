@@ -1,16 +1,16 @@
 package com.fa20se28.vma.request;
 
 public class TripReq {
-    private int contractVehicleId;
+    private int contractId;
     private String vehicleId;
     private boolean option;
 
-    public int getContractVehicleId() {
-        return contractVehicleId;
+    public int getContractId() {
+        return contractId;
     }
 
-    public void setContractVehicleId(int contractVehicleId) {
-        this.contractVehicleId = contractVehicleId;
+    public void setContractId(int contractId) {
+        this.contractId = contractId;
     }
 
     public String getVehicleId() {

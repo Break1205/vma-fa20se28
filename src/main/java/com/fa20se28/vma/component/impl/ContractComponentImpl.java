@@ -38,6 +38,11 @@ public class ContractComponentImpl implements ContractComponent {
     }
 
     @Override
+    public int getTotalContracts(ContractPageReq contractPageReq, int viewOption) {
+        return contractMapper.getContractCount(contractPageReq, viewOption);
+    }
+
+    @Override
     @Transactional
     public void updateContractStatus(ContractStatus contractStatus, int contractId) {
         int row = contractMapper.updateStatus(contractStatus, contractId);

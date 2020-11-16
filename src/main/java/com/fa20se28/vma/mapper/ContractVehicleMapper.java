@@ -26,9 +26,11 @@ public interface ContractVehicleMapper {
 
     @Update("UPDATE contract_vehicles " +
             "SET contract_vehicle_status = #{cv_status} " +
-            "WHERE contract_vehicle_id = #{cv_cid} ")
+            "WHERE issued_vehicle_id = #{iv_id} " +
+            "AND contract_id = #{cv_cid} ")
     int updateContractedVehicleStatus(
-            @Param("cv_cid") int contractVehicleId,
+            @Param("cv_cid") int contractId,
+            @Param("iv_id") int currentIssuedId,
             @Param("cv_status") ContractVehicleStatus vehicleStatus);
 
     @Select("SELECT cv.contract_vehicle_id, v.vehicle_id, vt.vehicle_type_id, vt.vehicle_type_name, v.seats " +

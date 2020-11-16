@@ -22,6 +22,8 @@ public class ContractDetail {
     private LocalDateTime destinationTime;
     private int estimatedPassengerCount;
     private int estimatedVehicleCount;
+    private int actualPassengerCount;
+    private int actualVehicleCount;
     private float totalPrice;
     private String otherInformation;
 
@@ -127,6 +129,22 @@ public class ContractDetail {
 
     public void setEstimatedVehicleCount(int estimatedVehicleCount) {
         this.estimatedVehicleCount = estimatedVehicleCount;
+    }
+
+    public int getActualPassengerCount() {
+        return actualPassengerCount;
+    }
+
+    public void setActualPassengerCount(int actualPassengerCount) {
+        this.actualPassengerCount = actualPassengerCount;
+    }
+
+    public int getActualVehicleCount() {
+        return actualVehicleCount;
+    }
+
+    public void setActualVehicleCount(int actualVehicleCount) {
+        this.actualVehicleCount = actualVehicleCount;
     }
 
     public float getTotalPrice() {

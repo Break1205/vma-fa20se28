@@ -78,8 +78,11 @@ public class ContractVehicleComponentImpl implements ContractVehicleComponent {
     @Override
     @Transactional
     public void updateContractVehicleStatus(ContractVehicleStatusUpdateReq contractVehicleStatusUpdateReq) {
+        int currentIssuedId = issuedVehicleMapper.getCurrentIssuedVehicleId(contractVehicleStatusUpdateReq.getVehicleId());
+
         int row = contractVehicleMapper.updateContractedVehicleStatus(
-                contractVehicleStatusUpdateReq.getContractVehicleId(),
+                contractVehicleStatusUpdateReq.getContractId(),
+                currentIssuedId,
                 contractVehicleStatusUpdateReq.getVehicleStatus());
 
         if (row == 0) {
@@ -92,19 +95,20 @@ public class ContractVehicleComponentImpl implements ContractVehicleComponent {
     public void startAndEndTrip(TripReq tripReq) {
         int contractVehicleRow;
         int vehicleRow;
+        int currentIssuedId = issuedVehicleMapper.getCurrentIssuedVehicleId(tripReq.getVehicleId());
 
         if (!tripReq.isOption()) {
             if (!vehicleMapper.getVehicleStatus(tripReq.getVehicleId()).equals(VehicleStatus.AVAILABLE)) {
                 throw new DataException("Vehicle is still occupied!");
             } else {
-                contractVehicleRow = contractVehicleMapper.updateContractedVehicleStatus(tripReq.getContractVehicleId(), ContractVehicleStatus.IN_PROGRESS);
+                contractVehicleRow = contractVehicleMapper.updateContractedVehicleStatus(tripReq.getContractId(), currentIssuedId, ContractVehicleStatus.IN_PROGRESS);
                 vehicleRow = vehicleMapper.updateVehicleStatus(tripReq.getVehicleId(), VehicleStatus.ON_ROUTE);
             }
         } else {
             if (!vehicleMapper.getVehicleStatus(tripReq.getVehicleId()).equals(VehicleStatus.ON_ROUTE)) {
                 throw new DataException("Vehicle is not used!");
             } else {
-                contractVehicleRow = contractVehicleMapper.updateContractedVehicleStatus(tripReq.getContractVehicleId(), ContractVehicleStatus.COMPLETED);
+                contractVehicleRow = contractVehicleMapper.updateContractedVehicleStatus(tripReq.getContractId(), currentIssuedId, ContractVehicleStatus.COMPLETED);
                 vehicleRow = vehicleMapper.updateVehicleStatus(tripReq.getVehicleId(), VehicleStatus.AVAILABLE);
             }
         }
