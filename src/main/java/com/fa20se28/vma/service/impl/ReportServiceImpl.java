@@ -1,11 +1,15 @@
 package com.fa20se28.vma.service.impl;
 
 import com.fa20se28.vma.component.ReportComponent;
+import com.fa20se28.vma.model.ByteArrayInputStreamWrapper;
 import com.fa20se28.vma.request.ReportReq;
 import com.fa20se28.vma.service.ReportService;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.CacheControl;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -21,14 +25,20 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
-    public void exportReportByType(HttpServletResponse response, ReportReq reportReq) throws IOException {
-        response.setContentType("application/octet-stream");
+    public ResponseEntity<InputStreamResource> exportReportByType(ReportReq reportReq) throws IOException {
         DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
         String currentDateTime = dateFormatter.format(new Date());
 
         String headerKey = "Content-Disposition";
         String headerValue = "attachment; filename=REPORT_" + reportReq.getReportType() + "_" + currentDateTime + ".xls";
-        response.setHeader(headerKey, headerValue);
-        reportComponent.exportReportByType(response, reportReq);
+        ByteArrayInputStreamWrapper inputStreamWrapper = reportComponent.exportReportByType(reportReq);
+
+        return ResponseEntity
+                .ok()
+                .contentLength(inputStreamWrapper.getByteCount())
+                .contentType(MediaType.parseMediaType("application/vnd.ms-excel"))
+                .cacheControl(CacheControl.noCache())
+                .header(headerKey, headerValue)
+                .body(new InputStreamResource(inputStreamWrapper.getByteArrayInputStream()));
     }
 }

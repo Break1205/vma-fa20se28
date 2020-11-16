@@ -8,8 +8,10 @@ public class ReportReq {
     private Integer year;
     private Quarter quarter;
     private ReportType reportType;
+    private String contributorId;
 
-    public ReportReq(String vehicleId, Integer year, Quarter quarter, ReportType reportType) {
+    public ReportReq(String contributorId, String vehicleId, Integer year, Quarter quarter, ReportType reportType) {
+        this.contributorId = contributorId;
         this.vehicleId = vehicleId;
         this.year = year;
         this.quarter = quarter;
@@ -46,5 +48,13 @@ public class ReportReq {
 
     public void setReportType(ReportType reportType) {
         this.reportType = reportType;
+    }
+
+    public String getContributorId() {
+        return contributorId;
+    }
+
+    public void setContributorId(String contributorId) {
+        this.contributorId = contributorId;
     }
 }
