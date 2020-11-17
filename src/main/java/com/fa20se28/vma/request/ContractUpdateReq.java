@@ -20,6 +20,8 @@ public class ContractUpdateReq {
     private String destinationLocation;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private Date destinationTime;
+    private int estimatedPassengerCount;
+    private int estimatedVehicleCount;
     private float totalPrice;
     private String otherInformation;
 
@@ -101,6 +103,22 @@ public class ContractUpdateReq {
 
     public void setDestinationTime(Date destinationTime) {
         this.destinationTime = destinationTime;
+    }
+
+    public int getEstimatedPassengerCount() {
+        return estimatedPassengerCount;
+    }
+
+    public void setEstimatedPassengerCount(int estimatedPassengerCount) {
+        this.estimatedPassengerCount = estimatedPassengerCount;
+    }
+
+    public int getEstimatedVehicleCount() {
+        return estimatedVehicleCount;
+    }
+
+    public void setEstimatedVehicleCount(int estimatedVehicleCount) {
+        this.estimatedVehicleCount = estimatedVehicleCount;
     }
 
     public float getTotalPrice() {

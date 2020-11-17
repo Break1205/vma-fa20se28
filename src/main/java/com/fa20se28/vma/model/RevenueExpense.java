@@ -2,7 +2,7 @@ package com.fa20se28.vma.model;
 
 import java.time.LocalDate;
 
-public class VehicleRevenueExpense {
+public class RevenueExpense {
     private LocalDate date;
     private String type;
     private float value;

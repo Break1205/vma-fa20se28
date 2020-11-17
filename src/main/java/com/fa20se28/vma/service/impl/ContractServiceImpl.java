@@ -29,6 +29,11 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
+    public int getTotalContracts(ContractPageReq contractPageReq, int viewOption) {
+        return contractComponent.getTotalContracts(contractPageReq, viewOption);
+    }
+
+    @Override
     public void updateContractStatus(ContractStatus contractStatus, int contractId) {
         contractComponent.updateContractStatus(contractStatus, contractId);
     }
