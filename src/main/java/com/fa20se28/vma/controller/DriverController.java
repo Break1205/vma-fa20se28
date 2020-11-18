@@ -47,19 +47,21 @@ public class DriverController {
                         userId, name, phoneNumber, userStatus, 0));
     }
 
-    @GetMapping("/contributors/issued-drivers")
-    public IssuedDriversPageRes getIssuedDrivers(@RequestParam(required = false) String name,
+    @GetMapping("/contributors/{contributor-id}/issued-drivers")
+    public IssuedDriversPageRes getIssuedDrivers(@PathVariable("contributor-id") String contributorId,
+                                                 @RequestParam(required = false) String name,
                                                  @RequestParam(required = false) String phoneNumber,
                                                  @RequestParam(required = false) String vehicleId,
                                                  @RequestParam(required = false, defaultValue = "0") int page) {
-        return driverService.getIssuedDrivers(new IssuedDriversPageReq(name, phoneNumber, vehicleId, page * 15));
+        return driverService.getIssuedDrivers(new IssuedDriversPageReq(contributorId, name, phoneNumber, vehicleId, page * 15));
     }
 
-    @GetMapping("/contributors/issued-drivers/count")
-    public int getTotalIssuedDrivers(@RequestParam(required = false) String name,
+    @GetMapping("/contributors/{contributor-id}/issued-drivers/count")
+    public int getTotalIssuedDrivers(@PathVariable("contributor-id") String contributorId,
+                                     @RequestParam(required = false) String name,
                                      @RequestParam(required = false) String phoneNumber,
                                      @RequestParam(required = false) String vehicleId) {
         return driverService.getTotalIssuedDrivers(
-                new IssuedDriversPageReq(name, phoneNumber, vehicleId, 0));
+                new IssuedDriversPageReq(contributorId, name, phoneNumber, vehicleId, 0));
     }
 }
