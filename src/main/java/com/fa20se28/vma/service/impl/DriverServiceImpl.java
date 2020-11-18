@@ -15,11 +15,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class DriverServiceImpl implements DriverService {
     private final DriverComponent driverComponent;
-    private final AuthenticationComponentImpl authenticationComponent;
 
-    public DriverServiceImpl(DriverComponent driverComponent, AuthenticationComponentImpl authenticationComponent) {
+    public DriverServiceImpl(DriverComponent driverComponent) {
         this.driverComponent = driverComponent;
-        this.authenticationComponent = authenticationComponent;
     }
 
     @Override
