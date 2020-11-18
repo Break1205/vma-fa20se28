@@ -31,6 +31,7 @@ public class ContractVehicleController {
         contractVehicleService.createPassengerList(contractVehiclePassengerReq);
     }
 
+
     @PostMapping
     public void assignVehicleForContract(@RequestBody ContractVehicleReq contractVehicleReq) {
         contractVehicleService.assignVehicleForContract(contractVehicleReq);
@@ -46,14 +47,26 @@ public class ContractVehicleController {
         contractVehicleService.updateContractVehicleStatus(contractVehicleStatusUpdateReq);
     }
 
-    @PatchMapping("/start-end")
-    public void startAndEndTrip(@RequestBody TripReq tripReq) {
-        contractVehicleService.startAndEndTrip(tripReq);
-    }
-
     @GetMapping("/status")
     public ContractVehicleStatusRes getContractVehicleStatus() {
         return new ContractVehicleStatusRes();
+    }
+
+    @PatchMapping("/start")
+    public void startTrip(@RequestBody TripReq tripReq) {
+        contractVehicleService.startTrip(tripReq);
+    }
+
+    @PatchMapping("/end")
+    public void endTrip(@RequestBody TripReq tripReq) {
+        contractVehicleService.endTrip(tripReq);
+    }
+
+    @GetMapping("/{issued-vehicle-id}/trips/{contract-id}")
+    public ContractVehicleStatus getVehicleStatusByVehicleIdAndContractId(
+            @PathVariable("contract-id") int contractId,
+            @PathVariable("issued-vehicle-id") int issuedVehicleId) {
+        return contractVehicleService.getVehicleStatus(contractId, issuedVehicleId);
     }
 
     @GetMapping("/{issued-vehicle-id}/trips")

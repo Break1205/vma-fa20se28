@@ -1,5 +1,6 @@
 package com.fa20se28.vma.component;
 
+import com.fa20se28.vma.enums.ContractVehicleStatus;
 import com.fa20se28.vma.model.Passenger;
 import com.fa20se28.vma.model.Trip;
 import com.fa20se28.vma.model.VehicleBasic;
@@ -16,9 +17,15 @@ public interface ContractVehicleComponent {
 
     List<VehicleBasic> getContractVehicles(int contractId);
 
+    ContractVehicleStatus getVehicleStatus(int contractId, int issuedVehicleId);
+
     void updateContractVehicleStatus(ContractVehicleStatusUpdateReq contractVehicleStatusUpdateReq);
 
-    void startAndEndTrip(TripReq tripReq);
+    void startAndEndTrip(TripReq tripReq, boolean option);
 
     List<Trip> getVehicleTrips(TripListReq tripListReq);
+
+    void startContract(int contractId);
+
+    void completeContract(int contractId);
 }

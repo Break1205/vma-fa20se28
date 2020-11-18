@@ -11,7 +11,7 @@ public interface PassengerMapper {
     @Select("SELECT p.full_name, p.phone_number, p.date_of_birth, p.address " +
             "FROM passenger p " +
             "WHERE p.contract_vehicle_id = #{cv_id} ")
-    @Results(id = "passengerLIst", value = {
+    @Results(id = "passengerList", value = {
             @Result(property = "fullName", column = "full_name"),
             @Result(property = "phoneNumber", column = "phone_number"),
             @Result(property = "dateOfBirth", column = "date_of_birth"),
@@ -35,4 +35,11 @@ public interface PassengerMapper {
     int createPassenger(
             @Param("cvp_list") PassengerReq passengerReq,
             @Param("cv_id") int contractVehicleId);
+
+    @Select("SELECT COUNT (p.passenger_id) " +
+            "FROM passenger p " +
+            "JOIN contract_vehicles cv ON p.contract_vehicle_id = cv.contract_vehicle_id " +
+            "JOIN contract c ON cv.contract_id = c.contract_id " +
+            "WHERE c.contract_id = #{c_id} ")
+    int getPassengerCountFromContract(@Param("c_id") int contractId);
 }

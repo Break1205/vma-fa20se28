@@ -215,4 +215,15 @@ public interface ContractMapper {
             @Result(property = "otherInformation", column = "other_information")
     })
     ContractDetail getContractDetails(@Param("c_id") int contractId);
+
+    @Update("UPDATE contract " +
+            "SET " +
+            "actual_passenger_count = #{c_apc}, " +
+            "actual_vehicle_count = #{c_avc} " +
+            "WHERE " +
+            "contract_id = #{c_id} ")
+    int updateContractActual(
+            @Param("c_apc") int actualPassengerCount,
+            @Param("c_avc") int actualVehicleCount,
+            @Param("c_id") int contractId);
 }
