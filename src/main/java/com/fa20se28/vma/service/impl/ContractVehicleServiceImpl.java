@@ -1,6 +1,7 @@
 package com.fa20se28.vma.service.impl;
 
 import com.fa20se28.vma.component.ContractVehicleComponent;
+import com.fa20se28.vma.enums.ContractVehicleStatus;
 import com.fa20se28.vma.request.*;
 import com.fa20se28.vma.response.ContractVehicleRes;
 import com.fa20se28.vma.response.PassengerRes;
@@ -37,17 +38,28 @@ public class ContractVehicleServiceImpl implements ContractVehicleService {
     }
 
     @Override
+    public ContractVehicleStatus getVehicleStatus(int contractId, int issuedVehicleId) {
+        return contractVehicleComponent.getVehicleStatus(contractId, issuedVehicleId);
+    }
+
+    @Override
     public void updateContractVehicleStatus(ContractVehicleStatusUpdateReq contractVehicleStatusUpdateReq) {
         contractVehicleComponent.updateContractVehicleStatus(contractVehicleStatusUpdateReq);
     }
 
-    @Override
-    public void startAndEndTrip(TripReq tripReq) {
-        contractVehicleComponent.startAndEndTrip(tripReq);
-    }
 
     @Override
     public TripListRes getTrips(TripListReq tripListReq) {
         return new TripListRes(contractVehicleComponent.getVehicleTrips(tripListReq));
+    }
+
+    @Override
+    public void startTrip(TripReq tripReq) {
+        contractVehicleComponent.startAndEndTrip(tripReq, false);
+    }
+
+    @Override
+    public void endTrip(TripReq tripReq) {
+        contractVehicleComponent.startAndEndTrip(tripReq, true);
     }
 }

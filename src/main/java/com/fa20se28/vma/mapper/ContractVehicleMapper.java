@@ -24,16 +24,24 @@ public interface ContractVehicleMapper {
             @Param("cv_iv_id") int issuedVehicleId,
             @Param("cv_status") ContractVehicleStatus vehicleStatus);
 
+    @Select("SELECT cv.contract_vehicle_status " +
+            "FROM contract_vehicles cv " +
+            "WHERE issued_vehicle_id = #{iv_id} " +
+            "AND contract_id = #{cv_id} ")
+    ContractVehicleStatus getVehicleStatus(
+            @Param("cv_id") int contractId,
+            @Param("iv_id") int issuedVehicleId);
+
     @Update("UPDATE contract_vehicles " +
             "SET contract_vehicle_status = #{cv_status} " +
             "WHERE issued_vehicle_id = #{iv_id} " +
             "AND contract_id = #{cv_cid} ")
     int updateContractedVehicleStatus(
             @Param("cv_cid") int contractId,
-            @Param("iv_id") int currentIssuedId,
+            @Param("iv_id") int issuedVehicleId,
             @Param("cv_status") ContractVehicleStatus vehicleStatus);
 
-    @Select("SELECT cv.contract_vehicle_id, v.vehicle_id, vt.vehicle_type_id, vt.vehicle_type_name, v.seats " +
+    @Select("SELECT cv.contract_vehicle_id, cv.contract_vehicle_status, v.vehicle_id, vt.vehicle_type_id, vt.vehicle_type_name, v.seats " +
             "FROM contract_vehicles cv " +
             "JOIN issued_vehicle iv ON cv.issued_vehicle_id = iv.issued_vehicle_id " +
             "JOIN vehicle v ON iv.vehicle_id = v.vehicle_id " +
@@ -44,7 +52,8 @@ public interface ContractVehicleMapper {
             @Result(property = "vehicleId", column = "vehicle_id"),
             @Result(property = "vehicleType.vehicleTypeId", column = "vehicle_type_id"),
             @Result(property = "vehicleType.vehicleTypeName", column = "vehicle_type_name"),
-            @Result(property = "seats", column = "seats")
+            @Result(property = "seats", column = "seats"),
+            @Result(property = "contractVehicleStatus", column = "contract_vehicle_status")
     })
     List<VehicleBasic> getContractVehicles(@Param("cv_id") int contractId);
 
@@ -101,4 +110,10 @@ public interface ContractVehicleMapper {
             @Param("cv_iv_id") int issuedVehicleId,
             @Param("c_start") LocalDate durationFrom,
             @Param("c_end") LocalDate durationTo);
+
+    @Select("SELECT COUNT (cv.contract_vehicle_id) " +
+            "FROM contract_vehicles cv " +
+            "WHERE cv.contract_id = #{cv_id} " +
+            "AND cv.contract_vehicle_status = 'COMPLETED' ")
+    int getCompletedVehicleCount(@Param("cv_id") int contractId);
 }

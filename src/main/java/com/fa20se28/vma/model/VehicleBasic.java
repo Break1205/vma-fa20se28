@@ -1,10 +1,13 @@
 package com.fa20se28.vma.model;
 
+import com.fa20se28.vma.enums.ContractVehicleStatus;
+
 public class VehicleBasic {
     private int contractVehicleId;
     private String vehicleId;
     private VehicleType vehicleType;
     private int seats;
+    private ContractVehicleStatus contractVehicleStatus;
 
     public int getContractVehicleId() {
         return contractVehicleId;
@@ -36,5 +39,13 @@ public class VehicleBasic {
 
     public void setSeats(int seats) {
         this.seats = seats;
+    }
+
+    public ContractVehicleStatus getContractVehicleStatus() {
+        return contractVehicleStatus;
+    }
+
+    public void setContractVehicleStatus(ContractVehicleStatus contractVehicleStatus) {
+        this.contractVehicleStatus = contractVehicleStatus;
     }
 }

@@ -2,6 +2,7 @@ package com.fa20se28.vma.component.impl;
 
 import com.fa20se28.vma.component.ContractVehicleComponent;
 import com.fa20se28.vma.configuration.exception.DataException;
+import com.fa20se28.vma.enums.ContractStatus;
 import com.fa20se28.vma.enums.ContractVehicleStatus;
 import com.fa20se28.vma.enums.VehicleStatus;
 import com.fa20se28.vma.mapper.*;
@@ -76,13 +77,16 @@ public class ContractVehicleComponentImpl implements ContractVehicleComponent {
     }
 
     @Override
+    public ContractVehicleStatus getVehicleStatus(int contractId, int issuedVehicleId) {
+        return contractVehicleMapper.getVehicleStatus(contractId, issuedVehicleId);
+    }
+
+    @Override
     @Transactional
     public void updateContractVehicleStatus(ContractVehicleStatusUpdateReq contractVehicleStatusUpdateReq) {
-        int currentIssuedId = issuedVehicleMapper.getCurrentIssuedVehicleId(contractVehicleStatusUpdateReq.getVehicleId());
-
         int row = contractVehicleMapper.updateContractedVehicleStatus(
                 contractVehicleStatusUpdateReq.getContractId(),
-                currentIssuedId,
+                issuedVehicleMapper.getCurrentIssuedVehicleId(contractVehicleStatusUpdateReq.getVehicleId()),
                 contractVehicleStatusUpdateReq.getVehicleStatus());
 
         if (row == 0) {
@@ -92,17 +96,23 @@ public class ContractVehicleComponentImpl implements ContractVehicleComponent {
 
     @Override
     @Transactional
-    public void startAndEndTrip(TripReq tripReq) {
+    public void startAndEndTrip(TripReq tripReq, boolean option) {
         int contractVehicleRow;
         int vehicleRow;
         int currentIssuedId = issuedVehicleMapper.getCurrentIssuedVehicleId(tripReq.getVehicleId());
 
-        if (!tripReq.isOption()) {
+        ContractDetail detail = contractMapper.getContractDetails(tripReq.getContractId());
+
+        if (!option) {
             if (!vehicleMapper.getVehicleStatus(tripReq.getVehicleId()).equals(VehicleStatus.AVAILABLE)) {
                 throw new DataException("Vehicle is still occupied!");
             } else {
                 contractVehicleRow = contractVehicleMapper.updateContractedVehicleStatus(tripReq.getContractId(), currentIssuedId, ContractVehicleStatus.IN_PROGRESS);
                 vehicleRow = vehicleMapper.updateVehicleStatus(tripReq.getVehicleId(), VehicleStatus.ON_ROUTE);
+
+                if (detail.getContractStatus().equals(ContractStatus.NOT_STARTED)) {
+                    startContract(tripReq.getContractId());
+                }
             }
         } else {
             if (!vehicleMapper.getVehicleStatus(tripReq.getVehicleId()).equals(VehicleStatus.ON_ROUTE)) {
@@ -110,6 +120,11 @@ public class ContractVehicleComponentImpl implements ContractVehicleComponent {
             } else {
                 contractVehicleRow = contractVehicleMapper.updateContractedVehicleStatus(tripReq.getContractId(), currentIssuedId, ContractVehicleStatus.COMPLETED);
                 vehicleRow = vehicleMapper.updateVehicleStatus(tripReq.getVehicleId(), VehicleStatus.AVAILABLE);
+                if (detail.getContractStatus().equals(ContractStatus.IN_PROGRESS)) {
+                    if (contractVehicleMapper.getCompletedVehicleCount(tripReq.getContractId()) >= detail.getEstimatedVehicleCount()) {
+                        completeContract(tripReq.getContractId());
+                    }
+                }
             }
         }
 
@@ -126,5 +141,29 @@ public class ContractVehicleComponentImpl implements ContractVehicleComponent {
                 tripListReq.getDepartureTime(),
                 tripListReq.getDestinationTime(),
                 tripListReq.getVehicleStatus());
+    }
+
+    @Override
+    @Transactional
+    public void startContract(int contractId) {
+        int row = contractMapper.updateStatus(ContractStatus.IN_PROGRESS, contractId);
+
+        if (row == 0) {
+            throw new DataException("Unknown error occurred. Data not modified!");
+        }
+    }
+
+    @Override
+    @Transactional
+    public void completeContract(int contractId) {
+        int contractStatusRow = contractMapper.updateStatus(ContractStatus.FINISHED, contractId);
+
+        int completedVehicleCount = contractVehicleMapper.getCompletedVehicleCount(contractId);
+        int actualPassengerCount = passengerMapper.getPassengerCountFromContract(contractId);
+
+        int actualNumberRow = contractMapper.updateContractActual(actualPassengerCount, completedVehicleCount, contractId);
+        if (contractStatusRow == 0 || actualNumberRow == 0) {
+            throw new DataException("Unknown error occurred. Data not modified!");
+        }
     }
 }
