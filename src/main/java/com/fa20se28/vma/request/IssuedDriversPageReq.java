@@ -1,16 +1,26 @@
 package com.fa20se28.vma.request;
 
 public class IssuedDriversPageReq {
+    private String contributorId;
     private String fullName;
     private String phoneNumber;
     private String vehicleId;
     private int page;
 
-    public IssuedDriversPageReq(String name, String phoneNumber, String vehicleId, int page) {
-        this.fullName = name;
+    public IssuedDriversPageReq(String contributorId, String fullName, String phoneNumber, String vehicleId, int page) {
+        this.contributorId = contributorId;
+        this.fullName = fullName;
         this.phoneNumber = phoneNumber;
         this.vehicleId = vehicleId;
         this.page = page;
+    }
+
+    public String getContributorId() {
+        return contributorId;
+    }
+
+    public void setContributorId(String contributorId) {
+        this.contributorId = contributorId;
     }
 
     public String getFullName() {

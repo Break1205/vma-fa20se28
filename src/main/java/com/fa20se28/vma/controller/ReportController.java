@@ -2,7 +2,14 @@ package com.fa20se28.vma.controller;
 
 import com.fa20se28.vma.enums.Quarter;
 import com.fa20se28.vma.enums.ReportType;
+import com.fa20se28.vma.model.ContributorIncome;
 import com.fa20se28.vma.request.ReportReq;
+import com.fa20se28.vma.response.ContractReportRes;
+import com.fa20se28.vma.response.ContributorIncomeRes;
+import com.fa20se28.vma.response.MaintenanceReportRes;
+import com.fa20se28.vma.response.RevenueExpenseReportRes;
+import com.fa20se28.vma.response.ScheduleRes;
+import com.fa20se28.vma.response.VehicleReportRes;
 import com.fa20se28.vma.service.ReportService;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.ResponseEntity;
@@ -73,6 +80,60 @@ public class ReportController {
             @RequestParam(required = false) Quarter quarter,
             @RequestParam(required = false) Integer year) throws IOException {
         return reportService.exportReportByType(
+                new ReportReq(contributorId, null, year, quarter, ReportType.CONTRIBUTOR_INCOME));
+    }
+
+    @GetMapping("schedule/data")
+    public ScheduleRes exportScheduleReportData(@RequestParam(required = false) Quarter quarter,
+                                                @RequestParam(required = false) Integer year) {
+        return reportService.exportScheduleReportDate(
+                new ReportReq(null, null, year, quarter, ReportType.SCHEDULE));
+    }
+
+    @GetMapping("vehicles/data")
+    public VehicleReportRes exportVehiclesReportData() {
+        return reportService.exportVehicleReportData(
+                new ReportReq(null, null, null, null, ReportType.VEHICLES));
+    }
+
+
+    @GetMapping("maintenances/data")
+    public MaintenanceReportRes exportMaintenancesReportData(
+            @RequestParam(required = false) String vehicleId,
+            @RequestParam(required = false) Quarter quarter,
+            @RequestParam(required = false) Integer year) {
+        return reportService.exportMaintenanceReportData(
+                new ReportReq(null, vehicleId, year, quarter, ReportType.MAINTENANCE));
+    }
+
+    @GetMapping("contracts/data")
+    public ContractReportRes exportContractsReportData(
+            @RequestParam(required = false) Quarter quarter,
+            @RequestParam(required = false) Integer year) throws IOException {
+        return reportService.exportContractsReportData(
+                new ReportReq(null, null, year, quarter, ReportType.CONTRACTS));
+    }
+
+    @GetMapping("revenues-expenses/data")
+    public RevenueExpenseReportRes exportRevenueExpenseReportData(
+            @RequestParam(required = false) String vehicleId,
+            @RequestParam(required = false) Quarter quarter,
+            @RequestParam(required = false) Integer year) throws IOException {
+        if (vehicleId != null) {
+            return reportService.exportVehicleRevenueExpenseReportData(
+                    new ReportReq(null, vehicleId, year, quarter, ReportType.VEHICLE_REVENUE_EXPENSE));
+        } else {
+            return reportService.exportCompanyRevenueExpenseReportData(
+                    new ReportReq(null, null, year, quarter, ReportType.COMPANY_REVENUE_EXPENSE));
+        }
+    }
+
+    @GetMapping("contributor-income/data")
+    public ContributorIncomeRes exportContributorIncomeReportData(
+            @RequestParam(required = false) String contributorId,
+            @RequestParam(required = false) Quarter quarter,
+            @RequestParam(required = false) Integer year) throws IOException {
+        return reportService.exportContributorIncomeReportData(
                 new ReportReq(contributorId, null, year, quarter, ReportType.CONTRIBUTOR_INCOME));
     }
 }
