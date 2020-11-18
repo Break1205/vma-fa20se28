@@ -15,11 +15,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class DriverServiceImpl implements DriverService {
     private final DriverComponent driverComponent;
-    private final AuthenticationComponentImpl authenticationComponent;
 
-    public DriverServiceImpl(DriverComponent driverComponent, AuthenticationComponentImpl authenticationComponent) {
+    public DriverServiceImpl(DriverComponent driverComponent) {
         this.driverComponent = driverComponent;
-        this.authenticationComponent = authenticationComponent;
     }
 
     @Override
@@ -51,19 +49,16 @@ public class DriverServiceImpl implements DriverService {
 
     @Override
     public IssuedDriversPageRes getIssuedDrivers(IssuedDriversPageReq issuedDriversPageReq) {
-        Authentication authentication = authenticationComponent.getAuthentication();
         IssuedDriversPageRes issuedDriversPageRes = new IssuedDriversPageRes();
         issuedDriversPageRes.setDrivers(
                 driverComponent
-                        .findIssuedDrivers(authentication.getName(), issuedDriversPageReq));
+                        .findIssuedDrivers(issuedDriversPageReq.getContributorId(), issuedDriversPageReq));
         return issuedDriversPageRes;
     }
 
     @Override
     public int getTotalIssuedDrivers(IssuedDriversPageReq issuedDriversPageReq) {
-        Authentication authentication = authenticationComponent.getAuthentication();
         return driverComponent
-                .findTotalIssuedDrivers(authentication.getName(), issuedDriversPageReq);
+                .findTotalIssuedDrivers(issuedDriversPageReq.getContributorId(), issuedDriversPageReq);
     }
-
 }
