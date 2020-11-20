@@ -87,9 +87,11 @@ public class VehicleComponentImpl implements VehicleComponent {
             } else {
                 vehicleRow = vehicleMapper.createVehicle(vehicle, VehicleStatus.PENDING_APPROVAL);
             }
+
+            int placeholderRow = issuedVehicleMapper.createPlaceholder(vehicle.getVehicleId());
+
             int documentRowCount = 0;
             int documentImageRowCount = 0;
-            int placeholderRow = 0;
 
             if (vehicleRow != 0) {
                 for (VehicleDocumentReq doc : vehicle.getVehicleDocuments()) {
@@ -106,7 +108,6 @@ public class VehicleComponentImpl implements VehicleComponent {
                                 }
                             }
                             documentRowCount++;
-                            placeholderRow = issuedVehicleMapper.createPlaceholder(vehicle.getVehicleId());
                         }
                     } else {
                         throw new DataException("Document with ID " + doc.getVehicleDocumentId() + " already exist!");
@@ -114,7 +115,7 @@ public class VehicleComponentImpl implements VehicleComponent {
                 }
             }
 
-            if (vehicleRow == 0 || documentRowCount == 0 || documentImageRowCount == 0 || placeholderRow == 0) {
+            if (vehicleRow == 0 || placeholderRow == 0 || documentRowCount == 0 || documentImageRowCount == 0 ) {
                 throw new DataException("Unknown error occurred. Data not added!");
             }
         } else {
