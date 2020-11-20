@@ -73,8 +73,8 @@ public class RequestController {
     }
 
     @PatchMapping("/requests/{request-id}")
-    public int updateDocumentRequestStatusByRequestId(@PathVariable("request-id") int requestId,
-                                                      @RequestParam RequestStatus requestStatus) {
+    public int updateRequestStatusByRequestId(@PathVariable("request-id") int requestId,
+                                              @RequestParam RequestStatus requestStatus) {
         return requestService.updateDocumentRequestStatusByRequestId(requestId, requestStatus);
     }
 

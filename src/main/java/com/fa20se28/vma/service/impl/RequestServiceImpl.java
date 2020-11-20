@@ -3,16 +3,23 @@ package com.fa20se28.vma.service.impl;
 import com.fa20se28.vma.component.*;
 import com.fa20se28.vma.component.impl.UserDocumentComponentImpl;
 import com.fa20se28.vma.configuration.exception.RequestAlreadyHandledException;
+import com.fa20se28.vma.enums.NotificationType;
 import com.fa20se28.vma.enums.RequestStatus;
 import com.fa20se28.vma.enums.RequestType;
 import com.fa20se28.vma.model.AssignedVehicle;
+import com.fa20se28.vma.model.ClientRegistrationToken;
+import com.fa20se28.vma.model.NotificationData;
 import com.fa20se28.vma.model.RequestDetail;
 import com.fa20se28.vma.request.*;
 import com.fa20se28.vma.response.RequestDetailRes;
 import com.fa20se28.vma.response.RequestPageRes;
+import com.fa20se28.vma.service.FirebaseService;
 import com.fa20se28.vma.service.RequestService;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
 
 @Service
 public class RequestServiceImpl implements RequestService {
@@ -21,15 +28,23 @@ public class RequestServiceImpl implements RequestService {
     private final VehicleComponent vehicleComponent;
     private final VehicleDocumentComponent vehicleDocumentComponent;
     private final AuthenticationComponent authenticationComponent;
+    private final UserComponent userComponent;
+    private final FirebaseService firebaseService;
 
     public RequestServiceImpl(RequestComponent requestComponent,
                               UserDocumentComponentImpl documentComponent,
-                              VehicleComponent vehicleComponent, VehicleDocumentComponent vehicleDocumentComponent, AuthenticationComponent authenticationComponent) {
+                              VehicleComponent vehicleComponent,
+                              VehicleDocumentComponent vehicleDocumentComponent,
+                              AuthenticationComponent authenticationComponent,
+                              UserComponent userComponent,
+                              FirebaseService firebaseService) {
         this.requestComponent = requestComponent;
         this.userDocumentComponent = documentComponent;
         this.vehicleComponent = vehicleComponent;
         this.vehicleDocumentComponent = vehicleDocumentComponent;
         this.authenticationComponent = authenticationComponent;
+        this.userComponent = userComponent;
+        this.firebaseService = firebaseService;
     }
 
     @Override
@@ -96,15 +111,33 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
+    @Transactional
     public int updateDocumentRequestStatusByRequestId(int requestId, RequestStatus requestStatus) {
         RequestDetail requestDetail = requestComponent.findRequestById(requestId);
         if (!requestDetail.getRequestStatus().equals(RequestStatus.PENDING)) {
             throw new RequestAlreadyHandledException("Request with id: " + requestId + " has already been handled");
         } else {
+            ClientRegistrationToken clientRegistrationToken = userComponent.findClientRegistrationTokenByUserId(requestDetail.getUserId());
             if (requestStatus.equals(RequestStatus.ACCEPTED)) {
-                return acceptRequest(requestDetail);
+                if (acceptRequest(requestDetail) == 1) {
+                    NotificationData notificationData = new NotificationData(
+                            NotificationType.REQUEST_ACCEPTED,
+                            "Request with id " + requestId + " has been accepted",
+                            LocalDateTime.now());
+                    firebaseService.notifyUserByFCMToken(clientRegistrationToken, notificationData);
+                    return 1;
+                }
+                return 0;
             } else if (requestStatus.equals(RequestStatus.DENIED)) {
-                return denyRequest(requestDetail);
+                if (denyRequest(requestDetail) == 1) {
+                    NotificationData notificationData = new NotificationData(
+                            NotificationType.REQUEST_DENIED,
+                            "Request with id " + requestId + " has been denied",
+                            LocalDateTime.now());
+                    firebaseService.notifyUserByFCMToken(clientRegistrationToken, notificationData);
+                    return 1;
+                }
+                return 0;
             }
             return 0;
         }
@@ -144,7 +177,6 @@ public class RequestServiceImpl implements RequestService {
         if (requestDetail.getRequestType().equals(RequestType.CHANGE_VEHICLE)) {
             return requestComponent.updateRequestStatus(requestDetail.getRequestId(), RequestStatus.ACCEPTED);
         }
-
         return 0;
     }
 

@@ -2,6 +2,7 @@ package com.fa20se28.vma.mapper;
 
 
 import com.fa20se28.vma.enums.UserStatus;
+import com.fa20se28.vma.model.ClientRegistrationToken;
 import com.fa20se28.vma.model.Role;
 import com.fa20se28.vma.model.User;
 import com.fa20se28.vma.request.UserPageReq;
@@ -202,4 +203,10 @@ public interface UserMapper {
             "WHERE user_id = #{userId} ")
     int updateClientRegistrationToken(@Param("clientRegistrationToken") String clientRegistrationToken,
                                       @Param("userId") String userId);
+
+    @Select("SELECT client_registration_token \n" +
+            "FROM [user] \n" +
+            "WHERE user_id = #{userId}")
+    @Result(property = "token", column = "client_registration_token")
+    ClientRegistrationToken findClientRegistrationTokenByUserId(@Param("userId") String userId);
 }

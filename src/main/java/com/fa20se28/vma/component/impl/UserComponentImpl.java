@@ -162,4 +162,9 @@ public class UserComponentImpl implements UserComponent {
     public int updateClientRegistrationToken(ClientRegistrationToken clientRegistrationToken, String userId) {
         return userMapper.updateClientRegistrationToken(clientRegistrationToken.getToken(), userId);
     }
+
+    @Override
+    public ClientRegistrationToken findClientRegistrationTokenByUserId(String userId) {
+        return userMapper.findClientRegistrationTokenByUserId(userId);
+    }
 }

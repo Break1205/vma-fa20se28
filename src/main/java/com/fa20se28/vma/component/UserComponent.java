@@ -30,4 +30,6 @@ public interface UserComponent {
     void addNewRoleForUser(Long roleId, String userId);
 
     int updateClientRegistrationToken(ClientRegistrationToken clientRegistrationToken, String userId);
+
+    ClientRegistrationToken findClientRegistrationTokenByUserId(String userId);
 }
