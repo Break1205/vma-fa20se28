@@ -196,4 +196,10 @@ public interface UserMapper {
             ")) uur \n" +
             "</script>"})
     int findTotalUsersWithOneRoleByRoleId(@Param("roleId") String roleId, @Param("UserPageReq") UserPageReq userPageReq);
+
+    @Update("UPDATE [user]\n" +
+            "SET client_registration_token = #{clientRegistrationToken} \n" +
+            "WHERE user_id = #{userId} ")
+    int updateClientRegistrationToken(@Param("clientRegistrationToken") String clientRegistrationToken,
+                                      @Param("userId") String userId);
 }

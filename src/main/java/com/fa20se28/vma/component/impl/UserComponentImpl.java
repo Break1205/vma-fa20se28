@@ -10,6 +10,7 @@ import com.fa20se28.vma.mapper.UserDocumentImageMapper;
 import com.fa20se28.vma.mapper.UserDocumentMapper;
 import com.fa20se28.vma.mapper.UserMapper;
 import com.fa20se28.vma.mapper.VehicleMapper;
+import com.fa20se28.vma.model.ClientRegistrationToken;
 import com.fa20se28.vma.model.IssuedVehicle;
 import com.fa20se28.vma.model.Role;
 import com.fa20se28.vma.model.User;
@@ -155,5 +156,10 @@ public class UserComponentImpl implements UserComponent {
     @Override
     public void addNewRoleForUser(Long roleId, String userId) {
         userMapper.insertRoleForUserId(userId, roleId);
+    }
+
+    @Override
+    public int updateClientRegistrationToken(ClientRegistrationToken clientRegistrationToken, String userId) {
+        return userMapper.updateClientRegistrationToken(clientRegistrationToken.getToken(), userId);
     }
 }

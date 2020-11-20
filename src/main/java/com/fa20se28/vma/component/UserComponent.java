@@ -1,6 +1,7 @@
 package com.fa20se28.vma.component;
 
 import com.fa20se28.vma.enums.UserStatus;
+import com.fa20se28.vma.model.ClientRegistrationToken;
 import com.fa20se28.vma.model.Role;
 import com.fa20se28.vma.model.User;
 import com.fa20se28.vma.request.UserPageReq;
@@ -27,4 +28,6 @@ public interface UserComponent {
     int findTotalUserWithOneRoleByRoleId(String roleId, UserPageReq userPageReq);
 
     void addNewRoleForUser(Long roleId, String userId);
+
+    int updateClientRegistrationToken(ClientRegistrationToken clientRegistrationToken, String userId);
 }
