@@ -2,6 +2,7 @@ package com.fa20se28.vma.controller;
 
 import com.fa20se28.vma.configuration.exception.InvalidParamException;
 import com.fa20se28.vma.enums.UserStatus;
+import com.fa20se28.vma.model.ClientRegistrationToken;
 import com.fa20se28.vma.request.UserPageReq;
 import com.fa20se28.vma.request.UserReq;
 import com.fa20se28.vma.request.UserTokenReq;
@@ -100,7 +101,12 @@ public class UserController {
     }
 
     @GetMapping("/user-status")
-    public UserStatusesRes getUserStatuses(){
+    public UserStatusesRes getUserStatuses() {
         return new UserStatusesRes();
+    }
+
+    @PostMapping("/registration-token")
+    public int createClientRegistrationToken(@RequestBody ClientRegistrationToken clientRegistrationToken){
+        return userService.updateClientRegistrationToken(clientRegistrationToken);
     }
 }

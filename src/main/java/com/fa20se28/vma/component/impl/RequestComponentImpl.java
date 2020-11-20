@@ -4,7 +4,7 @@ import com.fa20se28.vma.component.RequestComponent;
 import com.fa20se28.vma.configuration.exception.ResourceNotFoundException;
 import com.fa20se28.vma.enums.RequestStatus;
 import com.fa20se28.vma.mapper.RequestMapper;
-import com.fa20se28.vma.model.DocumentRequestDetail;
+import com.fa20se28.vma.model.RequestDetail;
 import com.fa20se28.vma.request.*;
 import com.fa20se28.vma.response.RequestRes;
 import org.springframework.stereotype.Component;
@@ -44,9 +44,9 @@ public class RequestComponentImpl implements RequestComponent {
     }
 
     @Override
-    public DocumentRequestDetail findDocumentRequestById(int requestId) {
-        Optional<DocumentRequestDetail> optionalDocumentRequestDetail =
-                requestMapper.findDocumentRequestById(requestId);
+    public RequestDetail findRequestById(int requestId) {
+        Optional<RequestDetail> optionalDocumentRequestDetail =
+                requestMapper.findRequestById(requestId);
         return optionalDocumentRequestDetail.orElseThrow(
                 () -> new ResourceNotFoundException("Request with id: " + requestId + " not found"));
     }

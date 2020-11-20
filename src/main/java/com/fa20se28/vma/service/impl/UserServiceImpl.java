@@ -1,8 +1,10 @@
 package com.fa20se28.vma.service.impl;
 
+import com.fa20se28.vma.component.AuthenticationComponent;
 import com.fa20se28.vma.component.UserComponent;
 import com.fa20se28.vma.configuration.exception.InvalidParamException;
 import com.fa20se28.vma.enums.UserStatus;
+import com.fa20se28.vma.model.ClientRegistrationToken;
 import com.fa20se28.vma.model.Role;
 import com.fa20se28.vma.model.User;
 import com.fa20se28.vma.model.UserAccount;
@@ -13,6 +15,7 @@ import com.fa20se28.vma.response.UserPageRes;
 import com.fa20se28.vma.response.UserRoleRes;
 import com.fa20se28.vma.service.FirebaseService;
 import com.fa20se28.vma.service.UserService;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -24,10 +27,12 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
     private final UserComponent userComponent;
     private final FirebaseService firebaseService;
+    private final AuthenticationComponent authenticationComponent;
 
-    public UserServiceImpl(UserComponent userComponent, FirebaseService firebaseService) {
+    public UserServiceImpl(UserComponent userComponent, FirebaseService firebaseService, AuthenticationComponent authenticationComponent) {
         this.userComponent = userComponent;
         this.firebaseService = firebaseService;
+        this.authenticationComponent = authenticationComponent;
     }
 
     //TODO password
@@ -97,5 +102,11 @@ public class UserServiceImpl implements UserService {
             }
         }
         userComponent.addNewRoleForUser(roleId, userId);
+    }
+
+    @Override
+    public int updateClientRegistrationToken(ClientRegistrationToken clientRegistrationToken) {
+        Authentication authentication = authenticationComponent.getAuthentication();
+        return userComponent.updateClientRegistrationToken(clientRegistrationToken, authentication.getName());
     }
 }

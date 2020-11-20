@@ -1,7 +1,7 @@
 package com.fa20se28.vma.component;
 
 import com.fa20se28.vma.enums.RequestStatus;
-import com.fa20se28.vma.model.DocumentRequestDetail;
+import com.fa20se28.vma.model.RequestDetail;
 import com.fa20se28.vma.request.*;
 import com.fa20se28.vma.response.RequestRes;
 
@@ -14,7 +14,7 @@ public interface RequestComponent {
 
     int findTotalRequests(RequestPageReq requestPageReq);
 
-    DocumentRequestDetail findDocumentRequestById(int requestId);
+    RequestDetail findRequestById(int requestId);
 
     int updateRequestStatus(int requestId, RequestStatus accepted);
 

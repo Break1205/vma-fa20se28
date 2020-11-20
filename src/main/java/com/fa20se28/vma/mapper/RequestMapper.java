@@ -2,7 +2,7 @@ package com.fa20se28.vma.mapper;
 
 import com.fa20se28.vma.enums.RequestStatus;
 import com.fa20se28.vma.enums.RequestType;
-import com.fa20se28.vma.model.DocumentRequestDetail;
+import com.fa20se28.vma.model.RequestDetail;
 import com.fa20se28.vma.request.RequestPageReq;
 import com.fa20se28.vma.response.RequestRes;
 import org.apache.ibatis.annotations.*;
@@ -46,6 +46,7 @@ public interface RequestMapper {
             "user_id,\n" +
             "request_type, \n" +
             "request_status, \n" +
+            "description, \n" +
             "create_date \n" +
             "FROM request\n" +
             "WHERE 1=1\n" +
@@ -76,6 +77,7 @@ public interface RequestMapper {
             @Result(property = "userId", column = "user_id"),
             @Result(property = "requestType", column = "request_type"),
             @Result(property = "requestStatus", column = "request_status"),
+            @Result(property = "description", column = "description"),
             @Result(property = "createDate", column = "create_date")
     })
     List<RequestRes> findRequests(@Param("RequestPageReq") RequestPageReq requestPageReq);
@@ -138,7 +140,7 @@ public interface RequestMapper {
             @Result(property = "description", column = "description"),
             @Result(property = "createDate", column = "create_date")
     })
-    Optional<DocumentRequestDetail> findDocumentRequestById(@Param("request_id") int requestId);
+    Optional<RequestDetail> findRequestById(@Param("request_id") int requestId);
 
     @Update("UPDATE request \n" +
             "SET request_status = #{requestStatus} \n" +
