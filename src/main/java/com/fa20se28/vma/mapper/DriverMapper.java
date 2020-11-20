@@ -177,6 +177,7 @@ public interface DriverMapper {
             "u.user_id,\n" +
             "u.full_name,\n" +
             "u.phone_number,\n" +
+            "u.image_link, \n" +
             "iv.vehicle_id\n" +
             "FROM [user] u\n" +
             "JOIN (\n" +
@@ -210,6 +211,7 @@ public interface DriverMapper {
             @Result(property = "userId", column = "user_id"),
             @Result(property = "fullName", column = "full_name"),
             @Result(property = "phoneNumber", column = "phone_number"),
+            @Result(property = "imageLink", column = "image_link"),
             @Result(property = "vehicleId", column = "vehicle_id")
     })
     List<IssuedDriversRes> findIssuedDrivers(@Param("ownerId") String ownerId,

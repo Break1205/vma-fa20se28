@@ -3,7 +3,7 @@ package com.fa20se28.vma.controller;
 import com.fa20se28.vma.enums.RequestStatus;
 import com.fa20se28.vma.enums.RequestType;
 import com.fa20se28.vma.request.*;
-import com.fa20se28.vma.response.DocumentRequestDetailRes;
+import com.fa20se28.vma.response.RequestDetailRes;
 import com.fa20se28.vma.response.RequestTypesRes;
 import com.fa20se28.vma.service.RequestService;
 import com.fa20se28.vma.response.RequestPageRes;
@@ -68,8 +68,8 @@ public class RequestController {
     }
 
     @GetMapping("/requests/{request-id}")
-    public DocumentRequestDetailRes getDocumentRequestById(@PathVariable("request-id") int requestId) {
-        return requestService.getDocumentRequestById(requestId);
+    public RequestDetailRes getRequestById(@PathVariable("request-id") int requestId) {
+        return requestService.getRequestById(requestId);
     }
 
     @PatchMapping("/requests/{request-id}")

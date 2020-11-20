@@ -4,7 +4,16 @@ public class IssuedDriversRes {
     private String userId;
     private String fullName;
     private String phoneNumber;
+    private String imageLink;
     private String vehicleId;
+
+    public String getImageLink() {
+        return imageLink;
+    }
+
+    public void setImageLink(String imageLink) {
+        this.imageLink = imageLink;
+    }
 
     public String getUserId() {
         return userId;

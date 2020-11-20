@@ -10,7 +10,16 @@ public class RequestRes {
     private String userId;
     private RequestType requestType;
     private RequestStatus requestStatus;
+    private String description;
     private Date createDate;
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
     public Long getRequestId() {
         return requestId;

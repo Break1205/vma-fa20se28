@@ -2,7 +2,7 @@ package com.fa20se28.vma.service;
 
 import com.fa20se28.vma.enums.RequestStatus;
 import com.fa20se28.vma.request.*;
-import com.fa20se28.vma.response.DocumentRequestDetailRes;
+import com.fa20se28.vma.response.RequestDetailRes;
 import com.fa20se28.vma.response.RequestPageRes;
 
 public interface RequestService {
@@ -16,7 +16,7 @@ public interface RequestService {
 
     int getTotalRequests(RequestPageReq requestPageReq);
 
-    DocumentRequestDetailRes getDocumentRequestById(int requestId);
+    RequestDetailRes getRequestById(int requestId);
 
     int updateDocumentRequestStatusByRequestId(int requestId, RequestStatus requestStatus);
 

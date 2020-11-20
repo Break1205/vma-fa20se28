@@ -6,9 +6,9 @@ import com.fa20se28.vma.configuration.exception.RequestAlreadyHandledException;
 import com.fa20se28.vma.enums.RequestStatus;
 import com.fa20se28.vma.enums.RequestType;
 import com.fa20se28.vma.model.AssignedVehicle;
-import com.fa20se28.vma.model.DocumentRequestDetail;
+import com.fa20se28.vma.model.RequestDetail;
 import com.fa20se28.vma.request.*;
-import com.fa20se28.vma.response.DocumentRequestDetailRes;
+import com.fa20se28.vma.response.RequestDetailRes;
 import com.fa20se28.vma.response.RequestPageRes;
 import com.fa20se28.vma.service.RequestService;
 import org.springframework.security.core.Authentication;
@@ -89,97 +89,97 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public DocumentRequestDetailRes getDocumentRequestById(int requestId) {
-        DocumentRequestDetailRes documentRequestDetailRes = new DocumentRequestDetailRes();
-        documentRequestDetailRes.setRequestDetail(requestComponent.findDocumentRequestById(requestId));
-        return documentRequestDetailRes;
+    public RequestDetailRes getRequestById(int requestId) {
+        RequestDetailRes requestDetailRes = new RequestDetailRes();
+        requestDetailRes.setRequestDetail(requestComponent.findRequestById(requestId));
+        return requestDetailRes;
     }
 
     @Override
     public int updateDocumentRequestStatusByRequestId(int requestId, RequestStatus requestStatus) {
-        DocumentRequestDetail documentRequestDetail = requestComponent.findDocumentRequestById(requestId);
-        if (!documentRequestDetail.getRequestStatus().equals(RequestStatus.PENDING)) {
+        RequestDetail requestDetail = requestComponent.findRequestById(requestId);
+        if (!requestDetail.getRequestStatus().equals(RequestStatus.PENDING)) {
             throw new RequestAlreadyHandledException("Request with id: " + requestId + " has already been handled");
         } else {
             if (requestStatus.equals(RequestStatus.ACCEPTED)) {
-                return acceptRequest(documentRequestDetail);
+                return acceptRequest(requestDetail);
             } else if (requestStatus.equals(RequestStatus.DENIED)) {
-                return denyRequest(documentRequestDetail);
+                return denyRequest(requestDetail);
             }
             return 0;
         }
     }
 
-    private int acceptRequest(DocumentRequestDetail documentRequestDetail) {
-        if (documentRequestDetail.getRequestType().equals(RequestType.NEW_DOCUMENT)) {
-            if (userDocumentComponent.acceptNewDocumentRequest(documentRequestDetail.getUserDocumentId()) == 1) {
-                return requestComponent.updateRequestStatus(documentRequestDetail.getRequestId(), RequestStatus.ACCEPTED);
+    private int acceptRequest(RequestDetail requestDetail) {
+        if (requestDetail.getRequestType().equals(RequestType.NEW_DOCUMENT)) {
+            if (userDocumentComponent.acceptNewDocumentRequest(requestDetail.getUserDocumentId()) == 1) {
+                return requestComponent.updateRequestStatus(requestDetail.getRequestId(), RequestStatus.ACCEPTED);
             }
         }
-        if (documentRequestDetail.getRequestType().equals(RequestType.UPDATE_DOCUMENT)) {
-            if (userDocumentComponent.acceptNewDocumentRequest(documentRequestDetail.getUserDocumentId()) == 1) {
-                return requestComponent.updateRequestStatus(documentRequestDetail.getRequestId(), RequestStatus.ACCEPTED);
+        if (requestDetail.getRequestType().equals(RequestType.UPDATE_DOCUMENT)) {
+            if (userDocumentComponent.acceptNewDocumentRequest(requestDetail.getUserDocumentId()) == 1) {
+                return requestComponent.updateRequestStatus(requestDetail.getRequestId(), RequestStatus.ACCEPTED);
             }
         }
-        if (documentRequestDetail.getRequestType().equals(RequestType.DELETE_DOCUMENT)) {
-            userDocumentComponent.deleteUserDocument(documentRequestDetail.getUserDocumentId());
-            return requestComponent.updateRequestStatus(documentRequestDetail.getRequestId(), RequestStatus.ACCEPTED);
+        if (requestDetail.getRequestType().equals(RequestType.DELETE_DOCUMENT)) {
+            userDocumentComponent.deleteUserDocument(requestDetail.getUserDocumentId());
+            return requestComponent.updateRequestStatus(requestDetail.getRequestId(), RequestStatus.ACCEPTED);
         }
-        if (documentRequestDetail.getRequestType().equals(RequestType.NEW_VEHICLE_DOCUMENT)) {
-            vehicleDocumentComponent.acceptDocument(documentRequestDetail.getVehicleDocumentId());
-            return requestComponent.updateRequestStatus(documentRequestDetail.getRequestId(), RequestStatus.ACCEPTED);
+        if (requestDetail.getRequestType().equals(RequestType.NEW_VEHICLE_DOCUMENT)) {
+            vehicleDocumentComponent.acceptDocument(requestDetail.getVehicleDocumentId());
+            return requestComponent.updateRequestStatus(requestDetail.getRequestId(), RequestStatus.ACCEPTED);
         }
-        if (documentRequestDetail.getRequestType().equals(RequestType.DELETE_VEHICLE_DOCUMENT)) {
-            vehicleDocumentComponent.deleteDocument(documentRequestDetail.getVehicleDocumentId());
-            return requestComponent.updateRequestStatus(documentRequestDetail.getRequestId(), RequestStatus.ACCEPTED);
+        if (requestDetail.getRequestType().equals(RequestType.DELETE_VEHICLE_DOCUMENT)) {
+            vehicleDocumentComponent.deleteDocument(requestDetail.getVehicleDocumentId());
+            return requestComponent.updateRequestStatus(requestDetail.getRequestId(), RequestStatus.ACCEPTED);
         }
-        if (documentRequestDetail.getRequestType().equals(RequestType.ADD_NEW_VEHICLE)) {
-            vehicleComponent.acceptVehicle(documentRequestDetail.getVehicleId());
-            return requestComponent.updateRequestStatus(documentRequestDetail.getRequestId(), RequestStatus.ACCEPTED);
+        if (requestDetail.getRequestType().equals(RequestType.ADD_NEW_VEHICLE)) {
+            vehicleComponent.acceptVehicle(requestDetail.getVehicleId());
+            return requestComponent.updateRequestStatus(requestDetail.getRequestId(), RequestStatus.ACCEPTED);
         }
-        if (documentRequestDetail.getRequestType().equals(RequestType.WITHDRAW_VEHICLE)) {
-            vehicleComponent.deleteVehicle(documentRequestDetail.getVehicleId());
-            return requestComponent.updateRequestStatus(documentRequestDetail.getRequestId(), RequestStatus.ACCEPTED);
+        if (requestDetail.getRequestType().equals(RequestType.WITHDRAW_VEHICLE)) {
+            vehicleComponent.deleteVehicle(requestDetail.getVehicleId());
+            return requestComponent.updateRequestStatus(requestDetail.getRequestId(), RequestStatus.ACCEPTED);
         }
-        if (documentRequestDetail.getRequestType().equals(RequestType.CHANGE_VEHICLE)) {
-            return requestComponent.updateRequestStatus(documentRequestDetail.getRequestId(), RequestStatus.ACCEPTED);
+        if (requestDetail.getRequestType().equals(RequestType.CHANGE_VEHICLE)) {
+            return requestComponent.updateRequestStatus(requestDetail.getRequestId(), RequestStatus.ACCEPTED);
         }
 
         return 0;
     }
 
-    private int denyRequest(DocumentRequestDetail documentRequestDetail) {
-        if (documentRequestDetail.getRequestType().equals(RequestType.NEW_DOCUMENT)) {
-            userDocumentComponent.deleteUserDocument(documentRequestDetail.getUserDocumentId());
-            return requestComponent.updateRequestStatus(documentRequestDetail.getRequestId(), RequestStatus.DENIED);
+    private int denyRequest(RequestDetail requestDetail) {
+        if (requestDetail.getRequestType().equals(RequestType.NEW_DOCUMENT)) {
+            userDocumentComponent.deleteUserDocument(requestDetail.getUserDocumentId());
+            return requestComponent.updateRequestStatus(requestDetail.getRequestId(), RequestStatus.DENIED);
         }
-        if (documentRequestDetail.getRequestType().equals(RequestType.UPDATE_DOCUMENT)) {
-            if (userDocumentComponent.denyUpdateDocumentRequest(documentRequestDetail.getUserDocumentId()) == 1) {
-                return requestComponent.updateRequestStatus(documentRequestDetail.getRequestId(), RequestStatus.DENIED);
+        if (requestDetail.getRequestType().equals(RequestType.UPDATE_DOCUMENT)) {
+            if (userDocumentComponent.denyUpdateDocumentRequest(requestDetail.getUserDocumentId()) == 1) {
+                return requestComponent.updateRequestStatus(requestDetail.getRequestId(), RequestStatus.DENIED);
             }
         }
-        if (documentRequestDetail.getRequestType().equals(RequestType.DELETE_DOCUMENT)) {
-            return requestComponent.updateRequestStatus(documentRequestDetail.getRequestId(), RequestStatus.DENIED);
+        if (requestDetail.getRequestType().equals(RequestType.DELETE_DOCUMENT)) {
+            return requestComponent.updateRequestStatus(requestDetail.getRequestId(), RequestStatus.DENIED);
         }
-        if (documentRequestDetail.getRequestType().equals(RequestType.NEW_VEHICLE_DOCUMENT)) {
+        if (requestDetail.getRequestType().equals(RequestType.NEW_VEHICLE_DOCUMENT)) {
             vehicleDocumentComponent.denyDocument(
-                    documentRequestDetail.getRequestId(),
-                    documentRequestDetail.getVehicleId(),
-                    documentRequestDetail.getVehicleDocumentId());
-            return requestComponent.updateRequestStatus(documentRequestDetail.getRequestId(), RequestStatus.DENIED);
+                    requestDetail.getRequestId(),
+                    requestDetail.getVehicleId(),
+                    requestDetail.getVehicleDocumentId());
+            return requestComponent.updateRequestStatus(requestDetail.getRequestId(), RequestStatus.DENIED);
         }
-        if (documentRequestDetail.getRequestType().equals(RequestType.DELETE_VEHICLE_DOCUMENT)) {
-            return requestComponent.updateRequestStatus(documentRequestDetail.getRequestId(), RequestStatus.DENIED);
+        if (requestDetail.getRequestType().equals(RequestType.DELETE_VEHICLE_DOCUMENT)) {
+            return requestComponent.updateRequestStatus(requestDetail.getRequestId(), RequestStatus.DENIED);
         }
-        if (documentRequestDetail.getRequestType().equals(RequestType.ADD_NEW_VEHICLE)) {
-            vehicleComponent.denyVehicle(documentRequestDetail.getVehicleId(), documentRequestDetail.getRequestId());
-            return requestComponent.updateRequestStatus(documentRequestDetail.getRequestId(), RequestStatus.DENIED);
+        if (requestDetail.getRequestType().equals(RequestType.ADD_NEW_VEHICLE)) {
+            vehicleComponent.denyVehicle(requestDetail.getVehicleId(), requestDetail.getRequestId());
+            return requestComponent.updateRequestStatus(requestDetail.getRequestId(), RequestStatus.DENIED);
         }
-        if (documentRequestDetail.getRequestType().equals(RequestType.WITHDRAW_VEHICLE)) {
-            return requestComponent.updateRequestStatus(documentRequestDetail.getRequestId(), RequestStatus.DENIED);
+        if (requestDetail.getRequestType().equals(RequestType.WITHDRAW_VEHICLE)) {
+            return requestComponent.updateRequestStatus(requestDetail.getRequestId(), RequestStatus.DENIED);
         }
-        if (documentRequestDetail.getRequestType().equals(RequestType.CHANGE_VEHICLE)) {
-            return requestComponent.updateRequestStatus(documentRequestDetail.getRequestId(), RequestStatus.DENIED);
+        if (requestDetail.getRequestType().equals(RequestType.CHANGE_VEHICLE)) {
+            return requestComponent.updateRequestStatus(requestDetail.getRequestId(), RequestStatus.DENIED);
         }
         return 0;
     }

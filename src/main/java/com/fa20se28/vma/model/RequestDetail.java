@@ -5,7 +5,7 @@ import com.fa20se28.vma.enums.RequestType;
 
 import java.time.LocalDate;
 
-public class DocumentRequestDetail {
+public class RequestDetail {
     private int requestId;
     private String userId;
     private String fullName;
