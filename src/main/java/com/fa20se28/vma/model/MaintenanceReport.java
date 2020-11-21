@@ -5,16 +5,19 @@ import com.fa20se28.vma.enums.MaintenanceType;
 import java.time.LocalDate;
 
 public class MaintenanceReport {
-    private LocalDate maintenanceDate;
+    private String vehicleId;
     private MaintenanceType maintenanceType;
+    private LocalDate startDate;
+    private LocalDate endDate;
     private float cost;
+    private String description;
 
-    public LocalDate getMaintenanceDate() {
-        return maintenanceDate;
+    public String getVehicleId() {
+        return vehicleId;
     }
 
-    public void setMaintenanceDate(LocalDate maintenanceDate) {
-        this.maintenanceDate = maintenanceDate;
+    public void setVehicleId(String vehicleId) {
+        this.vehicleId = vehicleId;
     }
 
     public MaintenanceType getMaintenanceType() {
@@ -25,11 +28,35 @@ public class MaintenanceReport {
         this.maintenanceType = maintenanceType;
     }
 
+    public LocalDate getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
+    }
+
+    public LocalDate getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
+    }
+
     public float getCost() {
         return cost;
     }
 
     public void setCost(float cost) {
         this.cost = cost;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

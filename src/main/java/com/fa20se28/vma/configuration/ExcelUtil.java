@@ -1,6 +1,5 @@
 package com.fa20se28.vma.configuration;
 
-import com.fa20se28.vma.enums.Quarter;
 import com.fa20se28.vma.enums.ReportType;
 import com.fa20se28.vma.mapper.ReportMapper;
 import com.fa20se28.vma.model.ByteArrayInputStreamWrapper;
@@ -9,7 +8,6 @@ import com.fa20se28.vma.model.ContributorIncome;
 import com.fa20se28.vma.model.MaintenanceReport;
 import com.fa20se28.vma.model.RevenueExpense;
 import com.fa20se28.vma.model.Schedule;
-import com.fa20se28.vma.model.ScheduleDetail;
 import com.fa20se28.vma.model.VehicleReport;
 import com.fa20se28.vma.request.ReportReq;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -25,8 +23,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.Month;
-import java.util.ArrayList;
 import java.util.List;
 
 public class ExcelUtil {
@@ -80,12 +76,14 @@ public class ExcelUtil {
             writeVehiclesHeaderLine(style);
         } else if (reportReq.getReportType().equals(ReportType.SCHEDULE)) {
             writeScheduleHeaderLine(style);
-        } else if (reportReq.getReportType().equals(ReportType.VEHICLE_REVENUE_EXPENSE)) {
-            writeVehicleRevenueExpenseHeaderLine(reportReq, style);
         } else if (reportReq.getReportType().equals(ReportType.MAINTENANCE)) {
-            writeMaintenanceHeaderLine(style);
+            writeMaintenanceByVehicleIdHeaderLine(reportReq, style);
+        } else if (reportReq.getReportType().equals(ReportType.MAINTENANCE_ALL_VEHICLES)) {
+            writeMaintenanceAllVehicleHeaderLine(style);
         } else if (reportReq.getReportType().equals(ReportType.CONTRACTS)) {
             writeContractsHeaderLine(style);
+        } else if (reportReq.getReportType().equals(ReportType.VEHICLE_REVENUE_EXPENSE)) {
+            writeVehicleRevenueExpenseHeaderLine(reportReq, style);
         } else if (reportReq.getReportType().equals(ReportType.COMPANY_REVENUE_EXPENSE)) {
             writeCompanyRevenueExpenseHeaderLine(style);
         } else if (reportReq.getReportType().equals(ReportType.CONTRIBUTOR_INCOME)) {
@@ -102,76 +100,20 @@ public class ExcelUtil {
             writeVehicleDataLines(style);
         } else if (reportReq.getReportType().equals(ReportType.SCHEDULE)) {
             writeScheduleDataLines(style);
-        } else if (reportReq.getReportType().equals(ReportType.VEHICLE_REVENUE_EXPENSE)) {
-            writeVehicleRevenueExpenseDataLine(reportReq, style);
         } else if (reportReq.getReportType().equals(ReportType.MAINTENANCE)) {
-            writeMaintenanceDataLine(reportReq, style);
+            writeMaintenanceByVehicleIdDataLine(reportReq, style);
+        } else if (reportReq.getReportType().equals(ReportType.MAINTENANCE_ALL_VEHICLES)) {
+            writeMaintenanceAllVehicleDataLine(reportReq, style);
         } else if (reportReq.getReportType().equals(ReportType.CONTRACTS)) {
             writeContractsDataLine(style);
+        } else if (reportReq.getReportType().equals(ReportType.VEHICLE_REVENUE_EXPENSE)) {
+            writeVehicleRevenueExpenseDataLine(reportReq, style);
         } else if (reportReq.getReportType().equals(ReportType.COMPANY_REVENUE_EXPENSE)) {
             writeCompanyRevenueExpenseDataLine(style);
         } else if (reportReq.getReportType().equals(ReportType.CONTRIBUTOR_INCOME)) {
             writeContributorIncomesDataLine(reportReq, style);
         }
     }
-
-    // Schedule
-    private void writeScheduleHeaderLine(CellStyle style) {
-        Row rowFromAndTo = sheet.createRow(HEADER_ROW);
-
-        createCell(rowFromAndTo, 0, "From", style);
-        createCell(rowFromAndTo, 1, firstAndLast.get(0).toString(), style);
-        createCell(rowFromAndTo, 2, "To", style);
-        createCell(rowFromAndTo, 3, firstAndLast.get(1).toString(), style);
-
-        Row row = sheet.createRow(HEADER_ROW + 1);
-
-        createCell(row, 0, "No", style);
-        createCell(row, 1, "Contract Id", style);
-        createCell(row, 2, "Date", style);
-        createCell(row, 3, "Departure Location", style);
-        createCell(row, 4, "Destination Location", style);
-        createCell(row, 5, "Contract Value", style);
-        createCell(row, 6, "Contract Status", style);
-        createCell(row, 7, "Vehicle Id", style);
-        createCell(row, 8, "Driver Id", style);
-        createCell(row, 9, "Driver Name", style);
-        createCell(row, 10, "Contributor Id", style);
-    }
-
-    private void writeScheduleDataLines(CellStyle style) {
-        int rowCount = HEADER_ROW + 2;
-        int numberOfData = 1;
-        List<Schedule> schedules =
-                reportMapper.getListSchedule(
-                        firstAndLast.get(0).toString(),
-                        firstAndLast.get(1).toString());
-
-        for (Schedule schedule : schedules) {
-            Row row = sheet.createRow(rowCount++);
-            int columnCount = 0;
-            int detailSize = schedule.getDetails().size();
-            createCell(row, columnCount++, numberOfData++, style);
-            createCell(row, columnCount++, schedule.getContractId(), style);
-            createCell(row, columnCount++, schedule.getDate().toString(), style);
-            createCell(row, columnCount++, schedule.getDepartureLocation(), style);
-            createCell(row, columnCount++, schedule.getDestinationLocation(), style);
-            createCell(row, columnCount++, schedule.getContractValue(), style);
-            createCell(row, columnCount++, schedule.getContractStatus().toString(), style);
-            for (ScheduleDetail scheduleDetail : schedule.getDetails()) {
-                createCell(row, columnCount, scheduleDetail.getVehicleId(), style);
-                createCell(row, columnCount + 1, scheduleDetail.getDriverId(), style);
-                createCell(row, columnCount + 2, scheduleDetail.getDriverName(), style);
-                createCell(row, columnCount + 3, scheduleDetail.getContributorId(), style);
-                if (--detailSize > 0) {
-                    row = sheet.createRow(rowCount++);
-                }
-            }
-        }
-    }
-
-    // end Schedule
-
 
     // Vehicle
     private void writeVehiclesHeaderLine(CellStyle style) {
@@ -208,6 +150,146 @@ public class ExcelUtil {
     }
     // end Vehicles
 
+    // Schedule
+    private void writeScheduleHeaderLine(CellStyle style) {
+        Row rowFromAndTo = sheet.createRow(HEADER_ROW);
+
+        createCell(rowFromAndTo, 0, "From", style);
+        createCell(rowFromAndTo, 1, firstAndLast.get(0).toString(), style);
+        createCell(rowFromAndTo, 2, "To", style);
+        createCell(rowFromAndTo, 3, firstAndLast.get(1).toString(), style);
+
+        Row row = sheet.createRow(HEADER_ROW + 1);
+
+        createCell(row, 0, "No", style);
+        createCell(row, 1, "Vehicle Id", style);
+        createCell(row, 2, "From", style);
+        createCell(row, 3, "Time", style);
+        createCell(row, 4, "To", style);
+        createCell(row, 5, "Time", style);
+        createCell(row, 6, "Status", style);
+    }
+
+    private void writeScheduleDataLines(CellStyle style) {
+        int rowCount = HEADER_ROW + 2;
+        int numberOfData = 1;
+        List<Schedule> schedules =
+                reportMapper.getListSchedule(
+                        firstAndLast.get(0).toString(),
+                        firstAndLast.get(1).toString());
+
+        for (Schedule schedule : schedules) {
+            Row row = sheet.createRow(rowCount++);
+            int columnCount = 0;
+            createCell(row, columnCount++, numberOfData++, style);
+            createCell(row, columnCount++, schedule.getVehicleId(), style);
+            createCell(row, columnCount++, schedule.getDepartureLocation(), style);
+            createCell(row, columnCount++, schedule.getDepartureTime().toString(), style);
+            createCell(row, columnCount++, schedule.getDestinationLocation(), style);
+            createCell(row, columnCount++, schedule.getDestinationTime().toString(), style);
+            createCell(row, columnCount++, schedule.getContractVehicleStatus().toString(), style);
+        }
+    }
+    // end Schedule
+
+    // Maintenance
+    private void writeMaintenanceByVehicleIdHeaderLine(ReportReq reportReq, CellStyle style) {
+        Row vehicleIdRow = sheet.createRow(HEADER_ROW);
+
+        createCell(vehicleIdRow, 0, "Vehicle Id:", style);
+        createCell(vehicleIdRow, 1, reportReq.getVehicleId(), style);
+
+        Row rowFromAndTo = sheet.createRow(HEADER_ROW + 1);
+
+        createCell(rowFromAndTo, 0, "From", style);
+        createCell(rowFromAndTo, 1, firstAndLast.get(0).toString(), style);
+        createCell(rowFromAndTo, 2, "To", style);
+        createCell(rowFromAndTo, 3, firstAndLast.get(1).toString(), style);
+
+        Row row = sheet.createRow(HEADER_ROW + 2);
+        createCell(row, 0, "No", style);
+        createCell(row, 1, "Maintenance Type", style);
+        createCell(row, 2, "Start Date", style);
+        createCell(row, 3, "End Date", style);
+        createCell(row, 4, "Cost", style);
+        createCell(row, 5, "Description", style);
+    }
+
+    private void writeMaintenanceAllVehicleHeaderLine(CellStyle style) {
+        Row rowFromAndTo = sheet.createRow(HEADER_ROW);
+
+        createCell(rowFromAndTo, 0, "From", style);
+        createCell(rowFromAndTo, 1, firstAndLast.get(0).toString(), style);
+        createCell(rowFromAndTo, 2, "To", style);
+        createCell(rowFromAndTo, 3, firstAndLast.get(1).toString(), style);
+
+        Row row = sheet.createRow(HEADER_ROW + 1);
+        createCell(row, 0, "No", style);
+        createCell(row, 1, "Vehicle Id", style);
+        createCell(row, 2, "Maintenance Type", style);
+        createCell(row, 3, "Start Date", style);
+        createCell(row, 4, "End Date", style);
+        createCell(row, 5, "Cost", style);
+        createCell(row, 6, "Description", style);
+    }
+
+    private void writeMaintenanceByVehicleIdDataLine(ReportReq reportReq, CellStyle style) {
+        int rowCount = HEADER_ROW + 3;
+        int numberOfData = 1;
+
+        List<MaintenanceReport> maintenanceReports =
+                reportMapper.getMaintenanceByVehicleIdForReport(
+                        firstAndLast.get(0).toString(),
+                        firstAndLast.get(1).toString(),
+                        reportReq.getVehicleId());
+
+        for (MaintenanceReport maintenanceReport : maintenanceReports) {
+            Row row = sheet.createRow(rowCount++);
+            int columnCount = 0;
+            createCell(row, columnCount++, numberOfData++, style);
+            createCell(row, columnCount++, maintenanceReport.getMaintenanceType().toString(), style);
+            createCell(row, columnCount++, maintenanceReport.getStartDate().toString(), style);
+            createCell(row, columnCount++, maintenanceReport.getEndDate().toString(), style);
+            createCell(row, columnCount++, maintenanceReport.getCost(), style);
+            createCell(row, columnCount, maintenanceReport.getDescription(), style);
+        }
+
+        Row row = sheet.createRow(rowCount);
+        createCell(row, 3, "Total Cost", style);
+        Cell valueCell = row.createCell(4);
+        valueCell.setCellFormula("SUM(E5:E" + (rowCount - 1) + ")");
+        valueCell.setCellStyle(style);
+    }
+
+    private void writeMaintenanceAllVehicleDataLine(ReportReq reportReq, CellStyle style) {
+        int rowCount = HEADER_ROW + 2;
+        int numberOfData = 1;
+
+        List<MaintenanceReport> maintenanceReports =
+                reportMapper.getMaintenanceByVehicleIdForReport(
+                        firstAndLast.get(0).toString(),
+                        firstAndLast.get(1).toString(),
+                        reportReq.getVehicleId());
+
+        for (MaintenanceReport maintenanceReport : maintenanceReports) {
+            Row row = sheet.createRow(rowCount++);
+            int columnCount = 0;
+            createCell(row, columnCount++, numberOfData++, style);
+            createCell(row, columnCount++, maintenanceReport.getVehicleId(), style);
+            createCell(row, columnCount++, maintenanceReport.getMaintenanceType().toString(), style);
+            createCell(row, columnCount++, maintenanceReport.getStartDate().toString(), style);
+            createCell(row, columnCount++, maintenanceReport.getEndDate().toString(), style);
+            createCell(row, columnCount++, maintenanceReport.getCost(), style);
+            createCell(row, columnCount, maintenanceReport.getDescription(), style);
+        }
+
+        Row row = sheet.createRow(rowCount);
+        createCell(row, 4, "Total Cost", style);
+        Cell valueCell = row.createCell(5);
+        valueCell.setCellFormula("SUM(F4:F" + (rowCount - 1) + ")");
+        valueCell.setCellStyle(style);
+    }
+    // end Maintenance
 
     // Vehicle Revenue Expense
     private void writeVehicleRevenueExpenseHeaderLine(ReportReq reportReq, CellStyle style) {
@@ -363,53 +445,7 @@ public class ExcelUtil {
     }
     // end Contributor Income
 
-    // Maintenance
-
-    private void writeMaintenanceHeaderLine(CellStyle style) {
-        Row rowFromAndTo = sheet.createRow(HEADER_ROW);
-
-        createCell(rowFromAndTo, 0, "From", style);
-        createCell(rowFromAndTo, 1, firstAndLast.get(0).toString(), style);
-        createCell(rowFromAndTo, 2, "To", style);
-        createCell(rowFromAndTo, 3, firstAndLast.get(1).toString(), style);
-
-        Row row = sheet.createRow(HEADER_ROW + 1);
-        createCell(row, 0, "No", style);
-        createCell(row, 1, "Maintenance Date", style);
-        createCell(row, 2, "Maintenance Type", style);
-        createCell(row, 3, "Cost", style);
-    }
-
-    private void writeMaintenanceDataLine(ReportReq reportReq, CellStyle style) {
-        int rowCount = HEADER_ROW + 2;
-        int numberOfData = 1;
-
-        List<MaintenanceReport> maintenanceReports =
-                reportMapper.getMaintenanceByVehicleIdForReport(
-                        firstAndLast.get(0).toString(),
-                        firstAndLast.get(1).toString(),
-                        reportReq.getVehicleId());
-
-        for (MaintenanceReport maintenanceReport : maintenanceReports) {
-            Row row = sheet.createRow(rowCount++);
-            int columnCount = 0;
-            createCell(row, columnCount++, numberOfData++, style);
-            createCell(row, columnCount++, maintenanceReport.getMaintenanceDate().toString(), style);
-            createCell(row, columnCount++, maintenanceReport.getMaintenanceType().toString(), style);
-            createCell(row, columnCount, maintenanceReport.getCost(), style);
-        }
-
-        Row row = sheet.createRow(++rowCount);
-        createCell(row, 2, "Total Cost", style);
-        Cell valueCell = row.createCell(3);
-        valueCell.setCellFormula("SUM(D4:D" + (rowCount - 1) + ")");
-        valueCell.setCellStyle(style);
-    }
-
-    // end Maintenance
-
     // Contracts
-
     private void writeContractsHeaderLine(CellStyle style) {
         Row rowFromAndTo = sheet.createRow(HEADER_ROW);
 
@@ -482,37 +518,5 @@ public class ExcelUtil {
             cell.setCellValue((String) value);
         }
         cell.setCellStyle(style);
-    }
-
-    private List<LocalDate> getFirstAndLastDayInAMonth(ReportReq reportReq) {
-        LocalDate currentDate = LocalDate.now();
-        int year = reportReq.getYear() != null ? reportReq.getYear() : currentDate.getYear();
-        Month firstMonthOfQuarter = currentDate.getMonth();
-        Month lastMonthOfQuarter = currentDate.getMonth();
-        if (reportReq.getQuarter() == null) {
-            firstMonthOfQuarter = Month.JANUARY;
-            lastMonthOfQuarter = Month.DECEMBER;
-        } else if (reportReq.getQuarter() == Quarter.FIRST) {
-            firstMonthOfQuarter = Month.JANUARY;
-            lastMonthOfQuarter = Month.MARCH;
-        } else if (reportReq.getQuarter() == Quarter.SECOND) {
-            firstMonthOfQuarter = Month.APRIL;
-            lastMonthOfQuarter = Month.JUNE;
-        } else if (reportReq.getQuarter() == Quarter.THIRD) {
-            firstMonthOfQuarter = Month.JULY;
-            lastMonthOfQuarter = Month.SEPTEMBER;
-        } else if (reportReq.getQuarter() == Quarter.FOURTH) {
-            firstMonthOfQuarter = Month.OCTOBER;
-            lastMonthOfQuarter = Month.DECEMBER;
-        }
-        LocalDate firstDayOfQuarter = LocalDate.of(year, firstMonthOfQuarter, 1);
-        LocalDate lastDayOfQuarter = LocalDate.of(
-                year,
-                lastMonthOfQuarter,
-                lastMonthOfQuarter.length(firstDayOfQuarter.isLeapYear()));
-        List<LocalDate> firstAndLast = new ArrayList<>();
-        firstAndLast.add(firstDayOfQuarter);
-        firstAndLast.add(lastDayOfQuarter);
-        return firstAndLast;
     }
 }
