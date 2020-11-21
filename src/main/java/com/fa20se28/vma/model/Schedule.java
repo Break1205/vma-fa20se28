@@ -1,33 +1,23 @@
 package com.fa20se28.vma.model;
 
-import com.fa20se28.vma.enums.ContractStatus;
+import com.fa20se28.vma.enums.ContractVehicleStatus;
 
 import java.time.LocalDate;
-import java.util.List;
 
 public class Schedule {
-    private String contractId;
-    private LocalDate date;
+    private String vehicleId;
     private String departureLocation;
+    private LocalDate departureTime;
     private String destinationLocation;
-    private float contractValue;
-    private ContractStatus contractStatus;
-    private List<ScheduleDetail> details;
+    private LocalDate destinationTime;
+    private ContractVehicleStatus contractVehicleStatus;
 
-    public String getContractId() {
-        return contractId;
+    public String getVehicleId() {
+        return vehicleId;
     }
 
-    public void setContractId(String contractId) {
-        this.contractId = contractId;
-    }
-
-    public LocalDate getDate() {
-        return date;
-    }
-
-    public void setDate(LocalDate date) {
-        this.date = date;
+    public void setVehicleId(String vehicleId) {
+        this.vehicleId = vehicleId;
     }
 
     public String getDepartureLocation() {
@@ -38,6 +28,14 @@ public class Schedule {
         this.departureLocation = departureLocation;
     }
 
+    public LocalDate getDepartureTime() {
+        return departureTime;
+    }
+
+    public void setDepartureTime(LocalDate departureTime) {
+        this.departureTime = departureTime;
+    }
+
     public String getDestinationLocation() {
         return destinationLocation;
     }
@@ -46,27 +44,19 @@ public class Schedule {
         this.destinationLocation = destinationLocation;
     }
 
-    public float getContractValue() {
-        return contractValue;
+    public LocalDate getDestinationTime() {
+        return destinationTime;
     }
 
-    public void setContractValue(float contractValue) {
-        this.contractValue = contractValue;
+    public void setDestinationTime(LocalDate destinationTime) {
+        this.destinationTime = destinationTime;
     }
 
-    public ContractStatus getContractStatus() {
-        return contractStatus;
+    public ContractVehicleStatus getContractVehicleStatus() {
+        return contractVehicleStatus;
     }
 
-    public void setContractStatus(ContractStatus contractStatus) {
-        this.contractStatus = contractStatus;
-    }
-
-    public List<ScheduleDetail> getDetails() {
-        return details;
-    }
-
-    public void setDetails(List<ScheduleDetail> details) {
-        this.details = details;
+    public void setContractVehicleStatus(ContractVehicleStatus contractVehicleStatus) {
+        this.contractVehicleStatus = contractVehicleStatus;
     }
 }

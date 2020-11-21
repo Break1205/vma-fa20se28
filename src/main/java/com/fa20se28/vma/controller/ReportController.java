@@ -2,7 +2,6 @@ package com.fa20se28.vma.controller;
 
 import com.fa20se28.vma.enums.Quarter;
 import com.fa20se28.vma.enums.ReportType;
-import com.fa20se28.vma.model.ContributorIncome;
 import com.fa20se28.vma.request.ReportReq;
 import com.fa20se28.vma.response.ContractReportRes;
 import com.fa20se28.vma.response.ContributorIncomeRes;
@@ -43,13 +42,18 @@ public class ReportController {
     }
 
 
-    @GetMapping("maintenances")
-    public ResponseEntity<InputStreamResource> exportMaintenancesReport(
+    @GetMapping("maintenance")
+    public ResponseEntity<InputStreamResource> exportMaintenanceReport(
             @RequestParam(required = false) String vehicleId,
             @RequestParam(required = false) Quarter quarter,
             @RequestParam(required = false) Integer year) throws IOException {
-        return reportService.exportReportByType(
-                new ReportReq(null, vehicleId, year, quarter, ReportType.MAINTENANCE));
+        if (vehicleId != null) {
+            return reportService.exportReportByType(
+                    new ReportReq(null, vehicleId, year, quarter, ReportType.MAINTENANCE));
+        } else {
+            return reportService.exportReportByType(
+                    new ReportReq(null, vehicleId, year, quarter, ReportType.MAINTENANCE_ALL_VEHICLES));
+        }
     }
 
     @GetMapping("contracts")
@@ -97,8 +101,8 @@ public class ReportController {
     }
 
 
-    @GetMapping("maintenances/data")
-    public MaintenanceReportRes exportMaintenancesReportData(
+    @GetMapping("maintenance/data")
+    public MaintenanceReportRes exportMaintenanceReportData(
             @RequestParam(required = false) String vehicleId,
             @RequestParam(required = false) Quarter quarter,
             @RequestParam(required = false) Integer year) {
@@ -109,7 +113,7 @@ public class ReportController {
     @GetMapping("contracts/data")
     public ContractReportRes exportContractsReportData(
             @RequestParam(required = false) Quarter quarter,
-            @RequestParam(required = false) Integer year) throws IOException {
+            @RequestParam(required = false) Integer year) {
         return reportService.exportContractsReportData(
                 new ReportReq(null, null, year, quarter, ReportType.CONTRACTS));
     }
@@ -118,7 +122,7 @@ public class ReportController {
     public RevenueExpenseReportRes exportRevenueExpenseReportData(
             @RequestParam(required = false) String vehicleId,
             @RequestParam(required = false) Quarter quarter,
-            @RequestParam(required = false) Integer year) throws IOException {
+            @RequestParam(required = false) Integer year) {
         if (vehicleId != null) {
             return reportService.exportVehicleRevenueExpenseReportData(
                     new ReportReq(null, vehicleId, year, quarter, ReportType.VEHICLE_REVENUE_EXPENSE));
@@ -132,7 +136,7 @@ public class ReportController {
     public ContributorIncomeRes exportContributorIncomeReportData(
             @RequestParam(required = false) String contributorId,
             @RequestParam(required = false) Quarter quarter,
-            @RequestParam(required = false) Integer year) throws IOException {
+            @RequestParam(required = false) Integer year) {
         return reportService.exportContributorIncomeReportData(
                 new ReportReq(contributorId, null, year, quarter, ReportType.CONTRIBUTOR_INCOME));
     }
