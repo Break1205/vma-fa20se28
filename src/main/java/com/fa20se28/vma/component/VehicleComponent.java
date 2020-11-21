@@ -40,4 +40,8 @@ public interface VehicleComponent {
     void addVehicleDocs(String vehicleId, List<VehicleDocumentReq> vehicleDocumentReqs, boolean notAdmin);
 
     void addVehicleValue(VehicleValueReq vehicleValueReq);
+
+    void updateVehicleValue(VehicleValueUpdateReq vehicleValueUpdateReq);
+
+    void deleteVehicleValue(int vehicleValueId);
 }

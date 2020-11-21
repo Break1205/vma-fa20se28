@@ -4,6 +4,7 @@ import com.fa20se28.vma.enums.VehicleStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public class VehicleDetail {
     private String vehicleId;
@@ -22,6 +23,7 @@ public class VehicleDetail {
     private LocalDate dateOfRegistration;
     private float distanceDriven;
     private UserBasic assignedDriver;
+    private List<VehicleValue> values;
 
     public String getVehicleId() {
         return vehicleId;
@@ -141,5 +143,13 @@ public class VehicleDetail {
 
     public void setAssignedDriver(UserBasic assignedDriver) {
         this.assignedDriver = assignedDriver;
+    }
+
+    public List<VehicleValue> getValues() {
+        return values;
+    }
+
+    public void setValues(List<VehicleValue> values) {
+        this.values = values;
     }
 }

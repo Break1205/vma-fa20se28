@@ -1,10 +1,7 @@
 package com.fa20se28.vma.service;
 
 import com.fa20se28.vma.enums.VehicleStatus;
-import com.fa20se28.vma.request.VehicleDropDownReq;
-import com.fa20se28.vma.request.VehiclePageReq;
-import com.fa20se28.vma.request.VehicleReq;
-import com.fa20se28.vma.request.VehicleUpdateReq;
+import com.fa20se28.vma.request.*;
 import com.fa20se28.vma.response.*;
 
 public interface VehicleService {
@@ -31,4 +28,10 @@ public interface VehicleService {
     DriverHistoryRes getDriverHistory(String vehicleId);
 
     VehicleCurrentRes getCurrentlyAssignedVehicle(String driverId);
+
+    void addVehicleValue(VehicleValueReq vehicleValueReq);
+
+    void updateVehicleValue(VehicleValueUpdateReq vehicleValueUpdateReq);
+
+    void deleteVehicleValue(int vehicleValueId);
 }
