@@ -128,6 +128,8 @@ public class VehicleComponentImpl implements VehicleComponent {
             vehicleDetail.setAssignedDriver(issuedVehicleMapper.getAssignedDriver(vehicleId));
         }
 
+        vehicleDetail.setValues(vehicleValueMapper.getValuesByVehicleId(vehicleId));
+
         return vehicleDetail;
     }
 
@@ -289,6 +291,26 @@ public class VehicleComponentImpl implements VehicleComponent {
     @Transactional
     public void addVehicleValue(VehicleValueReq vehicleValueReq) {
         int row = vehicleValueMapper.createValue(vehicleValueReq);
+
+        if (row == 0) {
+            throw new DataException("Unknown error occurred. Data not modified!");
+        }
+    }
+
+    @Override
+    @Transactional
+    public void updateVehicleValue(VehicleValueUpdateReq vehicleValueUpdateReq) {
+        int row = vehicleValueMapper.updateValue(vehicleValueUpdateReq);
+
+        if (row == 0) {
+            throw new DataException("Unknown error occurred. Data not modified!");
+        }
+    }
+
+    @Override
+    @Transactional
+    public void deleteVehicleValue(int vehicleValueId) {
+        int row = vehicleValueMapper.deleteValue(vehicleValueId);
 
         if (row == 0) {
             throw new DataException("Unknown error occurred. Data not modified!");

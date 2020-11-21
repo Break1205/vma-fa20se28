@@ -1,10 +1,7 @@
 package com.fa20se28.vma.controller;
 
 import com.fa20se28.vma.enums.VehicleStatus;
-import com.fa20se28.vma.request.VehicleDropDownReq;
-import com.fa20se28.vma.request.VehiclePageReq;
-import com.fa20se28.vma.request.VehicleReq;
-import com.fa20se28.vma.request.VehicleUpdateReq;
+import com.fa20se28.vma.request.*;
 import com.fa20se28.vma.response.*;
 import com.fa20se28.vma.service.VehicleService;
 import org.springframework.http.HttpStatus;
@@ -125,5 +122,22 @@ public class VehicleController {
     @GetMapping("/drivers/{driver-id}")
     public VehicleCurrentRes getCurrentlyAssignedVehicleByDriverId(@PathVariable("driver-id") String driverId) {
         return vehicleService.getCurrentlyAssignedVehicle(driverId);
+    }
+
+    @PostMapping("/value")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void addValueOfVehicle(@RequestBody VehicleValueReq vehicleValueReq) {
+        vehicleService.addVehicleValue(vehicleValueReq);
+    }
+
+    @PatchMapping("/value")
+    public void updateValueOfVehicle(@RequestBody VehicleValueUpdateReq vehicleValueUpdateReq) {
+        vehicleService.updateVehicleValue(vehicleValueUpdateReq);
+    }
+
+    @DeleteMapping("/value")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteValueOfVehicle(int vehicleValueId) {
+        vehicleService.deleteVehicleValue(vehicleValueId);
     }
 }
