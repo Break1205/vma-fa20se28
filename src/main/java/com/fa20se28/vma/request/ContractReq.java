@@ -3,6 +3,7 @@ package com.fa20se28.vma.request;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.util.Date;
+import java.util.List;
 
 public class ContractReq {
     private String contractOwnerId;
@@ -13,15 +14,11 @@ public class ContractReq {
     private Date durationFrom;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date durationTo;
-    private String departureLocation;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date departureTime;
-    private String destinationLocation;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date destinationTime;
     private int estimatedPassengerCount;
     private int estimatedVehicleCount;
+    private List<ContractTripReq> trips;
     private float totalPrice;
+    private boolean isRoundTrip;
     private String otherInformation;
 
     public String getContractOwnerId() {
@@ -64,38 +61,6 @@ public class ContractReq {
         this.durationTo = durationTo;
     }
 
-    public String getDepartureLocation() {
-        return departureLocation;
-    }
-
-    public void setDepartureLocation(String departureLocation) {
-        this.departureLocation = departureLocation;
-    }
-
-    public Date getDepartureTime() {
-        return departureTime;
-    }
-
-    public void setDepartureTime(Date departureTime) {
-        this.departureTime = departureTime;
-    }
-
-    public String getDestinationLocation() {
-        return destinationLocation;
-    }
-
-    public void setDestinationLocation(String destinationLocation) {
-        this.destinationLocation = destinationLocation;
-    }
-
-    public Date getDestinationTime() {
-        return destinationTime;
-    }
-
-    public void setDestinationTime(Date destinationTime) {
-        this.destinationTime = destinationTime;
-    }
-
     public int getEstimatedPassengerCount() {
         return estimatedPassengerCount;
     }
@@ -112,12 +77,28 @@ public class ContractReq {
         this.estimatedVehicleCount = estimatedVehicleCount;
     }
 
+    public List<ContractTripReq> getTrips() {
+        return trips;
+    }
+
+    public void setTrips(List<ContractTripReq> trips) {
+        this.trips = trips;
+    }
+
     public float getTotalPrice() {
         return totalPrice;
     }
 
     public void setTotalPrice(float totalPrice) {
         this.totalPrice = totalPrice;
+    }
+
+    public boolean isRoundTrip() {
+        return isRoundTrip;
+    }
+
+    public void setRoundTrip(boolean roundTrip) {
+        isRoundTrip = roundTrip;
     }
 
     public String getOtherInformation() {

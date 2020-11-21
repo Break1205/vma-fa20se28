@@ -2,9 +2,7 @@ package com.fa20se28.vma.service.impl;
 
 import com.fa20se28.vma.component.ContractComponent;
 import com.fa20se28.vma.enums.ContractStatus;
-import com.fa20se28.vma.request.ContractPageReq;
-import com.fa20se28.vma.request.ContractReq;
-import com.fa20se28.vma.request.ContractUpdateReq;
+import com.fa20se28.vma.request.*;
 import com.fa20se28.vma.response.ContractDetailRes;
 import com.fa20se28.vma.response.ContractPageRes;
 import com.fa20se28.vma.service.ContractService;
@@ -41,6 +39,16 @@ public class ContractServiceImpl implements ContractService {
     @Override
     public void updateContract(ContractUpdateReq contractUpdateReq) {
         contractComponent.updateContract(contractUpdateReq);
+    }
+
+    @Override
+    public void updateContractTrip(ContractTripUpdateReq contractTripUpdateReq) {
+        contractComponent.updateContractTrip(contractTripUpdateReq);
+    }
+
+    @Override
+    public void updateContractTripSchedule(ContractTripScheduleUpdateReq contractTripScheduleUpdateReq) {
+        contractComponent.updateContractTripSchedule(contractTripScheduleUpdateReq);
     }
 
     @Override
