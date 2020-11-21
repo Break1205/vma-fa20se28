@@ -31,7 +31,6 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 
 @Service
 public class FirebaseServiceImpl implements FirebaseService {
@@ -139,6 +138,7 @@ public class FirebaseServiceImpl implements FirebaseService {
                                                 .setDefaultVibrateTimings(true)
                                                 .build())
                                 .putData("id", notificationData.getId())
+                                .putData("notificationType", notificationData.getNotificationType().toString())
                                 .build())
                 .setWebpushConfig( // web
                         WebpushConfig.builder()
@@ -152,6 +152,7 @@ public class FirebaseServiceImpl implements FirebaseService {
                                                 .setRequireInteraction(true)
                                                 .build())
                                 .putData("id", notificationData.getId())
+                                .putData("notificationType", notificationData.getNotificationType().toString())
                                 .build()
                 )
                 .setApnsConfig( // ios
@@ -165,6 +166,7 @@ public class FirebaseServiceImpl implements FirebaseService {
                                                                 .setBody(notificationData.getBody())
                                                                 .build())
                                                 .putCustomData("id", notificationData.getId())
+                                                .putCustomData("notificationType", notificationData.getNotificationType().toString())
                                                 .build())
                                 .build())
                 .setToken(fcmToken.getToken())
