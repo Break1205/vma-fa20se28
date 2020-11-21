@@ -1,6 +1,11 @@
 package com.fa20se28.vma.service.impl;
 
-import com.fa20se28.vma.component.*;
+import com.fa20se28.vma.component.AuthenticationComponent;
+import com.fa20se28.vma.component.RequestComponent;
+import com.fa20se28.vma.component.UserComponent;
+import com.fa20se28.vma.component.UserDocumentComponent;
+import com.fa20se28.vma.component.VehicleComponent;
+import com.fa20se28.vma.component.VehicleDocumentComponent;
 import com.fa20se28.vma.component.impl.UserDocumentComponentImpl;
 import com.fa20se28.vma.configuration.exception.RequestAlreadyHandledException;
 import com.fa20se28.vma.enums.NotificationType;
@@ -10,7 +15,11 @@ import com.fa20se28.vma.model.AssignedVehicle;
 import com.fa20se28.vma.model.ClientRegistrationToken;
 import com.fa20se28.vma.model.NotificationData;
 import com.fa20se28.vma.model.RequestDetail;
-import com.fa20se28.vma.request.*;
+import com.fa20se28.vma.request.RequestPageReq;
+import com.fa20se28.vma.request.RequestReq;
+import com.fa20se28.vma.request.VehicleChangeRequestReq;
+import com.fa20se28.vma.request.VehicleDocumentRequestReq;
+import com.fa20se28.vma.request.VehicleRequestReq;
 import com.fa20se28.vma.response.RequestDetailRes;
 import com.fa20se28.vma.response.RequestPageRes;
 import com.fa20se28.vma.service.FirebaseService;
@@ -18,8 +27,6 @@ import com.fa20se28.vma.service.RequestService;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
 
 @Service
 public class RequestServiceImpl implements RequestService {
@@ -122,8 +129,8 @@ public class RequestServiceImpl implements RequestService {
                 if (acceptRequest(requestDetail) == 1) {
                     NotificationData notificationData = new NotificationData(
                             NotificationType.REQUEST_ACCEPTED,
-                            "Request with id " + requestId + " has been accepted",
-                            LocalDateTime.now());
+                            "Request " + requestDetail.getRequestType() + " with id " + requestId + " has been accepted",
+                            String.valueOf(requestId));
                     firebaseService.notifyUserByFCMToken(clientRegistrationToken, notificationData);
                     return 1;
                 }
@@ -132,8 +139,8 @@ public class RequestServiceImpl implements RequestService {
                 if (denyRequest(requestDetail) == 1) {
                     NotificationData notificationData = new NotificationData(
                             NotificationType.REQUEST_DENIED,
-                            "Request with id " + requestId + " has been denied",
-                            LocalDateTime.now());
+                            "Request " + requestDetail.getRequestType() + " with id " + requestId + " has been denied",
+                            String.valueOf(requestId));
                     firebaseService.notifyUserByFCMToken(clientRegistrationToken, notificationData);
                     return 1;
                 }

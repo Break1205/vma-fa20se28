@@ -18,16 +18,20 @@ import com.google.firebase.messaging.AndroidConfig;
 import com.google.firebase.messaging.AndroidNotification;
 import com.google.firebase.messaging.ApnsConfig;
 import com.google.firebase.messaging.Aps;
+import com.google.firebase.messaging.ApsAlert;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.Notification;
+import com.google.firebase.messaging.WebpushConfig;
+import com.google.firebase.messaging.WebpushNotification;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 
 @Service
 public class FirebaseServiceImpl implements FirebaseService {
@@ -102,9 +106,19 @@ public class FirebaseServiceImpl implements FirebaseService {
     public void notifyUserByFCMToken(ClientRegistrationToken fcmToken, NotificationData notificationData) {
         String title = "";
         if (notificationData.getNotificationType().equals(NotificationType.REQUEST_ACCEPTED)) {
-            title = "Hurray! Your request is accepted";
+            title = "Hurray! Your request has been accepted";
         } else if (notificationData.getNotificationType().equals(NotificationType.REQUEST_DENIED)) {
-            title = "Sorry! Your request is denied";
+            title = "Sorry! Your request has been denied";
+        } else if (notificationData.getNotificationType().equals(NotificationType.CONTRACT_ASSIGNED)) {
+            title = "Contract Assigned";
+        } else if (notificationData.getNotificationType().equals(NotificationType.LICENSE_EXPIRED)) {
+            title = "Your license is almost expired";
+        } else if (notificationData.getNotificationType().equals(NotificationType.START_TRIP)) {
+            title = "Contract Vehicle Status";
+        } else if (notificationData.getNotificationType().equals(NotificationType.END_TRIP)) {
+            title = "Contract Vehicle Status";
+        } else if (notificationData.getNotificationType().equals(NotificationType.CONTRACT_COMPLETED)) {
+            title = "Contract Status";
         }
         Message message = Message.builder()
                 .setNotification(
@@ -112,19 +126,45 @@ public class FirebaseServiceImpl implements FirebaseService {
                                 .setTitle(title)
                                 .setBody(notificationData.getBody())
                                 .build())
-                .setAndroidConfig(
+                .setAndroidConfig( // android
                         AndroidConfig.builder()
                                 .setTtl(3600 * 1000)
-                                .setNotification(AndroidNotification.builder()
-                                        .setImage("https://epic7x.com/wp-content/uploads/2020/11/Sword-of-Summer-Twilight.png")
-                                        .setColor("#87CEEB")
-                                        .build())
+                                .setNotification(
+                                        AndroidNotification.builder()
+                                                .setImage("https://epic7x.com/wp-content/uploads/2020/11/Sword-of-Summer-Twilight.png")
+                                                .setColor("#87CEEB")
+                                                .setTitle(title)
+                                                .setBody(notificationData.getBody())
+                                                .setDefaultSound(true)
+                                                .setDefaultVibrateTimings(true)
+                                                .build())
+                                .putData("id", notificationData.getId())
                                 .build())
-                .setApnsConfig(
+                .setWebpushConfig( // web
+                        WebpushConfig.builder()
+                                .setNotification(
+                                        WebpushNotification.builder()
+                                                .setImage("https://epic7x.com/wp-content/uploads/2019/03/justice-for-all-1.png")
+                                                .setTitle(title)
+                                                .setBody(notificationData.getBody())
+                                                .setSilent(false)
+                                                .setRenotify(true)
+                                                .setRequireInteraction(true)
+                                                .build())
+                                .putData("id", notificationData.getId())
+                                .build()
+                )
+                .setApnsConfig( // ios
                         ApnsConfig.builder()
                                 .setAps(
                                         Aps.builder()
-                                                .setBadge(69)
+                                                .setAlert(
+                                                        ApsAlert.builder()
+                                                                .setLaunchImage("https://epic7x.com/wp-content/uploads/2020/06/remnant-violet-hd.png")
+                                                                .setTitle(title)
+                                                                .setBody(notificationData.getBody())
+                                                                .build())
+                                                .putCustomData("id", notificationData.getId())
                                                 .build())
                                 .build())
                 .setToken(fcmToken.getToken())

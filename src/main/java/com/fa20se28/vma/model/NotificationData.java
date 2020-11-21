@@ -2,17 +2,18 @@ package com.fa20se28.vma.model;
 
 import com.fa20se28.vma.enums.NotificationType;
 
-import java.time.LocalDateTime;
-
 public class NotificationData {
     private NotificationType notificationType;
-    private LocalDateTime notificationTime;
     private String body;
+    // id of request/contract/contractVehicle not userId,
+    // because we user fcm token to send to the specific client mobile already
+    // this is for mobile/web to handle their flow
+    private String id;
 
-    public NotificationData(NotificationType notificationType, String body, LocalDateTime notificationTime) {
+    public NotificationData(NotificationType notificationType, String body, String id) {
         this.notificationType = notificationType;
         this.body = body;
-        this.notificationTime = notificationTime;
+        this.id = id;
     }
 
     public NotificationType getNotificationType() {
@@ -31,11 +32,11 @@ public class NotificationData {
         this.body = body;
     }
 
-    public LocalDateTime getNotificationTime() {
-        return notificationTime;
+    public String getId() {
+        return id;
     }
 
-    public void setNotificationTime(LocalDateTime notificationTime) {
-        this.notificationTime = notificationTime;
+    public void setId(String id) {
+        this.id = id;
     }
 }
