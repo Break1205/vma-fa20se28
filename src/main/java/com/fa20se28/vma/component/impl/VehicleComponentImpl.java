@@ -95,7 +95,9 @@ public class VehicleComponentImpl implements VehicleComponent {
 
             if (vehicleRow != 0) {
                 addVehicleDocs(vehicle.getVehicleId(), vehicle.getVehicleDocuments(), false);
-                addVehicleValue(vehicle.getVehicleValue());
+                if (vehicle.getVehicleValue() != null) {
+                    addVehicleValue(vehicle.getVehicleValue());
+                }
             }
 
             if (vehicleRow == 0 || placeholderRow == 0) {
