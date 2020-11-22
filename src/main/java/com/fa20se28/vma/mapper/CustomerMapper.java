@@ -131,14 +131,8 @@ public interface CustomerMapper {
     List<CustomerRes> findCustomers(@Param("CustomerPageReq") CustomerPageReq customerPageReq);
 
     @Select({"<script>" +
-            "SELECT count(cu.customer_id) \n" +
-            "FROM (\n" +
-            "SELECT\n" +
-            "customer_id, \n" +
-            "customer_name, \n" +
-            "address, \n" +
-            "email, \n" +
-            "phone_number \n" +
+            "SELECT \n" +
+            "COUNT(customer_id) \n" +
             "FROM customer \n" +
             "WHERE \n" +
             "<if test = \"CustomerPageReq.isDeleted==null\" >\n" +
@@ -167,7 +161,6 @@ public interface CustomerMapper {
             "<if test = \"CustomerPageReq.phoneNumber!=null\" > \n" +
             "AND phone_number LIKE N'%${CustomerPageReq.phoneNumber}%'\n" +
             "</if>\n" +
-            ") cu" +
             "</script>"})
     int findTotalCustomerWhenFiltering(@Param("CustomerPageReq") CustomerPageReq customerPageReq);
 

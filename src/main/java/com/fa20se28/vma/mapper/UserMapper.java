@@ -158,13 +158,8 @@ public interface UserMapper {
     List<UserRes> findUsersWithOneRoleByRoleId(@Param("roleId") String roleId, @Param("UserPageReq") UserPageReq userPageReq);
 
     @Select({"<script>" +
-            "SELECT COUNT(uur.user_id) " +
-            "FROM (" +
-            "SELECT\n" +
-            "u.user_id, \n" +
-            "u.full_name, \n" +
-            "u.phone_number, \n" +
-            "u.user_status\n" +
+            "SELECT \n" +
+            "COUNT(u.user_id) \n" +
             "FROM\n" +
             "[user] u\n" +
             "JOIN user_roles ur\n" +
@@ -194,7 +189,7 @@ public interface UserMapper {
             "<if test = \"roleId == 3\" >\n" +
             "2\n" +
             "</if> \n" +
-            ")) uur \n" +
+            ") \n" +
             "</script>"})
     int findTotalUsersWithOneRoleByRoleId(@Param("roleId") String roleId, @Param("UserPageReq") UserPageReq userPageReq);
 
