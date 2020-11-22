@@ -50,15 +50,16 @@ public interface VehicleValueMapper {
             "vehicle_value_id, " +
             "value, " +
             "start_date," +
-            "end_date " +
+            "end_date, " +
+            "is_deleted " +
             "FROM vehicle_value " +
-            "WHERE is_deleted = '0' " +
-            "AND vehicle_id = #{v_id} " +
+            "WHERE vehicle_id = #{v_id} " +
             "ORDER BY create_date DESC ")
     @Results(id = "vehicleValues", value = {
             @Result(property = "vehicleValueId", column = "vehicle_value_id"),
             @Result(property = "startDate", column = "start_date"),
-            @Result(property = "endDate", column = "end_date")
+            @Result(property = "endDate", column = "end_date"),
+            @Result(property = "isDeleted", column = "is_deleted")
     })
     List<VehicleValue> getValuesByVehicleId(@Param("v_id") String vehicleId);
 }

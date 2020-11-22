@@ -7,6 +7,7 @@ public class VehicleValue {
     private float value;
     private LocalDate startDate;
     private LocalDate endDate;
+    private boolean isDeleted;
 
     public int getVehicleValueId() {
         return vehicleValueId;
@@ -38,5 +39,13 @@ public class VehicleValue {
 
     public void setEndDate(LocalDate endDate) {
         this.endDate = endDate;
+    }
+
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
     }
 }
