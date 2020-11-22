@@ -2,6 +2,7 @@ package com.fa20se28.vma.controller;
 
 import com.fa20se28.vma.enums.RequestStatus;
 import com.fa20se28.vma.enums.RequestType;
+import com.fa20se28.vma.enums.Sort;
 import com.fa20se28.vma.request.*;
 import com.fa20se28.vma.response.RequestDetailRes;
 import com.fa20se28.vma.response.RequestTypesRes;
@@ -54,8 +55,9 @@ public class RequestController {
                                       @RequestParam(required = false) RequestType requestType,
                                       @RequestParam(required = false) RequestStatus requestStatus,
                                       @RequestParam(required = false) String fromDate,
-                                      @RequestParam(required = false) String toDate) {
-        return requestService.getRequests(new RequestPageReq(userId, requestType, requestStatus, fromDate, toDate, page * 15));
+                                      @RequestParam(required = false) String toDate,
+                                      @RequestParam(required = false, defaultValue = "ASC") Sort sort) {
+        return requestService.getRequests(new RequestPageReq(userId, requestType, requestStatus, fromDate, toDate, page * 15, sort));
     }
 
     @GetMapping("/requests/count")
@@ -64,7 +66,7 @@ public class RequestController {
                                 @RequestParam(required = false) RequestStatus requestStatus,
                                 @RequestParam(required = false) String fromDate,
                                 @RequestParam(required = false) String toDate) {
-        return requestService.getTotalRequests(new RequestPageReq(userId, requestType, requestStatus, fromDate, toDate, 0));
+        return requestService.getTotalRequests(new RequestPageReq(userId, requestType, requestStatus, fromDate, toDate, 0, null));
     }
 
     @GetMapping("/requests/{request-id}")
@@ -108,9 +110,9 @@ public class RequestController {
     @PatchMapping("/requests/{request-id}/change")
     @ResponseStatus(HttpStatus.CREATED)
     public int acceptVehicleChangeRequest(@PathVariable("request-id") int requestId,
-                                   @RequestParam String driverId,
-                                   @RequestParam String targetVehicleId,
-                                   @RequestParam RequestStatus requestStatus) {
+                                          @RequestParam String driverId,
+                                          @RequestParam String targetVehicleId,
+                                          @RequestParam RequestStatus requestStatus) {
         if (requestService.acceptVehicleChangeRequest(driverId, targetVehicleId) == 1) {
             return requestService.updateDocumentRequestStatusByRequestId(requestId, requestStatus);
         }
