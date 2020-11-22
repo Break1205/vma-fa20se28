@@ -68,7 +68,7 @@ public interface RequestMapper {
             "<if test = \"RequestPageReq.fromDate==null and RequestPageReq.toDate!=null\" >\n" +
             "AND create_date &lt; '${RequestPageReq.toDate}' \n" +
             "</if> \n" +
-            "ORDER BY create_date ASC\n" +
+            "ORDER BY create_date ${RequestPageReq.sort} \n" +
             "OFFSET #{RequestPageReq.page} ROWS \n" +
             "FETCH NEXT 15 ROWS ONLY " +
             "</script>"})
@@ -83,13 +83,8 @@ public interface RequestMapper {
     List<RequestRes> findRequests(@Param("RequestPageReq") RequestPageReq requestPageReq);
 
     @Select({"<script> "+
-            "SELECT COUNT(rc.request_id) " +
-            "FROM (" +
-            "SELECT  \n" +
-            "request_id, \n" +
-            "user_id, \n" +
-            "request_type,  \n" +
-            "create_date  \n" +
+            "SELECT \n" +
+            "COUNT(request_id) \n" +
             "FROM request \n" +
             "WHERE 1=1 \n" +
             "<if test = \"RequestPageReq.userId!=null\" > \n" +
@@ -109,7 +104,7 @@ public interface RequestMapper {
             "</if>  \n" +
             "<if test = \"RequestPageReq.fromDate==null and RequestPageReq.toDate!=null\" > \n" +
             "AND create_date &lt; '${RequestPageReq.toDate}'  \n" +
-            "</if> ) rc \n" +
+            "</if> \n" +
             "</script> "})
     int findTotalRequests(@Param("RequestPageReq") RequestPageReq requestPageReq);
 
