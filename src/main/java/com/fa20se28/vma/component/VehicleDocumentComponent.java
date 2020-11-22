@@ -22,4 +22,6 @@ public interface VehicleDocumentComponent {
     void acceptDocument(String vehicleDocId);
 
     void denyDocument(int requestId, String vehicleId, String vehicleDocId);
+
+    void addDocImages(int resultRow, String vehicleDocId, List<String> images);
 }
