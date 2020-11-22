@@ -5,9 +5,9 @@ import java.time.LocalDate;
 public class ContractReport {
     private String contractId;
     private float contractValue;
+    private LocalDate departureTime;
     private String departureLocation;
     private String destinationLocation;
-    private LocalDate destinationTime;
     private String customerId;
     private String customerName;
     private String phoneNumber;
@@ -48,12 +48,12 @@ public class ContractReport {
         this.destinationLocation = destinationLocation;
     }
 
-    public LocalDate getDestinationTime() {
-        return destinationTime;
+    public LocalDate getDepartureTime() {
+        return departureTime;
     }
 
-    public void setDestinationTime(LocalDate destinationTime) {
-        this.destinationTime = destinationTime;
+    public void setDepartureTime(LocalDate departureTime) {
+        this.departureTime = departureTime;
     }
 
     public String getCustomerId() {
