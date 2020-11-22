@@ -23,7 +23,7 @@ public interface ContractVehicleComponent {
 
     void startAndEndTrip(TripReq tripReq, boolean option);
 
-    List<Trip> getVehicleTrips(TripListReq tripListReq);
+    List<Trip> getVehicleTrips(TripListReq tripListReq, int viewOption);
 
     void startContract(int contractId);
 

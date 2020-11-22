@@ -49,8 +49,8 @@ public class ContractVehicleServiceImpl implements ContractVehicleService {
 
 
     @Override
-    public TripListRes getTrips(TripListReq tripListReq) {
-        return new TripListRes(contractVehicleComponent.getVehicleTrips(tripListReq));
+    public TripListRes getTrips(TripListReq tripListReq, int viewOption) {
+        return new TripListRes(contractVehicleComponent.getVehicleTrips(tripListReq, viewOption));
     }
 
     @Override

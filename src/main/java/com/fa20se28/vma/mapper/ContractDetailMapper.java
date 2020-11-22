@@ -1,11 +1,8 @@
 package com.fa20se28.vma.mapper;
 
-import com.fa20se28.vma.model.ContractTrip;
 import com.fa20se28.vma.request.ContractTripReq;
 import com.fa20se28.vma.request.ContractTripUpdateReq;
 import org.apache.ibatis.annotations.*;
-
-import java.util.List;
 
 @Mapper
 public interface ContractDetailMapper {
@@ -43,18 +40,4 @@ public interface ContractDetailMapper {
             "contract_id = #{c_id} " +
             "ORDER BY create_date DESC ")
     int getContractDetailId(@Param("c_id") int contractId);
-
-    @Select("SELECT " +
-            "contract_detail_id, departure_time, destination_time, departure_location, destination_location " +
-            "FROM contract_detail " +
-            "WHERE " +
-            "contract_id = #{c_id} ")
-    @Results(id = "contractTrips", value = {
-            @Result(property = "contractTripId", column = "contract_detail_id"),
-            @Result(property = "departureLocation", column = "departure_location"),
-            @Result(property = "departureTime", column = "departure_time"),
-            @Result(property = "destinationLocation", column = "destination_location"),
-            @Result(property = "destinationTime", column = "destination_time")
-    })
-    List<ContractTrip> getContractTrips(@Param("c_id") int contractId);
 }

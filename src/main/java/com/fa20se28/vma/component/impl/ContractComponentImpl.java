@@ -8,7 +8,6 @@ import com.fa20se28.vma.mapper.ContractDetailScheduleMapper;
 import com.fa20se28.vma.mapper.ContractMapper;
 import com.fa20se28.vma.model.ContractDetail;
 import com.fa20se28.vma.model.ContractLM;
-import com.fa20se28.vma.model.ContractTrip;
 import com.fa20se28.vma.request.*;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -109,14 +108,6 @@ public class ContractComponentImpl implements ContractComponent {
 
     @Override
     public ContractDetail getContractDetails(int contractId) {
-        ContractDetail detail =  contractMapper.getContractDetails(contractId);
-
-        detail.setTrips(contractDetailMapper.getContractTrips(contractId));
-
-        for (ContractTrip trip: detail.getTrips()) {
-            trip.setSchedule(contractDetailScheduleMapper.getContractTripSchedule(trip.getContractTripId()));
-        }
-
-        return detail;
+        return contractMapper.getContractDetails(contractId);
     }
 }

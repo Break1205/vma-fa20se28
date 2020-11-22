@@ -1,9 +1,7 @@
 package com.fa20se28.vma.mapper;
 
 import com.fa20se28.vma.enums.ContractStatus;
-import com.fa20se28.vma.model.Contract;
-import com.fa20se28.vma.model.ContractDetail;
-import com.fa20se28.vma.model.ContractLM;
+import com.fa20se28.vma.model.*;
 import com.fa20se28.vma.request.ContractPageReq;
 import com.fa20se28.vma.request.ContractReq;
 import com.fa20se28.vma.request.ContractUpdateReq;
@@ -170,9 +168,34 @@ public interface ContractMapper {
             @Result(property = "actualVehicleCount", column = "actual_vehicle_count"),
             @Result(property = "isRoundTrip", column = "is_round_trip"),
             @Result(property = "totalPrice", column = "total_price"),
-            @Result(property = "otherInformation", column = "other_information")
+            @Result(property = "otherInformation", column = "other_information"),
+            @Result(property = "trips", column = "contract_id", many = @Many(select = "getContractTrips"))
     })
     ContractDetail getContractDetails(@Param("c_id") int contractId);
+
+    @Select("SELECT " +
+            "contract_detail_id, departure_time, destination_time, departure_location, destination_location " +
+            "FROM contract_detail " +
+            "WHERE " +
+            "contract_id = #{c_id} ")
+    @Results(id = "contractTrips", value = {
+            @Result(property = "contractTripId", column = "contract_detail_id"),
+            @Result(property = "departureLocation", column = "departure_location"),
+            @Result(property = "departureTime", column = "departure_time"),
+            @Result(property = "destinationLocation", column = "destination_location"),
+            @Result(property = "destinationTime", column = "destination_time"),
+            @Result(property = "schedule", column = "contract_detail_id", many = @Many(select = "getContractTripSchedule"))
+    })
+    List<ContractTrip> getContractTrips(@Param("c_id") int contractId);
+
+    @Select("SELECT " +
+            "contract_detail_schedule_id, location " +
+            "FROM contract_detail_schedule " +
+            "WHERE " +
+            "contract_detail_id = #{cd_id} ")
+    @Results(id = "tripSchedule", value = {
+            @Result(property = "tripScheduleId", column = "contract_detail_schedule_id")})
+    List<ContractTripSchedule> getContractTripSchedule(@Param("cd_id") int contractDetailId);
 
     @Update("UPDATE contract " +
             "SET contract_status = #{c_status} " +

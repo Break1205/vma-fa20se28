@@ -19,7 +19,7 @@ public interface ContractVehicleService {
 
     void updateContractVehicleStatus(ContractVehicleStatusUpdateReq contractVehicleStatusUpdateReq);
 
-    TripListRes getTrips(TripListReq tripListReq);
+    TripListRes getTrips(TripListReq tripListReq, int viewOption);
 
     void startTrip(TripReq tripReq);
 

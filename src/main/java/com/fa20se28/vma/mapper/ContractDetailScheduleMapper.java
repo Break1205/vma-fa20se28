@@ -1,10 +1,10 @@
 package com.fa20se28.vma.mapper;
 
-import com.fa20se28.vma.model.ContractTripSchedule;
 import com.fa20se28.vma.request.ContractTripScheduleUpdateReq;
-import org.apache.ibatis.annotations.*;
-
-import java.util.List;
+import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Update;
 
 @Mapper
 public interface ContractDetailScheduleMapper {
@@ -26,14 +26,4 @@ public interface ContractDetailScheduleMapper {
             "WHERE " +
             "contract_detail_schedule_id = #{cdc_request.contractDetailScheduleId} ")
     int updateContractSchedule(@Param("cdc_request") ContractTripScheduleUpdateReq contractTripScheduleUpdateReq);
-
-    @Select("SELECT " +
-            "contract_detail_schedule_id, location " +
-            "FROM contract_detail_schedule " +
-            "WHERE " +
-            "contract_detail_id = #{cd_id} ")
-    @Results(id = "tripSchedule", value = {
-            @Result(property = "tripScheduleId", column = "contract_detail_schedule_id"),
-    })
-    List<ContractTripSchedule> getContractTripSchedule(@Param("cd_id") int contractDetailId);
 }
