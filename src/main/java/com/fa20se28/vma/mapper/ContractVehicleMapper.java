@@ -71,6 +71,7 @@ public interface ContractVehicleMapper {
             "</if> " +
             "ORDER BY cv.create_date DESC " +
             "OFFSET ${cv_offset} ROWS " +
+            "FETCH NEXT 15 ROWS ONLY " +
             "</script>"})
     @Results(id = "tripsResult", value = {
             @Result(property = "contractId", column = "contract_id"),
@@ -94,7 +95,7 @@ public interface ContractVehicleMapper {
             @Result(property = "departureTime", column = "departure_time"),
             @Result(property = "destinationLocation", column = "destination_location"),
             @Result(property = "destinationTime", column = "destination_time"),
-            @Result(property = "schedule", column = "contract_detail_id", many = @Many(select = "getContractTripSchedule"))
+            @Result(property = "locations", column = "contract_detail_id", many = @Many(select = "getContractTripSchedule"))
     })
     List<ContractTrip> getContractTrips(@Param("c_id") int contractId);
 
@@ -104,7 +105,7 @@ public interface ContractVehicleMapper {
             "WHERE " +
             "contract_detail_id = #{cd_id} ")
     @Results(id = "tripSchedule", value = {
-            @Result(property = "tripScheduleId", column = "contract_detail_schedule_id"),
+            @Result(property = "locationId", column = "contract_detail_schedule_id"),
     })
     List<ContractTripSchedule> getContractTripSchedule(@Param("cd_id") int contractDetailId);
 
@@ -139,4 +140,7 @@ public interface ContractVehicleMapper {
             "WHERE cv.contract_id = #{cv_id} " +
             "AND cv.contract_vehicle_status = 'COMPLETED' ")
     int getCompletedVehicleCount(@Param("cv_id") int contractId);
+
+    @Select("")
+    List<VehicleBasic> getRecommendations();
 }

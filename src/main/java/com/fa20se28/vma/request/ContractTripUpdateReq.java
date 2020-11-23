@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import java.util.Date;
 
 public class ContractTripUpdateReq {
-    private int contractDetailId;
+    private int contractTripId;
     private String departureLocation;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private Date departureTime;
@@ -13,12 +13,12 @@ public class ContractTripUpdateReq {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private Date destinationTime;
 
-    public int getContractDetailId() {
-        return contractDetailId;
+    public int getContractTripId() {
+        return contractTripId;
     }
 
-    public void setContractDetailId(int contractDetailId) {
-        this.contractDetailId = contractDetailId;
+    public void setContractTripId(int contractTripId) {
+        this.contractTripId = contractTripId;
     }
 
     public String getDepartureLocation() {

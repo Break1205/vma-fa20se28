@@ -13,7 +13,7 @@ public class ContractTrip {
     private String destinationLocation;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime destinationTime;
-    private List<ContractTripSchedule> schedule;
+    private List<ContractTripSchedule> locations;
 
     public int getContractTripId() {
         return contractTripId;
@@ -55,11 +55,11 @@ public class ContractTrip {
         this.destinationTime = destinationTime;
     }
 
-    public List<ContractTripSchedule> getSchedule() {
-        return schedule;
+    public List<ContractTripSchedule> getLocations() {
+        return locations;
     }
 
-    public void setSchedule(List<ContractTripSchedule> schedule) {
-        this.schedule = schedule;
+    public void setLocations(List<ContractTripSchedule> locations) {
+        this.locations = locations;
     }
 }

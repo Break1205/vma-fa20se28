@@ -31,7 +31,7 @@ public interface ContractDetailMapper {
             "destination_location = #{cd_request.destinationLocation},  " +
             "destination_time = #{cd_request.destinationTime}  " +
             "WHERE " +
-            "contract_detail_id = #{cd_request.contractDetailId} ")
+            "contract_detail_id = #{cd_request.contractTripId} ")
     int updateContractDetail(@Param("cd_request") ContractTripUpdateReq contractTripUpdateReq);
 
     @Select("SELECT TOP 1 contract_detail_id " +

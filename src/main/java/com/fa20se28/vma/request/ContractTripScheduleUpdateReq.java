@@ -1,15 +1,15 @@
 package com.fa20se28.vma.request;
 
 public class ContractTripScheduleUpdateReq {
-    private int contractDetailScheduleId;
+    private int locationId;
     private String location;
 
-    public int getContractDetailScheduleId() {
-        return contractDetailScheduleId;
+    public int getLocationId() {
+        return locationId;
     }
 
-    public void setContractDetailScheduleId(int contractDetailScheduleId) {
-        this.contractDetailScheduleId = contractDetailScheduleId;
+    public void setLocationId(int locationId) {
+        this.locationId = locationId;
     }
 
     public String getLocation() {

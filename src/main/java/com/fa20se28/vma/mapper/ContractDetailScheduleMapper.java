@@ -24,6 +24,6 @@ public interface ContractDetailScheduleMapper {
             "SET " +
             "[location] = #{cdc_request.location}  " +
             "WHERE " +
-            "contract_detail_schedule_id = #{cdc_request.contractDetailScheduleId} ")
+            "contract_detail_schedule_id = #{cdc_request.locationId} ")
     int updateContractSchedule(@Param("cdc_request") ContractTripScheduleUpdateReq contractTripScheduleUpdateReq);
 }

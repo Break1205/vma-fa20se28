@@ -1,15 +1,15 @@
 package com.fa20se28.vma.model;
 
 public class ContractTripSchedule {
-    private int tripScheduleId;
+    private int locationId;
     private String location;
 
-    public int getTripScheduleId() {
-        return tripScheduleId;
+    public int getLocationId() {
+        return locationId;
     }
 
-    public void setTripScheduleId(int tripScheduleId) {
-        this.tripScheduleId = tripScheduleId;
+    public void setLocationId(int locationId) {
+        this.locationId = locationId;
     }
 
     public String getLocation() {

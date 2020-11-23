@@ -45,8 +45,8 @@ public interface ContractMapper {
             "#{c_status}, " +
             "#{c_request.estimatedPassengerCount}, " +
             "#{c_request.estimatedVehicleCount}, " +
-            "#{c_request.isRoundTrip}, " +
             "#{c_request.totalPrice}, " +
+            "#{c_request.isRoundTrip}, " +
             "#{c_request.otherInformation}, " +
             "getDate()) ")
     int createContract(
@@ -184,7 +184,7 @@ public interface ContractMapper {
             @Result(property = "departureTime", column = "departure_time"),
             @Result(property = "destinationLocation", column = "destination_location"),
             @Result(property = "destinationTime", column = "destination_time"),
-            @Result(property = "schedule", column = "contract_detail_id", many = @Many(select = "getContractTripSchedule"))
+            @Result(property = "locations", column = "contract_detail_id", many = @Many(select = "getContractTripSchedule"))
     })
     List<ContractTrip> getContractTrips(@Param("c_id") int contractId);
 
@@ -194,7 +194,7 @@ public interface ContractMapper {
             "WHERE " +
             "contract_detail_id = #{cd_id} ")
     @Results(id = "tripSchedule", value = {
-            @Result(property = "tripScheduleId", column = "contract_detail_schedule_id")})
+            @Result(property = "locationId", column = "contract_detail_schedule_id")})
     List<ContractTripSchedule> getContractTripSchedule(@Param("cd_id") int contractDetailId);
 
     @Update("UPDATE contract " +
