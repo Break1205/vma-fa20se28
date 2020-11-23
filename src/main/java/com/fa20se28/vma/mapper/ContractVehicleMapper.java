@@ -1,10 +1,8 @@
 package com.fa20se28.vma.mapper;
 
 import com.fa20se28.vma.enums.ContractVehicleStatus;
-import com.fa20se28.vma.model.ContractTrip;
-import com.fa20se28.vma.model.ContractTripSchedule;
-import com.fa20se28.vma.model.Trip;
-import com.fa20se28.vma.model.VehicleBasic;
+import com.fa20se28.vma.model.*;
+import com.fa20se28.vma.request.VehicleRecommendationReq;
 import org.apache.ibatis.annotations.*;
 
 import java.time.LocalDate;
@@ -141,6 +139,33 @@ public interface ContractVehicleMapper {
             "AND cv.contract_vehicle_status = 'COMPLETED' ")
     int getCompletedVehicleCount(@Param("cv_id") int contractId);
 
-    @Select("")
-    List<VehicleBasic> getRecommendations();
+    @Select({"<script> " +
+            "SELECT v.vehicle_id, v.model, vt.vehicle_type_id, vt.vehicle_type_name, v.seats " +
+            "FROM vehicle v " +
+            "JOIN vehicle_type vt ON v.vehicle_type_id = vt.vehicle_type_id " +
+            "JOIN issued_vehicle iv ON iv.vehicle_id = v.vehicle_id " +
+            "WHERE v.seats &gt;= FLOOR(#{vr_req.averageSeatCount}) " +
+            "<if test = \"vr_req.vehicleTypeId != 0\" > " +
+            "AND vt.vehicle_type_id =  #{vr_req.vehicleTypeId} " +
+            "</if> " +
+            "AND v.vehicle_status NOT IN " +
+            "(SELECT DISTINCT vs.vehicle_status " +
+            "FROM vehicle vs " +
+            "WHERE vs.vehicle_status = 'REJECTED' " +
+            "OR vs.vehicle_status = 'PENDING_APPROVAL')" +
+            "AND iv.issued_vehicle_id NOT IN " +
+            "(SELECT cv.issued_vehicle_id " +
+            "FROM contract_vehicles cv " +
+            "JOIN [contract] c ON cv.contract_id = c.contract_id " +
+            "WHERE " +
+            "c.duration_from &lt; #{vr_req.durationTo} " +
+            "AND c.duration_to &gt;= #{vr_req.durationFrom}) " +
+            "AND iv.returned_date IS NULL " +
+            "</script>"})
+    @Results(id = "recommendationResult", value = {
+            @Result(property = "vehicleId", column = "vehicle_id"),
+            @Result(property = "vehicleType.vehicleTypeId", column = "vehicle_type_id"),
+            @Result(property = "vehicleType.vehicleTypeName", column = "vehicle_type_name")
+    })
+    List<VehicleRecommendation> getRecommendations(@Param("vr_req") VehicleRecommendationReq vehicleRecommendationReq);
 }
