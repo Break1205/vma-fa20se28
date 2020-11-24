@@ -20,11 +20,7 @@ public interface ContractComponent {
 
     void updateContractTrip(ContractTripUpdateReq contractTripUpdateReq);
 
-    void addContractTripSchedule(ContractTripScheduleStandaloneReq contractTripScheduleStandaloneReq);
-
     void updateContractTripSchedule(ContractTripScheduleUpdateReq contractTripScheduleUpdateReq);
-
-    void deleteContractTripSchedule(int locationId);
 
     ContractDetail getContractDetails(int contractId);
 }

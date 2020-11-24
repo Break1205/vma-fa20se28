@@ -71,21 +71,9 @@ public class ContractController {
         contractService.updateContractTrip(contractTripUpdateReq);
     }
 
-    @PostMapping("/schedule")
-    @ResponseStatus(HttpStatus.CREATED)
-    public void createContractTripSchedule(@RequestBody ContractTripScheduleStandaloneReq contractTripScheduleStandaloneReq) {
-        contractService.addContractTripSchedule(contractTripScheduleStandaloneReq);
-    }
-
     @PatchMapping("/schedule")
     public void updateContractTripSchedule(@RequestBody ContractTripScheduleUpdateReq contractTripScheduleUpdateReq) {
         contractService.updateContractTripSchedule(contractTripScheduleUpdateReq);
-    }
-
-    @DeleteMapping("/schedule")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteContractTripSchedule(@RequestParam int locationId) {
-        contractService.deleteContractTripSchedule(locationId);
     }
 
     @GetMapping("/{contract-id}")

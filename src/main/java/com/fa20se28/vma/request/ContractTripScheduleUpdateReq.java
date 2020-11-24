@@ -1,22 +1,24 @@
 package com.fa20se28.vma.request;
 
+import java.util.List;
+
 public class ContractTripScheduleUpdateReq {
-    private int locationId;
-    private String location;
+    private int contractTripId;
+    private List<ContractTripScheduleReq> locations;
 
-    public int getLocationId() {
-        return locationId;
+    public int getContractTripId() {
+        return contractTripId;
     }
 
-    public void setLocationId(int locationId) {
-        this.locationId = locationId;
+    public void setContractTripId(int contractTripId) {
+        this.contractTripId = contractTripId;
     }
 
-    public String getLocation() {
-        return location;
+    public List<ContractTripScheduleReq> getLocations() {
+        return locations;
     }
 
-    public void setLocation(String location) {
-        this.location = location;
+    public void setLocations(List<ContractTripScheduleReq> locations) {
+        this.locations = locations;
     }
 }

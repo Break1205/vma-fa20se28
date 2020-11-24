@@ -47,18 +47,8 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    public void addContractTripSchedule(ContractTripScheduleStandaloneReq contractTripScheduleStandaloneReq) {
-        contractComponent.addContractTripSchedule(contractTripScheduleStandaloneReq);
-    }
-
-    @Override
     public void updateContractTripSchedule(ContractTripScheduleUpdateReq contractTripScheduleUpdateReq) {
         contractComponent.updateContractTripSchedule(contractTripScheduleUpdateReq);
-    }
-
-    @Override
-    public void deleteContractTripSchedule(int contractId) {
-        contractComponent.deleteContractTripSchedule(contractId);
     }
 
     @Override

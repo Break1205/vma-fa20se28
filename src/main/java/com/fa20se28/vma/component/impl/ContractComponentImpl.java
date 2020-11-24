@@ -58,7 +58,7 @@ public class ContractComponentImpl implements ContractComponent {
 
     @Override
     public List<ContractLM> getContracts(ContractPageReq contractPageReq, int viewOption, int pageNum) {
-        return contractMapper.getContracts(contractPageReq, viewOption, pageNum*15);
+        return contractMapper.getContracts(contractPageReq, viewOption, pageNum * 15);
     }
 
     @Override
@@ -98,34 +98,21 @@ public class ContractComponentImpl implements ContractComponent {
 
     @Override
     @Transactional
-    public void addContractTripSchedule(ContractTripScheduleStandaloneReq contractTripScheduleStandaloneReq) {
-        int row = contractDetailScheduleMapper.createContractSchedule(
-                contractTripScheduleStandaloneReq.getLocation(),
-                contractTripScheduleStandaloneReq.getContractTripId());
-
-        if (row == 0) {
-            throw new DataException("Unknown error occurred. Data not modified!");
-        }
-    }
-
-
-    @Override
-    @Transactional
     public void updateContractTripSchedule(ContractTripScheduleUpdateReq contractTripScheduleUpdateReq) {
-        int row = contractDetailScheduleMapper.updateContractSchedule(contractTripScheduleUpdateReq);
+        int clearScheduleRow = contractDetailScheduleMapper.deleteContractSchedule(contractTripScheduleUpdateReq.getContractTripId());
 
-        if (row == 0) {
+        if (clearScheduleRow == 0) {
             throw new DataException("Unknown error occurred. Data not modified!");
-        }
-    }
+        } else {
+            for (ContractTripScheduleReq location : contractTripScheduleUpdateReq.getLocations()) {
+                int scheduleRow = contractDetailScheduleMapper.createContractSchedule(
+                        location.getLocation(),
+                        contractTripScheduleUpdateReq.getContractTripId());
 
-    @Override
-    @Transactional
-    public void deleteContractTripSchedule(int locationId) {
-        int row = contractDetailScheduleMapper.deleteContractSchedule(locationId);
-
-        if (row == 0) {
-            throw new DataException("Unknown error occurred. Data not modified!");
+                if (scheduleRow == 0) {
+                    throw new DataException("Unknown error occurred. Data not modified!");
+                }
+            }
         }
     }
 
