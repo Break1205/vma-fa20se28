@@ -98,8 +98,31 @@ public class ContractComponentImpl implements ContractComponent {
 
     @Override
     @Transactional
+    public void addContractTripSchedule(ContractTripScheduleStandaloneReq contractTripScheduleStandaloneReq) {
+        int row = contractDetailScheduleMapper.createContractSchedule(
+                contractTripScheduleStandaloneReq.getLocation(),
+                contractTripScheduleStandaloneReq.getContractTripId());
+
+        if (row == 0) {
+            throw new DataException("Unknown error occurred. Data not modified!");
+        }
+    }
+
+
+    @Override
+    @Transactional
     public void updateContractTripSchedule(ContractTripScheduleUpdateReq contractTripScheduleUpdateReq) {
         int row = contractDetailScheduleMapper.updateContractSchedule(contractTripScheduleUpdateReq);
+
+        if (row == 0) {
+            throw new DataException("Unknown error occurred. Data not modified!");
+        }
+    }
+
+    @Override
+    @Transactional
+    public void deleteContractTripSchedule(int locationId) {
+        int row = contractDetailScheduleMapper.deleteContractSchedule(locationId);
 
         if (row == 0) {
             throw new DataException("Unknown error occurred. Data not modified!");

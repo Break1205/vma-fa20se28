@@ -18,7 +18,11 @@ public interface ContractService {
 
     void updateContractTrip(ContractTripUpdateReq contractTripUpdateReq);
 
+    void addContractTripSchedule(ContractTripScheduleStandaloneReq contractTripScheduleStandaloneReq);
+
     void updateContractTripSchedule(ContractTripScheduleUpdateReq contractTripScheduleUpdateReq);
+
+    void deleteContractTripSchedule(int contractId);
 
     ContractDetailRes getContractDetails(int contractId);
 }
