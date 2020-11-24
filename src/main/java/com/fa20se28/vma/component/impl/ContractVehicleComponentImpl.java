@@ -171,7 +171,12 @@ public class ContractVehicleComponentImpl implements ContractVehicleComponent {
     }
 
     @Override
-    public List<VehicleRecommendation> getRecommendations(VehicleRecommendationReq vehicleRecommendationReq) {
-        return contractVehicleMapper.getRecommendations(vehicleRecommendationReq);
+    public List<VehicleRecommendation> getRecommendations(VehicleRecommendationReq vehicleRecommendationReq, int viewOption) {
+        return contractVehicleMapper.getRecommendations(vehicleRecommendationReq, viewOption*10);
+    }
+
+    @Override
+    public int getTotalRecommendations(VehicleRecommendationReq vehicleRecommendationReq) {
+        return contractVehicleMapper.getRecommendationCount(vehicleRecommendationReq);
     }
 }

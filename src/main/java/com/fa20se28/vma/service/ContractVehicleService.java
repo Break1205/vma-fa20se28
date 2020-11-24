@@ -26,5 +26,7 @@ public interface ContractVehicleService {
 
     void endTrip(TripReq tripReq);
 
-    VehicleRecommendationRes getRecommendations(VehicleRecommendationReq vehicleRecommendationReq);
+    VehicleRecommendationRes getRecommendations(VehicleRecommendationReq vehicleRecommendationReq, int viewOption);
+
+    int getTotalRecommendations(VehicleRecommendationReq vehicleRecommendationReq);
 }

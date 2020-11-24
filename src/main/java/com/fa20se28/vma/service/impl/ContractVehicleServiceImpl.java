@@ -65,7 +65,12 @@ public class ContractVehicleServiceImpl implements ContractVehicleService {
     }
 
     @Override
-    public VehicleRecommendationRes getRecommendations(VehicleRecommendationReq vehicleRecommendationReq) {
-        return new VehicleRecommendationRes(contractVehicleComponent.getRecommendations(vehicleRecommendationReq));
+    public VehicleRecommendationRes getRecommendations(VehicleRecommendationReq vehicleRecommendationReq, int viewOption) {
+        return new VehicleRecommendationRes(contractVehicleComponent.getRecommendations(vehicleRecommendationReq, viewOption));
+    }
+
+    @Override
+    public int getTotalRecommendations(VehicleRecommendationReq vehicleRecommendationReq) {
+        return contractVehicleComponent.getTotalRecommendations(vehicleRecommendationReq);
     }
 }

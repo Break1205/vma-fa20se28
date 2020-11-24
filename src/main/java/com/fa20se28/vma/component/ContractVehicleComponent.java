@@ -30,5 +30,7 @@ public interface ContractVehicleComponent {
 
     void completeContract(int contractId);
 
-    List<VehicleRecommendation> getRecommendations(VehicleRecommendationReq vehicleRecommendationReq);
+    List<VehicleRecommendation> getRecommendations(VehicleRecommendationReq vehicleRecommendationReq, int viewOption);
+
+    int getTotalRecommendations(VehicleRecommendationReq vehicleRecommendationReq);
 }

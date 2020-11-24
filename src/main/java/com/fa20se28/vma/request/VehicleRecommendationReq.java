@@ -6,17 +6,19 @@ import java.util.Date;
 
 public class VehicleRecommendationReq {
     private int vehicleTypeId;
-    private float averageSeatCount;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private Date durationFrom;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private Date durationTo;
+    private int seatsMin;
+    private int seatsMax;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date startDate;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date endDate;
 
-    public VehicleRecommendationReq(int vehicleTypeId, float averageSeatCount, Date durationFrom, Date durationTo) {
+    public VehicleRecommendationReq(int vehicleTypeId, int seatsMin, int seatsMax, Date startDate, Date endDate) {
         this.vehicleTypeId = vehicleTypeId;
-        this.averageSeatCount = averageSeatCount;
-        this.durationFrom = durationFrom;
-        this.durationTo = durationTo;
+        this.seatsMin = seatsMin;
+        this.seatsMax = seatsMax;
+        this.startDate = startDate;
+        this.endDate = endDate;
     }
 
     public int getVehicleTypeId() {
@@ -27,27 +29,35 @@ public class VehicleRecommendationReq {
         this.vehicleTypeId = vehicleTypeId;
     }
 
-    public float getAverageSeatCount() {
-        return averageSeatCount;
+    public int getSeatsMin() {
+        return seatsMin;
     }
 
-    public void setAverageSeatCount(float averageSeatCount) {
-        this.averageSeatCount = averageSeatCount;
+    public void setSeatsMin(int seatsMin) {
+        this.seatsMin = seatsMin;
     }
 
-    public Date getDurationFrom() {
-        return durationFrom;
+    public int getSeatsMax() {
+        return seatsMax;
     }
 
-    public void setDurationFrom(Date durationFrom) {
-        this.durationFrom = durationFrom;
+    public void setSeatsMax(int seatsMax) {
+        this.seatsMax = seatsMax;
     }
 
-    public Date getDurationTo() {
-        return durationTo;
+    public Date getStartDate() {
+        return startDate;
     }
 
-    public void setDurationTo(Date durationTo) {
-        this.durationTo = durationTo;
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
+
+    public Date getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
     }
 }
