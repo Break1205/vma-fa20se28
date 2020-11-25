@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.thymeleaf.org ">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="Content-Style-Type" content="text/css"/>
+    <title></title>
+</head>
+<body>
+<div>
+    <p style="font-size:10pt; line-height:150%; margin:0pt; text-align:center"><span
+            style="font-family:Arial; font-size:10pt; font-weight:bold">HỢP ĐỒNG VẬN CHUYỂN HÀNH KHÁCH</span></p>
+    <p style="font-size:10pt; line-height:150%; margin:0pt; text-align:center"><span
+            style="font-family:Arial; font-size:10pt; font-style:italic">(Số: <span th:text="${contractId}"></span>/HĐ</span><span
+            style="font-family:Arial; font-size:10pt; font-style:italic">VCHK)</span></p>
+    <p style="font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt; font-style:italic">&#xa0;</span></p>
+    <p style="font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt; font-style:italic">Hôm nay, ngày <span th:text="${signedDay}"></span></span><span
+            style="font-family:Arial; font-size:10pt; font-style:italic">. tháng <span th:text="${signedMonth}"></span> năm <span th:text="${signedYear}"></span>, Tại <span th:text="${signedLocation}"></span></span>
+    </p>
+    <p style="font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt; font-style:italic">Chúng tôi gồm có:</span></p>
+    <p style="font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt; font-weight:bold">BÊN </span><span
+            style="font-family:Arial; font-size:10pt; font-weight:bold">VẬN CHUYỂN </span><span
+            style="font-family:Arial; font-size:10pt; font-weight:bold">(BÊN A):</span><span
+            style="font-family:Arial; font-size:10pt">……………………………………………………………………………………</span></p>
+    <p style="font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt">Địa chỉ:</span><span style="font-family:Arial; font-size:10pt"> ……………………………………………………………………………………………………………</span><span
+            style="font-family:Arial; font-size:10pt">..</span></p>
+    <p style="font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt">Điện thoại:</span><span style="font-family:Arial; font-size:10pt"> ………………………………………………………………………………………………</span><span
+            style="font-family:Arial; font-size:10pt">………….</span></p>
+    <p style="font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt">Fax:</span><span style="font-family:Arial; font-size:10pt"> ……………………………………………………………………………………………………………</span><span
+            style="font-family:Arial; font-size:10pt">…….</span></p>
+    <p style="font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt">Mã số thuế:</span><span style="font-family:Arial; font-size:10pt"> ………………………………………………………………………………………………</span><span
+            style="font-family:Arial; font-size:10pt">…………</span></p>
+    <p style="font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt">Tài khoản số:</span><span
+            style="font-family:Arial; font-size:10pt"> ………………………………………………………………………………………………</span><span
+            style="font-family:Arial; font-size:10pt">……….</span></p>
+    <p style="font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt">Do ông (bà): </span><span
+            style="font-family:Arial; font-size:10pt">…………………………………………………………………………………………………………</span></p>
+    <p style="font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt">Chức vụ: </span><span style="font-family:Arial; font-size:10pt">……………………………………………………………………………………………</span><span
+            style="font-family:Arial; font-size:10pt"> làm đại diện.</span></p>
+    <p style="font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt">&#xa0;</span></p>
+    <p style="font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt; font-weight:bold">BÊN HÀNH KHÁCH</span><span
+            style="font-family:Arial; font-size:10pt; font-weight:bold"> </span><span
+            style="font-family:Arial; font-size:10pt; font-weight:bold">(</span><span
+            style="font-family:Arial; font-size:10pt; font-weight:bold">BÊN B</span><span
+            style="font-family:Arial; font-size:10pt; font-weight:bold">):</span><span
+            style="font-family:Arial; font-size:10pt"> ………………………………………………………………………………</span><span
+            style="font-family:Arial; font-size:10pt">…….</span></p>
+    <p style="font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt">Địa chỉ:</span><span style="font-family:Arial; font-size:10pt"> <span th:text="${address}"></span>.</span><span
+            style="font-family:Arial; font-size:10pt">……..</span></p>
+    <p style="font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt">Điện thoại:</span><span style="font-family:Arial; font-size:10pt"> <span th:text="${phoneNumber}"></span></span><span
+            style="font-family:Arial; font-size:10pt">….</span></p>
+    <p style="font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt">Fax:</span><span style="font-family:Arial; font-size:10pt"> <span th:text="${fax}"></span>.</span><span
+            style="font-family:Arial; font-size:10pt">…………………………………………………</span></p>
+    <p style="font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt">Mã số thuế:</span><span style="font-family:Arial; font-size:10pt"> <span th:text="${taxCode}"></span></span><span
+            style="font-family:Arial; font-size:10pt">…</span></p>
+    <p style="font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt">Tài khoản số:</span><span
+            style="font-family:Arial; font-size:10pt"> <span th:text="${accountNumber}"></span></span><span
+            style="font-family:Arial; font-size:10pt">….</span></p>
+    <p style="font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt">Do ông (bà): </span><span
+            style="font-family:Arial; font-size:10pt"><span th:text="${customerName}"></span></span><span
+            style="font-family:Arial; font-size:10pt">...</span><span style="font-family:Arial; font-size:10pt">…</span>
+    </p>
+    <p style="font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt">Chức vụ: </span><span style="font-family:Arial; font-size:10pt">……………………………………………………………………………………………</span><span
+            style="font-family:Arial; font-size:10pt">….</span><span style="font-family:Arial; font-size:10pt"> làm đại diện.</span>
+    </p>
+    <p style="font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt">&#xa0;</span></p>
+    <p style="font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt; font-style:italic">Hai bên cùng thỏa thuận ký hợp đồng với những nội dung sau:</span>
+    </p>
+    <p style="font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt">&#xa0;</span></p>
+    <p style="font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt">&#xa0;</span><span
+            style="font-family:Arial; font-size:10pt; font-weight:bold">ĐIỀU 1: HÀNH KHÁCH, HÀNH LÝ VẬN CHUYỂN</span>
+    </p>
+    <p style="font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt">1.</span><span style="font-family:Arial; font-size:10pt">1.</span><span
+            style="font-family:Arial; font-size:10pt"> Số người</span><span
+            style="font-family:Arial; font-size:10pt"> </span><span
+            style="font-family:Arial; font-size:10pt">…</span><span th:text="${numberOfPassengers}"></span><span
+            style="font-family:Arial; font-size:10pt">……..</span><span
+            style="font-family:Arial; font-size:10pt">;</span><span style="font-family:Arial; font-size:10pt"> Trọng lượng hành lý</span><span
+            style="font-family:Arial; font-size:10pt"> </span><span
+            style="font-family:Arial; font-size:10pt">…</span><span
+            style="font-family:Arial; font-size:10pt">……….</span></p>
+    <p style="font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt">1.</span><span
+            style="font-family:Arial; font-size:10pt">2. </span><span style="font-family:Arial; font-size:10pt">Giá cước: <span th:text="${contractValue}"></span></span>
+    </p>
+    <p style="font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt">&#xa0;</span></p>
+    <p style="font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt; font-weight:bold">ĐIỀU 2: ĐỊA ĐIỂM NHẬN KHÁCH, GIAO KHÁCH</span>
+    </p>
+    <p style="font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt">2.</span><span
+            style="font-family:Arial; font-size:10pt">1. Bên A</span><span style="font-family:Arial; font-size:10pt"> phải đến</span><span
+            style="font-family:Arial; font-size:10pt"> </span><span th:text="${departureLocation}"></span><span style="font-family:Arial; font-size:10pt"> nhận hành khách vào thời gian</span><span
+            style="font-family:Arial; font-size:10pt"> </span><span style="font-family:Arial; font-size:10pt">…..</span><span
+            style="font-family:Arial; font-size:10pt"> </span><span
+            style="font-family:Arial; font-size:10pt"><span th:text="${departureHour}"></span> giờ…<span th:text="${departureMinute}"></span>.</span><span
+            style="font-family:Arial; font-size:10pt"> </span><span
+            style="font-family:Arial; font-size:10pt">ngày</span><span
+            style="font-family:Arial; font-size:10pt"> </span><span
+            style="font-family:Arial; font-size:10pt">.<span th:text="${departureDay}"></span>.</span><span style="font-family:Arial; font-size:10pt"> tháng <span th:text="${departureMonth}"></span> năm <span th:text="${departureYear}"></span>.</span>
+    </p>
+    <p style="font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt">2.</span><span
+            style="font-family:Arial; font-size:10pt">2. </span><span style="font-family:Arial; font-size:10pt">Bên A phải giao khách đến <span th:text="${destinationLocation}"></span>. vào thời gian <span th:text="${destinationHour}"></span>. giờ <span th:text="${destinationMinute}"></span>. ngày <span th:text="${destinationDay}"></span>. tháng <span th:text="${destinationMonth}"></span> năm <span th:text="${destinationYear}"></span>..</span>
+    </p>
+    <p style="font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt">&#xa0;</span></p>
+    <p style="font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt; font-weight:bold">ĐIỀU 3: PHƯƠNG TIỆN VẬN CHUYỂN HÀNH KH</span><span
+            style="font-family:Arial; font-size:10pt; font-weight:bold">ÁCH</span></p>
+    <p style="font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt">3.</span><span style="font-family:Arial; font-size:10pt">1. Bên B yêu cầu bên A</span><span
+            style="font-family:Arial; font-size:10pt"> vận chuyển số khách bằng phương tiện (xe ca, tàu thủy, máy bay, xích lô…</span><span
+            style="font-family:Arial; font-size:10pt">) phải có khả năng cần thiết như sau</span><span
+            style="font-family:Arial; font-size:10pt">:</span></p>
+    <p style="font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt">a) </span><span style="font-family:Arial; font-size:10pt">Tốc độ phải đạt</span><span
+            style="font-family:Arial; font-size:10pt"> </span><span style="font-family:Arial; font-size:10pt">…..</span><span
+            style="font-family:Arial; font-size:10pt"> </span><span
+            style="font-family:Arial; font-size:10pt">km/giờ</span></p>
+    <p style="font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt">b) </span><span style="font-family:Arial; font-size:10pt">Có máy điều hòa, quạt, mái che</span><span
+            style="font-family:Arial; font-size:10pt">.</span></p>
+    <p style="font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt">c) </span><span style="font-family:Arial; font-size:10pt">Số lượng phương tiện là</span><span
+            style="font-family:Arial; font-size:10pt">: <span th:text="${numberOfVehicles}"></span></span></p>
+    <p style="font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt">3.</span><span
+            style="font-family:Arial; font-size:10pt">2. Bên A</span><span style="font-family:Arial; font-size:10pt"> chịu trách nhiệm về kỹ thuật cho phương tiện vận chuyển để bảo đảm vận tải trong thời gian là</span><span
+            style="font-family:Arial; font-size:10pt"> </span><span
+            style="font-family:Arial; font-size:10pt">……….</span></p>
+    <p style="font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt">3.</span><span
+            style="font-family:Arial; font-size:10pt">3. Bên A</span><span style="font-family:Arial; font-size:10pt"> phải chuẩn bị đủ giấy tờ cho phương tiện đi lại hợp lệ trên tuyến giao thông đó để vận tải số hàng đã thỏa thuận như trên và chịu mọi hậu quả về giấy tờ pháp lý của phương tiện vận tải.</span>
+    </p>
+    <p style="font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt">3.</span><span
+            style="font-family:Arial; font-size:10pt">4. Bên A</span><span style="font-family:Arial; font-size:10pt"> phải làm vệ sinh phương tiện vận chuyển hành khách.</span>
+    </p>
+    <p style="font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt">&#xa0;</span></p>
+    <p style="font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt; font-weight:bold">ĐIỀU 4: </span><span
+            style="font-family:Arial; font-size:10pt; font-weight:bold">QUYỀN VÀ </span><span
+            style="font-family:Arial; font-size:10pt; font-weight:bold">NGHĨA VỤ CỦA BÊN </span><span
+            style="font-family:Arial; font-size:10pt; font-weight:bold">A</span></p>
+    <p style="font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt">4.1. Nghĩa vụ của bên A:</span></p>
+    <p style="font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt">a) </span><span style="font-family:Arial; font-size:10pt">Chuyên chở hành khách từ địa điểm xuất phát đến đúng địa điểm, đến đúng giờ, văn minh, lịch sự và bằng phương tiện đã thỏa thuận một cách an toàn, theo lộ trình và cước phí hợp lý theo loại phương tiện của lộ trình đó; bảo đảm đủ chỗ ngồi cho hành khách và không chuyên chở vượt quá trọng tải.</span>
+    </p>
+    <p style="font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt">b) </span><span style="font-family:Arial; font-size:10pt">Bảo đảm thời gian xuất phát đã được </span><span
+            style="font-family:Arial; font-size:10pt">thông báo </span><span style="font-family:Arial; font-size:10pt">hoặc theo thỏa thuận.</span>
+    </p>
+    <p style="font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt">c) </span><span style="font-family:Arial; font-size:10pt">Mua bảo hiểm trách nhiệm dân sự đối với hành khách theo quy định của pháp luật.</span>
+    </p>
+    <p style="font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt">d) </span><span style="font-family:Arial; font-size:10pt">Chuyên chở hành lý và trả lại cho hành khách hoặc người có quyền nhận hành lý tại địa điểm thỏa thuận theo đúng thời gian, lộ trình.</span>
+    </p>
+    <p style="font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt">e) </span><span style="font-family:Arial; font-size:10pt">Hoàn trả lại cho hành khách cước phí vận chuyển</span><span
+            style="font-family:Arial; font-size:10pt"> theo thỏa thuận</span><span
+            style="font-family:Arial; font-size:10pt">. Trong trường hợp pháp luật có quy định thì theo quy định của pháp luật.</span>
+    </p>
+    <p style="background-color:#ffffff; font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt">f) </span><span style="font-family:Arial; font-size:10pt">Trách nhiệm bồi thường thiệt hại:</span>
+    </p>
+    <p style="background-color:#ffffff; font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt">- Trong trường hợp tính mạng, sức khoẻ và hành lý của hành khách bị thiệt hại thì bên </span><span
+            style="font-family:Arial; font-size:10pt">A</span><span style="font-family:Arial; font-size:10pt"> phải bồi thường theo quy định của pháp luật.</span>
+    </p>
+    <p style="background-color:#ffffff; font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt">- Bên </span><span
+            style="font-family:Arial; font-size:10pt">A</span><span style="font-family:Arial; font-size:10pt"> không phải bồi thường thiệt hại về tính mạng, sức khoẻ và hành lý của hành khách nếu thiệt hại xảy ra hoàn toàn do lỗi của hành khách, trừ trường hợp pháp luật có quy định khác.</span>
+    </p>
+    <p style="background-color:#ffffff; font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt">- Trong trường hợp hành khách vi phạm điều kiện vận chuyển đã thoả thuận, các quy định của điều lệ vận chuyển mà gây thiệt hại cho bên </span><span
+            style="font-family:Arial; font-size:10pt">A</span><span style="font-family:Arial; font-size:10pt"> hoặc người thứ ba thì phải bồi thường.</span>
+    </p>
+    <p style="background-color:#ffffff; font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt">4.2. Quyền của bên A:</span></p>
+    <p style="font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt">a) </span><span style="font-family:Arial; font-size:10pt">Yêu cầu hành khách trả lại đủ cước phí vận chuyển hành khách, cước phí vận chuyển hành lý mang theo người vượt qua mức quy định.</span>
+    </p>
+    <p style="font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt">b) </span><span style="font-family:Arial; font-size:10pt">Từ chối chuyên chở hành khách </span><span
+            style="font-family:Arial; font-size:10pt">trong các trường hợp sau đây:</span></p>
+    <p style="background-color:#ffffff; font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt">-</span><span style="font-family:Arial; font-size:10pt"> Hành khách không chấp hành quy định của bên vận chuyển hoặc có hành vi l</span><span
+            style="font-family:Arial; font-size:10pt">àm mất trật tự công cộng, cản trở công việc của bên vận chuyển, đe dọa đến tính mạng, sức khoẻ, tài sản của người khác hoặc có những hành vi khác không bảo đảm an toàn trong hành trình; trong trường hợp này, hành khách không được trả lại cước phí vận chuyển và phải chịu phạt vi phạm, nếu điều lệ vận chuyển có quy định;</span>
+    </p>
+    <p style="background-color:#ffffff; font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt">- </span><span style="font-family:Arial; font-size:10pt">Do tình trạng sức khoẻ của hành khách mà bên vận chuyển thấy rõ rằng việc vận chuyển sẽ gây nguy hiểm cho chính hành khách đó hoặc những người khác trong hành trình;</span>
+    </p>
+    <p style="background-color:#ffffff; font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt">-</span><span style="font-family:Arial; font-size:10pt"> Để ngăn ngừa dịch bệnh lây lan.</span>
+    </p>
+    <p style="background-color:#ffffff; font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt">&#xa0;</span></p>
+    <p style="font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt; font-weight:bold">ĐIỀU 5: QUYỀN VÀ NGHĨA VỤ CỦA </span><span
+            style="font-family:Arial; font-size:10pt; font-weight:bold">BÊN B</span></p>
+    <p style="font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt">5.1. </span><span style="font-family:Arial; font-size:10pt">Nghĩa vụ của bên B:</span>
+    </p>
+    <p style="font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt">a) </span><span style="font-family:Arial; font-size:10pt">Trả đủ cước phí vận chuyển hành khách, hành lý vượt quá mức quy định và tự bảo quản hành lý mang theo người;</span>
+    </p>
+    <p style="font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt">b) </span><span style="font-family:Arial; font-size:10pt">Có mặt tại địa điểm xuất phát đúng thời gian đã thỏa thuận;</span>
+    </p>
+    <p style="font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt">c) </span><span style="font-family:Arial; font-size:10pt">Tôn trọng, chấp hành đúng các quy định của bên vận chuyển và các quy định khác về bảo đảm an toàn giao thông.</span>
+    </p>
+    <p style="font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt">5.2. </span><span style="font-family:Arial; font-size:10pt">Quyền của </span><span
+            style="font-family:Arial; font-size:10pt">bên B:</span></p>
+    <p style="font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt">a) </span><span style="font-family:Arial; font-size:10pt">Yêu cầu được chuyên chở đúng bằng phương tiện vận chuyển và giá trị loại vé với lộ trình đã thỏa thuận;</span>
+    </p>
+    <p style="font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt">b) </span><span style="font-family:Arial; font-size:10pt">Được miễn cước phí vận chuyển đối với hành lý ký gửi và hành lý xách tay trong hạn mức theo thỏa thuận hoặc theo quy định của pháp luật;</span>
+    </p>
+    <p style="font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt">c) </span><span style="font-family:Arial; font-size:10pt">Yêu cầu thanh toán chi phí phát sinh hoặc bồi thường thiệt hại, nếu bên </span><span
+            style="font-family:Arial; font-size:10pt">A</span><span style="font-family:Arial; font-size:10pt"> có lỗi trong việc không c</span><span
+            style="font-family:Arial; font-size:10pt">huyên chở đúng thời hạn, địa điể</span><span
+            style="font-family:Arial; font-size:10pt">m thỏa thuận;</span></p>
+    <p style="font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt">d) </span><span style="font-family:Arial; font-size:10pt">Được nhận lại toàn bộ hoặc một phần cước phí vận chuyển trong trường hợp </span><span
+            style="font-family:Arial; font-size:10pt">sau đây:</span></p>
+    <p style="font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt">e) </span><span style="font-family:Arial; font-size:10pt">Nhận hành lý tại địa điểm đã thỏa thuận theo đúng thời gian, lộ trình.</span>
+    </p>
+    <p style="font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt">f) </span><span style="font-family:Arial; font-size:10pt">Yêu cầu tạm dừng hành trình trong thời hạn và theo thủ tục do pháp luật quy định.</span>
+    </p>
+    <p style="font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt">&#xa0;</span></p>
+    <p style="background-color:#ffffff; font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt; font-weight:bold">ĐIỀU 6: ĐƠN PHƯƠNG CHẤM DỨT THỰC HIỆN HỢP ĐỒNG</span>
+    </p>
+    <p style="background-color:#ffffff; font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt">6.</span><span
+            style="font-family:Arial; font-size:10pt">1. Bên </span><span
+            style="font-family:Arial; font-size:10pt">A</span><span style="font-family:Arial; font-size:10pt"> có quyền đơn phương chấm dứt thực hiệ</span><span
+            style="font-family:Arial; font-size:10pt">n hợp đồng trong các trường hợp</span><span
+            style="font-family:Arial; font-size:10pt">&#xa0;</span><span style="font-family:Arial; font-size:10pt">quy định tại các mục b) Khoản 4.2 Điều 4 của hợp đồng này.</span>
+    </p>
+    <p style="background-color:#ffffff; font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt">6.</span><span
+            style="font-family:Arial; font-size:10pt">2. </span><span
+            style="font-family:Arial; font-size:10pt">Bên B </span><span style="font-family:Arial; font-size:10pt">có quyền đơn phương chấm dứt thực hiện hợp đồng trong trường hợp bên </span><span
+            style="font-family:Arial; font-size:10pt">A</span><span style="font-family:Arial; font-size:10pt"> vi phạm nghĩ</span><span
+            style="font-family:Arial; font-size:10pt">a vụ quy định tại c</span><span
+            style="font-family:Arial; font-size:10pt">ác mục </span><span style="font-family:Arial; font-size:10pt">a), b</span><span
+            style="font-family:Arial; font-size:10pt">)</span><span style="font-family:Arial; font-size:10pt">, d) Khoản 4.1</span><span
+            style="font-family:Arial; font-size:10pt"> Đ</span><span
+            style="font-family:Arial; font-size:10pt">iều 4 của</span><span style="font-family:Arial; font-size:10pt"> hợp đồng </span><span
+            style="font-family:Arial; font-size:10pt">này.</span></p>
+    <p style="background-color:#ffffff; font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt">&#xa0;</span></p>
+    <p style="font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt; font-weight:bold">ĐIỀU </span><span
+            style="font-family:Arial; font-size:10pt; font-weight:bold">7:</span><span
+            style="font-family:Arial; font-size:10pt; font-weight:bold"> BIỆN PHÁP BẢO ĐẢM THỰC HIỆN HỢP ĐỒNG </span><span
+            style="font-family:Arial; font-size:10pt">(Nếu có)</span></p>
+    <p style="font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt">&#xa0;</span></p>
+    <p style="font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt; font-weight:bold">ĐIỀU </span><span
+            style="font-family:Arial; font-size:10pt; font-weight:bold">8:</span><span
+            style="font-family:Arial; font-size:10pt; font-weight:bold"> TRÁCH NHIỆM DO VI PHẠM HỢP ĐỒNG</span></p>
+    <p style="font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt">8</span><span
+            style="font-family:Arial; font-size:10pt">.</span><span style="font-family:Arial; font-size:10pt">1. Bên nào vi phạm hợp đồng, thì phải trả cho bên bị vị phạm tiền phạt vi phạm hợp đồng, chi phí để ngăn chặn hạn chế thiệt hai do vi phạm gây ra.</span>
+    </p>
+    <p style="font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt">8</span><span
+            style="font-family:Arial; font-size:10pt">.</span><span style="font-family:Arial; font-size:10pt">2. Bên nào đã ký hợp đồng mà không thực hiện hợp đồng hoặc đơn phương đình chỉ hợp đồng mà không có lý do chính đáng thì sẽ bị phạt tới…% giá trị phần tổng cước phí dự chi.</span>
+    </p>
+    <p style="font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt">&#xa0;</span></p>
+    <p style="font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt; font-weight:bold">ĐIỀU </span><span
+            style="font-family:Arial; font-size:10pt; font-weight:bold">9:</span><span
+            style="font-family:Arial; font-size:10pt; font-weight:bold"> TRÁCH NHIỆM</span><span
+            style="font-family:Arial; font-size:10pt; font-weight:bold"> BỒI THƯỜNG THIỆT HẠI</span></p>
+    <p style="background-color:#ffffff; font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt">9</span><span
+            style="font-family:Arial; font-size:10pt">.</span><span style="font-family:Arial; font-size:10pt">1. Trong trường hợp tính mạng, sức khoẻ và hành lý của </span><span
+            style="font-family:Arial; font-size:10pt">bên B</span><span style="font-family:Arial; font-size:10pt"> bị thiệt hại thì bên </span><span
+            style="font-family:Arial; font-size:10pt">A</span><span style="font-family:Arial; font-size:10pt"> phải bồi thường theo quy định của pháp luật.</span>
+    </p>
+    <p style="background-color:#ffffff; font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt">9</span><span
+            style="font-family:Arial; font-size:10pt">.</span><span
+            style="font-family:Arial; font-size:10pt">2. Bên </span><span
+            style="font-family:Arial; font-size:10pt">A</span><span style="font-family:Arial; font-size:10pt"> không phải bồi thường thiệt hại về tính mạng, sức khoẻ và hành lý của hành khách nếu thiệt hại xảy ra hoàn toàn do lỗi của hành khách, trừ trường hợp pháp luật có quy định khác.</span>
+    </p>
+    <p style="background-color:#ffffff; font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt">9</span><span
+            style="font-family:Arial; font-size:10pt">.</span><span style="font-family:Arial; font-size:10pt">3. Trong trường hợp </span><span
+            style="font-family:Arial; font-size:10pt">bên B</span><span style="font-family:Arial; font-size:10pt"> vi phạm điều kiện vận chuyển đã thoả thuận, các quy định của điều lệ vận chuyển mà gây thiệt hại cho bên </span><span
+            style="font-family:Arial; font-size:10pt">A</span><span style="font-family:Arial; font-size:10pt"> hoặc người thứ ba thì phải bồi thường.</span>
+    </p>
+    <p style="font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt">&#xa0;</span></p>
+    <p style="font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt; font-weight:bold">ĐIỀU </span><span
+            style="font-family:Arial; font-size:10pt; font-weight:bold">10:</span><span
+            style="font-family:Arial; font-size:10pt; font-weight:bold"> GIẢI QUYẾT TRANH CHẤP HỢP ĐỒNG</span></p>
+    <p style="font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt">10</span><span
+            style="font-family:Arial; font-size:10pt">.</span><span style="font-family:Arial; font-size:10pt">1. Nếu có vấn đề gì bất lợi các bên phải kịp thời thông báo cho nhau biết và tích cực giải quyết trên cơ sở thỏa thuận bình đẳng, cùng có lợi.</span>
+    </p>
+    <p style="font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt">10</span><span
+            style="font-family:Arial; font-size:10pt">.</span><span style="font-family:Arial; font-size:10pt">2. Trường hợp các bên không tự giải quyết xong </span><span
+            style="font-family:Arial; font-size:10pt">thì thố</span><span style="font-family:Arial; font-size:10pt">ng nhất sẽ khiếu nại tại Tòa án.</span>
+    </p>
+    <p style="font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt">10</span><span
+            style="font-family:Arial; font-size:10pt">.</span><span style="font-family:Arial; font-size:10pt">3. Chi phí cho những hoạt động kiểm tra xác minh và lệ phí Tòa án </span><span
+            style="font-family:Arial; font-size:10pt">theo quy định của pháp luật.</span></p>
+    <p style="font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt">&#xa0;</span></p>
+    <p style="font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt; font-weight:bold">ĐIỀU </span><span
+            style="font-family:Arial; font-size:10pt; font-weight:bold">11:</span><span
+            style="font-family:Arial; font-size:10pt; font-weight:bold"> HIỆU LỰC CỦA HỢP ĐỒNG</span></p>
+    <p style="font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt">Hợp đồng này có hiệu lực từ ngày <span th:text="${durationFrom}"></span>. đến ngày </span><span
+            style="font-family:Arial; font-size:10pt"><span th:text="${durationToDay}"></span> tháng <span th:text="${durationToMonth}"></span>. năm <span th:text="${durationToYear}"></span>…</span></p>
+    <p style="font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt; font-style:italic">Hợp đồng được lập thành ………. (………..) bản, mỗi bên giữ một bản và có giá trị như nhau.</span>
+    </p>
+    <p style="font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt">&#xa0;</span></p>
+    <p style="font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt; font-weight:bold">             </span><span
+            style="font-family:Arial; font-size:10pt; font-weight:bold">ĐẠI DIỆ</span><span
+            style="font-family:Arial; font-size:10pt; font-weight:bold">N BÊN A                                        </span><span
+            style="font-family:Arial; font-size:10pt; font-weight:bold">ĐẠI DIỆN BÊN B</span></p>
+    <p style="font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt">                   </span><span
+            style="font-family:Arial; font-size:10pt">Chức vụ</span><span style="font-family:Arial; font-size:10pt">                                                      Chức vụ</span>
+    </p>
+    <p style="font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt">            </span><span
+            style="font-family:Arial; font-size:10pt">(Ký tên, đóng dấ</span><span
+            style="font-family:Arial; font-size:10pt">u)                                     </span><span
+            style="font-family:Arial; font-size:10pt">(Ký tên, đóng dấu)</span></p>
+    <p style="font-size:10pt; line-height:150%; margin:0pt; text-align:justify"><span
+            style="font-family:Arial; font-size:10pt">&#xa0;</span></p>
+</div>
+</body>
+</html>

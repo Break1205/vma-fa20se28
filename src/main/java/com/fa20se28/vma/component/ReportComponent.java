@@ -1,30 +1,40 @@
 package com.fa20se28.vma.component;
 
 import com.fa20se28.vma.model.ByteArrayInputStreamWrapper;
+import com.fa20se28.vma.model.ContractReport;
+import com.fa20se28.vma.model.ContributorIncome;
+import com.fa20se28.vma.model.ContributorIncomesDetail;
+import com.fa20se28.vma.model.EstimateAndEarnedIncome;
+import com.fa20se28.vma.model.MaintenanceReport;
+import com.fa20se28.vma.model.RevenueExpense;
+import com.fa20se28.vma.model.Schedule;
+import com.fa20se28.vma.model.VehicleReport;
 import com.fa20se28.vma.request.ReportReq;
-import com.fa20se28.vma.response.ContractReportRes;
-import com.fa20se28.vma.response.ContributorIncomeRes;
-import com.fa20se28.vma.response.MaintenanceReportRes;
-import com.fa20se28.vma.response.RevenueExpenseReportRes;
-import com.fa20se28.vma.response.ScheduleRes;
-import com.fa20se28.vma.response.VehicleReportRes;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 public interface ReportComponent {
     ByteArrayInputStreamWrapper exportReportByType(ReportReq reportReq) throws IOException;
 
-    ScheduleRes exportScheduleReportData(ReportReq reportReq);
+    List<Schedule> getScheduleReportData(ReportReq reportReq);
 
-    VehicleReportRes exportVehicleReportData(ReportReq reportReq);
+    List<VehicleReport> getVehicleReportData();
 
-    MaintenanceReportRes exportMaintenanceReportData(ReportReq reportReq);
+    List<MaintenanceReport> getMaintenanceReportData(ReportReq reportReq);
 
-    ContractReportRes exportContractsReportData(ReportReq reportReq);
+    List<ContractReport> getContractsReportData(ReportReq reportReq);
 
-    RevenueExpenseReportRes exportVehicleRevenueExpenseReportData(ReportReq reportReq);
+    List<RevenueExpense> getVehicleRevenueExpenseReportData(ReportReq reportReq);
 
-    RevenueExpenseReportRes exportCompanyRevenueExpenseReportData(ReportReq reportReq);
+    List<RevenueExpense> getCompanyRevenueExpenseReportData(ReportReq reportReq);
 
-    ContributorIncomeRes exportContributorIncomeReportData(ReportReq reportReq);
+    List<ContributorIncome> getContributorIncomeReportData(ReportReq reportReq);
+
+    ByteArrayInputStreamWrapper exportPdfContractReport(int contractId) throws IOException;
+
+    Map<String, EstimateAndEarnedIncome> calculateContributorEstimatedAndEarnedIncome(ReportReq reportReq);
+
+    List<ContributorIncomesDetail> getContributorIncomesDetails(ReportReq reportReq);
 }

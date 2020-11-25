@@ -2,6 +2,7 @@ package com.fa20se28.vma.service.impl;
 
 import com.fa20se28.vma.component.ReportComponent;
 import com.fa20se28.vma.model.ByteArrayInputStreamWrapper;
+import com.fa20se28.vma.model.ContributorIncomesDetailRes;
 import com.fa20se28.vma.request.ReportReq;
 import com.fa20se28.vma.response.ContractReportRes;
 import com.fa20se28.vma.response.ContributorIncomeRes;
@@ -49,37 +50,76 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
-    public ScheduleRes exportScheduleReportDate(ReportReq reportReq) {
-        return reportComponent.exportScheduleReportData(reportReq);
+    public ResponseEntity<InputStreamResource> exportPdfContractReport(int contractId) throws IOException {
+        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+        String currentDateTime = dateFormatter.format(new Date());
+
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=CONTRACT_" + contractId + "_" + currentDateTime + ".xls";
+        ByteArrayInputStreamWrapper inputStreamWrapper = reportComponent.exportPdfContractReport(contractId);
+
+        return ResponseEntity
+                .ok()
+                .contentLength(inputStreamWrapper.getByteCount())
+                .contentType(MediaType.APPLICATION_PDF)
+                .cacheControl(CacheControl.noCache())
+                .header(headerKey, headerValue)
+                .body(new InputStreamResource(inputStreamWrapper.getByteArrayInputStream()));
     }
 
     @Override
-    public VehicleReportRes exportVehicleReportData(ReportReq reportReq) {
-        return reportComponent.exportVehicleReportData(reportReq);
+    public ScheduleRes getScheduleReportDate(ReportReq reportReq) {
+        ScheduleRes scheduleRes = new ScheduleRes();
+        scheduleRes.setSchedules(reportComponent.getScheduleReportData(reportReq));
+        return scheduleRes;
     }
 
     @Override
-    public MaintenanceReportRes exportMaintenanceReportData(ReportReq reportReq) {
-        return reportComponent.exportMaintenanceReportData(reportReq);
+    public VehicleReportRes getVehicleReportData() {
+        VehicleReportRes vehicleReportRes = new VehicleReportRes();
+        vehicleReportRes.setVehicleReports(reportComponent.getVehicleReportData());
+        return vehicleReportRes;
     }
 
     @Override
-    public ContractReportRes exportContractsReportData(ReportReq reportReq) {
-        return reportComponent.exportContractsReportData(reportReq);
+    public MaintenanceReportRes getMaintenanceReportData(ReportReq reportReq) {
+        MaintenanceReportRes maintenanceReportRes = new MaintenanceReportRes();
+        maintenanceReportRes.setMaintenanceReports(reportComponent.getMaintenanceReportData(reportReq));
+        return maintenanceReportRes;
     }
 
     @Override
-    public RevenueExpenseReportRes exportVehicleRevenueExpenseReportData(ReportReq reportReq) {
-        return reportComponent.exportVehicleRevenueExpenseReportData(reportReq);
+    public ContractReportRes getContractsReportData(ReportReq reportReq) {
+        ContractReportRes contractReportRes = new ContractReportRes();
+        contractReportRes.setContractReports(reportComponent.getContractsReportData(reportReq));
+        return contractReportRes;
     }
 
     @Override
-    public RevenueExpenseReportRes exportCompanyRevenueExpenseReportData(ReportReq reportReq) {
-        return reportComponent.exportCompanyRevenueExpenseReportData(reportReq);
+    public RevenueExpenseReportRes getVehicleRevenueExpenseReportData(ReportReq reportReq) {
+        RevenueExpenseReportRes revenueExpenseReportRes = new RevenueExpenseReportRes();
+        revenueExpenseReportRes.setRevenueExpenses(reportComponent.getVehicleRevenueExpenseReportData(reportReq));
+        return revenueExpenseReportRes;
     }
 
     @Override
-    public ContributorIncomeRes exportContributorIncomeReportData(ReportReq reportReq) {
-        return reportComponent.exportContributorIncomeReportData(reportReq);
+    public RevenueExpenseReportRes getCompanyRevenueExpenseReportData(ReportReq reportReq) {
+        RevenueExpenseReportRes revenueExpenseReportRes = new RevenueExpenseReportRes();
+        revenueExpenseReportRes.setRevenueExpenses(reportComponent.getCompanyRevenueExpenseReportData(reportReq));
+        return revenueExpenseReportRes;
+    }
+
+    @Override
+    public ContributorIncomeRes getContributorsIncomesReportData(ReportReq reportReq) {
+        ContributorIncomeRes contributorIncomeRes = new ContributorIncomeRes();
+        contributorIncomeRes.setContributorEstimateAndEarnedIncomes(reportComponent.calculateContributorEstimatedAndEarnedIncome(reportReq));
+        return contributorIncomeRes;
+    }
+
+    @Override
+    public ContributorIncomesDetailRes getContributorIncomesReportData(ReportReq reportReq) {
+        ContributorIncomesDetailRes contributorIncomesDetailRes = new ContributorIncomesDetailRes();
+        contributorIncomesDetailRes.setContributorIncomesDetails(reportComponent.getContributorIncomesDetails(reportReq));
+        return contributorIncomesDetailRes;
     }
 }
