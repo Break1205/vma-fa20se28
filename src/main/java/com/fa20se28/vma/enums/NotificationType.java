@@ -8,4 +8,5 @@ public enum NotificationType {
     START_TRIP, // web
     END_TRIP, // web
     LICENSE_EXPIRED, // mobile
+    CREATE_REQUEST // web
 }

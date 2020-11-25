@@ -76,6 +76,11 @@ public class VehicleServiceImpl implements VehicleService {
     }
 
     @Override
+    public VehicleHistoryRes getVehicleHistory(String driverId) {
+        return new VehicleHistoryRes(vehicleComponent.getVehicleHistory(driverId));
+    }
+
+    @Override
     public void addVehicleValue(VehicleValueReq vehicleValueReq) {
         vehicleComponent.addVehicleValue(vehicleValueReq);
     }

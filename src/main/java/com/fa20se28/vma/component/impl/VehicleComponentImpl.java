@@ -67,16 +67,32 @@ public class VehicleComponentImpl implements VehicleComponent {
     @Override
     @Transactional
     public void withdrawVehicle(String vehicleId) {
-        if (vehicleMapper.getVehicleStatus(vehicleId) != VehicleStatus.AVAILABLE) {
-            throw new DataException("Vehicle is still occupied!");
-        } else {
-            int withDrawRow = issuedVehicleMapper.updateIssuedVehicle(vehicleId, null, 1);
-            int createPlaceHolderRow = issuedVehicleMapper.createPlaceholder(vehicleId);
-            int updateStatusRow = vehicleMapper.updateVehicleStatus(vehicleId, VehicleStatus.AVAILABLE_NO_DRIVER);
+        VehicleStatus status = vehicleMapper.getVehicleStatus(vehicleId);
+        switch(status) {
+            case AVAILABLE:
+                clearVehicle(vehicleId, VehicleStatus.AVAILABLE_NO_DRIVER);
+                break;
+            case NEED_REPAIR:
+                clearVehicle(vehicleId, VehicleStatus.NEED_REPAIR);
+                break;
+            default:
+                throw new ResourceIsInUsedException("Vehicle is still occupied!");
+        }
+    }
 
-            if (withDrawRow == 0 || updateStatusRow == 0 || createPlaceHolderRow == 0) {
-                throw new DataException("Unknown error occurred. Data not modified!");
-            }
+    @Override
+    public void clearVehicle(String vehicleId, VehicleStatus vehicleStatus) {
+        int withDrawRow = issuedVehicleMapper.updateIssuedVehicle(vehicleId, null, 1);
+        int createPlaceHolderRow = issuedVehicleMapper.createPlaceholder(vehicleId);
+        int updateStatusRow;
+        if (vehicleStatus.equals(VehicleStatus.AVAILABLE_NO_DRIVER)) {
+            updateStatusRow = vehicleMapper.updateVehicleStatus(vehicleId, vehicleStatus);
+        } else {
+            updateStatusRow = 1;
+        }
+
+        if (withDrawRow == 0 || createPlaceHolderRow == 0 || updateStatusRow == 0) {
+            throw new DataException("Unknown error occurred. Data not modified!");
         }
     }
 
@@ -163,6 +179,11 @@ public class VehicleComponentImpl implements VehicleComponent {
     @Override
     public AssignedVehicle getCurrentlyAssignedVehicle(String driverId) {
         return issuedVehicleMapper.getCurrentlyAssignedVehicleByDriverId(driverId);
+    }
+
+    @Override
+    public List<AssignedVehicle> getVehicleHistory(String driverId) {
+        return issuedVehicleMapper.getVehicleHistory(driverId);
     }
 
     @Override

@@ -169,4 +169,14 @@ public class ContractVehicleComponentImpl implements ContractVehicleComponent {
             throw new DataException("Unknown error occurred. Data not modified!");
         }
     }
+
+    @Override
+    public List<VehicleRecommendation> getRecommendations(VehicleRecommendationReq vehicleRecommendationReq, int viewOption) {
+        return contractVehicleMapper.getRecommendations(vehicleRecommendationReq, viewOption*10);
+    }
+
+    @Override
+    public int getTotalRecommendations(VehicleRecommendationReq vehicleRecommendationReq) {
+        return contractVehicleMapper.getRecommendationCount(vehicleRecommendationReq);
+    }
 }

@@ -124,6 +124,11 @@ public class VehicleController {
         return vehicleService.getCurrentlyAssignedVehicle(driverId);
     }
 
+    @GetMapping("/history")
+    public VehicleHistoryRes getVehicleHistoryByDriverId(@RequestParam String driverId) {
+        return vehicleService.getVehicleHistory(driverId);
+    }
+
     @PostMapping("/value")
     @ResponseStatus(HttpStatus.CREATED)
     public void addValueOfVehicle(@RequestBody VehicleValueReq vehicleValueReq) {

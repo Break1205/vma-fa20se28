@@ -1,10 +1,8 @@
 package com.fa20se28.vma.mapper;
 
 import com.fa20se28.vma.enums.ContractVehicleStatus;
-import com.fa20se28.vma.model.ContractTrip;
-import com.fa20se28.vma.model.ContractTripSchedule;
-import com.fa20se28.vma.model.Trip;
-import com.fa20se28.vma.model.VehicleBasic;
+import com.fa20se28.vma.model.*;
+import com.fa20se28.vma.request.VehicleRecommendationReq;
 import org.apache.ibatis.annotations.*;
 
 import java.time.LocalDate;
@@ -141,6 +139,84 @@ public interface ContractVehicleMapper {
             "AND cv.contract_vehicle_status = 'COMPLETED' ")
     int getCompletedVehicleCount(@Param("cv_id") int contractId);
 
-    @Select("")
-    List<VehicleBasic> getRecommendations();
+    @Select({"<script> " +
+            "SELECT DISTINCT v.vehicle_id, v.model, vt.vehicle_type_id, vt.vehicle_type_name, v.seats, v.year_of_manufacture " +
+            "FROM vehicle v " +
+            "JOIN vehicle_type vt ON v.vehicle_type_id = vt.vehicle_type_id " +
+            "JOIN issued_vehicle iv ON iv.vehicle_id = v.vehicle_id " +
+            "WHERE " +
+            "v.vehicle_status NOT IN " +
+            "(SELECT DISTINCT vs.vehicle_status " +
+            "FROM vehicle vs " +
+            "WHERE vs.vehicle_status = 'REJECTED' " +
+            "OR vs.vehicle_status = 'PENDING_APPROVAL') " +
+            "<if test = \"vr_req.seatsMin != 0\" > " +
+            "AND v.seats &gt;= #{vr_req.seatsMin} " +
+            "</if> " +
+            "<if test = \"vr_req.seatsMax != 0\" > " +
+            "AND v.seats &lt;= #{vr_req.seatsMax} " +
+            "</if> " +
+            "<if test = \"vr_req.vehicleTypeId != 0\" > " +
+            "AND vt.vehicle_type_id =  #{vr_req.vehicleTypeId} " +
+            "</if> " +
+            "AND iv.issued_vehicle_id NOT IN " +
+            "(SELECT cv.issued_vehicle_id " +
+            "FROM contract_vehicles cv " +
+            "JOIN [contract] c ON cv.contract_id = c.contract_id " +
+            "WHERE c.contract_id IN " +
+            "(SELECT DISTINCT c.contract_id " +
+            "FROM [contract] c " +
+            "JOIN contract_detail cd ON c.contract_id = cd.contract_id " +
+            "WHERE " +
+            "cd.departure_time &lt; (SELECT DATEADD(hour, +6, #{vr_req.endDate})) " +
+            "AND cd.destination_time &gt;= (SELECT DATEADD(hour, -6,  #{vr_req.startDate})) ) " +
+            ") " +
+            "ORDER BY v.year_of_manufacture DESC " +
+            "OFFSET ${r_offset} ROWS " +
+            "FETCH NEXT 10 ROWS ONLY " +
+            "</script>"})
+    @Results(id = "recommendationResult", value = {
+            @Result(property = "vehicleId", column = "vehicle_id"),
+            @Result(property = "vehicleType.vehicleTypeId", column = "vehicle_type_id"),
+            @Result(property = "vehicleType.vehicleTypeName", column = "vehicle_type_name")
+    })
+    List<VehicleRecommendation> getRecommendations(
+            @Param("vr_req") VehicleRecommendationReq vehicleRecommendationReq,
+            @Param("r_offset") int offset);
+
+    @Select({"<script> " +
+            "SELECT COUNT(DISTINCT v.vehicle_id) " +
+            "FROM vehicle v " +
+            "JOIN vehicle_type vt ON v.vehicle_type_id = vt.vehicle_type_id " +
+            "JOIN issued_vehicle iv ON iv.vehicle_id = v.vehicle_id " +
+            "WHERE " +
+            "v.vehicle_status NOT IN " +
+            "(SELECT DISTINCT vs.vehicle_status " +
+            "FROM vehicle vs " +
+            "WHERE vs.vehicle_status = 'REJECTED' " +
+            "OR vs.vehicle_status = 'PENDING_APPROVAL') " +
+            "<if test = \"vr_req.seatsMin != 0\" > " +
+            "AND v.seats &gt;= #{vr_req.seatsMin} " +
+            "</if> " +
+            "<if test = \"vr_req.seatsMax != 0\" > " +
+            "AND v.seats &lt;= #{vr_req.seatsMax} " +
+            "</if> " +
+            "<if test = \"vr_req.vehicleTypeId != 0\" > " +
+            "AND vt.vehicle_type_id =  #{vr_req.vehicleTypeId} " +
+            "</if> " +
+            "AND iv.issued_vehicle_id NOT IN " +
+            "(SELECT cv.issued_vehicle_id " +
+            "FROM contract_vehicles cv " +
+            "JOIN [contract] c ON cv.contract_id = c.contract_id " +
+            "WHERE c.contract_id IN " +
+            "(SELECT DISTINCT c.contract_id " +
+            "FROM [contract] c " +
+            "JOIN contract_detail cd ON c.contract_id = cd.contract_id " +
+            "WHERE " +
+            "cd.departure_time &lt; (SELECT DATEADD(hour, +6, #{vr_req.endDate})) " +
+            "AND cd.destination_time &gt;= (SELECT DATEADD(hour, -6,  #{vr_req.startDate})) ) " +
+            ") " +
+            "AND iv.returned_date IS NULL " +
+            "</script>"})
+    int getRecommendationCount(@Param("vr_req") VehicleRecommendationReq vehicleRecommendationReq);
 }

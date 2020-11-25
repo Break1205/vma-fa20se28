@@ -115,4 +115,11 @@ public interface IssuedVehicleMapper {
             @Result(property = "returnedDate", column = "returned_date")
     })
     AssignedVehicle getCurrentlyAssignedVehicleByDriverId(@Param("dv_id") String driverId);
+
+    @Select("SELECT iv.issued_vehicle_id, iv.vehicle_id, iv.issued_date, iv.returned_date " +
+            "FROM issued_vehicle iv " +
+            "WHERE iv.driver_id = #{dv_id} " +
+            "ORDER BY issued_date DESC ")
+    @ResultMap("assignedVehicleResult")
+    List<AssignedVehicle> getVehicleHistory(@Param("dv_id") String driverId);
 }

@@ -1,25 +1,17 @@
 package com.fa20se28.vma.service.impl;
 
-import com.fa20se28.vma.component.AuthenticationComponent;
-import com.fa20se28.vma.component.RequestComponent;
-import com.fa20se28.vma.component.UserComponent;
-import com.fa20se28.vma.component.UserDocumentComponent;
-import com.fa20se28.vma.component.VehicleComponent;
-import com.fa20se28.vma.component.VehicleDocumentComponent;
+import com.fa20se28.vma.component.*;
 import com.fa20se28.vma.component.impl.UserDocumentComponentImpl;
 import com.fa20se28.vma.configuration.exception.RequestAlreadyHandledException;
 import com.fa20se28.vma.enums.NotificationType;
 import com.fa20se28.vma.enums.RequestStatus;
 import com.fa20se28.vma.enums.RequestType;
+import com.fa20se28.vma.enums.VehicleStatus;
 import com.fa20se28.vma.model.AssignedVehicle;
 import com.fa20se28.vma.model.ClientRegistrationToken;
 import com.fa20se28.vma.model.NotificationData;
 import com.fa20se28.vma.model.RequestDetail;
-import com.fa20se28.vma.request.RequestPageReq;
-import com.fa20se28.vma.request.RequestReq;
-import com.fa20se28.vma.request.VehicleChangeRequestReq;
-import com.fa20se28.vma.request.VehicleDocumentRequestReq;
-import com.fa20se28.vma.request.VehicleRequestReq;
+import com.fa20se28.vma.request.*;
 import com.fa20se28.vma.response.RequestDetailRes;
 import com.fa20se28.vma.response.RequestPageRes;
 import com.fa20se28.vma.service.FirebaseService;
@@ -184,6 +176,10 @@ public class RequestServiceImpl implements RequestService {
         if (requestDetail.getRequestType().equals(RequestType.CHANGE_VEHICLE)) {
             return requestComponent.updateRequestStatus(requestDetail.getRequestId(), RequestStatus.ACCEPTED);
         }
+        if (requestDetail.getRequestType().equals(RequestType.VEHICLE_NEEDS_REPAIR)) {
+            vehicleComponent.withdrawVehicle(requestDetail.getVehicleId());
+            return requestComponent.updateRequestStatus(requestDetail.getRequestId(), RequestStatus.ACCEPTED);
+        }
         return 0;
     }
 
@@ -218,6 +214,9 @@ public class RequestServiceImpl implements RequestService {
             return requestComponent.updateRequestStatus(requestDetail.getRequestId(), RequestStatus.DENIED);
         }
         if (requestDetail.getRequestType().equals(RequestType.CHANGE_VEHICLE)) {
+            return requestComponent.updateRequestStatus(requestDetail.getRequestId(), RequestStatus.DENIED);
+        }
+        if (requestDetail.getRequestType().equals(RequestType.VEHICLE_NEEDS_REPAIR)) {
             return requestComponent.updateRequestStatus(requestDetail.getRequestId(), RequestStatus.DENIED);
         }
         return 0;
@@ -274,6 +273,18 @@ public class RequestServiceImpl implements RequestService {
 
             return 1;
         }
+        return 0;
+    }
+
+    @Override
+    public int reportIssue(ReportIssueReq reportIssueReq) {
+        Authentication authentication = authenticationComponent.getAuthentication();
+
+        if (requestComponent.reportIssueRequest(reportIssueReq, authentication.getName()) == 1) {
+            vehicleComponent.updateVehicleStatus(reportIssueReq.getVehicleId(), VehicleStatus.NEED_REPAIR);
+            return 1;
+        }
+
         return 0;
     }
 }

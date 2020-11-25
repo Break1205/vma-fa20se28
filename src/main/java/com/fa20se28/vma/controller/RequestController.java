@@ -118,4 +118,13 @@ public class RequestController {
         }
         return 0;
     }
+
+    @PostMapping("/requests/vehicles/issue")
+    @ResponseStatus(HttpStatus.CREATED)
+    public int reportIssueInVehicle(@RequestBody ReportIssueReq reportIssueReq) {
+        if (reportIssueReq.getRequestType() != null) {
+            return requestService.reportIssue(reportIssueReq);
+        }
+        return 0;
+    }
 }

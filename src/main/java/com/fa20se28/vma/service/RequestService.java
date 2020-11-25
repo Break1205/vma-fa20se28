@@ -27,4 +27,6 @@ public interface RequestService {
     int createVehicleChangeRequest(VehicleChangeRequestReq vehicleChangeRequestReq);
 
     int acceptVehicleChangeRequest(String driverId, String targetVehicleId);
+
+    int reportIssue(ReportIssueReq reportIssueReq);
 }

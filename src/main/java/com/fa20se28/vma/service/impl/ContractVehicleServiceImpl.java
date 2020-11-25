@@ -6,6 +6,7 @@ import com.fa20se28.vma.request.*;
 import com.fa20se28.vma.response.ContractVehicleRes;
 import com.fa20se28.vma.response.PassengerRes;
 import com.fa20se28.vma.response.TripListRes;
+import com.fa20se28.vma.response.VehicleRecommendationRes;
 import com.fa20se28.vma.service.ContractVehicleService;
 import org.springframework.stereotype.Service;
 
@@ -61,5 +62,15 @@ public class ContractVehicleServiceImpl implements ContractVehicleService {
     @Override
     public void endTrip(TripReq tripReq) {
         contractVehicleComponent.startAndEndTrip(tripReq, true);
+    }
+
+    @Override
+    public VehicleRecommendationRes getRecommendations(VehicleRecommendationReq vehicleRecommendationReq, int viewOption) {
+        return new VehicleRecommendationRes(contractVehicleComponent.getRecommendations(vehicleRecommendationReq, viewOption));
+    }
+
+    @Override
+    public int getTotalRecommendations(VehicleRecommendationReq vehicleRecommendationReq) {
+        return contractVehicleComponent.getTotalRecommendations(vehicleRecommendationReq);
     }
 }
