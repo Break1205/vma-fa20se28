@@ -140,7 +140,7 @@ public interface ContractVehicleMapper {
     int getCompletedVehicleCount(@Param("cv_id") int contractId);
 
     @Select({"<script> " +
-            "SELECT DISTINCT v.vehicle_id, v.model, vt.vehicle_type_id, vt.vehicle_type_name, v.seats " +
+            "SELECT DISTINCT v.vehicle_id, v.model, vt.vehicle_type_id, vt.vehicle_type_name, v.seats, v.year_of_manufacture " +
             "FROM vehicle v " +
             "JOIN vehicle_type vt ON v.vehicle_type_id = vt.vehicle_type_id " +
             "JOIN issued_vehicle iv ON iv.vehicle_id = v.vehicle_id " +
