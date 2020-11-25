@@ -90,4 +90,15 @@ public class RequestComponentImpl implements RequestComponent {
                 vehicleChangeRequestReq.getRequestType(),
                 vehicleChangeRequestReq.getDescription());
     }
+
+    @Override
+    @Transactional
+    public int reportIssueRequest(ReportIssueReq reportIssueReq, String userId) {
+        return requestMapper.insertRequest(
+                userId, null,
+                reportIssueReq.getVehicleId(), null,
+                RequestStatus.PENDING,
+                reportIssueReq.getRequestType(),
+                reportIssueReq.getDescription());
+    }
 }

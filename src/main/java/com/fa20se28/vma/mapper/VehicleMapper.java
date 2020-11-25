@@ -20,7 +20,11 @@ public interface VehicleMapper {
             "JOIN vehicle_type vt ON v.vehicle_type_id = vt.vehicle_type_id " +
             "WHERE " +
             "<if test = \"v_option == 0\" > " +
-            "v.vehicle_status != '%DELETED%' " +
+            "v.vehicle_status NOT IN " +
+            "(SELECT DISTINCT vs.vehicle_status " +
+            "FROM vehicle vs " +
+            "WHERE vs.vehicle_status = 'REJECTED' " +
+            "OR vs.vehicle_status = 'PENDING_APPROVAL') " +
             "</if> " +
             "<if test = \"v_option == 1\" > " +
             "v.vehicle_status = #{v_request.vehicleStatus} " +
@@ -61,7 +65,11 @@ public interface VehicleMapper {
             "JOIN vehicle_type vt ON v.vehicle_type_id = vt.vehicle_type_id " +
             "WHERE " +
             "<if test = \"v_option == 0\" > " +
-            "v.vehicle_status != '%DELETED%' " +
+            "v.vehicle_status NOT IN " +
+            "(SELECT DISTINCT vs.vehicle_status " +
+            "FROM vehicle vs " +
+            "WHERE vs.vehicle_status = 'REJECTED' " +
+            "OR vs.vehicle_status = 'PENDING_APPROVAL') " +
             "</if> " +
             "<if test = \"v_option == 1\" > " +
             "v.vehicle_status = #{v_request.vehicleStatus} " +

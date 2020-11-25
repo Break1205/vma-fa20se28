@@ -23,4 +23,6 @@ public interface RequestComponent {
     int createVehicleRequest(VehicleRequestReq vehicleRequestReq, String userId);
 
     int createVehicleChangeRequest(VehicleChangeRequestReq vehicleChangeRequestReq, String userId);
+
+    int reportIssueRequest(ReportIssueReq reportIssueReq, String userId);
 }

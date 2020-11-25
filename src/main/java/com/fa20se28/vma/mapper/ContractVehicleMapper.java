@@ -140,7 +140,7 @@ public interface ContractVehicleMapper {
     int getCompletedVehicleCount(@Param("cv_id") int contractId);
 
     @Select({"<script> " +
-            "SELECT v.vehicle_id, v.model, vt.vehicle_type_id, vt.vehicle_type_name, v.seats " +
+            "SELECT DISTINCT v.vehicle_id, v.model, vt.vehicle_type_id, vt.vehicle_type_name, v.seats " +
             "FROM vehicle v " +
             "JOIN vehicle_type vt ON v.vehicle_type_id = vt.vehicle_type_id " +
             "JOIN issued_vehicle iv ON iv.vehicle_id = v.vehicle_id " +
@@ -171,7 +171,6 @@ public interface ContractVehicleMapper {
             "cd.departure_time &lt; (SELECT DATEADD(hour, +6, #{vr_req.endDate})) " +
             "AND cd.destination_time &gt;= (SELECT DATEADD(hour, -6,  #{vr_req.startDate})) ) " +
             ") " +
-            "AND iv.returned_date IS NULL " +
             "ORDER BY v.year_of_manufacture DESC " +
             "OFFSET ${r_offset} ROWS " +
             "FETCH NEXT 10 ROWS ONLY " +
@@ -186,7 +185,7 @@ public interface ContractVehicleMapper {
             @Param("r_offset") int offset);
 
     @Select({"<script> " +
-            "SELECT COUNT(v.vehicle_id) " +
+            "SELECT COUNT(DISTINCT v.vehicle_id) " +
             "FROM vehicle v " +
             "JOIN vehicle_type vt ON v.vehicle_type_id = vt.vehicle_type_id " +
             "JOIN issued_vehicle iv ON iv.vehicle_id = v.vehicle_id " +

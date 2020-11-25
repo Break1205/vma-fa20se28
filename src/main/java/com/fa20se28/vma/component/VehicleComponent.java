@@ -17,6 +17,8 @@ public interface VehicleComponent {
 
     void withdrawVehicle(String vehicleId);
 
+    void clearVehicle(String vehicleId, VehicleStatus vehicleStatus);
+
     void createVehicle(VehicleReq vehicle, boolean notAdmin);
 
     void deleteVehicle(String vehicleId);
@@ -30,6 +32,8 @@ public interface VehicleComponent {
     List<DriverHistory> getDriverHistory(String vehicleId);
 
     AssignedVehicle getCurrentlyAssignedVehicle(String driverId);
+
+    List<AssignedVehicle> getVehicleHistory(String driverId);
 
     void createVehicleFromRequest(VehicleReq vehicle);
 

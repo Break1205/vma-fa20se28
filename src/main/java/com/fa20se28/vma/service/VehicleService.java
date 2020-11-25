@@ -29,6 +29,8 @@ public interface VehicleService {
 
     VehicleCurrentRes getCurrentlyAssignedVehicle(String driverId);
 
+    VehicleHistoryRes getVehicleHistory(String driverId);
+
     void addVehicleValue(VehicleValueReq vehicleValueReq);
 
     void updateVehicleValue(VehicleValueUpdateReq vehicleValueUpdateReq);
