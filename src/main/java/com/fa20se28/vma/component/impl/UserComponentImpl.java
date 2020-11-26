@@ -167,4 +167,9 @@ public class UserComponentImpl implements UserComponent {
     public ClientRegistrationToken findClientRegistrationTokenByUserId(String userId) {
         return userMapper.findClientRegistrationTokenByUserId(userId);
     }
+
+    @Override
+    public List<ClientRegistrationToken> getAdminRegistrationTokens() {
+        return userMapper.getAdminRegistrationTokens();
+    }
 }

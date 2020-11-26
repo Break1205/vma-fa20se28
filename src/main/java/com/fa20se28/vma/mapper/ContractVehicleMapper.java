@@ -5,7 +5,6 @@ import com.fa20se28.vma.model.*;
 import com.fa20se28.vma.request.VehicleRecommendationReq;
 import org.apache.ibatis.annotations.*;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Mapper
@@ -119,20 +118,6 @@ public interface ContractVehicleMapper {
             @Param("cv_iv_id") int issuedVehicleId,
             @Param("cv_id") int contractId);
 
-    @Select("SELECT " +
-            "CASE WHEN " +
-            "COUNT(cv.contract_vehicle_id) > 0 THEN 1 " +
-            "ELSE 0 END Result " +
-            "FROM contract_vehicles cv " +
-            "JOIN contract c ON cv.contract_id = c.contract_id " +
-            "WHERE cv.issued_vehicle_id = #{cv_iv_id} " +
-            "AND c.duration_from < #{c_end} " +
-            "AND c.duration_to >= #{c_start} ")
-    boolean checkIfVehicleIsBusy(
-            @Param("cv_iv_id") int issuedVehicleId,
-            @Param("c_start") LocalDate durationFrom,
-            @Param("c_end") LocalDate durationTo);
-
     @Select("SELECT COUNT (cv.contract_vehicle_id) " +
             "FROM contract_vehicles cv " +
             "WHERE cv.contract_id = #{cv_id} " +
@@ -149,7 +134,8 @@ public interface ContractVehicleMapper {
             "(SELECT DISTINCT vs.vehicle_status " +
             "FROM vehicle vs " +
             "WHERE vs.vehicle_status = 'REJECTED' " +
-            "OR vs.vehicle_status = 'PENDING_APPROVAL') " +
+            "OR vs.vehicle_status = 'PENDING_APPROVAL' " +
+            "OR vs.vehicle_status = 'DELETED') " +
             "<if test = \"vr_req.seatsMin != 0\" > " +
             "AND v.seats &gt;= #{vr_req.seatsMin} " +
             "</if> " +
@@ -194,7 +180,8 @@ public interface ContractVehicleMapper {
             "(SELECT DISTINCT vs.vehicle_status " +
             "FROM vehicle vs " +
             "WHERE vs.vehicle_status = 'REJECTED' " +
-            "OR vs.vehicle_status = 'PENDING_APPROVAL') " +
+            "OR vs.vehicle_status = 'PENDING_APPROVAL' " +
+            "OR vs.vehicle_status = 'DELETED') " +
             "<if test = \"vr_req.seatsMin != 0\" > " +
             "AND v.seats &gt;= #{vr_req.seatsMin} " +
             "</if> " +
@@ -216,7 +203,6 @@ public interface ContractVehicleMapper {
             "cd.departure_time &lt; (SELECT DATEADD(hour, +6, #{vr_req.endDate})) " +
             "AND cd.destination_time &gt;= (SELECT DATEADD(hour, -6,  #{vr_req.startDate})) ) " +
             ") " +
-            "AND iv.returned_date IS NULL " +
             "</script>"})
     int getRecommendationCount(@Param("vr_req") VehicleRecommendationReq vehicleRecommendationReq);
 }

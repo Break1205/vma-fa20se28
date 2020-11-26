@@ -54,25 +54,19 @@ public class ContractVehicleComponentImpl implements ContractVehicleComponent {
     @Transactional
     public void assignVehicleForContract(ContractVehicleReq contractVehicleReq) {
         int currentIssuedId = issuedVehicleMapper.getCurrentIssuedVehicleId(contractVehicleReq.getVehicleId());
-        ContractDetail contractDetail = contractMapper.getContractDetails(contractVehicleReq.getContractId());
 
-        if (contractVehicleMapper.checkIfVehicleIsBusy(currentIssuedId, contractDetail.getDurationFrom(), contractDetail.getDurationTo())) {
-            throw new DataException("Vehicle is still occupied!");
+        if (contractVehicleMapper.checkIfVehicleIsAlreadyAssignedToContract(currentIssuedId, contractVehicleReq.getContractId())) {
+            throw new DataException("Vehicle is already assigned to the contract!");
         } else {
-            if (contractVehicleMapper.checkIfVehicleIsAlreadyAssignedToContract(currentIssuedId, contractVehicleReq.getContractId())) {
-                throw new DataException("Vehicle is already assigned to the contract!");
-            } else {
-                int row = contractVehicleMapper.assignVehicleForContract(
-                        contractVehicleReq.getContractId(),
-                        currentIssuedId,
-                        ContractVehicleStatus.NOT_STARTED);
+            int row = contractVehicleMapper.assignVehicleForContract(
+                    contractVehicleReq.getContractId(),
+                    currentIssuedId,
+                    ContractVehicleStatus.NOT_STARTED);
 
-                if (row == 0) {
-                    throw new DataException("Unknown error occurred. Data not modified!");
-                }
+            if (row == 0) {
+                throw new DataException("Unknown error occurred. Data not modified!");
             }
         }
-
     }
 
     @Override
@@ -100,7 +94,7 @@ public class ContractVehicleComponentImpl implements ContractVehicleComponent {
 
     @Override
     @Transactional
-    public void startAndEndTrip(TripReq tripReq, boolean option) {
+    public int startAndEndTrip(TripReq tripReq, boolean option) {
         int contractVehicleRow;
         int vehicleRow;
         int currentIssuedId = issuedVehicleMapper.getCurrentIssuedVehicleId(tripReq.getVehicleId());
@@ -116,6 +110,7 @@ public class ContractVehicleComponentImpl implements ContractVehicleComponent {
 
                 if (detail.getContractStatus().equals(ContractStatus.NOT_STARTED)) {
                     startContract(tripReq.getContractId());
+                    return 1;
                 }
             }
         } else {
@@ -127,6 +122,7 @@ public class ContractVehicleComponentImpl implements ContractVehicleComponent {
                 if (detail.getContractStatus().equals(ContractStatus.IN_PROGRESS)) {
                     if (contractVehicleMapper.getCompletedVehicleCount(tripReq.getContractId()) >= detail.getEstimatedVehicleCount()) {
                         completeContract(tripReq.getContractId());
+                        return 1;
                     }
                 }
             }
@@ -136,6 +132,7 @@ public class ContractVehicleComponentImpl implements ContractVehicleComponent {
             throw new DataException("Unknown error occurred. Data not modified!");
         }
 
+        return 0;
     }
 
     @Override

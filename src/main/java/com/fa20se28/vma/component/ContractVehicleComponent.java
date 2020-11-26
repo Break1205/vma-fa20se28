@@ -22,7 +22,7 @@ public interface ContractVehicleComponent {
 
     void updateContractVehicleStatus(ContractVehicleStatusUpdateReq contractVehicleStatusUpdateReq);
 
-    void startAndEndTrip(TripReq tripReq, boolean option);
+    int startAndEndTrip(TripReq tripReq, boolean option);
 
     List<Trip> getVehicleTrips(TripListReq tripListReq, int viewOption);
 

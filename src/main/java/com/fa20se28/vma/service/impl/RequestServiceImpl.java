@@ -271,6 +271,14 @@ public class RequestServiceImpl implements RequestService {
             vehicleComponent.withdrawVehicle(assignedVehicle.getVehicleId());
             vehicleComponent.assignVehicle(targetVehicleId, driverId);
 
+            NotificationData notificationData = new NotificationData(
+                    NotificationType.VEHICLE_CHANGED,
+                    "You have been reassigned to a new vehicle with ID " + targetVehicleId,
+                    String.valueOf(targetVehicleId));
+            firebaseService.notifyUserByFCMToken(
+                    userComponent.findClientRegistrationTokenByUserId(driverId),
+                    notificationData);
+
             return 1;
         }
         return 0;

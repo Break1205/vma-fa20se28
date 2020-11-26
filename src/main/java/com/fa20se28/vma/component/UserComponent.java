@@ -32,4 +32,6 @@ public interface UserComponent {
     int updateClientRegistrationToken(ClientRegistrationToken clientRegistrationToken, String userId);
 
     ClientRegistrationToken findClientRegistrationTokenByUserId(String userId);
+
+    List<ClientRegistrationToken> getAdminRegistrationTokens();
 }

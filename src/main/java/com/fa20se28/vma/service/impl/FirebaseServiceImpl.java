@@ -116,8 +116,12 @@ public class FirebaseServiceImpl implements FirebaseService {
             title = "Contract Vehicle Status";
         } else if (notificationData.getNotificationType().equals(NotificationType.END_TRIP)) {
             title = "Contract Vehicle Status";
-        } else if (notificationData.getNotificationType().equals(NotificationType.CONTRACT_COMPLETED)) {
+        } else if (notificationData.getNotificationType().equals(NotificationType.CONTRACT_STARTED)) {
             title = "Contract Status";
+        }else if (notificationData.getNotificationType().equals(NotificationType.CONTRACT_COMPLETED)) {
+            title = "Contract Status";
+        } else if (notificationData.getNotificationType().equals(NotificationType.VEHICLE_CHANGED)) {
+            title = "Vehicle Reassigned";
         }
         Message message = Message.builder()
                 .setNotification(

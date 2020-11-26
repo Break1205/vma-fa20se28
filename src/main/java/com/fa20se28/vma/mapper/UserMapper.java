@@ -8,13 +8,7 @@ import com.fa20se28.vma.model.User;
 import com.fa20se28.vma.request.UserPageReq;
 import com.fa20se28.vma.request.UserReq;
 import com.fa20se28.vma.response.UserRes;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.Results;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -204,4 +198,11 @@ public interface UserMapper {
             "WHERE user_id = #{userId}")
     @Result(property = "token", column = "client_registration_token")
     ClientRegistrationToken findClientRegistrationTokenByUserId(@Param("userId") String userId);
+
+    @Select("SELECT client_registration_token " +
+            "FROM [user] " +
+            "JOIN user_roles ur ON ur.user_id = u.user_id " +
+            "WHERE role_id = '1' ")
+    @Result(property = "token", column = "client_registration_token")
+    List<ClientRegistrationToken> getAdminRegistrationTokens();
 }
