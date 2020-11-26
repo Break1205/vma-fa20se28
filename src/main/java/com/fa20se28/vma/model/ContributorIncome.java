@@ -4,9 +4,10 @@ import java.time.LocalDate;
 
 public class ContributorIncome {
     private String vehicleId;
-    private LocalDate date;
     private float value;
-    private String contractId;
+    private LocalDate startDate;
+    private LocalDate endDate;
+    private String ownerId;
 
     public String getVehicleId() {
         return vehicleId;
@@ -14,14 +15,6 @@ public class ContributorIncome {
 
     public void setVehicleId(String vehicleId) {
         this.vehicleId = vehicleId;
-    }
-
-    public LocalDate getDate() {
-        return date;
-    }
-
-    public void setDate(LocalDate date) {
-        this.date = date;
     }
 
     public float getValue() {
@@ -32,11 +25,27 @@ public class ContributorIncome {
         this.value = value;
     }
 
-    public String getContractId() {
-        return contractId;
+    public LocalDate getStartDate() {
+        return startDate;
     }
 
-    public void setContractId(String contractId) {
-        this.contractId = contractId;
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
+    }
+
+    public LocalDate getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
+    }
+
+    public String getOwnerId() {
+        return ownerId;
+    }
+
+    public void setOwnerId(String ownerId) {
+        this.ownerId = ownerId;
     }
 }
