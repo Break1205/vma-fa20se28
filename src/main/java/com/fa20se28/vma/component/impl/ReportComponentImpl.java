@@ -718,13 +718,23 @@ public class ReportComponentImpl implements ReportComponent {
         for (Map.Entry<String, List<ContributorIncome>> entry : contributorsEstimatedIncomesMap.entrySet()) {
             float estimatedValue = 0;
             for (ContributorIncome contributorIncome : entry.getValue()) {
-                long totalDays = firstAndLast.get(0).until(contributorIncome.getEndDate(), ChronoUnit.DAYS);
-                if (totalDays <= totalDaysInThisQuarter) {
+                long totalDays;
+                if (contributorIncome.getStartDate().isBefore(firstAndLast.get(0))
+                        && contributorIncome.getEndDate().isAfter(firstAndLast.get(1))) {
+                    estimatedValue += (contributorIncome.getValue() / 30) * totalDaysInThisQuarter;
+                } else if (firstAndLast.get(0).isBefore(contributorIncome.getStartDate())
+                        && firstAndLast.get(1).isAfter(contributorIncome.getEndDate())) {
+                    totalDays = contributorIncome.getStartDate().until(contributorIncome.getEndDate(), ChronoUnit.DAYS);
                     estimatedValue += (contributorIncome.getValue() / 30) * totalDays;
-                }
-                totalDays = contributorIncome.getStartDate().until(firstAndLast.get(1), ChronoUnit.DAYS);
-                if (totalDays <= totalDaysInThisQuarter) {
-                    estimatedValue += (contributorIncome.getValue() / 30) * totalDays;
+                } else {
+                    totalDays = firstAndLast.get(0).until(contributorIncome.getEndDate(), ChronoUnit.DAYS);
+                    if (totalDays <= totalDaysInThisQuarter) {
+                        estimatedValue += (contributorIncome.getValue() / 30) * totalDays;
+                    }
+                    totalDays = contributorIncome.getStartDate().until(firstAndLast.get(1), ChronoUnit.DAYS);
+                    if (totalDays <= totalDaysInThisQuarter) {
+                        estimatedValue += (contributorIncome.getValue() / 30) * totalDays;
+                    }
                 }
             }
             if (!contributorsEstimateAndEarnedIncomes.containsKey(entry.getKey())) {
