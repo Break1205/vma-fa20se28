@@ -81,14 +81,16 @@ public class ContractVehicleServiceImpl implements ContractVehicleService {
 
 
         for  (ClientRegistrationToken adminToken: userComponent.getAdminRegistrationTokens()) {
-            firebaseService.notifyUserByFCMToken(
-                    adminToken,
-                    startTripData);
-
-            if (startContractData != null) {
+            if (adminToken != null) {
                 firebaseService.notifyUserByFCMToken(
                         adminToken,
-                        startContractData);
+                        startTripData);
+
+                if (startContractData != null) {
+                    firebaseService.notifyUserByFCMToken(
+                            adminToken,
+                            startContractData);
+                }
             }
         }
     }
@@ -111,14 +113,16 @@ public class ContractVehicleServiceImpl implements ContractVehicleService {
 
 
         for  (ClientRegistrationToken adminToken: userComponent.getAdminRegistrationTokens()) {
-            firebaseService.notifyUserByFCMToken(
-                    adminToken,
-                    endTripData);
-
-            if (endContractData != null) {
+            if (adminToken != null) {
                 firebaseService.notifyUserByFCMToken(
                         adminToken,
-                        endContractData);
+                        endTripData);
+
+                if (endContractData != null) {
+                    firebaseService.notifyUserByFCMToken(
+                            adminToken,
+                            endContractData);
+                }
             }
         }
     }
