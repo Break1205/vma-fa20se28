@@ -53,24 +53,6 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
-    public ResponseEntity<InputStreamResource> exportPdfContractReport(int contractId) throws IOException {
-        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
-        String currentDateTime = dateFormatter.format(new Date());
-
-        String headerKey = "Content-Disposition";
-        String headerValue = "attachment; filename=CONTRACT_" + contractId + "_" + currentDateTime + ".xls";
-        ByteArrayInputStreamWrapper inputStreamWrapper = reportComponent.exportPdfContractReport(contractId);
-
-        return ResponseEntity
-                .ok()
-                .contentLength(inputStreamWrapper.getByteCount())
-                .contentType(MediaType.APPLICATION_PDF)
-                .cacheControl(CacheControl.noCache())
-                .header(headerKey, headerValue)
-                .body(new InputStreamResource(inputStreamWrapper.getByteArrayInputStream()));
-    }
-
-    @Override
     public ScheduleRes getScheduleReportDate(ReportReq reportReq) {
         ScheduleRes scheduleRes = new ScheduleRes();
         scheduleRes.setSchedules(reportComponent.getScheduleReportData(reportReq));
@@ -117,13 +99,6 @@ public class ReportServiceImpl implements ReportService {
         ContributorIncomeRes contributorIncomeRes = new ContributorIncomeRes();
         contributorIncomeRes.setContributorEstimateAndEarnedIncomes(reportComponent.calculateContributorEstimatedAndEarnedIncome(reportReq));
         return contributorIncomeRes;
-    }
-
-    @Override
-    public ContributorIncomesDetailRes getContributorIncomesReportData(ReportReq reportReq) {
-        ContributorIncomesDetailRes contributorIncomesDetailRes = new ContributorIncomesDetailRes();
-        contributorIncomesDetailRes.setContributorIncomesDetails(reportComponent.getContributorIncomesDetails(reportReq));
-        return contributorIncomesDetailRes;
     }
 
     @Override

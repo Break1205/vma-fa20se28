@@ -24,7 +24,7 @@ public class ContributorServiceImpl implements ContributorService {
         ContributorDetail contributorDetail = contributorComponent.findContributorById(userId);
         ContributorDetailRes contributorDetailRes = new ContributorDetailRes();
         contributorDetailRes.setContributorDetail(contributorDetail);
-        return contributorDetailRes;
+        return contributorDetailRes;    
     }
 
     @Override

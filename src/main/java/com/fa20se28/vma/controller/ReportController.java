@@ -33,11 +33,6 @@ public class ReportController {
         this.reportService = reportService;
     }
 
-//    @GetMapping("contracts/{contract-id}")
-//    public ResponseEntity<InputStreamResource> getContractById(@PathVariable("contract-id") int contractId) throws IOException {
-//        return reportService.exportPdfContractReport(contractId);
-//    }
-
     @GetMapping("schedule")
     public ResponseEntity<InputStreamResource> exportScheduleReport(@RequestParam(required = false) Quarter quarter,
                                                                     @RequestParam(required = false) Integer year) throws IOException {
