@@ -163,20 +163,22 @@ public class ExceptionHandlerConfiguration extends ResponseEntityExceptionHandle
 
     private String checkFirebaseAuthExceptionType(AuthErrorCode authErrorCode) {
         String message = "";
-        if (authErrorCode.equals(AuthErrorCode.CERTIFICATE_FETCH_FAILED)) {
-            message = "Failed to retrieve public key";
-        } else if (authErrorCode.equals(AuthErrorCode.EXPIRED_ID_TOKEN)) {
-            message = "The Token is expired";
-        } else if (authErrorCode.equals(AuthErrorCode.INVALID_ID_TOKEN)) {
-            message = "The ID token is invalid";
-        } else if (authErrorCode.equals(AuthErrorCode.PHONE_NUMBER_ALREADY_EXISTS)) {
-            message = "A user already exists with the provided phone number";
-        } else if (authErrorCode.equals(AuthErrorCode.UID_ALREADY_EXISTS)) {
-            message = "A user already exists with the provided UID";
-        } else if (authErrorCode.equals(AuthErrorCode.UNAUTHORIZED_CONTINUE_URL)) {
-            message = "The domain of the continue URL is not whitelisted";
-        } else if (authErrorCode.equals(AuthErrorCode.USER_NOT_FOUND)) {
-            message = "No user record found for the given ID";
+        if (authErrorCode != null) {
+            if (authErrorCode.equals(AuthErrorCode.CERTIFICATE_FETCH_FAILED)) {
+                message = "Failed to retrieve public key";
+            } else if (authErrorCode.equals(AuthErrorCode.EXPIRED_ID_TOKEN)) {
+                message = "The Token is expired";
+            } else if (authErrorCode.equals(AuthErrorCode.INVALID_ID_TOKEN)) {
+                message = "The ID token is invalid";
+            } else if (authErrorCode.equals(AuthErrorCode.PHONE_NUMBER_ALREADY_EXISTS)) {
+                message = "A user already exists with the provided phone number";
+            } else if (authErrorCode.equals(AuthErrorCode.UID_ALREADY_EXISTS)) {
+                message = "A user already exists with the provided UID";
+            } else if (authErrorCode.equals(AuthErrorCode.UNAUTHORIZED_CONTINUE_URL)) {
+                message = "The domain of the continue URL is not whitelisted";
+            } else if (authErrorCode.equals(AuthErrorCode.USER_NOT_FOUND)) {
+                message = "No user record found for the given ID";
+            }
         }
         return message;
     }

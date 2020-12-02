@@ -2,10 +2,13 @@ package com.fa20se28.vma.service.impl;
 
 import com.fa20se28.vma.component.ReportComponent;
 import com.fa20se28.vma.model.ByteArrayInputStreamWrapper;
+import com.fa20se28.vma.model.ContributorEarnedAndEstimatedIncome;
 import com.fa20se28.vma.model.ContributorIncomesDetailRes;
 import com.fa20se28.vma.request.ReportReq;
 import com.fa20se28.vma.response.ContractReportRes;
 import com.fa20se28.vma.response.ContributorIncomeRes;
+import com.fa20se28.vma.response.DriverIncomeRes;
+import com.fa20se28.vma.response.DriversIncomeRes;
 import com.fa20se28.vma.response.MaintenanceReportRes;
 import com.fa20se28.vma.response.RevenueExpenseReportRes;
 import com.fa20se28.vma.response.ScheduleRes;
@@ -121,5 +124,22 @@ public class ReportServiceImpl implements ReportService {
         ContributorIncomesDetailRes contributorIncomesDetailRes = new ContributorIncomesDetailRes();
         contributorIncomesDetailRes.setContributorIncomesDetails(reportComponent.getContributorIncomesDetails(reportReq));
         return contributorIncomesDetailRes;
+    }
+
+    @Override
+    public ContributorEarnedAndEstimatedIncome getContributorEarnedAndEstimatedIncome(ReportReq reportReq) {
+        return reportComponent.getContributorEarnedAndEstimatedIncomeById(reportReq);
+    }
+
+    @Override
+    public DriversIncomeRes getDriversIncomesReportData(ReportReq reportReq) {
+        DriversIncomeRes driversIncomeRes = new DriversIncomeRes();
+        driversIncomeRes.setDriverIncomes(reportComponent.getDriversIncome(reportReq));
+        return driversIncomeRes;
+    }
+
+    @Override
+    public DriverIncomeRes getDriverEarnedAndEstimatedIncome(ReportReq reportReq) {
+        return reportComponent.getDriversIncomeById(reportReq);
     }
 }

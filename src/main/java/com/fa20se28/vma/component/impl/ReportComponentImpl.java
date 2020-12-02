@@ -7,14 +7,17 @@ import com.fa20se28.vma.mapper.ReportMapper;
 import com.fa20se28.vma.model.ByteArrayInputStreamWrapper;
 import com.fa20se28.vma.model.ContractDetailReport;
 import com.fa20se28.vma.model.ContractReport;
+import com.fa20se28.vma.model.ContributorEarnedAndEstimatedIncome;
 import com.fa20se28.vma.model.ContributorIncome;
 import com.fa20se28.vma.model.ContributorIncomesDetail;
+import com.fa20se28.vma.model.DriverIncomes;
 import com.fa20se28.vma.model.EstimateAndEarnedIncome;
 import com.fa20se28.vma.model.MaintenanceReport;
 import com.fa20se28.vma.model.RevenueExpense;
 import com.fa20se28.vma.model.Schedule;
 import com.fa20se28.vma.model.VehicleReport;
 import com.fa20se28.vma.request.ReportReq;
+import com.fa20se28.vma.response.DriverIncomeRes;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
@@ -195,6 +198,10 @@ public class ReportComponentImpl implements ReportComponent {
             writeContributorIncomesHeaderLine(reportReq, style);
         } else if (reportReq.getReportType().equals(ReportType.CONTRIBUTORS_INCOMES)) {
             writeContributorsIncomesHeaderLine(style);
+        } else if (reportReq.getReportType().equals(ReportType.DRIVER_INCOMES)) {
+            writeDriverIncomesHeaderLine(reportReq, style);
+        } else if (reportReq.getReportType().equals(ReportType.DRIVERS_INCOMES)) {
+            writeDriversIncomesHeaderLine(style);
         }
     }
 
@@ -221,6 +228,10 @@ public class ReportComponentImpl implements ReportComponent {
             writeContributorIncomesDataLine(reportReq, style);
         } else if (reportReq.getReportType().equals(ReportType.CONTRIBUTORS_INCOMES)) {
             writeContributorsIncomesDataLine(reportReq, style);
+        } else if (reportReq.getReportType().equals(ReportType.DRIVER_INCOMES)) {
+            writeDriverIncomesDataLine(reportReq, style);
+        } else if (reportReq.getReportType().equals(ReportType.DRIVERS_INCOMES)) {
+            writeDriversIncomesDataLine(reportReq, style);
         }
     }
 
@@ -550,7 +561,7 @@ public class ReportComponentImpl implements ReportComponent {
     private void writeContributorIncomesHeaderLine(ReportReq reportReq, CellStyle style) {
         Row vehicleIdRow = sheet.createRow(HEADER_ROW);
         createCell(vehicleIdRow, 0, "Contributor Id:", style);
-        createCell(vehicleIdRow, 1, reportReq.getContributorId(), style);
+        createCell(vehicleIdRow, 1, reportReq.getUserId(), style);
 
         Row rowFromAndTo = sheet.createRow(HEADER_ROW + 1);
 
@@ -625,6 +636,99 @@ public class ReportComponentImpl implements ReportComponent {
 
     // end Contributor Income
 
+    // start driver income
+    private void writeDriverIncomesHeaderLine(ReportReq reportReq, CellStyle style) {
+        Row vehicleIdRow = sheet.createRow(HEADER_ROW);
+        createCell(vehicleIdRow, 0, "Driver Id:", style);
+        createCell(vehicleIdRow, 1, reportReq.getUserId(), style);
+
+        Row rowFromAndTo = sheet.createRow(HEADER_ROW + 2);
+
+        createCell(rowFromAndTo, 0, "From", style);
+        createCell(rowFromAndTo, 1, firstAndLast.get(0).toString(), style);
+        createCell(rowFromAndTo, 2, "To", style);
+        createCell(rowFromAndTo, 3, firstAndLast.get(1).toString(), style);
+
+        Row row = sheet.createRow(HEADER_ROW + 3);
+
+        createCell(row, 0, "No", style);
+        createCell(row, 1, "Contract Id", style);
+        createCell(row, 2, "Vehicle Id", style);
+        createCell(row, 3, "Driver Earned", style);
+    }
+
+    private void writeDriverIncomesDataLine(ReportReq reportReq, CellStyle style) {
+        int rowCount = HEADER_ROW + 4;
+        int numberOfData = 1;
+
+        List<DriverIncomes> driverIncomes = getDriversIncome(reportReq);
+        for (DriverIncomes driverIncomesDetail : driverIncomes) {
+            Row row = sheet.createRow(rowCount++);
+            int columnCount = 0;
+            createCell(row, columnCount++, numberOfData++, style);
+            createCell(row, columnCount++, driverIncomesDetail.getContractId(), style);
+            createCell(row, columnCount++, driverIncomesDetail.getVehicleId(), style);
+            createCell(row, columnCount, driverIncomesDetail.getDriverEarned(), style);
+        }
+
+        Row row = sheet.createRow(rowCount);
+        createCell(row, 2, "Total Earned", style);
+        Cell valueCell = row.createCell(3);
+        valueCell.setCellFormula("SUM(D6:D" + (rowCount) + ")");
+        valueCell.setCellStyle(style);
+
+        CellStyle baseSalaryStyle = workbook.createCellStyle();
+        Font font = workbook.createFont();
+        font.setBold(true);
+        font.setFontHeight((short) 320);
+        baseSalaryStyle.setFont(font);
+
+        Row baseSalaryRow = sheet.createRow(HEADER_ROW + 1);
+        createCell(baseSalaryRow, 0, "Base Salary", baseSalaryStyle);
+        createCell(baseSalaryRow, 1, driverIncomes.get(0) != null ? driverIncomes.get(0).getBaseSalary() : "N/A", baseSalaryStyle);
+
+        Row totalSalaryRow = sheet.createRow(rowCount + 1);
+        createCell(totalSalaryRow, 2, "Total Salary", style);
+        Cell totalSalaryCell = totalSalaryRow.createCell(3);
+        totalSalaryCell.setCellFormula("B3+D" + (rowCount + 1));
+        totalSalaryCell.setCellStyle(style);
+    }
+
+    private void writeDriversIncomesHeaderLine(CellStyle style) {
+        Row rowFromAndTo = sheet.createRow(HEADER_ROW);
+
+        createCell(rowFromAndTo, 0, "From", style);
+        createCell(rowFromAndTo, 1, firstAndLast.get(0).toString(), style);
+        createCell(rowFromAndTo, 2, "To", style);
+        createCell(rowFromAndTo, 3, firstAndLast.get(1).toString(), style);
+
+        Row row = sheet.createRow(HEADER_ROW + 1);
+
+        createCell(row, 0, "No", style);
+        createCell(row, 1, "Driver Id", style);
+        createCell(row, 2, "Contract Id", style);
+        createCell(row, 3, "Vehicle Id", style);
+        createCell(row, 4, "Driver Earned", style);
+    }
+
+
+    private void writeDriversIncomesDataLine(ReportReq reportReq, CellStyle style) {
+        int rowCount = HEADER_ROW + 2;
+        int numberOfData = 1;
+
+        List<DriverIncomes> driverIncomes = getDriversIncome(reportReq);
+        for (DriverIncomes driverIncomesDetail : driverIncomes) {
+            Row row = sheet.createRow(rowCount++);
+            int columnCount = 0;
+            createCell(row, columnCount++, numberOfData++, style);
+            createCell(row, columnCount++, driverIncomesDetail.getUserId(), style);
+            createCell(row, columnCount++, driverIncomesDetail.getContractId(), style);
+            createCell(row, columnCount++, driverIncomesDetail.getVehicleId(), style);
+            createCell(row, columnCount, driverIncomesDetail.getDriverEarned(), style);
+        }
+    }
+    // end driver income
+
     @Override
     public List<Schedule> getScheduleReportData(ReportReq reportReq) {
         List<LocalDate> firstAndLast = getFirstAndLastDayInAMonth(reportReq);
@@ -673,15 +777,6 @@ public class ReportComponentImpl implements ReportComponent {
     }
 
     @Override
-    public List<ContributorIncome> getContributorIncomeReportData(ReportReq reportReq) {
-        List<LocalDate> firstAndLast = getFirstAndLastDayInAMonth(reportReq);
-        return reportMapper.getContributorIncomeForReport(
-                firstAndLast.get(0).toString(),
-                firstAndLast.get(1).toString(),
-                reportReq.getVehicleId());
-    }
-
-    @Override
     public Map<String, EstimateAndEarnedIncome> calculateContributorEstimatedAndEarnedIncome(ReportReq reportReq) {
         firstAndLast = getFirstAndLastDayInAMonth(reportReq);
 
@@ -708,9 +803,8 @@ public class ReportComponentImpl implements ReportComponent {
         for (ContributorIncome contributorIncome : contributorIncomes) {
             if (!contributorsEstimatedIncomesMap.containsKey(contributorIncome.getOwnerId())) {
                 contributorsEstimatedIncomesMap.put(contributorIncome.getOwnerId(), new ArrayList<>());
-            } else {
-                contributorsEstimatedIncomesMap.get(contributorIncome.getOwnerId()).add(contributorIncome);
             }
+            contributorsEstimatedIncomesMap.get(contributorIncome.getOwnerId()).add(contributorIncome);
         }
 
         long totalDaysInThisQuarter = firstAndLast.get(0).until(firstAndLast.get(1), ChronoUnit.DAYS);
@@ -748,15 +842,97 @@ public class ReportComponentImpl implements ReportComponent {
     private List<ContributorIncome> getContributorsIncomeReportData(ReportReq reportReq) {
         List<LocalDate> firstAndLast = getFirstAndLastDayInAMonth(reportReq);
         return reportMapper.getContributorIncomesForReport(
+                null,
                 firstAndLast.get(0).toString(),
                 firstAndLast.get(1).toString());
+    }
+
+    @Override
+    public ContributorEarnedAndEstimatedIncome getContributorEarnedAndEstimatedIncomeById(ReportReq reportReq) {
+        firstAndLast = getFirstAndLastDayInAMonth(reportReq);
+        List<ContributorIncome> contributorIncomes =
+                reportMapper.getContributorIncomesForReport(
+                        reportReq.getUserId(),
+                        firstAndLast.get(0).toString(),
+                        firstAndLast.get(1).toString());
+
+        long totalDaysInThisQuarter = firstAndLast.get(0).until(firstAndLast.get(1), ChronoUnit.DAYS);
+        // calculate estimated
+
+        float estimatedValue = 0;
+        for (ContributorIncome contributorIncome : contributorIncomes) {
+            long totalDays;
+            if (contributorIncome.getStartDate().isBefore(firstAndLast.get(0))
+                    && contributorIncome.getEndDate().isAfter(firstAndLast.get(1))) {
+                estimatedValue += (contributorIncome.getValue() / 30) * totalDaysInThisQuarter;
+            } else if (firstAndLast.get(0).isBefore(contributorIncome.getStartDate())
+                    && firstAndLast.get(1).isAfter(contributorIncome.getEndDate())) {
+                totalDays = contributorIncome.getStartDate().until(contributorIncome.getEndDate(), ChronoUnit.DAYS);
+                estimatedValue += (contributorIncome.getValue() / 30) * totalDays;
+            } else {
+                totalDays = firstAndLast.get(0).until(contributorIncome.getEndDate(), ChronoUnit.DAYS);
+                if (totalDays <= totalDaysInThisQuarter) {
+                    estimatedValue += (contributorIncome.getValue() / 30) * totalDays;
+                }
+                totalDays = contributorIncome.getStartDate().until(firstAndLast.get(1), ChronoUnit.DAYS);
+                if (totalDays <= totalDaysInThisQuarter) {
+                    estimatedValue += (contributorIncome.getValue() / 30) * totalDays;
+                }
+            }
+        }
+        // end
+        List<ContributorIncomesDetail> contributorIncomesDetails = reportMapper.getContributorIncomesDetail(
+                reportReq.getUserId(),
+                firstAndLast.get(0).toString(),
+                firstAndLast.get(1).toString());
+        // calculate earned
+        float earnedValue = 0;
+        for (ContributorIncomesDetail contributorIncomesDetail : contributorIncomesDetails) {
+            earnedValue += contributorIncomesDetail.getValue();
+        }
+        // end
+        ContributorEarnedAndEstimatedIncome contributorEarnedAndEstimatedIncome =
+                new ContributorEarnedAndEstimatedIncome();
+        contributorEarnedAndEstimatedIncome.setContributorIncomesDetails(contributorIncomesDetails);
+        contributorEarnedAndEstimatedIncome.setEstimated(estimatedValue);
+        contributorEarnedAndEstimatedIncome.setEarned(earnedValue);
+        return contributorEarnedAndEstimatedIncome;
+    }
+
+    @Override
+    public List<DriverIncomes> getDriversIncome(ReportReq reportReq) {
+        List<LocalDate> firstAndLast = getFirstAndLastDayInAMonth(reportReq);
+        return reportMapper.getDriverIncomes(
+                null,
+                firstAndLast.get(0).toString(),
+                firstAndLast.get(1).toString());
+    }
+
+    @Override
+    public DriverIncomeRes getDriversIncomeById(ReportReq reportReq) {
+        List<LocalDate> firstAndLast = getFirstAndLastDayInAMonth(reportReq);
+        List<DriverIncomes> driverIncomes = reportMapper.getDriverIncomes(
+                reportReq.getUserId(),
+                firstAndLast.get(0).toString(),
+                firstAndLast.get(1).toString());
+        DriverIncomeRes driverIncomeRes = new DriverIncomeRes();
+        driverIncomeRes.setDriverIncomes(driverIncomes);
+        float earnedValue = 0;
+        for (DriverIncomes driverIncomesDetail : driverIncomes) {
+            earnedValue += driverIncomesDetail.getDriverEarned();
+        }
+        if (!driverIncomes.isEmpty()) {
+            earnedValue += driverIncomes.get(0).getBaseSalary();
+        }
+        driverIncomeRes.setEarnedValue(earnedValue);
+        return driverIncomeRes;
     }
 
     @Override
     public List<ContributorIncomesDetail> getContributorIncomesDetails(ReportReq reportReq) {
         List<LocalDate> firstAndLast = getFirstAndLastDayInAMonth(reportReq);
         return reportMapper.getContributorIncomesDetail(
-                reportReq.getContributorId(),
+                reportReq.getUserId(),
                 firstAndLast.get(0).toString(),
                 firstAndLast.get(1).toString());
     }
@@ -795,6 +971,42 @@ public class ReportComponentImpl implements ReportComponent {
             lastMonthOfQuarter = Month.SEPTEMBER;
         } else if (reportReq.getQuarter() == Quarter.FOURTH) {
             firstMonthOfQuarter = Month.OCTOBER;
+            lastMonthOfQuarter = Month.DECEMBER;
+        } else if (reportReq.getQuarter() == Quarter.JANUARY) {
+            firstMonthOfQuarter = Month.JANUARY;
+            lastMonthOfQuarter = Month.JANUARY;
+        } else if (reportReq.getQuarter() == Quarter.FEBRUARY) {
+            firstMonthOfQuarter = Month.FEBRUARY;
+            lastMonthOfQuarter = Month.FEBRUARY;
+        } else if (reportReq.getQuarter() == Quarter.MARCH) {
+            firstMonthOfQuarter = Month.MARCH;
+            lastMonthOfQuarter = Month.MARCH;
+        } else if (reportReq.getQuarter() == Quarter.APRIL) {
+            firstMonthOfQuarter = Month.APRIL;
+            lastMonthOfQuarter = Month.APRIL;
+        } else if (reportReq.getQuarter() == Quarter.MAY) {
+            firstMonthOfQuarter = Month.MAY;
+            lastMonthOfQuarter = Month.MAY;
+        } else if (reportReq.getQuarter() == Quarter.JUNE) {
+            firstMonthOfQuarter = Month.JUNE;
+            lastMonthOfQuarter = Month.JUNE;
+        } else if (reportReq.getQuarter() == Quarter.JULY) {
+            firstMonthOfQuarter = Month.JULY;
+            lastMonthOfQuarter = Month.JULY;
+        } else if (reportReq.getQuarter() == Quarter.AUGUST) {
+            firstMonthOfQuarter = Month.AUGUST;
+            lastMonthOfQuarter = Month.AUGUST;
+        } else if (reportReq.getQuarter() == Quarter.SEPTEMBER) {
+            firstMonthOfQuarter = Month.SEPTEMBER;
+            lastMonthOfQuarter = Month.SEPTEMBER;
+        } else if (reportReq.getQuarter() == Quarter.OCTOBER) {
+            firstMonthOfQuarter = Month.OCTOBER;
+            lastMonthOfQuarter = Month.OCTOBER;
+        } else if (reportReq.getQuarter() == Quarter.NOVEMBER) {
+            firstMonthOfQuarter = Month.NOVEMBER;
+            lastMonthOfQuarter = Month.NOVEMBER;
+        } else if (reportReq.getQuarter() == Quarter.DECEMBER) {
+            firstMonthOfQuarter = Month.DECEMBER;
             lastMonthOfQuarter = Month.DECEMBER;
         }
         LocalDate firstDayOfQuarter = LocalDate.of(year, firstMonthOfQuarter, 1);
