@@ -3,12 +3,12 @@ package com.fa20se28.vma.component.impl;
 import com.fa20se28.vma.component.ContractComponent;
 import com.fa20se28.vma.configuration.exception.DataException;
 import com.fa20se28.vma.enums.ContractStatus;
+import com.fa20se28.vma.mapper.ContractDetailMapper;
+import com.fa20se28.vma.mapper.ContractDetailScheduleMapper;
 import com.fa20se28.vma.mapper.ContractMapper;
 import com.fa20se28.vma.model.ContractDetail;
 import com.fa20se28.vma.model.ContractLM;
-import com.fa20se28.vma.request.ContractPageReq;
-import com.fa20se28.vma.request.ContractReq;
-import com.fa20se28.vma.request.ContractUpdateReq;
+import com.fa20se28.vma.request.*;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,9 +17,13 @@ import java.util.List;
 @Component
 public class ContractComponentImpl implements ContractComponent {
     private final ContractMapper contractMapper;
+    private final ContractDetailMapper contractDetailMapper;
+    private final ContractDetailScheduleMapper contractDetailScheduleMapper;
 
-    public ContractComponentImpl(ContractMapper contractMapper) {
+    public ContractComponentImpl(ContractMapper contractMapper, ContractDetailMapper contractDetailMapper, ContractDetailScheduleMapper contractDetailScheduleMapper) {
         this.contractMapper = contractMapper;
+        this.contractDetailMapper = contractDetailMapper;
+        this.contractDetailScheduleMapper = contractDetailScheduleMapper;
     }
 
     @Override
@@ -29,12 +33,32 @@ public class ContractComponentImpl implements ContractComponent {
 
         if (row == 0) {
             throw new DataException("Unknown error occurred. Data not modified!");
+        } else {
+            for (ContractTripReq trip: contractReq.getTrips()) {
+                int contractTripRow = contractDetailMapper.createContractDetail(trip, contractMapper.getContractId(contractReq.getContractOwnerId()));
+
+                if (contractTripRow == 0) {
+                    throw new DataException("Unknown error occurred. Data not modified!");
+                } else {
+                    int contractDetailId = contractDetailMapper.getContractDetailId(contractMapper.getContractId(contractReq.getContractOwnerId()));
+
+                    for (ContractTripScheduleReq location: trip.getLocations()) {
+                        int scheduleRow = contractDetailScheduleMapper.createContractSchedule(
+                                location.getLocation(),
+                                contractDetailId);
+
+                        if (scheduleRow == 0) {
+                            throw new DataException("Unknown error occurred. Data not modified!");
+                        }
+                    }
+                }
+            }
         }
     }
 
     @Override
     public List<ContractLM> getContracts(ContractPageReq contractPageReq, int viewOption, int pageNum) {
-        return contractMapper.getContracts(contractPageReq, viewOption, pageNum*15);
+        return contractMapper.getContracts(contractPageReq, viewOption, pageNum * 15);
     }
 
     @Override
@@ -59,6 +83,36 @@ public class ContractComponentImpl implements ContractComponent {
 
         if (row == 0) {
             throw new DataException("Unknown error occurred. Data not modified!");
+        }
+    }
+
+    @Override
+    @Transactional
+    public void updateContractTrip(ContractTripUpdateReq contractTripUpdateReq) {
+        int row = contractDetailMapper.updateContractDetail(contractTripUpdateReq);
+
+        if (row == 0) {
+            throw new DataException("Unknown error occurred. Data not modified!");
+        }
+    }
+
+    @Override
+    @Transactional
+    public void updateContractTripSchedule(ContractTripScheduleUpdateReq contractTripScheduleUpdateReq) {
+        int clearScheduleRow = contractDetailScheduleMapper.deleteContractSchedule(contractTripScheduleUpdateReq.getContractTripId());
+
+        if (clearScheduleRow == 0) {
+            throw new DataException("Unknown error occurred. Data not modified!");
+        } else {
+            for (ContractTripScheduleReq location : contractTripScheduleUpdateReq.getLocations()) {
+                int scheduleRow = contractDetailScheduleMapper.createContractSchedule(
+                        location.getLocation(),
+                        contractTripScheduleUpdateReq.getContractTripId());
+
+                if (scheduleRow == 0) {
+                    throw new DataException("Unknown error occurred. Data not modified!");
+                }
+            }
         }
     }
 

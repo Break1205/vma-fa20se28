@@ -1,8 +1,12 @@
 package com.fa20se28.vma.service;
 
+import com.fa20se28.vma.model.ContributorEarnedAndEstimatedIncome;
+import com.fa20se28.vma.model.ContributorIncomesDetailRes;
 import com.fa20se28.vma.request.ReportReq;
 import com.fa20se28.vma.response.ContractReportRes;
 import com.fa20se28.vma.response.ContributorIncomeRes;
+import com.fa20se28.vma.response.DriverIncomeRes;
+import com.fa20se28.vma.response.DriversIncomeRes;
 import com.fa20se28.vma.response.MaintenanceReportRes;
 import com.fa20se28.vma.response.RevenueExpenseReportRes;
 import com.fa20se28.vma.response.ScheduleRes;
@@ -15,17 +19,27 @@ import java.io.IOException;
 public interface ReportService {
     ResponseEntity<InputStreamResource> exportReportByType(ReportReq reportReq) throws IOException;
 
-    ScheduleRes exportScheduleReportDate(ReportReq reportReq);
+    ResponseEntity<InputStreamResource> exportPdfContractReport(int contractId) throws IOException;
 
-    VehicleReportRes exportVehicleReportData(ReportReq reportReq);
+    ScheduleRes getScheduleReportDate(ReportReq reportReq);
 
-    MaintenanceReportRes exportMaintenanceReportData(ReportReq reportReq);
+    VehicleReportRes getVehicleReportData();
 
-    ContractReportRes exportContractsReportData(ReportReq reportReq);
+    MaintenanceReportRes getMaintenanceReportData(ReportReq reportReq);
 
-    RevenueExpenseReportRes exportVehicleRevenueExpenseReportData(ReportReq reportReq);
+    ContractReportRes getContractsReportData(ReportReq reportReq);
 
-    RevenueExpenseReportRes exportCompanyRevenueExpenseReportData(ReportReq reportReq);
+    RevenueExpenseReportRes getVehicleRevenueExpenseReportData(ReportReq reportReq);
 
-    ContributorIncomeRes exportContributorIncomeReportData(ReportReq reportReq);
+    RevenueExpenseReportRes getCompanyRevenueExpenseReportData(ReportReq reportReq);
+
+    ContributorIncomeRes getContributorsIncomesReportData(ReportReq reportReq);
+
+    ContributorIncomesDetailRes getContributorIncomesReportData(ReportReq reportReq);
+
+    ContributorEarnedAndEstimatedIncome getContributorEarnedAndEstimatedIncome(ReportReq reportReq);
+
+    DriversIncomeRes getDriversIncomesReportData(ReportReq reportReq);
+
+    DriverIncomeRes getDriverEarnedAndEstimatedIncome(ReportReq reportReq);
 }

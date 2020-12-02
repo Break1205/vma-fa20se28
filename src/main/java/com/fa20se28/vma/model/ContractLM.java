@@ -1,22 +1,14 @@
 package com.fa20se28.vma.model;
 
 import com.fa20se28.vma.enums.ContractStatus;
-import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 public class ContractLM {
     private String contractId;
     private ContractStatus contractStatus;
     private LocalDate durationFrom;
     private LocalDate durationTo;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime departureTime;
-    private String departureLocation;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime destinationTime;
-    private String destinationLocation;
     private float totalPrice;
 
     public String getContractId() {
@@ -49,38 +41,6 @@ public class ContractLM {
 
     public void setDurationTo(LocalDate durationTo) {
         this.durationTo = durationTo;
-    }
-
-    public LocalDateTime getDepartureTime() {
-        return departureTime;
-    }
-
-    public void setDepartureTime(LocalDateTime departureTime) {
-        this.departureTime = departureTime;
-    }
-
-    public String getDepartureLocation() {
-        return departureLocation;
-    }
-
-    public void setDepartureLocation(String departureLocation) {
-        this.departureLocation = departureLocation;
-    }
-
-    public LocalDateTime getDestinationTime() {
-        return destinationTime;
-    }
-
-    public void setDestinationTime(LocalDateTime destinationTime) {
-        this.destinationTime = destinationTime;
-    }
-
-    public String getDestinationLocation() {
-        return destinationLocation;
-    }
-
-    public void setDestinationLocation(String destinationLocation) {
-        this.destinationLocation = destinationLocation;
     }
 
     public float getTotalPrice() {

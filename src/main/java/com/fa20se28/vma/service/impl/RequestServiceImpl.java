@@ -3,16 +3,22 @@ package com.fa20se28.vma.service.impl;
 import com.fa20se28.vma.component.*;
 import com.fa20se28.vma.component.impl.UserDocumentComponentImpl;
 import com.fa20se28.vma.configuration.exception.RequestAlreadyHandledException;
+import com.fa20se28.vma.enums.NotificationType;
 import com.fa20se28.vma.enums.RequestStatus;
 import com.fa20se28.vma.enums.RequestType;
+import com.fa20se28.vma.enums.VehicleStatus;
 import com.fa20se28.vma.model.AssignedVehicle;
-import com.fa20se28.vma.model.DocumentRequestDetail;
+import com.fa20se28.vma.model.ClientRegistrationToken;
+import com.fa20se28.vma.model.NotificationData;
+import com.fa20se28.vma.model.RequestDetail;
 import com.fa20se28.vma.request.*;
-import com.fa20se28.vma.response.DocumentRequestDetailRes;
+import com.fa20se28.vma.response.RequestDetailRes;
 import com.fa20se28.vma.response.RequestPageRes;
+import com.fa20se28.vma.service.FirebaseService;
 import com.fa20se28.vma.service.RequestService;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class RequestServiceImpl implements RequestService {
@@ -21,15 +27,23 @@ public class RequestServiceImpl implements RequestService {
     private final VehicleComponent vehicleComponent;
     private final VehicleDocumentComponent vehicleDocumentComponent;
     private final AuthenticationComponent authenticationComponent;
+    private final UserComponent userComponent;
+    private final FirebaseService firebaseService;
 
     public RequestServiceImpl(RequestComponent requestComponent,
                               UserDocumentComponentImpl documentComponent,
-                              VehicleComponent vehicleComponent, VehicleDocumentComponent vehicleDocumentComponent, AuthenticationComponent authenticationComponent) {
+                              VehicleComponent vehicleComponent,
+                              VehicleDocumentComponent vehicleDocumentComponent,
+                              AuthenticationComponent authenticationComponent,
+                              UserComponent userComponent,
+                              FirebaseService firebaseService) {
         this.requestComponent = requestComponent;
         this.userDocumentComponent = documentComponent;
         this.vehicleComponent = vehicleComponent;
         this.vehicleDocumentComponent = vehicleDocumentComponent;
         this.authenticationComponent = authenticationComponent;
+        this.userComponent = userComponent;
+        this.firebaseService = firebaseService;
     }
 
     @Override
@@ -89,97 +103,121 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public DocumentRequestDetailRes getDocumentRequestById(int requestId) {
-        DocumentRequestDetailRes documentRequestDetailRes = new DocumentRequestDetailRes();
-        documentRequestDetailRes.setRequestDetail(requestComponent.findDocumentRequestById(requestId));
-        return documentRequestDetailRes;
+    public RequestDetailRes getRequestById(int requestId) {
+        RequestDetailRes requestDetailRes = new RequestDetailRes();
+        requestDetailRes.setRequestDetail(requestComponent.findRequestById(requestId));
+        return requestDetailRes;
     }
 
     @Override
+    @Transactional
     public int updateDocumentRequestStatusByRequestId(int requestId, RequestStatus requestStatus) {
-        DocumentRequestDetail documentRequestDetail = requestComponent.findDocumentRequestById(requestId);
-        if (!documentRequestDetail.getRequestStatus().equals(RequestStatus.PENDING)) {
+        RequestDetail requestDetail = requestComponent.findRequestById(requestId);
+        if (!requestDetail.getRequestStatus().equals(RequestStatus.PENDING)) {
             throw new RequestAlreadyHandledException("Request with id: " + requestId + " has already been handled");
         } else {
+            ClientRegistrationToken clientRegistrationToken = userComponent.findClientRegistrationTokenByUserId(requestDetail.getUserId());
             if (requestStatus.equals(RequestStatus.ACCEPTED)) {
-                return acceptRequest(documentRequestDetail);
+                if (acceptRequest(requestDetail) == 1) {
+                    NotificationData notificationData = new NotificationData(
+                            NotificationType.REQUEST_ACCEPTED,
+                            "Request " + requestDetail.getRequestType() + " with id " + requestId + " has been accepted",
+                            String.valueOf(requestId));
+                    firebaseService.notifyUserByFCMToken(clientRegistrationToken, notificationData);
+                    return 1;
+                }
+                return 0;
             } else if (requestStatus.equals(RequestStatus.DENIED)) {
-                return denyRequest(documentRequestDetail);
+                if (denyRequest(requestDetail) == 1) {
+                    NotificationData notificationData = new NotificationData(
+                            NotificationType.REQUEST_DENIED,
+                            "Request " + requestDetail.getRequestType() + " with id " + requestId + " has been denied",
+                            String.valueOf(requestId));
+                    firebaseService.notifyUserByFCMToken(clientRegistrationToken, notificationData);
+                    return 1;
+                }
+                return 0;
             }
             return 0;
         }
     }
 
-    private int acceptRequest(DocumentRequestDetail documentRequestDetail) {
-        if (documentRequestDetail.getRequestType().equals(RequestType.NEW_DOCUMENT)) {
-            if (userDocumentComponent.acceptNewDocumentRequest(documentRequestDetail.getUserDocumentId()) == 1) {
-                return requestComponent.updateRequestStatus(documentRequestDetail.getRequestId(), RequestStatus.ACCEPTED);
+    private int acceptRequest(RequestDetail requestDetail) {
+        if (requestDetail.getRequestType().equals(RequestType.NEW_DOCUMENT)) {
+            if (userDocumentComponent.acceptNewDocumentRequest(requestDetail.getUserDocumentId()) == 1) {
+                return requestComponent.updateRequestStatus(requestDetail.getRequestId(), RequestStatus.ACCEPTED);
             }
         }
-        if (documentRequestDetail.getRequestType().equals(RequestType.UPDATE_DOCUMENT)) {
-            if (userDocumentComponent.acceptNewDocumentRequest(documentRequestDetail.getUserDocumentId()) == 1) {
-                return requestComponent.updateRequestStatus(documentRequestDetail.getRequestId(), RequestStatus.ACCEPTED);
+        if (requestDetail.getRequestType().equals(RequestType.UPDATE_DOCUMENT)) {
+            if (userDocumentComponent.acceptNewDocumentRequest(requestDetail.getUserDocumentId()) == 1) {
+                return requestComponent.updateRequestStatus(requestDetail.getRequestId(), RequestStatus.ACCEPTED);
             }
         }
-        if (documentRequestDetail.getRequestType().equals(RequestType.DELETE_DOCUMENT)) {
-            userDocumentComponent.deleteUserDocument(documentRequestDetail.getUserDocumentId());
-            return requestComponent.updateRequestStatus(documentRequestDetail.getRequestId(), RequestStatus.ACCEPTED);
+        if (requestDetail.getRequestType().equals(RequestType.DELETE_DOCUMENT)) {
+            userDocumentComponent.deleteUserDocument(requestDetail.getUserDocumentId());
+            return requestComponent.updateRequestStatus(requestDetail.getRequestId(), RequestStatus.ACCEPTED);
         }
-        if (documentRequestDetail.getRequestType().equals(RequestType.NEW_VEHICLE_DOCUMENT)) {
-            vehicleDocumentComponent.acceptDocument(documentRequestDetail.getVehicleDocumentId());
-            return requestComponent.updateRequestStatus(documentRequestDetail.getRequestId(), RequestStatus.ACCEPTED);
+        if (requestDetail.getRequestType().equals(RequestType.NEW_VEHICLE_DOCUMENT)) {
+            vehicleDocumentComponent.acceptDocument(requestDetail.getVehicleDocumentId());
+            return requestComponent.updateRequestStatus(requestDetail.getRequestId(), RequestStatus.ACCEPTED);
         }
-        if (documentRequestDetail.getRequestType().equals(RequestType.DELETE_VEHICLE_DOCUMENT)) {
-            vehicleDocumentComponent.deleteDocument(documentRequestDetail.getVehicleDocumentId());
-            return requestComponent.updateRequestStatus(documentRequestDetail.getRequestId(), RequestStatus.ACCEPTED);
+        if (requestDetail.getRequestType().equals(RequestType.DELETE_VEHICLE_DOCUMENT)) {
+            vehicleDocumentComponent.deleteDocument(requestDetail.getVehicleDocumentId());
+            return requestComponent.updateRequestStatus(requestDetail.getRequestId(), RequestStatus.ACCEPTED);
         }
-        if (documentRequestDetail.getRequestType().equals(RequestType.ADD_NEW_VEHICLE)) {
-            vehicleComponent.acceptVehicle(documentRequestDetail.getVehicleId());
-            return requestComponent.updateRequestStatus(documentRequestDetail.getRequestId(), RequestStatus.ACCEPTED);
+        if (requestDetail.getRequestType().equals(RequestType.ADD_NEW_VEHICLE)) {
+            vehicleComponent.acceptVehicle(requestDetail.getVehicleId());
+            return requestComponent.updateRequestStatus(requestDetail.getRequestId(), RequestStatus.ACCEPTED);
         }
-        if (documentRequestDetail.getRequestType().equals(RequestType.WITHDRAW_VEHICLE)) {
-            vehicleComponent.deleteVehicle(documentRequestDetail.getVehicleId());
-            return requestComponent.updateRequestStatus(documentRequestDetail.getRequestId(), RequestStatus.ACCEPTED);
+        if (requestDetail.getRequestType().equals(RequestType.WITHDRAW_VEHICLE)) {
+            vehicleComponent.deleteVehicle(requestDetail.getVehicleId());
+            return requestComponent.updateRequestStatus(requestDetail.getRequestId(), RequestStatus.ACCEPTED);
         }
-        if (documentRequestDetail.getRequestType().equals(RequestType.CHANGE_VEHICLE)) {
-            return requestComponent.updateRequestStatus(documentRequestDetail.getRequestId(), RequestStatus.ACCEPTED);
+        if (requestDetail.getRequestType().equals(RequestType.CHANGE_VEHICLE)) {
+            return requestComponent.updateRequestStatus(requestDetail.getRequestId(), RequestStatus.ACCEPTED);
         }
-
+        if (requestDetail.getRequestType().equals(RequestType.VEHICLE_NEEDS_REPAIR)) {
+            vehicleComponent.withdrawVehicle(requestDetail.getVehicleId());
+            return requestComponent.updateRequestStatus(requestDetail.getRequestId(), RequestStatus.ACCEPTED);
+        }
         return 0;
     }
 
-    private int denyRequest(DocumentRequestDetail documentRequestDetail) {
-        if (documentRequestDetail.getRequestType().equals(RequestType.NEW_DOCUMENT)) {
-            userDocumentComponent.deleteUserDocument(documentRequestDetail.getUserDocumentId());
-            return requestComponent.updateRequestStatus(documentRequestDetail.getRequestId(), RequestStatus.DENIED);
+    private int denyRequest(RequestDetail requestDetail) {
+        if (requestDetail.getRequestType().equals(RequestType.NEW_DOCUMENT)) {
+            userDocumentComponent.deleteUserDocument(requestDetail.getUserDocumentId());
+            return requestComponent.updateRequestStatus(requestDetail.getRequestId(), RequestStatus.DENIED);
         }
-        if (documentRequestDetail.getRequestType().equals(RequestType.UPDATE_DOCUMENT)) {
-            if (userDocumentComponent.denyUpdateDocumentRequest(documentRequestDetail.getUserDocumentId()) == 1) {
-                return requestComponent.updateRequestStatus(documentRequestDetail.getRequestId(), RequestStatus.DENIED);
+        if (requestDetail.getRequestType().equals(RequestType.UPDATE_DOCUMENT)) {
+            if (userDocumentComponent.denyUpdateDocumentRequest(requestDetail.getUserDocumentId()) == 1) {
+                return requestComponent.updateRequestStatus(requestDetail.getRequestId(), RequestStatus.DENIED);
             }
         }
-        if (documentRequestDetail.getRequestType().equals(RequestType.DELETE_DOCUMENT)) {
-            return requestComponent.updateRequestStatus(documentRequestDetail.getRequestId(), RequestStatus.DENIED);
+        if (requestDetail.getRequestType().equals(RequestType.DELETE_DOCUMENT)) {
+            return requestComponent.updateRequestStatus(requestDetail.getRequestId(), RequestStatus.DENIED);
         }
-        if (documentRequestDetail.getRequestType().equals(RequestType.NEW_VEHICLE_DOCUMENT)) {
+        if (requestDetail.getRequestType().equals(RequestType.NEW_VEHICLE_DOCUMENT)) {
             vehicleDocumentComponent.denyDocument(
-                    documentRequestDetail.getRequestId(),
-                    documentRequestDetail.getVehicleId(),
-                    documentRequestDetail.getVehicleDocumentId());
-            return requestComponent.updateRequestStatus(documentRequestDetail.getRequestId(), RequestStatus.DENIED);
+                    requestDetail.getRequestId(),
+                    requestDetail.getVehicleId(),
+                    requestDetail.getVehicleDocumentId());
+            return requestComponent.updateRequestStatus(requestDetail.getRequestId(), RequestStatus.DENIED);
         }
-        if (documentRequestDetail.getRequestType().equals(RequestType.DELETE_VEHICLE_DOCUMENT)) {
-            return requestComponent.updateRequestStatus(documentRequestDetail.getRequestId(), RequestStatus.DENIED);
+        if (requestDetail.getRequestType().equals(RequestType.DELETE_VEHICLE_DOCUMENT)) {
+            return requestComponent.updateRequestStatus(requestDetail.getRequestId(), RequestStatus.DENIED);
         }
-        if (documentRequestDetail.getRequestType().equals(RequestType.ADD_NEW_VEHICLE)) {
-            vehicleComponent.denyVehicle(documentRequestDetail.getVehicleId(), documentRequestDetail.getRequestId());
-            return requestComponent.updateRequestStatus(documentRequestDetail.getRequestId(), RequestStatus.DENIED);
+        if (requestDetail.getRequestType().equals(RequestType.ADD_NEW_VEHICLE)) {
+            vehicleComponent.denyVehicle(requestDetail.getVehicleId(), requestDetail.getRequestId());
+            return requestComponent.updateRequestStatus(requestDetail.getRequestId(), RequestStatus.DENIED);
         }
-        if (documentRequestDetail.getRequestType().equals(RequestType.WITHDRAW_VEHICLE)) {
-            return requestComponent.updateRequestStatus(documentRequestDetail.getRequestId(), RequestStatus.DENIED);
+        if (requestDetail.getRequestType().equals(RequestType.WITHDRAW_VEHICLE)) {
+            return requestComponent.updateRequestStatus(requestDetail.getRequestId(), RequestStatus.DENIED);
         }
-        if (documentRequestDetail.getRequestType().equals(RequestType.CHANGE_VEHICLE)) {
-            return requestComponent.updateRequestStatus(documentRequestDetail.getRequestId(), RequestStatus.DENIED);
+        if (requestDetail.getRequestType().equals(RequestType.CHANGE_VEHICLE)) {
+            return requestComponent.updateRequestStatus(requestDetail.getRequestId(), RequestStatus.DENIED);
+        }
+        if (requestDetail.getRequestType().equals(RequestType.VEHICLE_NEEDS_REPAIR)) {
+            return requestComponent.updateRequestStatus(requestDetail.getRequestId(), RequestStatus.DENIED);
         }
         return 0;
     }
@@ -233,8 +271,28 @@ public class RequestServiceImpl implements RequestService {
             vehicleComponent.withdrawVehicle(assignedVehicle.getVehicleId());
             vehicleComponent.assignVehicle(targetVehicleId, driverId);
 
+            NotificationData notificationData = new NotificationData(
+                    NotificationType.VEHICLE_CHANGED,
+                    "You have been reassigned to a new vehicle with ID " + targetVehicleId,
+                    String.valueOf(targetVehicleId));
+            firebaseService.notifyUserByFCMToken(
+                    userComponent.findClientRegistrationTokenByUserId(driverId),
+                    notificationData);
+
             return 1;
         }
+        return 0;
+    }
+
+    @Override
+    public int reportIssue(ReportIssueReq reportIssueReq) {
+        Authentication authentication = authenticationComponent.getAuthentication();
+
+        if (requestComponent.reportIssueRequest(reportIssueReq, authentication.getName()) == 1) {
+            vehicleComponent.updateVehicleStatus(reportIssueReq.getVehicleId(), VehicleStatus.NEED_REPAIR);
+            return 1;
+        }
+
         return 0;
     }
 }

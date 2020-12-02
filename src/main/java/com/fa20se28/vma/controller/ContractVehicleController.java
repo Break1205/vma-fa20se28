@@ -2,10 +2,7 @@ package com.fa20se28.vma.controller;
 
 import com.fa20se28.vma.enums.ContractVehicleStatus;
 import com.fa20se28.vma.request.*;
-import com.fa20se28.vma.response.ContractVehicleRes;
-import com.fa20se28.vma.response.ContractVehicleStatusRes;
-import com.fa20se28.vma.response.PassengerRes;
-import com.fa20se28.vma.response.TripListRes;
+import com.fa20se28.vma.response.*;
 import com.fa20se28.vma.service.ContractVehicleService;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
@@ -72,9 +69,29 @@ public class ContractVehicleController {
     @GetMapping("/{issued-vehicle-id}/trips")
     public TripListRes getTrips(
             @PathVariable("issued-vehicle-id") int issuedVehicleId,
-            @RequestParam(required = false) @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss") Date departureTime,
-            @RequestParam(required = false) @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss") Date destinationTime,
-            @RequestParam(required = false) ContractVehicleStatus vehicleStatus) {
-        return contractVehicleService.getTrips(new TripListReq(issuedVehicleId, departureTime, destinationTime, vehicleStatus));
+            @RequestParam(required = false) ContractVehicleStatus vehicleStatus,
+            @RequestParam(required = false, defaultValue = "0") int viewOption) {
+        return contractVehicleService.getTrips(new TripListReq(issuedVehicleId, vehicleStatus), viewOption);
+    }
+
+    @GetMapping("/recommendation")
+    public VehicleRecommendationRes getVehicleRecommendations(
+            @RequestParam(required = false, defaultValue = "0") int vehicleTypeId,
+            @RequestParam(required = false, defaultValue = "0") int seatsMin,
+            @RequestParam(required = false, defaultValue = "0") int seatsMax,
+            @RequestParam @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss") Date startDate,
+            @RequestParam @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss") Date endDate,
+            @RequestParam(required = false, defaultValue = "0") int viewOption) {
+        return contractVehicleService.getRecommendations(new VehicleRecommendationReq(vehicleTypeId, seatsMin, seatsMax, startDate, endDate), viewOption);
+    }
+
+    @GetMapping("/recommendation/count")
+    public int getTotalRecommendations(
+            @RequestParam(required = false, defaultValue = "0") int vehicleTypeId,
+            @RequestParam(required = false, defaultValue = "0") int seatsMin,
+            @RequestParam(required = false, defaultValue = "0") int seatsMax,
+            @RequestParam @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss") Date startDate,
+            @RequestParam @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss") Date endDate) {
+        return contractVehicleService.getTotalRecommendations(new VehicleRecommendationReq(vehicleTypeId, seatsMin, seatsMax, startDate, endDate));
     }
 }

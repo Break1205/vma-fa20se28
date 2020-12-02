@@ -1,5 +1,7 @@
 package com.fa20se28.vma.service;
 
+import com.fa20se28.vma.model.ClientRegistrationToken;
+import com.fa20se28.vma.model.NotificationData;
 import com.fa20se28.vma.request.UserReq;
 import com.fa20se28.vma.request.UserTokenReq;
 
@@ -10,5 +12,7 @@ public interface FirebaseService {
 
     void updateUserRecord(UserReq userReq);
 
-    String decodeToken (UserTokenReq token);
+    String decodeToken(UserTokenReq token);
+
+    void notifyUserByFCMToken(ClientRegistrationToken fcmToken, NotificationData notificationData);
 }

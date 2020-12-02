@@ -1,9 +1,7 @@
 package com.fa20se28.vma.service;
 
 import com.fa20se28.vma.enums.ContractStatus;
-import com.fa20se28.vma.request.ContractPageReq;
-import com.fa20se28.vma.request.ContractReq;
-import com.fa20se28.vma.request.ContractUpdateReq;
+import com.fa20se28.vma.request.*;
 import com.fa20se28.vma.response.ContractDetailRes;
 import com.fa20se28.vma.response.ContractPageRes;
 
@@ -17,6 +15,10 @@ public interface ContractService {
     void updateContractStatus(ContractStatus contractStatus, int contractId);
 
     void updateContract(ContractUpdateReq contractUpdateReq);
+
+    void updateContractTrip(ContractTripUpdateReq contractTripUpdateReq);
+
+    void updateContractTripSchedule(ContractTripScheduleUpdateReq contractTripScheduleUpdateReq);
 
     ContractDetailRes getContractDetails(int contractId);
 }

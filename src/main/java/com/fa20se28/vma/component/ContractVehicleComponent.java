@@ -4,6 +4,7 @@ import com.fa20se28.vma.enums.ContractVehicleStatus;
 import com.fa20se28.vma.model.Passenger;
 import com.fa20se28.vma.model.Trip;
 import com.fa20se28.vma.model.VehicleBasic;
+import com.fa20se28.vma.model.VehicleRecommendation;
 import com.fa20se28.vma.request.*;
 
 import java.util.List;
@@ -21,11 +22,15 @@ public interface ContractVehicleComponent {
 
     void updateContractVehicleStatus(ContractVehicleStatusUpdateReq contractVehicleStatusUpdateReq);
 
-    void startAndEndTrip(TripReq tripReq, boolean option);
+    int startAndEndTrip(TripReq tripReq, boolean option);
 
-    List<Trip> getVehicleTrips(TripListReq tripListReq);
+    List<Trip> getVehicleTrips(TripListReq tripListReq, int viewOption);
 
     void startContract(int contractId);
 
     void completeContract(int contractId);
+
+    List<VehicleRecommendation> getRecommendations(VehicleRecommendationReq vehicleRecommendationReq, int viewOption);
+
+    int getTotalRecommendations(VehicleRecommendationReq vehicleRecommendationReq);
 }

@@ -2,7 +2,7 @@ package com.fa20se28.vma.mapper;
 
 import com.fa20se28.vma.enums.RequestStatus;
 import com.fa20se28.vma.enums.RequestType;
-import com.fa20se28.vma.model.DocumentRequestDetail;
+import com.fa20se28.vma.model.RequestDetail;
 import com.fa20se28.vma.request.RequestPageReq;
 import com.fa20se28.vma.response.RequestRes;
 import org.apache.ibatis.annotations.*;
@@ -46,6 +46,7 @@ public interface RequestMapper {
             "user_id,\n" +
             "request_type, \n" +
             "request_status, \n" +
+            "description, \n" +
             "create_date \n" +
             "FROM request\n" +
             "WHERE 1=1\n" +
@@ -67,7 +68,7 @@ public interface RequestMapper {
             "<if test = \"RequestPageReq.fromDate==null and RequestPageReq.toDate!=null\" >\n" +
             "AND create_date &lt; '${RequestPageReq.toDate}' \n" +
             "</if> \n" +
-            "ORDER BY create_date ASC\n" +
+            "ORDER BY create_date ${RequestPageReq.sort} \n" +
             "OFFSET #{RequestPageReq.page} ROWS \n" +
             "FETCH NEXT 15 ROWS ONLY " +
             "</script>"})
@@ -76,18 +77,14 @@ public interface RequestMapper {
             @Result(property = "userId", column = "user_id"),
             @Result(property = "requestType", column = "request_type"),
             @Result(property = "requestStatus", column = "request_status"),
+            @Result(property = "description", column = "description"),
             @Result(property = "createDate", column = "create_date")
     })
     List<RequestRes> findRequests(@Param("RequestPageReq") RequestPageReq requestPageReq);
 
     @Select({"<script> "+
-            "SELECT COUNT(rc.request_id) " +
-            "FROM (" +
-            "SELECT  \n" +
-            "request_id, \n" +
-            "user_id, \n" +
-            "request_type,  \n" +
-            "create_date  \n" +
+            "SELECT \n" +
+            "COUNT(request_id) \n" +
             "FROM request \n" +
             "WHERE 1=1 \n" +
             "<if test = \"RequestPageReq.userId!=null\" > \n" +
@@ -107,7 +104,7 @@ public interface RequestMapper {
             "</if>  \n" +
             "<if test = \"RequestPageReq.fromDate==null and RequestPageReq.toDate!=null\" > \n" +
             "AND create_date &lt; '${RequestPageReq.toDate}'  \n" +
-            "</if> ) rc \n" +
+            "</if> \n" +
             "</script> "})
     int findTotalRequests(@Param("RequestPageReq") RequestPageReq requestPageReq);
 
@@ -138,7 +135,7 @@ public interface RequestMapper {
             @Result(property = "description", column = "description"),
             @Result(property = "createDate", column = "create_date")
     })
-    Optional<DocumentRequestDetail> findDocumentRequestById(@Param("request_id") int requestId);
+    Optional<RequestDetail> findRequestById(@Param("request_id") int requestId);
 
     @Update("UPDATE request \n" +
             "SET request_status = #{requestStatus} \n" +

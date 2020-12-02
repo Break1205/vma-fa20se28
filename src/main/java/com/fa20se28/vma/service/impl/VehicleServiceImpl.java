@@ -1,12 +1,8 @@
 package com.fa20se28.vma.service.impl;
 
-import com.fa20se28.vma.component.ContractVehicleComponent;
 import com.fa20se28.vma.component.VehicleComponent;
 import com.fa20se28.vma.enums.VehicleStatus;
-import com.fa20se28.vma.request.VehicleDropDownReq;
-import com.fa20se28.vma.request.VehiclePageReq;
-import com.fa20se28.vma.request.VehicleReq;
-import com.fa20se28.vma.request.VehicleUpdateReq;
+import com.fa20se28.vma.request.*;
 import com.fa20se28.vma.response.*;
 import com.fa20se28.vma.service.VehicleService;
 import org.springframework.stereotype.Service;
@@ -14,11 +10,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class VehicleServiceImpl implements VehicleService {
     private final VehicleComponent vehicleComponent;
-    private final ContractVehicleComponent contractVehicleComponent;
 
-    public VehicleServiceImpl(VehicleComponent vehicleComponent, ContractVehicleComponent contractVehicleComponent) {
+    public VehicleServiceImpl(VehicleComponent vehicleComponent) {
         this.vehicleComponent = vehicleComponent;
-        this.contractVehicleComponent = contractVehicleComponent;
     }
 
     @Override
@@ -79,5 +73,25 @@ public class VehicleServiceImpl implements VehicleService {
     @Override
     public VehicleCurrentRes getCurrentlyAssignedVehicle(String driverId) {
         return new VehicleCurrentRes(vehicleComponent.getCurrentlyAssignedVehicle(driverId));
+    }
+
+    @Override
+    public VehicleHistoryRes getVehicleHistory(String driverId) {
+        return new VehicleHistoryRes(vehicleComponent.getVehicleHistory(driverId));
+    }
+
+    @Override
+    public void addVehicleValue(VehicleValueReq vehicleValueReq) {
+        vehicleComponent.addVehicleValue(vehicleValueReq);
+    }
+
+    @Override
+    public void updateVehicleValue(VehicleValueUpdateReq vehicleValueUpdateReq) {
+        vehicleComponent.updateVehicleValue(vehicleValueUpdateReq);
+    }
+
+    @Override
+    public void deleteVehicleValue(int vehicleValueId) {
+        vehicleComponent.deleteVehicleValue(vehicleValueId);
     }
 }

@@ -1,10 +1,9 @@
 package com.fa20se28.vma.model;
 
 import com.fa20se28.vma.enums.ContractStatus;
-import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.List;
 
 public class ContractDetail {
     private int contractId;
@@ -14,16 +13,12 @@ public class ContractDetail {
     private String signedLocation;
     private LocalDate durationFrom;
     private LocalDate durationTo;
-    private String departureLocation;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime departureTime;
-    private String destinationLocation;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime destinationTime;
+    private List<ContractTrip> trips;
     private int estimatedPassengerCount;
     private int estimatedVehicleCount;
     private int actualPassengerCount;
     private int actualVehicleCount;
+    private boolean isRoundTrip;
     private float totalPrice;
     private String otherInformation;
 
@@ -83,36 +78,12 @@ public class ContractDetail {
         this.durationTo = durationTo;
     }
 
-    public String getDepartureLocation() {
-        return departureLocation;
+    public List<ContractTrip> getTrips() {
+        return trips;
     }
 
-    public void setDepartureLocation(String departureLocation) {
-        this.departureLocation = departureLocation;
-    }
-
-    public LocalDateTime getDepartureTime() {
-        return departureTime;
-    }
-
-    public void setDepartureTime(LocalDateTime departureTime) {
-        this.departureTime = departureTime;
-    }
-
-    public String getDestinationLocation() {
-        return destinationLocation;
-    }
-
-    public void setDestinationLocation(String destinationLocation) {
-        this.destinationLocation = destinationLocation;
-    }
-
-    public LocalDateTime getDestinationTime() {
-        return destinationTime;
-    }
-
-    public void setDestinationTime(LocalDateTime destinationTime) {
-        this.destinationTime = destinationTime;
+    public void setTrips(List<ContractTrip> trips) {
+        this.trips = trips;
     }
 
     public int getEstimatedPassengerCount() {
@@ -145,6 +116,14 @@ public class ContractDetail {
 
     public void setActualVehicleCount(int actualVehicleCount) {
         this.actualVehicleCount = actualVehicleCount;
+    }
+
+    public boolean isRoundTrip() {
+        return isRoundTrip;
+    }
+
+    public void setRoundTrip(boolean roundTrip) {
+        isRoundTrip = roundTrip;
     }
 
     public float getTotalPrice() {

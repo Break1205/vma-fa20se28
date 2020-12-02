@@ -1,6 +1,7 @@
 package com.fa20se28.vma.service;
 
 import com.fa20se28.vma.enums.UserStatus;
+import com.fa20se28.vma.model.ClientRegistrationToken;
 import com.fa20se28.vma.request.UserPageReq;
 import com.fa20se28.vma.request.UserReq;
 import com.fa20se28.vma.request.UserTokenReq;
@@ -25,4 +26,6 @@ public interface UserService extends UserDetailsService {
     int getTotalUserWithOneRoleByRoleId(String roleId, UserPageReq userPageReq);
 
     void addNewRoleForUser(Long roleId, String userid);
+
+    int updateClientRegistrationToken(ClientRegistrationToken clientRegistrationToken);
 }

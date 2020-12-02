@@ -2,10 +2,7 @@ package com.fa20se28.vma.component;
 
 import com.fa20se28.vma.enums.VehicleStatus;
 import com.fa20se28.vma.model.*;
-import com.fa20se28.vma.request.VehicleDropDownReq;
-import com.fa20se28.vma.request.VehiclePageReq;
-import com.fa20se28.vma.request.VehicleReq;
-import com.fa20se28.vma.request.VehicleUpdateReq;
+import com.fa20se28.vma.request.*;
 
 import java.util.List;
 
@@ -19,6 +16,8 @@ public interface VehicleComponent {
     void assignVehicle(String vehicleId, String driverId);
 
     void withdrawVehicle(String vehicleId);
+
+    void clearVehicle(String vehicleId, VehicleStatus vehicleStatus);
 
     void createVehicle(VehicleReq vehicle, boolean notAdmin);
 
@@ -34,9 +33,19 @@ public interface VehicleComponent {
 
     AssignedVehicle getCurrentlyAssignedVehicle(String driverId);
 
+    List<AssignedVehicle> getVehicleHistory(String driverId);
+
     void createVehicleFromRequest(VehicleReq vehicle);
 
     void acceptVehicle(String vehicleId);
 
     void denyVehicle(String vehicleId, int requestId);
+
+    void addVehicleDocs(String vehicleId, List<VehicleDocumentReq> vehicleDocumentReqs, boolean notAdmin);
+
+    void addVehicleValue(VehicleValueReq vehicleValueReq);
+
+    void updateVehicleValue(VehicleValueUpdateReq vehicleValueUpdateReq);
+
+    void deleteVehicleValue(int vehicleValueId);
 }

@@ -2,8 +2,9 @@ package com.fa20se28.vma.controller;
 
 import com.fa20se28.vma.enums.RequestStatus;
 import com.fa20se28.vma.enums.RequestType;
+import com.fa20se28.vma.enums.Sort;
 import com.fa20se28.vma.request.*;
-import com.fa20se28.vma.response.DocumentRequestDetailRes;
+import com.fa20se28.vma.response.RequestDetailRes;
 import com.fa20se28.vma.response.RequestTypesRes;
 import com.fa20se28.vma.service.RequestService;
 import com.fa20se28.vma.response.RequestPageRes;
@@ -54,8 +55,9 @@ public class RequestController {
                                       @RequestParam(required = false) RequestType requestType,
                                       @RequestParam(required = false) RequestStatus requestStatus,
                                       @RequestParam(required = false) String fromDate,
-                                      @RequestParam(required = false) String toDate) {
-        return requestService.getRequests(new RequestPageReq(userId, requestType, requestStatus, fromDate, toDate, page * 15));
+                                      @RequestParam(required = false) String toDate,
+                                      @RequestParam(required = false, defaultValue = "ASC") Sort sort) {
+        return requestService.getRequests(new RequestPageReq(userId, requestType, requestStatus, fromDate, toDate, page * 15, sort));
     }
 
     @GetMapping("/requests/count")
@@ -64,17 +66,17 @@ public class RequestController {
                                 @RequestParam(required = false) RequestStatus requestStatus,
                                 @RequestParam(required = false) String fromDate,
                                 @RequestParam(required = false) String toDate) {
-        return requestService.getTotalRequests(new RequestPageReq(userId, requestType, requestStatus, fromDate, toDate, 0));
+        return requestService.getTotalRequests(new RequestPageReq(userId, requestType, requestStatus, fromDate, toDate, 0, null));
     }
 
     @GetMapping("/requests/{request-id}")
-    public DocumentRequestDetailRes getDocumentRequestById(@PathVariable("request-id") int requestId) {
-        return requestService.getDocumentRequestById(requestId);
+    public RequestDetailRes getRequestById(@PathVariable("request-id") int requestId) {
+        return requestService.getRequestById(requestId);
     }
 
     @PatchMapping("/requests/{request-id}")
-    public int updateDocumentRequestStatusByRequestId(@PathVariable("request-id") int requestId,
-                                                      @RequestParam RequestStatus requestStatus) {
+    public int updateRequestStatusByRequestId(@PathVariable("request-id") int requestId,
+                                              @RequestParam RequestStatus requestStatus) {
         return requestService.updateDocumentRequestStatusByRequestId(requestId, requestStatus);
     }
 
@@ -108,11 +110,20 @@ public class RequestController {
     @PatchMapping("/requests/{request-id}/change")
     @ResponseStatus(HttpStatus.CREATED)
     public int acceptVehicleChangeRequest(@PathVariable("request-id") int requestId,
-                                   @RequestParam String driverId,
-                                   @RequestParam String targetVehicleId,
-                                   @RequestParam RequestStatus requestStatus) {
+                                          @RequestParam String driverId,
+                                          @RequestParam String targetVehicleId,
+                                          @RequestParam RequestStatus requestStatus) {
         if (requestService.acceptVehicleChangeRequest(driverId, targetVehicleId) == 1) {
             return requestService.updateDocumentRequestStatusByRequestId(requestId, requestStatus);
+        }
+        return 0;
+    }
+
+    @PostMapping("/requests/vehicles/issue")
+    @ResponseStatus(HttpStatus.CREATED)
+    public int reportIssueInVehicle(@RequestBody ReportIssueReq reportIssueReq) {
+        if (reportIssueReq.getRequestType() != null) {
+            return requestService.reportIssue(reportIssueReq);
         }
         return 0;
     }

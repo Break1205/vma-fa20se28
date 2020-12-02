@@ -1,5 +1,6 @@
 package com.fa20se28.vma.configuration;
 
+import com.fa20se28.vma.configuration.exception.InvalidFirebaseMessagingException;
 import com.fa20se28.vma.configuration.exception.InvalidFirebaseTokenException;
 import com.fa20se28.vma.configuration.exception.InvalidParamException;
 import com.fa20se28.vma.configuration.exception.RequestAlreadyHandledException;
@@ -8,6 +9,7 @@ import com.fa20se28.vma.configuration.exception.ResourceNotFoundException;
 import com.fa20se28.vma.configuration.exception.TemplateException;
 import com.fa20se28.vma.configuration.exception.model.ApiError;
 import com.google.firebase.auth.AuthErrorCode;
+import com.google.firebase.messaging.MessagingErrorCode;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
@@ -123,39 +125,60 @@ public class ExceptionHandlerConfiguration extends ResponseEntityExceptionHandle
         return buildResponseEntity(apiError);
     }
 
+    @ExceptionHandler(InvalidFirebaseMessagingException.class)
+    protected ResponseEntity<Object> handleInvalidFirebaseMessagingException(InvalidFirebaseMessagingException e) {
+        ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST);
+        apiError.setDebugMessage(e.getLocalizedMessage());
+        apiError.setMessage(checkFirebaseMessagingExceptionType(e.messagingErrorCode));
+        return buildResponseEntity(apiError);
+    }
+
+    private String checkFirebaseMessagingExceptionType(MessagingErrorCode messagingErrorCode) {
+        String message = "";
+        if (messagingErrorCode.equals(MessagingErrorCode.INTERNAL)) {
+            message = "Internal server error";
+        } else if (messagingErrorCode.equals(MessagingErrorCode.INVALID_ARGUMENT)) {
+            message = "One or more arguments specified in the request were invalid";
+        } else if (messagingErrorCode.equals(MessagingErrorCode.QUOTA_EXCEEDED)) {
+            message = "Sending limit exceeded for the message target";
+        } else if (messagingErrorCode.equals(MessagingErrorCode.SENDER_ID_MISMATCH)) {
+            message = "The authenticated sender ID is different from the sender ID for the registration token";
+        } else if (messagingErrorCode.equals(MessagingErrorCode.THIRD_PARTY_AUTH_ERROR)) {
+            message = "APNs certificate or web push auth key was invalid or missing";
+        } else if (messagingErrorCode.equals(MessagingErrorCode.UNAVAILABLE)) {
+            message = "Cloud Messaging service is temporarily unavailable";
+        } else if (messagingErrorCode.equals(MessagingErrorCode.UNREGISTERED)) {
+            message = "App instance was unregistered from FCM. This usually means that the token used is no longer valid and a new one must be used";
+        }
+        return message;
+    }
+
     @ExceptionHandler(InvalidFirebaseTokenException.class)
     protected ResponseEntity<Object> handleInvalidFirebaseTokenException(InvalidFirebaseTokenException e) {
         ApiError apiError = new ApiError(HttpStatus.UNAUTHORIZED);
         apiError.setDebugMessage(e.getLocalizedMessage());
-        apiError.setMessage(checkFirebaseExceptionType(e.authErrorCode));
+        apiError.setMessage(checkFirebaseAuthExceptionType(e.authErrorCode));
         return buildResponseEntity(apiError);
     }
 
-    private String checkFirebaseExceptionType(AuthErrorCode authErrorCode) {
+    private String checkFirebaseAuthExceptionType(AuthErrorCode authErrorCode) {
         String message = "";
-        if (authErrorCode.equals(AuthErrorCode.CERTIFICATE_FETCH_FAILED)) {
-            message = "Failed to retrieve public key";
-        }
-        if (authErrorCode.equals(AuthErrorCode.EXPIRED_ID_TOKEN)) {
-            message = "The Token is expired";
-        }
-        if (authErrorCode.equals(AuthErrorCode.INVALID_ID_TOKEN)) {
-            message = "The ID token is invalid";
-        }
-        if (authErrorCode.equals(AuthErrorCode.PHONE_NUMBER_ALREADY_EXISTS)) {
-            message = "A user already exists with the provided phone number";
-        }
-        if (authErrorCode.equals(AuthErrorCode.UID_ALREADY_EXISTS)) {
-            message = "A user already exists with the provided UID";
-        }
-        if (authErrorCode.equals(AuthErrorCode.INVALID_ID_TOKEN)) {
-            message = "The ID token is invalid";
-        }
-        if (authErrorCode.equals(AuthErrorCode.UNAUTHORIZED_CONTINUE_URL)) {
-            message = "The domain of the continue URL is not whitelisted";
-        }
-        if (authErrorCode.equals(AuthErrorCode.USER_NOT_FOUND)) {
-            message = "No user record found for the given ID";
+        if (authErrorCode != null) {
+            if (authErrorCode.equals(AuthErrorCode.CERTIFICATE_FETCH_FAILED)) {
+                message = "Failed to retrieve public key";
+            } else if (authErrorCode.equals(AuthErrorCode.EXPIRED_ID_TOKEN)) {
+                message = "The Token is expired";
+            } else if (authErrorCode.equals(AuthErrorCode.INVALID_ID_TOKEN)) {
+                message = "The ID token is invalid";
+            } else if (authErrorCode.equals(AuthErrorCode.PHONE_NUMBER_ALREADY_EXISTS)) {
+                message = "A user already exists with the provided phone number";
+            } else if (authErrorCode.equals(AuthErrorCode.UID_ALREADY_EXISTS)) {
+                message = "A user already exists with the provided UID";
+            } else if (authErrorCode.equals(AuthErrorCode.UNAUTHORIZED_CONTINUE_URL)) {
+                message = "The domain of the continue URL is not whitelisted";
+            } else if (authErrorCode.equals(AuthErrorCode.USER_NOT_FOUND)) {
+                message = "No user record found for the given ID";
+            }
         }
         return message;
     }

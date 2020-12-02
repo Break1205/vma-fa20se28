@@ -2,18 +2,13 @@ package com.fa20se28.vma.mapper;
 
 
 import com.fa20se28.vma.enums.UserStatus;
+import com.fa20se28.vma.model.ClientRegistrationToken;
 import com.fa20se28.vma.model.Role;
 import com.fa20se28.vma.model.User;
 import com.fa20se28.vma.request.UserPageReq;
 import com.fa20se28.vma.request.UserReq;
 import com.fa20se28.vma.response.UserRes;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.Results;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -157,13 +152,8 @@ public interface UserMapper {
     List<UserRes> findUsersWithOneRoleByRoleId(@Param("roleId") String roleId, @Param("UserPageReq") UserPageReq userPageReq);
 
     @Select({"<script>" +
-            "SELECT COUNT(uur.user_id) " +
-            "FROM (" +
-            "SELECT\n" +
-            "u.user_id, \n" +
-            "u.full_name, \n" +
-            "u.phone_number, \n" +
-            "u.user_status\n" +
+            "SELECT \n" +
+            "COUNT(u.user_id) \n" +
             "FROM\n" +
             "[user] u\n" +
             "JOIN user_roles ur\n" +
@@ -193,7 +183,26 @@ public interface UserMapper {
             "<if test = \"roleId == 3\" >\n" +
             "2\n" +
             "</if> \n" +
-            ")) uur \n" +
+            ") \n" +
             "</script>"})
     int findTotalUsersWithOneRoleByRoleId(@Param("roleId") String roleId, @Param("UserPageReq") UserPageReq userPageReq);
+
+    @Update("UPDATE [user]\n" +
+            "SET client_registration_token = #{clientRegistrationToken} \n" +
+            "WHERE user_id = #{userId} ")
+    int updateClientRegistrationToken(@Param("clientRegistrationToken") String clientRegistrationToken,
+                                      @Param("userId") String userId);
+
+    @Select("SELECT client_registration_token \n" +
+            "FROM [user] \n" +
+            "WHERE user_id = #{userId}")
+    @Result(property = "token", column = "client_registration_token")
+    ClientRegistrationToken findClientRegistrationTokenByUserId(@Param("userId") String userId);
+
+    @Select("SELECT client_registration_token " +
+            "FROM [user] " +
+            "JOIN user_roles ur ON ur.user_id = u.user_id " +
+            "WHERE role_id = '1' ")
+    @Result(property = "token", column = "client_registration_token")
+    List<ClientRegistrationToken> getAdminRegistrationTokens();
 }
