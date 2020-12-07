@@ -1,6 +1,8 @@
 package com.fa20se28.vma.service;
 
 import com.fa20se28.vma.model.ContributorEarnedAndEstimatedIncome;
+import com.fa20se28.vma.response.ContributorIncomeSummaryYearRes;
+import com.fa20se28.vma.response.DriverIncomeSummaryYearRes;
 import com.fa20se28.vma.request.ReportReq;
 import com.fa20se28.vma.response.ContractReportRes;
 import com.fa20se28.vma.response.ContributorIncomeRes;
@@ -37,4 +39,8 @@ public interface ReportService {
     DriversIncomeRes getDriversIncomesReportData(ReportReq reportReq);
 
     DriverIncomeRes getDriverEarnedAndEstimatedIncome(ReportReq reportReq);
+
+    DriverIncomeSummaryYearRes getDriverIncomeSummary(ReportReq reportReq);
+
+    ContributorIncomeSummaryYearRes getContributorIncomeSummary(ReportReq reportReq);
 }
