@@ -5,7 +5,6 @@ import com.fa20se28.vma.enums.Quarter;
 import com.fa20se28.vma.enums.ReportType;
 import com.fa20se28.vma.mapper.ReportMapper;
 import com.fa20se28.vma.model.ByteArrayInputStreamWrapper;
-import com.fa20se28.vma.model.ContractDetailReport;
 import com.fa20se28.vma.model.ContractReport;
 import com.fa20se28.vma.model.ContributorEarnedAndEstimatedIncome;
 import com.fa20se28.vma.model.ContributorIncome;
@@ -18,10 +17,6 @@ import com.fa20se28.vma.model.Schedule;
 import com.fa20se28.vma.model.VehicleReport;
 import com.fa20se28.vma.request.ReportReq;
 import com.fa20se28.vma.response.DriverIncomeRes;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.apache.pdfbox.pdmodel.PDPageContentStream;
-import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -31,10 +26,6 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.springframework.stereotype.Component;
-import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.context.Context;
-import org.thymeleaf.templatemode.TemplateMode;
-import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -52,10 +43,6 @@ public class ReportComponentImpl implements ReportComponent {
     //excel
     private Workbook workbook;
     private Sheet sheet;
-    //pdf
-    private PDDocument document;
-    private PDPage page;
-    private PDPageContentStream contentStream;
     private List<LocalDate> firstAndLast;
     private static final int TITLE_ROW = 0;
     private static final int HEADER_ROW = 1;
@@ -63,81 +50,6 @@ public class ReportComponentImpl implements ReportComponent {
 
     public ReportComponentImpl(ReportMapper reportMapper) {
         this.reportMapper = reportMapper;
-    }
-
-    @Override
-    public ByteArrayInputStreamWrapper exportPdfContractReport(int contractId) throws IOException {
-        return exportPdf(reportMapper.getContractDetailReport(contractId));
-    }
-
-    private ByteArrayInputStreamWrapper exportPdf(ContractDetailReport contractDetailReport) throws IOException {
-        String filledContract = parseThymeleafTemplate(contractDetailReport);
-        System.out.println(filledContract);
-        document = new PDDocument();
-        page = new PDPage();
-        document.addPage(page);
-        contentStream = new PDPageContentStream(document, page);
-        contentStream.setFont(PDType1Font.TIMES_ROMAN, 12);
-        contentStream.beginText();
-        contentStream.showText(filledContract);
-        contentStream.endText();
-        contentStream.close();
-
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        document.save(out);
-        workbook.close();
-        ByteArrayInputStreamWrapper inputStreamWrapper = new ByteArrayInputStreamWrapper();
-        inputStreamWrapper.setByteArrayInputStream(new ByteArrayInputStream(out.toByteArray()));
-        inputStreamWrapper.setByteCount(out.toByteArray().length);
-        out.close();
-        return inputStreamWrapper;
-    }
-
-    private String parseThymeleafTemplate(ContractDetailReport contractDetailReport) {
-        ClassLoaderTemplateResolver templateResolver = new ClassLoaderTemplateResolver();
-        templateResolver.setSuffix("contract.html");
-        templateResolver.setTemplateMode(TemplateMode.HTML);
-        templateResolver.setCacheable(false);
-        templateResolver.setOrder(1);
-        templateResolver.setCharacterEncoding("UTF-8");
-
-        TemplateEngine templateEngine = new TemplateEngine();
-        templateEngine.setTemplateResolver(templateResolver);
-
-        Context context = new Context();
-        Map<String, Object> content = new HashMap<>();
-        content.put("contractId", contractDetailReport.getContractId());
-        content.put("signedDay", contractDetailReport.getSignedDate().getDayOfMonth());
-        content.put("signedMonth", contractDetailReport.getSignedDate().getMonth());
-        content.put("signedYear", contractDetailReport.getSignedDate().getYear());
-        content.put("signedLocation", contractDetailReport.getSignedLocation());
-        content.put("address", contractDetailReport.getAddress());
-        content.put("phoneNumber", contractDetailReport.getPhoneNumber());
-        content.put("fax", contractDetailReport.getFax());
-        content.put("taxCode", contractDetailReport.getTaxCode());
-        content.put("accountNumber", contractDetailReport.getAccountNumber());
-        content.put("customerName", contractDetailReport.getCustomerName());
-        content.put("numberOfPassengers", contractDetailReport.getNumberOfPassengers());
-        content.put("contractValue", contractDetailReport.getContractValue());
-        content.put("departureLocation", contractDetailReport.getDepartureLocation());
-        content.put("departureHour", contractDetailReport.getDepartureTime().getHour());
-        content.put("departureMinute", contractDetailReport.getDepartureTime().getMinute());
-        content.put("departureDay", contractDetailReport.getDepartureTime().getDayOfMonth());
-        content.put("departureMonth", contractDetailReport.getDepartureTime().getMonth());
-        content.put("departureYear", contractDetailReport.getDepartureTime().getYear());
-        content.put("destinationLocation", contractDetailReport.getDestinationLocation());
-        content.put("destinationHour", contractDetailReport.getDestinationTime().getHour());
-        content.put("destinationMinute", contractDetailReport.getDestinationTime().getMinute());
-        content.put("destinationDay", contractDetailReport.getDestinationTime().getDayOfMonth());
-        content.put("destinationMonth", contractDetailReport.getDestinationTime().getMonth());
-        content.put("destinationYear", contractDetailReport.getDestinationTime().getYear());
-        content.put("numberOfVehicles", contractDetailReport.getNumberOfVehicles());
-        content.put("durationFrom", contractDetailReport.getDurationFrom());
-        content.put("durationToDay", contractDetailReport.getDurationTo().getDayOfMonth());
-        content.put("durationToMonth", contractDetailReport.getDurationTo().getMonth());
-        content.put("durationToYear", contractDetailReport.getDurationTo().getYear());
-        context.setVariables(content);
-        return templateEngine.process("contract", context);
     }
 
     @Override

@@ -38,7 +38,7 @@ public class CustomerController {
                                         @RequestParam(required = false) String phoneNumber,
                                         @RequestParam(required = false) Integer isDeleted,
                                         @RequestParam(required = false, defaultValue = "0") int page) {
-        return customerService.getDrivers(new CustomerPageReq(customerName, address, email, phoneNumber, isDeleted, page * 15));
+        return customerService.getCustomers(new CustomerPageReq(customerName, address, email, phoneNumber, isDeleted, page * 15));
     }
 
     @PostMapping

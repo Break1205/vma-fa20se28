@@ -32,8 +32,6 @@ public interface ReportComponent {
 
     List<RevenueExpense> getCompanyRevenueExpenseReportData(ReportReq reportReq);
 
-    ByteArrayInputStreamWrapper exportPdfContractReport(int contractId) throws IOException;
-
     Map<String, EstimateAndEarnedIncome> calculateContributorEstimatedAndEarnedIncome(ReportReq reportReq);
 
     ContributorEarnedAndEstimatedIncome getContributorEarnedAndEstimatedIncomeById(ReportReq reportReq);

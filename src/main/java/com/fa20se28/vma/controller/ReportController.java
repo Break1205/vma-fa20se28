@@ -3,7 +3,8 @@ package com.fa20se28.vma.controller;
 import com.fa20se28.vma.enums.Quarter;
 import com.fa20se28.vma.enums.ReportType;
 import com.fa20se28.vma.model.ContributorEarnedAndEstimatedIncome;
-import com.fa20se28.vma.model.ContributorIncomesDetailRes;
+import com.fa20se28.vma.response.ContributorIncomeSummaryYearRes;
+import com.fa20se28.vma.response.DriverIncomeSummaryYearRes;
 import com.fa20se28.vma.request.ReportReq;
 import com.fa20se28.vma.response.ContractReportRes;
 import com.fa20se28.vma.response.ContributorIncomeRes;
@@ -32,11 +33,6 @@ public class ReportController {
     public ReportController(ReportService reportService) {
         this.reportService = reportService;
     }
-
-//    @GetMapping("contracts/{contract-id}")
-//    public ResponseEntity<InputStreamResource> getContractById(@PathVariable("contract-id") int contractId) throws IOException {
-//        return reportService.exportPdfContractReport(contractId);
-//    }
 
     @GetMapping("schedule")
     public ResponseEntity<InputStreamResource> exportScheduleReport(@RequestParam(required = false) Quarter quarter,
@@ -184,6 +180,14 @@ public class ReportController {
                 new ReportReq(contributorId, null, year, quarter, null));
     }
 
+    @GetMapping("contributor-income/{contributor-id}/summary/data")
+    public ContributorIncomeSummaryYearRes getContributorIncomesSummaryReportData(
+            @PathVariable("contributor-id") String contributorId,
+            @RequestParam(required = false) Integer year) {
+        return reportService.getContributorIncomeSummary(
+                new ReportReq(contributorId, null, year, null, null));
+    }
+
     @GetMapping("driver-income/data")
     public DriversIncomeRes getDriversIncomesReportData(
             @RequestParam(required = false) Quarter quarter,
@@ -200,5 +204,11 @@ public class ReportController {
             @RequestParam(required = false) Integer year) {
         return reportService.getDriverEarnedAndEstimatedIncome(
                 new ReportReq(driverId, null, year, quarter, null));
+    }
+
+    @GetMapping("driver-income/{driver-id}/summary/data")
+    public DriverIncomeSummaryYearRes getDriverInComeSummaryReportRes(@PathVariable("driver-id") String driverId,
+                                                                      @RequestParam(required = false) Integer year) {
+        return reportService.getDriverIncomeSummary(new ReportReq(driverId, null, year, null, null));
     }
 }

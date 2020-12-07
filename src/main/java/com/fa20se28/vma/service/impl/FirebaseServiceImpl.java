@@ -134,7 +134,6 @@ public class FirebaseServiceImpl implements FirebaseService {
                                 .setTtl(3600 * 1000)
                                 .setNotification(
                                         AndroidNotification.builder()
-                                                .setImage("https://epic7x.com/wp-content/uploads/2020/11/Sword-of-Summer-Twilight.png")
                                                 .setColor("#87CEEB")
                                                 .setTitle(title)
                                                 .setBody(notificationData.getBody())
@@ -148,7 +147,6 @@ public class FirebaseServiceImpl implements FirebaseService {
                         WebpushConfig.builder()
                                 .setNotification(
                                         WebpushNotification.builder()
-                                                .setImage("https://epic7x.com/wp-content/uploads/2019/03/justice-for-all-1.png")
                                                 .setTitle(title)
                                                 .setBody(notificationData.getBody())
                                                 .setSilent(false)
@@ -165,7 +163,6 @@ public class FirebaseServiceImpl implements FirebaseService {
                                         Aps.builder()
                                                 .setAlert(
                                                         ApsAlert.builder()
-                                                                .setLaunchImage("https://epic7x.com/wp-content/uploads/2020/06/remnant-violet-hd.png")
                                                                 .setTitle(title)
                                                                 .setBody(notificationData.getBody())
                                                                 .build())
