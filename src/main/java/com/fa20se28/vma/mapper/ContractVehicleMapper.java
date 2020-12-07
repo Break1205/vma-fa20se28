@@ -131,11 +131,13 @@ public interface ContractVehicleMapper {
             "JOIN issued_vehicle iv ON iv.vehicle_id = v.vehicle_id " +
             "WHERE " +
             "v.vehicle_status NOT IN " +
-            "(SELECT DISTINCT vs.vehicle_status " +
+            "( " +
+            "SELECT DISTINCT vs.vehicle_status " +
             "FROM vehicle vs " +
             "WHERE vs.vehicle_status = 'REJECTED' " +
             "OR vs.vehicle_status = 'PENDING_APPROVAL' " +
-            "OR vs.vehicle_status = 'DELETED') " +
+            "OR vs.vehicle_status = 'DELETED' " +
+            ") " +
             "<if test = \"vr_req.seatsMin != 0\" > " +
             "AND v.seats &gt;= #{vr_req.seatsMin} " +
             "</if> " +
@@ -146,16 +148,19 @@ public interface ContractVehicleMapper {
             "AND vt.vehicle_type_id =  #{vr_req.vehicleTypeId} " +
             "</if> " +
             "AND iv.issued_vehicle_id NOT IN " +
-            "(SELECT cv.issued_vehicle_id " +
+            "( " +
+            "SELECT cv.issued_vehicle_id " +
             "FROM contract_vehicles cv " +
             "JOIN [contract] c ON cv.contract_id = c.contract_id " +
             "WHERE c.contract_id IN " +
-            "(SELECT DISTINCT c.contract_id " +
+            "( " +
+            "SELECT DISTINCT c.contract_id " +
             "FROM [contract] c " +
             "JOIN contract_detail cd ON c.contract_id = cd.contract_id " +
             "WHERE " +
             "cd.departure_time &lt; (SELECT DATEADD(hour, +6, #{vr_req.endDate})) " +
-            "AND cd.destination_time &gt;= (SELECT DATEADD(hour, -6,  #{vr_req.startDate})) ) " +
+            "AND cd.destination_time &gt;= (SELECT DATEADD(hour, -6,  #{vr_req.startDate})) " +
+            ") " +
             ") " +
             "ORDER BY v.year_of_manufacture DESC " +
             "OFFSET ${r_offset} ROWS " +
@@ -177,11 +182,13 @@ public interface ContractVehicleMapper {
             "JOIN issued_vehicle iv ON iv.vehicle_id = v.vehicle_id " +
             "WHERE " +
             "v.vehicle_status NOT IN " +
-            "(SELECT DISTINCT vs.vehicle_status " +
+            "( " +
+            "SELECT DISTINCT vs.vehicle_status " +
             "FROM vehicle vs " +
             "WHERE vs.vehicle_status = 'REJECTED' " +
             "OR vs.vehicle_status = 'PENDING_APPROVAL' " +
-            "OR vs.vehicle_status = 'DELETED') " +
+            "OR vs.vehicle_status = 'DELETED' " +
+            ") " +
             "<if test = \"vr_req.seatsMin != 0\" > " +
             "AND v.seats &gt;= #{vr_req.seatsMin} " +
             "</if> " +
@@ -192,16 +199,19 @@ public interface ContractVehicleMapper {
             "AND vt.vehicle_type_id =  #{vr_req.vehicleTypeId} " +
             "</if> " +
             "AND iv.issued_vehicle_id NOT IN " +
-            "(SELECT cv.issued_vehicle_id " +
+            "( " +
+            "SELECT cv.issued_vehicle_id " +
             "FROM contract_vehicles cv " +
             "JOIN [contract] c ON cv.contract_id = c.contract_id " +
             "WHERE c.contract_id IN " +
-            "(SELECT DISTINCT c.contract_id " +
+            "( " +
+            "SELECT DISTINCT c.contract_id " +
             "FROM [contract] c " +
             "JOIN contract_detail cd ON c.contract_id = cd.contract_id " +
             "WHERE " +
             "cd.departure_time &lt; (SELECT DATEADD(hour, +6, #{vr_req.endDate})) " +
-            "AND cd.destination_time &gt;= (SELECT DATEADD(hour, -6,  #{vr_req.startDate})) ) " +
+            "AND cd.destination_time &gt;= (SELECT DATEADD(hour, -6,  #{vr_req.startDate})) " +
+            ") " +
             ") " +
             "</script>"})
     int getRecommendationCount(@Param("vr_req") VehicleRecommendationReq vehicleRecommendationReq);
