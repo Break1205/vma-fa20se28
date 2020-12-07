@@ -1,9 +1,11 @@
 package com.fa20se28.vma.service;
 
-import com.fa20se28.vma.model.ContributorIncomesDetailRes;
+import com.fa20se28.vma.model.ContributorEarnedAndEstimatedIncome;
 import com.fa20se28.vma.request.ReportReq;
 import com.fa20se28.vma.response.ContractReportRes;
 import com.fa20se28.vma.response.ContributorIncomeRes;
+import com.fa20se28.vma.response.DriverIncomeRes;
+import com.fa20se28.vma.response.DriversIncomeRes;
 import com.fa20se28.vma.response.MaintenanceReportRes;
 import com.fa20se28.vma.response.RevenueExpenseReportRes;
 import com.fa20se28.vma.response.ScheduleRes;
@@ -15,8 +17,6 @@ import java.io.IOException;
 
 public interface ReportService {
     ResponseEntity<InputStreamResource> exportReportByType(ReportReq reportReq) throws IOException;
-
-    ResponseEntity<InputStreamResource> exportPdfContractReport(int contractId) throws IOException;
 
     ScheduleRes getScheduleReportDate(ReportReq reportReq);
 
@@ -32,5 +32,9 @@ public interface ReportService {
 
     ContributorIncomeRes getContributorsIncomesReportData(ReportReq reportReq);
 
-    ContributorIncomesDetailRes getContributorIncomesReportData(ReportReq reportReq);
+    ContributorEarnedAndEstimatedIncome getContributorEarnedAndEstimatedIncome(ReportReq reportReq);
+
+    DriversIncomeRes getDriversIncomesReportData(ReportReq reportReq);
+
+    DriverIncomeRes getDriverEarnedAndEstimatedIncome(ReportReq reportReq);
 }

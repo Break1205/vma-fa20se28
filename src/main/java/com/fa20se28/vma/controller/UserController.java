@@ -106,7 +106,7 @@ public class UserController {
     }
 
     @PostMapping("/registration-token")
-    public int createClientRegistrationToken(@RequestBody ClientRegistrationToken clientRegistrationToken){
+    public int createClientRegistrationToken(@RequestBody ClientRegistrationToken clientRegistrationToken) {
         return userService.updateClientRegistrationToken(clientRegistrationToken);
     }
 }

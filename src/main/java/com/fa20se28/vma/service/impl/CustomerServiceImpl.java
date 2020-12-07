@@ -27,7 +27,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public CustomerPageRes getDrivers(CustomerPageReq customerPageReq) {
+    public CustomerPageRes getCustomers(CustomerPageReq customerPageReq) {
         CustomerPageRes customerPageRes = new CustomerPageRes();
         customerPageRes.setCustomerRes(customerComponent.findCustomers(customerPageReq));
         return customerPageRes;

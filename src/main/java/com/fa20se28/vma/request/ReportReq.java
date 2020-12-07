@@ -8,10 +8,10 @@ public class ReportReq {
     private Integer year;
     private Quarter quarter;
     private ReportType reportType;
-    private String contributorId;
+    private String userId;
 
-    public ReportReq(String contributorId, String vehicleId, Integer year, Quarter quarter, ReportType reportType) {
-        this.contributorId = contributorId;
+    public ReportReq(String userId, String vehicleId, Integer year, Quarter quarter, ReportType reportType) {
+        this.userId = userId;
         this.vehicleId = vehicleId;
         this.year = year;
         this.quarter = quarter;
@@ -50,11 +50,11 @@ public class ReportReq {
         this.reportType = reportType;
     }
 
-    public String getContributorId() {
-        return contributorId;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setContributorId(String contributorId) {
-        this.contributorId = contributorId;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 }

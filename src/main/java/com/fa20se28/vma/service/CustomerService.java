@@ -12,7 +12,7 @@ public interface CustomerService {
 
     void deleteCustomerByCustomerId(String customerId);
 
-    CustomerPageRes getDrivers(CustomerPageReq customerPageReq);
+    CustomerPageRes getCustomers(CustomerPageReq customerPageReq);
 
     CustomerDetailRes findCustomerByCustomerId(String customerId);
 

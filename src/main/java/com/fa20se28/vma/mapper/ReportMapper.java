@@ -1,15 +1,14 @@
 package com.fa20se28.vma.mapper;
 
-import com.fa20se28.vma.model.ContractDetail;
 import com.fa20se28.vma.model.ContractDetailReport;
 import com.fa20se28.vma.model.ContractReport;
 import com.fa20se28.vma.model.ContributorIncome;
 import com.fa20se28.vma.model.ContributorIncomesDetail;
+import com.fa20se28.vma.model.DriverIncomes;
 import com.fa20se28.vma.model.MaintenanceReport;
 import com.fa20se28.vma.model.RevenueExpense;
 import com.fa20se28.vma.model.Schedule;
 import com.fa20se28.vma.model.VehicleReport;
-import org.apache.ibatis.annotations.Many;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Result;
@@ -240,31 +239,6 @@ public interface ReportMapper {
     List<RevenueExpense> getCompanyRevenueExpenseForReport(@Param("firstDayOfMonth") String firstDayOfMonth,
                                                            @Param("lastDayOfMonth") String lastDayOfMonth);
 
-    @Select("SELECT\n" +
-            "v.vehicle_id,\n" +
-            "c.destination_time date, \n" +
-            "c.total_price/c.actual_vehicle_count*25/100 value, \n" +
-            "CONVERT(varchar,c.contract_id) contract_id \n" +
-            "FROM issued_vehicle iv\n" +
-            "JOIN contract_vehicles cv \n" +
-            "ON iv.issued_vehicle_id = cv.issued_vehicle_id \n" +
-            "JOIN contract c \n" +
-            "ON cv.contract_id = c.contract_id \n" +
-            "LEFT JOIN vehicle v \n" +
-            "on v.vehicle_id = iv.vehicle_id\n" +
-            "WHERE v.owner_id = #{contributorId}\n" +
-            "AND c.contract_status = 'FINISHED' \n" +
-            "AND c.destination_time between '${firstDayOfMonth}' AND '${lastDayOfMonth}' ")
-    @Results(id = "contributorIncomeResult", value = {
-            @Result(property = "vehicleId", column = "vehicle_id"),
-            @Result(property = "date", column = "date"),
-            @Result(property = "value", column = "value"),
-            @Result(property = "contractId", column = "contract_id")
-    })
-    List<ContributorIncome> getContributorIncomeForReport(@Param("firstDayOfMonth") String firstDayOfMonth,
-                                                          @Param("lastDayOfMonth") String lastDayOfMonth,
-                                                          @Param("contributorId") String contributorId);
-
     @Select("SELECT \n" +
             "c.contract_id, \n" +
             "c.signed_date, \n" +
@@ -322,8 +296,8 @@ public interface ReportMapper {
     })
     ContractDetailReport getContractDetailReport(int contractId);
 
-
-    @Select("SELECT \n" +
+    @Select({"<script>" +
+            "SELECT \n" +
             "vv.vehicle_id, \n" +
             "vv.value, \n" +
             "vv.start_date, \n" +
@@ -334,7 +308,11 @@ public interface ReportMapper {
             "LEFT JOIN vehicle v\n" +
             "ON vv.vehicle_id = v.vehicle_id\n" +
             "WHERE vv.is_deleted = 0 \n" +
-            "AND NOT (vv.start_date > '${lastDayOfMonth}' OR vv.end_date < '${firstDayOfMonth}')\n")
+            "AND NOT (vv.start_date &gt; '${lastDayOfMonth}' OR vv.end_date &lt; '${firstDayOfMonth}') \n" +
+            "<if test = \"ownerId!=null\" >\n" +
+            "AND v.owner_id = #{ownerId} \n" +
+            "</if> " +
+            "</script>"})
     @Results(id = "contributorIncomesResult", value = {
             @Result(property = "vehicleId", column = "vehicle_id"),
             @Result(property = "value", column = "value"),
@@ -342,7 +320,8 @@ public interface ReportMapper {
             @Result(property = "endDate", column = "end_date"),
             @Result(property = "ownerId", column = "owner_id")
     })
-    List<ContributorIncome> getContributorIncomesForReport(@Param("firstDayOfMonth") String firstDayOfMonth,
+    List<ContributorIncome> getContributorIncomesForReport(@Param("ownerId") String ownerId,
+                                                           @Param("firstDayOfMonth") String firstDayOfMonth,
                                                            @Param("lastDayOfMonth") String lastDayOfMonth);
 
     @Select({"<script>" +
@@ -350,7 +329,7 @@ public interface ReportMapper {
             "v.owner_id,\n" +
             "v.vehicle_id,\n" +
             "cd.destination_time date,\n" +
-            "c.total_price/c.actual_vehicle_count value,\n" +
+            "c.total_price/c.actual_vehicle_count*25/100 value,\n" +
             "CONVERT(varchar,c.contract_id) contract_id \n" +
             "FROM vehicle v \n" +
             "JOIN issued_vehicle iv \n" +
@@ -374,14 +353,51 @@ public interface ReportMapper {
             "AND v.owner_id = #{ownerId} \n" +
             "</if> " +
             "</script>"})
-    @Results(id = "contributorIncomesDetailResult",value = {
-            @Result(property = "ownerId",column = "owner_id"),
-            @Result(property = "vehicleId",column = "vehicle_id"),
-            @Result(property = "date",column = "date"),
-            @Result(property = "value",column = "value"),
-            @Result(property = "contractId",column = "contract_id"),
+    @Results(id = "contributorIncomesDetailResult", value = {
+            @Result(property = "ownerId", column = "owner_id"),
+            @Result(property = "vehicleId", column = "vehicle_id"),
+            @Result(property = "date", column = "date"),
+            @Result(property = "value", column = "value"),
+            @Result(property = "contractId", column = "contract_id"),
     })
     List<ContributorIncomesDetail> getContributorIncomesDetail(@Param("ownerId") String ownerId,
                                                                @Param("firstDayOfMonth") String firstDayOfMonth,
                                                                @Param("lastDayOfMonth") String lastDayOfMonth);
+
+    @Select({"<script>" +
+            "SELECT\n" +
+            "u.user_id,\n" +
+            "u.base_salary,\n" +
+            "CONVERT(varchar,c.contract_id) contract_id,\n" +
+            "iv.vehicle_id,\n" +
+            "c.total_price/c.actual_vehicle_count*10/100 driver_earned \n" +
+            "FROM [user] u\n" +
+            "JOIN user_roles ur\n" +
+            "ON u.user_id = ur.user_id\n" +
+            "JOIN issued_vehicle iv\n" +
+            "ON u.user_id = iv.driver_id \n" +
+            "JOIN contract_vehicles cv\n" +
+            "ON iv.issued_vehicle_id = cv.issued_vehicle_id\n" +
+            "JOIN contract c\n" +
+            "ON cv.contract_id = c.contract_id\n" +
+            "JOIN contract_detail cd\n" +
+            "ON c.contract_id = cd.contract_id\n" +
+            "WHERE ur.role_id = 3\n" +
+            "AND c.contract_status = 'FINISHED' \n" +
+            "AND cd.destination_time between '${firstDayOfMonth}' AND '${lastDayOfMonth}'\n" +
+            "<if test = \"driverId!=null\" >\n" +
+            "AND u.user_id = #{driverId} \n" +
+            "</if> \n" +
+            "GROUP BY u.user_id,u.base_salary,iv.vehicle_id,c.total_price,c.actual_vehicle_count,c.contract_id" +
+            "</script>"})
+    @Results(id = "driverIncomesResult", value = {
+            @Result(property = "userId", column = "user_id"),
+            @Result(property = "baseSalary", column = "base_salary"),
+            @Result(property = "contractId", column = "contract_id"),
+            @Result(property = "vehicleId", column = "vehicle_id"),
+            @Result(property = "driverEarned", column = "driver_earned"),
+    })
+    List<DriverIncomes> getDriverIncomes(@Param("driverId") String driverId,
+                                         @Param("firstDayOfMonth") String firstDayOfMonth,
+                                         @Param("lastDayOfMonth") String lastDayOfMonth);
 }
