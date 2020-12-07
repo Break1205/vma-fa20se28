@@ -199,9 +199,9 @@ public interface UserMapper {
     @Result(property = "token", column = "client_registration_token")
     ClientRegistrationToken findClientRegistrationTokenByUserId(@Param("userId") String userId);
 
-    @Select("SELECT client_registration_token " +
-            "FROM [user] " +
-            "JOIN user_roles ur ON ur.user_id = u.user_id " +
+    @Select("SELECT u.client_registration_token " +
+            "FROM [user] u " +
+            "JOIN user_roles ur ON ur.[user_id] = u.[user_id] " +
             "WHERE role_id = '1' ")
     @Result(property = "token", column = "client_registration_token")
     List<ClientRegistrationToken> getAdminRegistrationTokens();
