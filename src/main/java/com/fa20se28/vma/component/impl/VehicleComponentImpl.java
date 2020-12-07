@@ -331,4 +331,14 @@ public class VehicleComponentImpl implements VehicleComponent {
             throw new DataException("Unknown error occurred. Data not modified!");
         }
     }
+
+    @Override
+    public List<VehicleTypeCount> getTypeCount(String ownerId) {
+        return vehicleMapper.getTypeCount(ownerId);
+    }
+
+    @Override
+    public List<VehicleStatusCount> getStatusCount(String ownerId) {
+        return vehicleMapper.getStatusCount(ownerId);
+    }
 }

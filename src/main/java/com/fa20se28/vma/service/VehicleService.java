@@ -36,4 +36,6 @@ public interface VehicleService {
     void updateVehicleValue(VehicleValueUpdateReq vehicleValueUpdateReq);
 
     void deleteVehicleValue(int vehicleValueId);
+
+    VehicleOverviewRes getOverview(String ownerId);
 }
