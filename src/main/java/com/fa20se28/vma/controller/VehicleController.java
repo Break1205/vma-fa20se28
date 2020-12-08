@@ -145,4 +145,9 @@ public class VehicleController {
     public void deleteValueOfVehicle(int vehicleValueId) {
         vehicleService.deleteVehicleValue(vehicleValueId);
     }
+
+    @GetMapping("/overview")
+    public VehicleOverviewRes getVehicleOverview(@RequestParam String ownerId) {
+        return vehicleService.getOverview(ownerId);
+    }
 }

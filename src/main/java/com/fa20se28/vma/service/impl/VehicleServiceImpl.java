@@ -94,4 +94,15 @@ public class VehicleServiceImpl implements VehicleService {
     public void deleteVehicleValue(int vehicleValueId) {
         vehicleComponent.deleteVehicleValue(vehicleValueId);
     }
+
+    @Override
+    public VehicleOverviewRes getOverview(String ownerId) {
+        return new VehicleOverviewRes(
+                vehicleComponent.getTotal(
+                        new VehiclePageReq(null, null, 0, 0, 0, VehicleStatus.AVAILABLE, 0, 0), 1, ownerId),
+                vehicleComponent.getTotal(
+                        new VehiclePageReq(null, null, 0, 0, 0, VehicleStatus.ON_ROUTE, 0, 0), 1, ownerId),
+                vehicleComponent.getTypeCount(ownerId),
+                vehicleComponent.getStatusCount(ownerId));
+    }
 }

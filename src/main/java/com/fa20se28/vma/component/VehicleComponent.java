@@ -48,4 +48,8 @@ public interface VehicleComponent {
     void updateVehicleValue(VehicleValueUpdateReq vehicleValueUpdateReq);
 
     void deleteVehicleValue(int vehicleValueId);
+
+    List<VehicleTypeCount> getTypeCount(String ownerId);
+
+    List<VehicleStatusCount> getStatusCount(String ownerId);
 }

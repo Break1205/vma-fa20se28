@@ -11,6 +11,7 @@ import com.fa20se28.vma.request.*;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Component
@@ -109,8 +110,13 @@ public class ContractVehicleComponentImpl implements ContractVehicleComponent {
                 vehicleRow = vehicleMapper.updateVehicleStatus(tripReq.getVehicleId(), VehicleStatus.ON_ROUTE);
 
                 if (detail.getContractStatus().equals(ContractStatus.NOT_STARTED)) {
-                    startContract(tripReq.getContractId());
-                    return 1;
+                    LocalDateTime currentTime = LocalDateTime.now();
+                    if (currentTime.isBefore(detail.getTrips().get(0).getDepartureTime())) {
+                        throw new DataException("Vehicle cannot start trip at this time!");
+                    } else {
+                        startContract(tripReq.getContractId());
+                        return 1;
+                    }
                 }
             }
         } else {
@@ -140,7 +146,7 @@ public class ContractVehicleComponentImpl implements ContractVehicleComponent {
         return contractVehicleMapper.getVehicleTrips(
                 tripListReq.getIssuedVehicleId(),
                 tripListReq.getVehicleStatus(),
-                viewOption*15);
+                viewOption * 15);
     }
 
     @Override
@@ -169,7 +175,7 @@ public class ContractVehicleComponentImpl implements ContractVehicleComponent {
 
     @Override
     public List<VehicleRecommendation> getRecommendations(VehicleRecommendationReq vehicleRecommendationReq, int viewOption) {
-        return contractVehicleMapper.getRecommendations(vehicleRecommendationReq, viewOption*10);
+        return contractVehicleMapper.getRecommendations(vehicleRecommendationReq, viewOption * 10);
     }
 
     @Override

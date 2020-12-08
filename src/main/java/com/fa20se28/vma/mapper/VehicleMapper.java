@@ -1,9 +1,7 @@
 package com.fa20se28.vma.mapper;
 
 import com.fa20se28.vma.enums.VehicleStatus;
-import com.fa20se28.vma.model.Vehicle;
-import com.fa20se28.vma.model.VehicleDetail;
-import com.fa20se28.vma.model.VehicleDropDown;
+import com.fa20se28.vma.model.*;
 import com.fa20se28.vma.request.VehicleDropDownReq;
 import com.fa20se28.vma.request.VehiclePageReq;
 import com.fa20se28.vma.request.VehicleReq;
@@ -318,4 +316,25 @@ public interface VehicleMapper {
     int moveDeniedVehicleToLog(
             @Param("v_rejected") VehicleDetail vehicle,
             @Param("r_id") int requestId);
+
+    @Select("SELECT vt.vehicle_type_name, COUNT(v.vehicle_id) AS total " +
+            "FROM vehicle v " +
+            "JOIN vehicle_type vt ON vt.vehicle_type_id = v.vehicle_type_id " +
+            "WHERE v.owner_id = #{v_owner_id} " +
+            "GROUP BY vt.vehicle_type_name ")
+    @Results(id = "typeCount", value = {
+            @Result(property = "typeName", column = "vehicle_type_name"),
+            @Result(property = "typeCount", column = "total")
+    })
+    List<VehicleTypeCount> getTypeCount(@Param("v_owner_id") String ownerId);
+
+    @Select("SELECT v.vehicle_status, COUNT(v.vehicle_id) AS total " +
+            "FROM vehicle v " +
+            "WHERE v.owner_id = #{v_owner_id} " +
+            "GROUP BY v.vehicle_status ")
+    @Results(id = "statusCount", value = {
+            @Result(property = "statusName", column = "vehicle_status"),
+            @Result(property = "statusCount", column = "total")
+    })
+    List<VehicleStatusCount> getStatusCount(@Param("v_owner_id") String ownerId);
 }

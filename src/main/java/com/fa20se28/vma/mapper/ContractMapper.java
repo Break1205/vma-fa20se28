@@ -176,8 +176,8 @@ public interface ContractMapper {
     @Select("SELECT " +
             "contract_detail_id, departure_time, destination_time, departure_location, destination_location " +
             "FROM contract_detail " +
-            "WHERE " +
-            "contract_id = #{c_id} ")
+            "WHERE contract_id = #{c_id} " +
+            "ORDER BY contract_detail_id ASC ")
     @Results(id = "contractTrips", value = {
             @Result(property = "contractTripId", column = "contract_detail_id"),
             @Result(property = "departureLocation", column = "departure_location"),
@@ -191,8 +191,8 @@ public interface ContractMapper {
     @Select("SELECT " +
             "contract_detail_schedule_id, location " +
             "FROM contract_detail_schedule " +
-            "WHERE " +
-            "contract_detail_id = #{cd_id} ")
+            "WHERE contract_detail_id = #{cd_id} " +
+            "ORDER BY contract_detail_schedule_id ASC ")
     @Results(id = "tripSchedule", value = {
             @Result(property = "locationId", column = "contract_detail_schedule_id")})
     List<ContractTripSchedule> getContractTripSchedule(@Param("cd_id") int contractDetailId);
