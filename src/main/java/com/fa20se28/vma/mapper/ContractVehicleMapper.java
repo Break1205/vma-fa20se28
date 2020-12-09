@@ -209,8 +209,8 @@ public interface ContractVehicleMapper {
             "FROM [contract] c " +
             "JOIN contract_detail cd ON c.contract_id = cd.contract_id " +
             "WHERE " +
-            "cd.departure_time &lt; (SELECT DATEADD(hour, +6, CAST(#{vr_req.endDate} AS datetime) )) " +
-            "AND cd.destination_time &gt;= (SELECT DATEADD(hour, -6,  CAST(#{vr_req.startDate} AS datetime) )) " +
+            "cd.departure_time &lt; (SELECT DATEADD(hour, +3, CAST(#{vr_req.endDate} AS datetime) )) " +
+            "AND cd.destination_time &gt;= (SELECT DATEADD(hour, -3,  CAST(#{vr_req.startDate} AS datetime) )) " +
             ") " +
             ") " +
             "</script>"})
