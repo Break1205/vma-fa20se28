@@ -4,6 +4,7 @@ import com.fa20se28.vma.component.ContractComponent;
 import com.fa20se28.vma.configuration.exception.DataException;
 import com.fa20se28.vma.configuration.exception.InvalidParamException;
 import com.fa20se28.vma.enums.ContractStatus;
+import com.fa20se28.vma.enums.ContractVehicleStatus;
 import com.fa20se28.vma.mapper.ContractDetailMapper;
 import com.fa20se28.vma.mapper.ContractDetailScheduleMapper;
 import com.fa20se28.vma.mapper.ContractMapper;
@@ -42,24 +43,35 @@ public class ContractComponentImpl implements ContractComponent {
     @Transactional
     public void createContract(ContractReq contractReq) {
         if (contractReq.isRoundTrip()) {
-            if (contractReq.getAssignedVehicles().size() != 2) {
-                throw new InvalidParamException("This contract is round-trip. Therefore it needs 2 vehicles");
+            if (contractReq.getTrips().size() != 2) {
+                throw new InvalidParamException("This contract is round-trip. Therefore it needs 2 trips/vehicles");
             }
         } else {
-            if (contractReq.getAssignedVehicles().size() != 1) {
-                throw new InvalidParamException("This contract is one-way-trip. Therefore it needs 1 vehicles");
+            if (contractReq.getTrips().size() != 1) {
+                throw new InvalidParamException("This contract is one-way-trip. Therefore it needs 1 trip/vehicle");
             }
         }
         int row = contractMapper.createContract(contractReq, ContractStatus.NOT_STARTED);
 
         if (row == 0) {
-            throw new DataException("Unknown error occurred. Data not modified!");
+            throw new DataException("Can not insert Contract record!");
         } else {
             for (ContractTripReq trip : contractReq.getTrips()) {
                 int contractTripRow = contractDetailMapper.createContractDetail(trip, contractMapper.getContractId(contractReq.getContractOwnerId()));
                 if (contractTripRow == 0) {
-                    throw new DataException("Unknown error occurred. Data not modified!");
+                    throw new DataException("Can not insert Contract Detail record");
                 } else {
+                    int currentIssuedId = issuedVehicleMapper.getCurrentIssuedVehicleId(trip.getAssignedVehicle());
+
+                    int contractVehicleRow = contractVehicleMapper.assignVehicleForContract(
+                            trip.getContractDetailId(),
+                            currentIssuedId,
+                            ContractVehicleStatus.NOT_STARTED
+                    );
+
+                    if (contractVehicleRow == 0) {
+                        throw new DataException("Can not insert Contract Vehicle record");
+                    }
                     int contractDetailId = contractDetailMapper.getContractDetailId(contractMapper.getContractId(contractReq.getContractOwnerId()));
 
                     for (ContractTripScheduleReq location : trip.getLocations()) {
@@ -68,7 +80,7 @@ public class ContractComponentImpl implements ContractComponent {
                                 contractDetailId);
 
                         if (scheduleRow == 0) {
-                            throw new DataException("Unknown error occurred. Data not modified!");
+                            throw new DataException("Can not insert Contract Detail Schedule record");
                         }
                     }
                 }

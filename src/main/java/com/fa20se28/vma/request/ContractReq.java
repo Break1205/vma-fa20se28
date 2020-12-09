@@ -15,7 +15,6 @@ public class ContractReq {
     private float totalPrice;
     private boolean isRoundTrip;
     private String otherInformation;
-    private List<String> assignedVehicles;
 
     public String getContractOwnerId() {
         return contractOwnerId;
@@ -103,13 +102,5 @@ public class ContractReq {
 
     public void setOtherInformation(String otherInformation) {
         this.otherInformation = otherInformation;
-    }
-
-    public List<String> getAssignedVehicles() {
-        return assignedVehicles;
-    }
-
-    public void setAssignedVehicles(List<String> assignedVehicles) {
-        this.assignedVehicles = assignedVehicles;
     }
 }

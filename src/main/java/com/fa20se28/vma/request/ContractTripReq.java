@@ -11,6 +11,7 @@ public class ContractTripReq {
     //    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime destinationTime;
     private List<ContractTripScheduleReq> locations;
+    private String assignedVehicle;
 
     public int getContractDetailId() {
         return contractDetailId;
@@ -58,5 +59,13 @@ public class ContractTripReq {
 
     public void setLocations(List<ContractTripScheduleReq> locations) {
         this.locations = locations;
+    }
+
+    public String getAssignedVehicle() {
+        return assignedVehicle;
+    }
+
+    public void setAssignedVehicle(String assignedVehicle) {
+        this.assignedVehicle = assignedVehicle;
     }
 }
