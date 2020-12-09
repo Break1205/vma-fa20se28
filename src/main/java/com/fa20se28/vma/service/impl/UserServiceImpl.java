@@ -8,6 +8,7 @@ import com.fa20se28.vma.model.ClientRegistrationToken;
 import com.fa20se28.vma.model.Role;
 import com.fa20se28.vma.model.User;
 import com.fa20se28.vma.model.UserAccount;
+import com.fa20se28.vma.request.JwtReq;
 import com.fa20se28.vma.request.UserPageReq;
 import com.fa20se28.vma.request.UserReq;
 import com.fa20se28.vma.request.UserTokenReq;
@@ -18,6 +19,7 @@ import com.fa20se28.vma.service.UserService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,7 +31,9 @@ public class UserServiceImpl implements UserService {
     private final FirebaseService firebaseService;
     private final AuthenticationComponent authenticationComponent;
 
-    public UserServiceImpl(UserComponent userComponent, FirebaseService firebaseService, AuthenticationComponent authenticationComponent) {
+    public UserServiceImpl(UserComponent userComponent,
+                           FirebaseService firebaseService,
+                           AuthenticationComponent authenticationComponent) {
         this.userComponent = userComponent;
         this.firebaseService = firebaseService;
         this.authenticationComponent = authenticationComponent;
@@ -44,6 +48,24 @@ public class UserServiceImpl implements UserService {
             return new UserAccount(user, userRoles);
         }
         return null;
+    }
+
+    @Override
+    public UserDetails loadUserByPhoneNumberAndPassword(JwtReq jwtRequest) {
+        User user = userComponent.findUserByPhoneNumberAndPassword(jwtRequest);
+        if (user != null) {
+            List<Role> userRoles = userComponent.findUserRoles(user.getUserId());
+            if (userRoles != null) {
+                return new UserAccount(user, userRoles);
+            }
+            return null;
+        }
+        return null;
+    }
+
+    @Override
+    public void changePassword(String userId, String password) {
+        userComponent.changePassword(userId,password);
     }
 
     @Override
@@ -109,4 +131,6 @@ public class UserServiceImpl implements UserService {
         Authentication authentication = authenticationComponent.getAuthentication();
         return userComponent.updateClientRegistrationToken(clientRegistrationToken, authentication.getName());
     }
+
+
 }

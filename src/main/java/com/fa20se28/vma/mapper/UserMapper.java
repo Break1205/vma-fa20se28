@@ -52,6 +52,14 @@ public interface UserMapper {
     })
     Optional<User> findUserByUserId(@Param("user_id") String userId);
 
+    @Select("SELECT " +
+            "u.user_id, " +
+            "u.password " +
+            "FROM [user] u  " +
+            "WHERE u.phone_number = #{phone_number}")
+    @ResultMap("userAccountResult")
+    Optional<User> findUserByPhoneNumber(@Param("phone_number") String phoneNumber);
+
     @Select("SELECT\n" +
             "r.role_id,\n" +
             "r.role_name\n" +
@@ -205,4 +213,10 @@ public interface UserMapper {
             "WHERE role_id = '1' ")
     @Result(property = "token", column = "client_registration_token")
     List<ClientRegistrationToken> getAdminRegistrationTokens();
+
+    @Update("UPDATE [user]\n" +
+            "SET password = #{password} \n" +
+            "WHERE user_id = #{userId} ")
+    int updatePassword(@Param("userId") String userId,
+                       @Param("password") String password);
 }

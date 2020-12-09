@@ -163,8 +163,13 @@ public class ReportServiceImpl implements ReportService {
             DriverIncomeSummaryMonthRes driverIncomeSummaryMonthRes = new DriverIncomeSummaryMonthRes();
             reportReq.setQuarter(quarter);
             driverIncomeSummaryMonthRes.setQuarter(quarter);
-            driverIncomeSummaryMonthRes.setDriverIncomeRes(reportComponent.getDriversIncomeById(reportReq));
 
+            DriverIncomeRes driverIncomeRes = reportComponent.getDriversIncomeById(reportReq);
+            float baseSalary = reportComponent.getDriverBaseSalary(reportReq.getUserId());
+            if (driverIncomeRes.getEarnedValue() == 0) {
+                driverIncomeRes.setEarnedValue(baseSalary);
+            }
+            driverIncomeSummaryMonthRes.setDriverIncomeRes(driverIncomeRes);
             driverIncomeSummaryMonthResList.add(driverIncomeSummaryMonthRes);
         }
         driverIncomeSummaryYearRes.setDriverIncomeSummaryMonthResList(driverIncomeSummaryMonthResList);

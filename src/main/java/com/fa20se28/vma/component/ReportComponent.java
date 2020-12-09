@@ -41,4 +41,6 @@ public interface ReportComponent {
     List<DriverIncomes> getDriversIncome(ReportReq reportReq);
 
     DriverIncomeRes getDriversIncomeById(ReportReq reportReq);
+
+    float getDriverBaseSalary(String userId);
 }
