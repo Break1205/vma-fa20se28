@@ -10,17 +10,17 @@ import java.util.List;
 @Mapper
 public interface ContractVehicleMapper {
     @Insert("INSERT INTO contract_vehicles " +
-            "(contract_id, " +
+            "(contract_detail_id, " +
             "issued_vehicle_id, " +
             "contract_vehicle_status, " +
             "create_date) " +
             "VALUES " +
-            "(#{cv_id}, " +
+            "(#{cv_detail_id}, " +
             "#{cv_iv_id}, " +
             "#{cv_status}, " +
             "getDate()) ")
     int assignVehicleForContract(
-            @Param("cv_id") int contractId,
+            @Param("cv_detail_id") int contractDetailId,
             @Param("cv_iv_id") int issuedVehicleId,
             @Param("cv_status") ContractVehicleStatus vehicleStatus);
 

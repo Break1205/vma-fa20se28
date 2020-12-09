@@ -1,18 +1,24 @@
 package com.fa20se28.vma.request;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class ContractTripReq {
+    private int contractDetailId;
     private String departureLocation;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date departureTime;
+    private LocalDateTime departureTime;
     private String destinationLocation;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date destinationTime;
+    //    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime destinationTime;
     private List<ContractTripScheduleReq> locations;
+
+    public int getContractDetailId() {
+        return contractDetailId;
+    }
+
+    public void setContractDetailId(int contractDetailId) {
+        this.contractDetailId = contractDetailId;
+    }
 
     public String getDepartureLocation() {
         return departureLocation;
@@ -22,11 +28,11 @@ public class ContractTripReq {
         this.departureLocation = departureLocation;
     }
 
-    public Date getDepartureTime() {
+    public LocalDateTime getDepartureTime() {
         return departureTime;
     }
 
-    public void setDepartureTime(Date departureTime) {
+    public void setDepartureTime(LocalDateTime departureTime) {
         this.departureTime = departureTime;
     }
 
@@ -38,11 +44,11 @@ public class ContractTripReq {
         this.destinationLocation = destinationLocation;
     }
 
-    public Date getDestinationTime() {
+    public LocalDateTime getDestinationTime() {
         return destinationTime;
     }
 
-    public void setDestinationTime(Date destinationTime) {
+    public void setDestinationTime(LocalDateTime destinationTime) {
         this.destinationTime = destinationTime;
     }
 

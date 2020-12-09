@@ -18,8 +18,8 @@ public interface ContractMapper {
             "WHERE contract_owner_id = '${contract_owner_id}' \n" +
             "AND contract_status != 'FINISHED'")
     @Results(id = "unfinishedContractResult", value = {
-            @Result(property = "contractId",column = "contract_id"),
-            @Result(property = "contractStatus",column = "contract_status")
+            @Result(property = "contractId", column = "contract_id"),
+            @Result(property = "contractStatus", column = "contract_status")
     })
     List<Contract> getUnfinishedContractByContractOwnerId(@Param("contract_owner_id") String contractOwnerId);
 

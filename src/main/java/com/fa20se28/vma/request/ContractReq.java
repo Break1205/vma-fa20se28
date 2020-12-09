@@ -1,25 +1,21 @@
 package com.fa20se28.vma.request;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 public class ContractReq {
     private String contractOwnerId;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private Date signedDate;
+    private LocalDate signedDate;
     private String signedLocation;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private Date durationFrom;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private Date durationTo;
+    private LocalDate durationFrom;
+    private LocalDate durationTo;
     private int estimatedPassengerCount;
     private int estimatedVehicleCount;
     private List<ContractTripReq> trips;
     private float totalPrice;
     private boolean isRoundTrip;
     private String otherInformation;
+    private List<String> assignedVehicles;
 
     public String getContractOwnerId() {
         return contractOwnerId;
@@ -29,11 +25,11 @@ public class ContractReq {
         this.contractOwnerId = contractOwnerId;
     }
 
-    public Date getSignedDate() {
+    public LocalDate getSignedDate() {
         return signedDate;
     }
 
-    public void setSignedDate(Date signedDate) {
+    public void setSignedDate(LocalDate signedDate) {
         this.signedDate = signedDate;
     }
 
@@ -45,19 +41,19 @@ public class ContractReq {
         this.signedLocation = signedLocation;
     }
 
-    public Date getDurationFrom() {
+    public LocalDate getDurationFrom() {
         return durationFrom;
     }
 
-    public void setDurationFrom(Date durationFrom) {
+    public void setDurationFrom(LocalDate durationFrom) {
         this.durationFrom = durationFrom;
     }
 
-    public Date getDurationTo() {
+    public LocalDate getDurationTo() {
         return durationTo;
     }
 
-    public void setDurationTo(Date durationTo) {
+    public void setDurationTo(LocalDate durationTo) {
         this.durationTo = durationTo;
     }
 
@@ -107,5 +103,13 @@ public class ContractReq {
 
     public void setOtherInformation(String otherInformation) {
         this.otherInformation = otherInformation;
+    }
+
+    public List<String> getAssignedVehicles() {
+        return assignedVehicles;
+    }
+
+    public void setAssignedVehicles(List<String> assignedVehicles) {
+        this.assignedVehicles = assignedVehicles;
     }
 }
