@@ -12,7 +12,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/api/v1/maintenances")
@@ -43,8 +43,8 @@ public class MaintenanceController {
     @GetMapping("/count")
     public int getTotalMaintenance(
             @RequestParam(required = false) String vehicleId,
-            @RequestParam(required = false) @DateTimeFormat(pattern="yyyy-MM-dd") Date startDate,
-            @RequestParam(required = false) @DateTimeFormat(pattern="yyyy-MM-dd") Date endDate,
+            @RequestParam(required = false) @DateTimeFormat(pattern="yyyy-MM-dd") LocalDate startDate,
+            @RequestParam(required = false) @DateTimeFormat(pattern="yyyy-MM-dd") LocalDate endDate,
             @RequestParam(required = false) MaintenanceType maintenanceType,
             @RequestParam(required = false, defaultValue = "0") float costMin,
             @RequestParam(required = false, defaultValue = "0") float costMax,
@@ -57,8 +57,8 @@ public class MaintenanceController {
     @GetMapping
     public MaintenancePageRes getMaintenances(
             @RequestParam(required = false) String vehicleId,
-            @RequestParam(required = false) @DateTimeFormat(pattern="yyyy-MM-dd") Date startDate,
-            @RequestParam(required = false) @DateTimeFormat(pattern="yyyy-MM-dd") Date endDate,
+            @RequestParam(required = false) @DateTimeFormat(pattern="yyyy-MM-dd") LocalDate startDate,
+            @RequestParam(required = false) @DateTimeFormat(pattern="yyyy-MM-dd") LocalDate endDate,
             @RequestParam(required = false) MaintenanceType maintenanceType,
             @RequestParam(required = false, defaultValue = "0") float costMin,
             @RequestParam(required = false, defaultValue = "0") float costMax,

@@ -2,16 +2,16 @@ package com.fa20se28.vma.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 public class ContractTripUpdateReq {
     private int contractTripId;
     private String departureLocation;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date departureTime;
+    private LocalDateTime departureTime;
     private String destinationLocation;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date destinationTime;
+    private LocalDateTime destinationTime;
 
     public int getContractTripId() {
         return contractTripId;
@@ -29,11 +29,11 @@ public class ContractTripUpdateReq {
         this.departureLocation = departureLocation;
     }
 
-    public Date getDepartureTime() {
+    public LocalDateTime getDepartureTime() {
         return departureTime;
     }
 
-    public void setDepartureTime(Date departureTime) {
+    public void setDepartureTime(LocalDateTime departureTime) {
         this.departureTime = departureTime;
     }
 
@@ -45,11 +45,11 @@ public class ContractTripUpdateReq {
         this.destinationLocation = destinationLocation;
     }
 
-    public Date getDestinationTime() {
+    public LocalDateTime getDestinationTime() {
         return destinationTime;
     }
 
-    public void setDestinationTime(Date destinationTime) {
+    public void setDestinationTime(LocalDateTime destinationTime) {
         this.destinationTime = destinationTime;
     }
 }

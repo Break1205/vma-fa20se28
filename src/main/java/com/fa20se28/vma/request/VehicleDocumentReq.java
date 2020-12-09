@@ -3,7 +3,7 @@ package com.fa20se28.vma.request;
 import com.fa20se28.vma.enums.VehicleDocumentType;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 public class VehicleDocumentReq {
@@ -11,9 +11,9 @@ public class VehicleDocumentReq {
     private VehicleDocumentType vehicleDocumentType;
     private String registeredLocation;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private Date registeredDate;
+    private LocalDate registeredDate;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private Date expiryDate;
+    private LocalDate expiryDate;
     private List<String> imageLinks;
 
     public String getVehicleDocumentId() {
@@ -40,19 +40,19 @@ public class VehicleDocumentReq {
         this.registeredLocation = registeredLocation;
     }
 
-    public Date getRegisteredDate() {
+    public LocalDate getRegisteredDate() {
         return registeredDate;
     }
 
-    public void setRegisteredDate(Date registeredDate) {
+    public void setRegisteredDate(LocalDate registeredDate) {
         this.registeredDate = registeredDate;
     }
 
-    public Date getExpiryDate() {
+    public LocalDate getExpiryDate() {
         return expiryDate;
     }
 
-    public void setExpiryDate(Date expiryDate) {
+    public void setExpiryDate(LocalDate expiryDate) {
         this.expiryDate = expiryDate;
     }
 

@@ -3,20 +3,20 @@ package com.fa20se28.vma.request;
 import com.fa20se28.vma.enums.MaintenanceType;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public class MaintenanceUpdateReq {
     private int maintenanceId;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private Date startDate;
+    private LocalDate startDate;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private Date endDate;
+    private LocalDate endDate;
     private MaintenanceType maintenanceType;
     private float cost;
     private String imageLink;
     private String description;
 
-    public MaintenanceUpdateReq(int maintenanceId, Date startDate, Date endDate, MaintenanceType maintenanceType, float cost, String imageLink, String description) {
+    public MaintenanceUpdateReq(int maintenanceId, LocalDate startDate, LocalDate endDate, MaintenanceType maintenanceType, float cost, String imageLink, String description) {
         this.maintenanceId = maintenanceId;
         this.startDate = startDate;
         this.endDate = endDate;
@@ -34,19 +34,19 @@ public class MaintenanceUpdateReq {
         this.maintenanceId = maintenanceId;
     }
 
-    public Date getStartDate() {
+    public LocalDate getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(Date startDate) {
+    public void setStartDate(LocalDate startDate) {
         this.startDate = startDate;
     }
 
-    public Date getEndDate() {
+    public LocalDate getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(Date endDate) {
+    public void setEndDate(LocalDate endDate) {
         this.endDate = endDate;
     }
 
