@@ -2,6 +2,7 @@ package com.fa20se28.vma.component.impl;
 
 import com.fa20se28.vma.component.UserComponent;
 import com.fa20se28.vma.configuration.CustomUtils;
+import com.fa20se28.vma.configuration.exception.DataException;
 import com.fa20se28.vma.configuration.exception.ResourceIsInUsedException;
 import com.fa20se28.vma.configuration.exception.ResourceNotFoundException;
 import com.fa20se28.vma.enums.UserStatus;
@@ -15,6 +16,7 @@ import com.fa20se28.vma.model.IssuedVehicle;
 import com.fa20se28.vma.model.Role;
 import com.fa20se28.vma.model.User;
 import com.fa20se28.vma.model.Vehicle;
+import com.fa20se28.vma.request.JwtReq;
 import com.fa20se28.vma.request.UserDocumentImageReq;
 import com.fa20se28.vma.request.UserDocumentReq;
 import com.fa20se28.vma.request.UserPageReq;
@@ -51,10 +53,37 @@ public class UserComponentImpl implements UserComponent {
     }
 
     @Override
+    public User findUserByPhoneNumberAndPassword(JwtReq jwtRequest) {
+        Optional<User> optionalUser = userMapper.findUserByPhoneNumber(jwtRequest.getPhoneNumber());
+        if (optionalUser.isPresent()) {
+            if (passwordEncoder.matches(jwtRequest.getPassword(), optionalUser.get().getPassword())) {
+                return optionalUser.get();
+            } else {
+                throw new ResourceNotFoundException("User with phone number: " + jwtRequest.getPhoneNumber() + " found but incorrect password");
+            }
+        } else {
+            throw new ResourceNotFoundException("User with phone number: " + jwtRequest.getPhoneNumber() + " not found");
+        }
+    }
+
+    @Override
     public User findUserByUserId(String userId) {
         Optional<User> optionalUser = userMapper.findUserByUserId(userId);
         return optionalUser.orElseThrow(()
                 -> new ResourceNotFoundException("User with id: " + userId + " not found"));
+    }
+
+    @Override
+    public void changePassword(String userId, String password) {
+        Optional<User> optionalUserDetail = userMapper.findUserByUserId(userId);
+        if (optionalUserDetail.isPresent()) {
+            int userUpdateSuccess = userMapper.updatePassword(userId, passwordEncoder.encode(password));
+            if (userUpdateSuccess < 0) {
+                throw new DataException("Can not change password of user: " + userId);
+            }
+        } else {
+            throw new ResourceNotFoundException("User with id: " + userId + " not found");
+        }
     }
 
     @Override
@@ -74,10 +103,10 @@ public class UserComponentImpl implements UserComponent {
     @Transactional
     @Override
     public int updateUserByUserId(UserReq userReq) {
-        Optional<User> optionalDriverDetail = userMapper.findUserByUserId(userReq.getUserId());
-        if (optionalDriverDetail.isPresent()) {
-            int driverUpdateSuccess = userMapper.updateUser(userReq);
-            if (driverUpdateSuccess >= 0) {
+        Optional<User> optionalUserDetail = userMapper.findUserByUserId(userReq.getUserId());
+        if (optionalUserDetail.isPresent()) {
+            int userUpdateSuccess = userMapper.updateUser(userReq);
+            if (userUpdateSuccess >= 0) {
                 return 1;
             }
             return 0;

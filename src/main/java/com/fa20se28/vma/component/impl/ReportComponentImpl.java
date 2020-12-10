@@ -841,6 +841,11 @@ public class ReportComponentImpl implements ReportComponent {
     }
 
     @Override
+    public float getDriverBaseSalary(String userId) {
+        return reportMapper.getDriverBaseSalary(userId);
+    }
+
+    @Override
     public List<ContributorIncomesDetail> getContributorIncomesDetails(ReportReq reportReq) {
         List<LocalDate> firstAndLast = getFirstAndLastDayInAMonth(reportReq);
         return reportMapper.getContributorIncomesDetail(

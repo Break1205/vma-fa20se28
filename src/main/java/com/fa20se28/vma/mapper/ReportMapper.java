@@ -400,4 +400,9 @@ public interface ReportMapper {
     List<DriverIncomes> getDriverIncomes(@Param("driverId") String driverId,
                                          @Param("firstDayOfMonth") String firstDayOfMonth,
                                          @Param("lastDayOfMonth") String lastDayOfMonth);
+
+    @Select("SELECT base_salary " +
+            "FROM [user] " +
+            "WHERE user_id = #{userId}")
+    float getDriverBaseSalary(@Param("userId") String userId);
 }

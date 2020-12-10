@@ -11,7 +11,6 @@ import com.fa20se28.vma.request.*;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Component
@@ -110,13 +109,8 @@ public class ContractVehicleComponentImpl implements ContractVehicleComponent {
                 vehicleRow = vehicleMapper.updateVehicleStatus(tripReq.getVehicleId(), VehicleStatus.ON_ROUTE);
 
                 if (detail.getContractStatus().equals(ContractStatus.NOT_STARTED)) {
-                    LocalDateTime currentTime = LocalDateTime.now();
-                    if (currentTime.isBefore(detail.getTrips().get(0).getDepartureTime())) {
-                        throw new DataException("Vehicle cannot start trip at this time!");
-                    } else {
-                        startContract(tripReq.getContractId());
-                        return 1;
-                    }
+                    startContract(tripReq.getContractId());
+                    return 1;
                 }
             }
         } else {

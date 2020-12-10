@@ -2,7 +2,7 @@ package com.fa20se28.vma.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 public class FeedbackPageReq {
     private String vehicleId;
@@ -11,13 +11,13 @@ public class FeedbackPageReq {
     private String driverId;
     private String driverName;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date fromDate;
+    private LocalDateTime fromDate;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date toDate;
+    private LocalDateTime toDate;
     private int rateMin;
     private int rateMax;
 
-    public FeedbackPageReq(String vehicleId, String contributorId, String contributorName, String driverId, String driverName, Date fromDate, Date toDate, int rateMin, int rateMax) {
+    public FeedbackPageReq(String vehicleId, String contributorId, String contributorName, String driverId, String driverName, LocalDateTime fromDate, LocalDateTime toDate, int rateMin, int rateMax) {
         this.vehicleId = vehicleId;
         this.contributorId = contributorId;
         this.contributorName = contributorName;
@@ -69,19 +69,19 @@ public class FeedbackPageReq {
         this.driverName = driverName;
     }
 
-    public Date getFromDate() {
+    public LocalDateTime getFromDate() {
         return fromDate;
     }
 
-    public void setFromDate(Date fromDate) {
+    public void setFromDate(LocalDateTime fromDate) {
         this.fromDate = fromDate;
     }
 
-    public Date getToDate() {
+    public LocalDateTime getToDate() {
         return toDate;
     }
 
-    public void setToDate(Date toDate) {
+    public void setToDate(LocalDateTime toDate) {
         this.toDate = toDate;
     }
 

@@ -2,13 +2,13 @@ package com.fa20se28.vma.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public class PassengerReq {
     private String fullName;
     private String phoneNumber;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private Date dateOfBirth;
+    private LocalDate dateOfBirth;
     private String address;
 
     public String getFullName() {
@@ -27,11 +27,11 @@ public class PassengerReq {
         this.phoneNumber = phoneNumber;
     }
 
-    public Date getDateOfBirth() {
+    public LocalDate getDateOfBirth() {
         return dateOfBirth;
     }
 
-    public void setDateOfBirth(Date dateOfBirth) {
+    public void setDateOfBirth(LocalDate dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
 

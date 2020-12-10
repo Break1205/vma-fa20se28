@@ -8,7 +8,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/api/v1/feedbacks")
@@ -32,8 +32,8 @@ public class FeedbackController {
 
     @DeleteMapping("/{feedback-id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteFeedback(@PathVariable int issuedVehicleId) {
-        feedbackService.deleteFeedback(issuedVehicleId);
+    public void deleteFeedback(@PathVariable("feedback-id") int feedbackId) {
+        feedbackService.deleteFeedback(feedbackId);
     }
 
     @GetMapping("/count")
@@ -43,8 +43,8 @@ public class FeedbackController {
             @RequestParam(required = false) String contributorName,
             @RequestParam(required = false) String driverId,
             @RequestParam(required = false) String driverName,
-            @RequestParam(required = false) @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss") Date fromDate,
-            @RequestParam(required = false) @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss") Date toDate,
+            @RequestParam(required = false) @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss") LocalDateTime fromDate,
+            @RequestParam(required = false) @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss") LocalDateTime toDate,
             @RequestParam(required = false, defaultValue = "0") int rateMin,
             @RequestParam(required = false, defaultValue = "0") int rateMax,
             @RequestParam(required = false, defaultValue = "0") int viewOption) {
@@ -65,8 +65,8 @@ public class FeedbackController {
             @RequestParam(required = false) String contributorName,
             @RequestParam(required = false) String driverId,
             @RequestParam(required = false) String driverName,
-            @RequestParam(required = false) @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss") Date fromDate,
-            @RequestParam(required = false) @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss") Date toDate,
+            @RequestParam(required = false) @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss") LocalDateTime fromDate,
+            @RequestParam(required = false) @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss") LocalDateTime toDate,
             @RequestParam(required = false, defaultValue = "0") int rateMin,
             @RequestParam(required = false, defaultValue = "0") int rateMax,
             @RequestParam(required = false, defaultValue = "0") int viewOption,
