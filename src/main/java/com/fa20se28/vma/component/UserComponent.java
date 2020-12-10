@@ -4,6 +4,7 @@ import com.fa20se28.vma.enums.UserStatus;
 import com.fa20se28.vma.model.ClientRegistrationToken;
 import com.fa20se28.vma.model.Role;
 import com.fa20se28.vma.model.User;
+import com.fa20se28.vma.request.JwtReq;
 import com.fa20se28.vma.request.UserPageReq;
 import com.fa20se28.vma.request.UserReq;
 import com.fa20se28.vma.response.UserRes;
@@ -34,4 +35,8 @@ public interface UserComponent {
     ClientRegistrationToken findClientRegistrationTokenByUserId(String userId);
 
     List<ClientRegistrationToken> getAdminRegistrationTokens();
+
+    User findUserByPhoneNumberAndPassword(JwtReq jwtRequest);
+
+    void changePassword(String userId, String password);
 }

@@ -8,7 +8,6 @@ public class ContractTripReq {
     private String departureLocation;
     private LocalDateTime departureTime;
     private String destinationLocation;
-    //    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime destinationTime;
     private List<ContractTripScheduleReq> locations;
     private String assignedVehicle;

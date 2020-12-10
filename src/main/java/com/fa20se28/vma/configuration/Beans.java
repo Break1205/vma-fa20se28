@@ -11,4 +11,5 @@ public class Beans {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
 }

@@ -66,6 +66,13 @@ public class UserController {
         }
     }
 
+    @PostMapping("/{user-id}/password")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void changePassword(@RequestBody String password,
+                               @PathVariable("user-id") String userId) {
+        userService.changePassword(userId, password);
+    }
+
     @PostMapping("/role-token")
     public UserRoleRes getUserRoles(@RequestBody UserTokenReq token) {
         return userService.getUserRoles(token);

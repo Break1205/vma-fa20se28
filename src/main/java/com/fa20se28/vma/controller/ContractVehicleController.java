@@ -7,7 +7,7 @@ import com.fa20se28.vma.service.ContractVehicleService;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/api/v1/contracts/vehicles")
@@ -79,8 +79,8 @@ public class ContractVehicleController {
             @RequestParam(required = false, defaultValue = "0") int vehicleTypeId,
             @RequestParam(required = false, defaultValue = "0") int seatsMin,
             @RequestParam(required = false, defaultValue = "0") int seatsMax,
-            @RequestParam @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss") Date startDate,
-            @RequestParam @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss") Date endDate,
+            @RequestParam @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss") LocalDateTime startDate,
+            @RequestParam @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss") LocalDateTime endDate,
             @RequestParam(required = false, defaultValue = "0") int viewOption) {
         return contractVehicleService.getRecommendations(new VehicleRecommendationReq(vehicleTypeId, seatsMin, seatsMax, startDate, endDate), viewOption);
     }
@@ -90,8 +90,8 @@ public class ContractVehicleController {
             @RequestParam(required = false, defaultValue = "0") int vehicleTypeId,
             @RequestParam(required = false, defaultValue = "0") int seatsMin,
             @RequestParam(required = false, defaultValue = "0") int seatsMax,
-            @RequestParam @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss") Date startDate,
-            @RequestParam @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss") Date endDate) {
+            @RequestParam @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss") LocalDateTime startDate,
+            @RequestParam @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss") LocalDateTime endDate) {
         return contractVehicleService.getTotalRecommendations(new VehicleRecommendationReq(vehicleTypeId, seatsMin, seatsMax, startDate, endDate));
     }
 }

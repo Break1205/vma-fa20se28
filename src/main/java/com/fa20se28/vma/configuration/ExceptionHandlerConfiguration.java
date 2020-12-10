@@ -135,20 +135,22 @@ public class ExceptionHandlerConfiguration extends ResponseEntityExceptionHandle
 
     private String checkFirebaseMessagingExceptionType(MessagingErrorCode messagingErrorCode) {
         String message = "";
-        if (messagingErrorCode.equals(MessagingErrorCode.INTERNAL)) {
-            message = "Internal server error";
-        } else if (messagingErrorCode.equals(MessagingErrorCode.INVALID_ARGUMENT)) {
-            message = "One or more arguments specified in the request were invalid";
-        } else if (messagingErrorCode.equals(MessagingErrorCode.QUOTA_EXCEEDED)) {
-            message = "Sending limit exceeded for the message target";
-        } else if (messagingErrorCode.equals(MessagingErrorCode.SENDER_ID_MISMATCH)) {
-            message = "The authenticated sender ID is different from the sender ID for the registration token";
-        } else if (messagingErrorCode.equals(MessagingErrorCode.THIRD_PARTY_AUTH_ERROR)) {
-            message = "APNs certificate or web push auth key was invalid or missing";
-        } else if (messagingErrorCode.equals(MessagingErrorCode.UNAVAILABLE)) {
-            message = "Cloud Messaging service is temporarily unavailable";
-        } else if (messagingErrorCode.equals(MessagingErrorCode.UNREGISTERED)) {
-            message = "App instance was unregistered from FCM. This usually means that the token used is no longer valid and a new one must be used";
+        if (messagingErrorCode != null) {
+            if (messagingErrorCode.equals(MessagingErrorCode.INTERNAL)) {
+                message = "Internal server error";
+            } else if (messagingErrorCode.equals(MessagingErrorCode.INVALID_ARGUMENT)) {
+                message = "One or more arguments specified in the request were invalid";
+            } else if (messagingErrorCode.equals(MessagingErrorCode.QUOTA_EXCEEDED)) {
+                message = "Sending limit exceeded for the message target";
+            } else if (messagingErrorCode.equals(MessagingErrorCode.SENDER_ID_MISMATCH)) {
+                message = "The authenticated sender ID is different from the sender ID for the registration token";
+            } else if (messagingErrorCode.equals(MessagingErrorCode.THIRD_PARTY_AUTH_ERROR)) {
+                message = "APNs certificate or web push auth key was invalid or missing";
+            } else if (messagingErrorCode.equals(MessagingErrorCode.UNAVAILABLE)) {
+                message = "Cloud Messaging service is temporarily unavailable";
+            } else if (messagingErrorCode.equals(MessagingErrorCode.UNREGISTERED)) {
+                message = "App instance was unregistered from FCM. This usually means that the token used is no longer valid and a new one must be used";
+            }
         }
         return message;
     }

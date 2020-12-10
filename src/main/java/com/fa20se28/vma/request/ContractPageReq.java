@@ -3,18 +3,18 @@ package com.fa20se28.vma.request;
 import com.fa20se28.vma.enums.ContractStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public class ContractPageReq {
     private ContractStatus contractStatus;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private Date durationFrom;
+    private LocalDate durationFrom;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private Date durationTo;
+    private LocalDate durationTo;
     private float totalPriceMin;
     private float totalPriceMax;
 
-    public ContractPageReq(ContractStatus contractStatus, Date durationFrom, Date durationTo, float totalPriceMin, float totalPriceMax) {
+    public ContractPageReq(ContractStatus contractStatus, LocalDate durationFrom, LocalDate durationTo, float totalPriceMin, float totalPriceMax) {
         this.contractStatus = contractStatus;
         this.durationFrom = durationFrom;
         this.durationTo = durationTo;
@@ -30,19 +30,19 @@ public class ContractPageReq {
         this.contractStatus = contractStatus;
     }
 
-    public Date getDurationFrom() {
+    public LocalDate getDurationFrom() {
         return durationFrom;
     }
 
-    public void setDurationFrom(Date durationFrom) {
+    public void setDurationFrom(LocalDate durationFrom) {
         this.durationFrom = durationFrom;
     }
 
-    public Date getDurationTo() {
+    public LocalDate getDurationTo() {
         return durationTo;
     }
 
-    public void setDurationTo(Date durationTo) {
+    public void setDurationTo(LocalDate durationTo) {
         this.durationTo = durationTo;
     }
 

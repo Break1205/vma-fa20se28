@@ -2,18 +2,18 @@ package com.fa20se28.vma.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public class ContractUpdateReq {
     private int contractId;
     private String contractOwnerId;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private Date signedDate;
+    private LocalDate signedDate;
     private String signedLocation;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private Date durationFrom;
+    private LocalDate durationFrom;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private Date durationTo;
+    private LocalDate durationTo;
     private int estimatedPassengerCount;
     private int estimatedVehicleCount;
     private float totalPrice;
@@ -36,11 +36,11 @@ public class ContractUpdateReq {
         this.contractOwnerId = contractOwnerId;
     }
 
-    public Date getSignedDate() {
+    public LocalDate getSignedDate() {
         return signedDate;
     }
 
-    public void setSignedDate(Date signedDate) {
+    public void setSignedDate(LocalDate signedDate) {
         this.signedDate = signedDate;
     }
 
@@ -52,19 +52,19 @@ public class ContractUpdateReq {
         this.signedLocation = signedLocation;
     }
 
-    public Date getDurationFrom() {
+    public LocalDate getDurationFrom() {
         return durationFrom;
     }
 
-    public void setDurationFrom(Date durationFrom) {
+    public void setDurationFrom(LocalDate durationFrom) {
         this.durationFrom = durationFrom;
     }
 
-    public Date getDurationTo() {
+    public LocalDate getDurationTo() {
         return durationTo;
     }
 
-    public void setDurationTo(Date durationTo) {
+    public void setDurationTo(LocalDate durationTo) {
         this.durationTo = durationTo;
     }
 

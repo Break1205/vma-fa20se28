@@ -2,18 +2,18 @@ package com.fa20se28.vma.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 public class VehicleRecommendationReq {
     private int vehicleTypeId;
     private int seatsMin;
     private int seatsMax;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date startDate;
+    private LocalDateTime startDate;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date endDate;
+    private LocalDateTime endDate;
 
-    public VehicleRecommendationReq(int vehicleTypeId, int seatsMin, int seatsMax, Date startDate, Date endDate) {
+    public VehicleRecommendationReq(int vehicleTypeId, int seatsMin, int seatsMax, LocalDateTime startDate, LocalDateTime endDate) {
         this.vehicleTypeId = vehicleTypeId;
         this.seatsMin = seatsMin;
         this.seatsMax = seatsMax;
@@ -45,19 +45,19 @@ public class VehicleRecommendationReq {
         this.seatsMax = seatsMax;
     }
 
-    public Date getStartDate() {
+    public LocalDateTime getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(Date startDate) {
+    public void setStartDate(LocalDateTime startDate) {
         this.startDate = startDate;
     }
 
-    public Date getEndDate() {
+    public LocalDateTime getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(Date endDate) {
+    public void setEndDate(LocalDateTime endDate) {
         this.endDate = endDate;
     }
 }
