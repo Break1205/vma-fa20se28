@@ -1,18 +1,24 @@
 package com.fa20se28.vma.request;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-
 import java.time.LocalDateTime;
 import java.util.List;
 
 public class ContractTripReq {
+    private int contractDetailId;
     private String departureLocation;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime departureTime;
     private String destinationLocation;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime destinationTime;
     private List<ContractTripScheduleReq> locations;
+    private String assignedVehicle;
+
+    public int getContractDetailId() {
+        return contractDetailId;
+    }
+
+    public void setContractDetailId(int contractDetailId) {
+        this.contractDetailId = contractDetailId;
+    }
 
     public String getDepartureLocation() {
         return departureLocation;
@@ -52,5 +58,13 @@ public class ContractTripReq {
 
     public void setLocations(List<ContractTripScheduleReq> locations) {
         this.locations = locations;
+    }
+
+    public String getAssignedVehicle() {
+        return assignedVehicle;
+    }
+
+    public void setAssignedVehicle(String assignedVehicle) {
+        this.assignedVehicle = assignedVehicle;
     }
 }

@@ -20,6 +20,7 @@ public interface ContractDetailMapper {
             "#{cd_request.destinationLocation}, " +
             "#{cd_request.destinationTime}," +
             "getDate()) ")
+    @Options(keyProperty = "cd_request.contractDetailId", useGeneratedKeys = true)
     int createContractDetail(
             @Param("cd_request") ContractTripReq contractTripReq,
             @Param("c_id") int contractId);
