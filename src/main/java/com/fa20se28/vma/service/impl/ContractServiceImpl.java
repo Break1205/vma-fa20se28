@@ -1,12 +1,15 @@
 package com.fa20se28.vma.service.impl;
 
 import com.fa20se28.vma.component.ContractComponent;
+import com.fa20se28.vma.component.ContractVehicleComponent;
+import com.fa20se28.vma.configuration.exception.DataException;
 import com.fa20se28.vma.enums.ContractStatus;
 import com.fa20se28.vma.request.*;
 import com.fa20se28.vma.response.ContractDetailRes;
 import com.fa20se28.vma.response.ContractPageRes;
 import com.fa20se28.vma.service.ContractService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ContractServiceImpl implements ContractService {
@@ -17,6 +20,7 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
+    @Transactional
     public void createContract(ContractReq contractReq) {
         contractComponent.createContract(contractReq);
     }
