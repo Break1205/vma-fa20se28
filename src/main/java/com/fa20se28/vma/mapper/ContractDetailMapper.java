@@ -4,6 +4,8 @@ import com.fa20se28.vma.request.ContractTripReq;
 import com.fa20se28.vma.request.ContractTripUpdateReq;
 import org.apache.ibatis.annotations.*;
 
+import java.util.List;
+
 @Mapper
 public interface ContractDetailMapper {
     @Insert("INSERT INTO contract_detail " +
@@ -41,4 +43,16 @@ public interface ContractDetailMapper {
             "contract_id = #{c_id} " +
             "ORDER BY create_date DESC ")
     int getContractDetailId(@Param("c_id") int contractId);
+
+    @Select("SELECT contract_detail_id " +
+            "FROM contract_detail " +
+            "WHERE " +
+            "contract_id = #{c_id} " +
+            "ORDER BY create_date DESC ")
+    List<Integer> getContractDetailsByContractIdId(@Param("c_id") int contractId);
+
+    @Delete("DELETE " +
+            "FROM contract_detail " +
+            "WHERE contract_detail_id = #{cd_id} ")
+    int deleteContractDetailById(@Param("cd_id") int contractId);
 }

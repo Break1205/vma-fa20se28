@@ -215,4 +215,9 @@ public interface ContractVehicleMapper {
             ") " +
             "</script>"})
     int getRecommendationCount(@Param("vr_req") VehicleRecommendationReq vehicleRecommendationReq);
+
+    @Delete("DELETE " +
+            "FROM contract_vehicles " +
+            "WHERE contract_detail_id = #{cd_id} ")
+    int deleteContractVehicle(@Param("cd_id") int contractId);
 }

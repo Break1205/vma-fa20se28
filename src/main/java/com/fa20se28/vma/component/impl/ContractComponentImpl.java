@@ -120,6 +120,62 @@ public class ContractComponentImpl implements ContractComponent {
     @Override
     @Transactional
     public void updateContract(ContractUpdateReq contractUpdateReq) {
+        ContractDetail contractDetail = contractMapper.getContractDetails(contractUpdateReq.getContractId());
+        // currently round trip and want to make it 1 way trip
+        if (!contractUpdateReq.isRoundTrip() && contractDetail.isRoundTrip()) {
+            List<Integer> contractDetailsId =
+                    contractDetailMapper.getContractDetailsByContractIdId(contractUpdateReq.getContractId());
+            if (contractDetailsId.size() == 2) {
+                int deletedContractDetailScheduleRecord =
+                        contractDetailScheduleMapper.deleteContractSchedule(contractDetailsId.get(0));
+                int deletedContractVehicleRecord =
+                        contractVehicleMapper.deleteContractVehicle(contractDetailsId.get(0));
+                int deletedContractDetailRecord =
+                        contractDetailMapper.deleteContractDetailById(contractDetailsId.get(0));
+                if (deletedContractDetailRecord == 0
+                        || deletedContractVehicleRecord == 0
+                        || deletedContractDetailScheduleRecord < 0) {
+                    throw new DataException("Delete contract detail/contract detail schedule/contract vehicles failed.");
+                }
+            }
+            // currently 1 way trip and want to make it round trip
+        } else if (contractUpdateReq.isRoundTrip() && !contractDetail.isRoundTrip()) {
+            if (contractUpdateReq.getTrips().size() != 2) {
+                throw new InvalidParamException("From one way trip to round trip. Therefore it needs 2 trips/vehicles");
+            }
+            ContractTripReq theReturnedContractTripReq = contractUpdateReq.getTrips().get(1);
+
+            int contractTripRow = contractDetailMapper.createContractDetail(theReturnedContractTripReq, contractUpdateReq.getContractId());
+            if (contractTripRow == 0) {
+                throw new DataException("Can not insert Contract Detail record");
+            } else {
+                for (String vehicleId : theReturnedContractTripReq.getAssignedVehicles()) {
+                    int currentIssuedId = issuedVehicleMapper.getCurrentIssuedVehicleId(vehicleId);
+
+                    int contractVehicleRow = contractVehicleMapper.assignVehicleForContract(
+                            theReturnedContractTripReq.getContractDetailId(),
+                            currentIssuedId,
+                            ContractVehicleStatus.NOT_STARTED
+                    );
+
+                    if (contractVehicleRow == 0) {
+                        throw new DataException("Can not insert Contract Vehicle record");
+                    }
+                }
+
+                int contractDetailId = contractDetailMapper.getContractDetailId(contractMapper.getContractId(contractUpdateReq.getContractOwnerId()));
+
+                for (ContractTripScheduleReq location : theReturnedContractTripReq.getLocations()) {
+                    int scheduleRow = contractDetailScheduleMapper.createContractSchedule(
+                            location.getLocation(),
+                            theReturnedContractTripReq.getContractDetailId());
+
+                    if (scheduleRow == 0) {
+                        throw new DataException("Can not insert Contract Detail Schedule record");
+                    }
+                }
+            }
+        }
         int row = contractMapper.updateContract(contractUpdateReq);
 
         if (row == 0) {
