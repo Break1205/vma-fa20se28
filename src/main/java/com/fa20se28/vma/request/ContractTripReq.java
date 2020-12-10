@@ -10,7 +10,7 @@ public class ContractTripReq {
     private String destinationLocation;
     private LocalDateTime destinationTime;
     private List<ContractTripScheduleReq> locations;
-    private String assignedVehicle;
+    private List<String> assignedVehicles;
 
     public int getContractDetailId() {
         return contractDetailId;
@@ -60,11 +60,11 @@ public class ContractTripReq {
         this.locations = locations;
     }
 
-    public String getAssignedVehicle() {
-        return assignedVehicle;
+    public List<String> getAssignedVehicles() {
+        return assignedVehicles;
     }
 
-    public void setAssignedVehicle(String assignedVehicle) {
-        this.assignedVehicle = assignedVehicle;
+    public void setAssignedVehicles(List<String> assignedVehicles) {
+        this.assignedVehicles = assignedVehicles;
     }
 }

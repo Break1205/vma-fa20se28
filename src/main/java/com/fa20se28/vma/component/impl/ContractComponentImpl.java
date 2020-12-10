@@ -12,7 +12,13 @@ import com.fa20se28.vma.mapper.ContractVehicleMapper;
 import com.fa20se28.vma.mapper.IssuedVehicleMapper;
 import com.fa20se28.vma.model.ContractDetail;
 import com.fa20se28.vma.model.ContractLM;
-import com.fa20se28.vma.request.*;
+import com.fa20se28.vma.request.ContractPageReq;
+import com.fa20se28.vma.request.ContractReq;
+import com.fa20se28.vma.request.ContractTripReq;
+import com.fa20se28.vma.request.ContractTripScheduleReq;
+import com.fa20se28.vma.request.ContractTripScheduleUpdateReq;
+import com.fa20se28.vma.request.ContractTripUpdateReq;
+import com.fa20se28.vma.request.ContractUpdateReq;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -61,17 +67,20 @@ public class ContractComponentImpl implements ContractComponent {
                 if (contractTripRow == 0) {
                     throw new DataException("Can not insert Contract Detail record");
                 } else {
-                    int currentIssuedId = issuedVehicleMapper.getCurrentIssuedVehicleId(trip.getAssignedVehicle());
+                    for (String vehicleId : trip.getAssignedVehicles()) {
+                        int currentIssuedId = issuedVehicleMapper.getCurrentIssuedVehicleId(vehicleId);
 
-                    int contractVehicleRow = contractVehicleMapper.assignVehicleForContract(
-                            trip.getContractDetailId(),
-                            currentIssuedId,
-                            ContractVehicleStatus.NOT_STARTED
-                    );
+                        int contractVehicleRow = contractVehicleMapper.assignVehicleForContract(
+                                trip.getContractDetailId(),
+                                currentIssuedId,
+                                ContractVehicleStatus.NOT_STARTED
+                        );
 
-                    if (contractVehicleRow == 0) {
-                        throw new DataException("Can not insert Contract Vehicle record");
+                        if (contractVehicleRow == 0) {
+                            throw new DataException("Can not insert Contract Vehicle record");
+                        }
                     }
+
                     int contractDetailId = contractDetailMapper.getContractDetailId(contractMapper.getContractId(contractReq.getContractOwnerId()));
 
                     for (ContractTripScheduleReq location : trip.getLocations()) {
