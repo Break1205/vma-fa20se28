@@ -5,6 +5,8 @@ import com.fa20se28.vma.request.*;
 import com.fa20se28.vma.response.ContractDetailRes;
 import com.fa20se28.vma.response.ContractPageRes;
 
+import java.util.List;
+
 public interface ContractService {
     void createContract(ContractReq contractReq);
 
@@ -21,4 +23,6 @@ public interface ContractService {
     void updateContractTripSchedule(ContractTripScheduleUpdateReq contractTripScheduleUpdateReq);
 
     ContractDetailRes getContractDetails(int contractId);
+
+    void updateContractTripVehicles(int contractTripId, List<String> assignedVehicles);
 }

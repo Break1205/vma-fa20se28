@@ -184,7 +184,8 @@ public interface ContractMapper {
             @Result(property = "departureTime", column = "departure_time"),
             @Result(property = "destinationLocation", column = "destination_location"),
             @Result(property = "destinationTime", column = "destination_time"),
-            @Result(property = "locations", column = "contract_detail_id", many = @Many(select = "getContractTripSchedule"))
+            @Result(property = "locations", column = "contract_detail_id", many = @Many(select = "getContractTripSchedule")),
+            @Result(property = "assignedVehicles", column = "contract_detail_id", many = @Many(select = "getAssignedVehicles"))
     })
     List<ContractTrip> getContractTrips(@Param("c_id") int contractId);
 
@@ -196,6 +197,15 @@ public interface ContractMapper {
     @Results(id = "tripSchedule", value = {
             @Result(property = "locationId", column = "contract_detail_schedule_id")})
     List<ContractTripSchedule> getContractTripSchedule(@Param("cd_id") int contractDetailId);
+
+    @Select("SELECT \n" +
+            "iv.vehicle_id\n" +
+            "FROM contract_vehicles cv \n" +
+            "JOIN issued_vehicle iv \n" +
+            "ON cv.issued_vehicle_id = iv.issued_vehicle_id\n" +
+            "WHERE contract_detail_id = #{cd_id}\n" +
+            "ORDER BY contract_detail_id ASC")
+    List<String> getAssignedVehicles(@Param("cd_id") int contractDetailId);
 
     @Update("UPDATE contract " +
             "SET contract_status = #{c_status} " +

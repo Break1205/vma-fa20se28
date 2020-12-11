@@ -1,23 +1,20 @@
 package com.fa20se28.vma.request;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-
 import java.time.LocalDate;
+import java.util.List;
 
 public class ContractUpdateReq {
     private int contractId;
     private String contractOwnerId;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate signedDate;
     private String signedLocation;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate durationFrom;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate durationTo;
     private int estimatedPassengerCount;
     private int estimatedVehicleCount;
     private float totalPrice;
     private boolean isRoundTrip;
+    private List<ContractTripReq> trips;
     private String otherInformation;
 
     public int getContractId() {
@@ -98,6 +95,14 @@ public class ContractUpdateReq {
 
     public void setRoundTrip(boolean roundTrip) {
         isRoundTrip = roundTrip;
+    }
+
+    public List<ContractTripReq> getTrips() {
+        return trips;
+    }
+
+    public void setTrips(List<ContractTripReq> trips) {
+        this.trips = trips;
     }
 
     public String getOtherInformation() {

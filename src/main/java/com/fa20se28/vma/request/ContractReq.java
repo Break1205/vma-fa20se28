@@ -1,16 +1,23 @@
 package com.fa20se28.vma.request;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import java.time.LocalDate;
 import java.util.List;
 
 public class ContractReq {
     private String contractOwnerId;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate signedDate;
     private String signedLocation;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate durationFrom;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate durationTo;
     private int estimatedPassengerCount;
     private int estimatedVehicleCount;
+    @JsonSerialize(as = ContractTripReq.class)
     private List<ContractTripReq> trips;
     private float totalPrice;
     private boolean isRoundTrip;

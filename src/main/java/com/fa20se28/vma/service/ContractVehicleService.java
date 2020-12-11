@@ -16,11 +16,11 @@ public interface ContractVehicleService {
 
     ContractVehicleRes getContractVehicles(int contractId);
 
-    ContractVehicleStatus getVehicleStatus(int contractId, int issuedVehicleId);
+    ContractVehicleStatus getVehicleStatus(int contractDetailId, int issuedVehicleId);
 
     void updateContractVehicleStatus(ContractVehicleStatusUpdateReq contractVehicleStatusUpdateReq);
 
-    TripListRes getTrips(TripListReq tripListReq, int viewOption);
+    TripListRes getTrips(TripListReq tripListReq, int page);
 
     void startTrip(TripReq tripReq);
 
