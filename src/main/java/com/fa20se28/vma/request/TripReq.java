@@ -2,6 +2,7 @@ package com.fa20se28.vma.request;
 
 public class TripReq {
     private int contractId;
+    private int contractDetailId;
     private String vehicleId;
 
     public int getContractId() {
@@ -10,6 +11,14 @@ public class TripReq {
 
     public void setContractId(int contractId) {
         this.contractId = contractId;
+    }
+
+    public int getContractDetailId() {
+        return contractDetailId;
+    }
+
+    public void setContractDetailId(int contractDetailId) {
+        this.contractDetailId = contractDetailId;
     }
 
     public String getVehicleId() {

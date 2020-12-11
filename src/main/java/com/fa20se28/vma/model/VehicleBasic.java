@@ -4,6 +4,7 @@ import com.fa20se28.vma.enums.ContractVehicleStatus;
 
 public class VehicleBasic {
     private int contractVehicleId;
+    private int contractDetailId;
     private String vehicleId;
     private VehicleType vehicleType;
     private int seats;
@@ -15,6 +16,14 @@ public class VehicleBasic {
 
     public void setContractVehicleId(int contractVehicleId) {
         this.contractVehicleId = contractVehicleId;
+    }
+
+    public int getContractDetailId() {
+        return contractDetailId;
+    }
+
+    public void setContractDetailId(int contractDetailId) {
+        this.contractDetailId = contractDetailId;
     }
 
     public String getVehicleId() {

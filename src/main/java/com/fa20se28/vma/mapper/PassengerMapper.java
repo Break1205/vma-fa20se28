@@ -36,11 +36,12 @@ public interface PassengerMapper {
             @Param("cvp_list") PassengerReq passengerReq,
             @Param("cv_id") int contractVehicleId);
 
-    @Select("SELECT COUNT (p.passenger_id) " +
-            "FROM passenger p " +
-            "JOIN contract_vehicles cv ON p.contract_vehicle_id = cv.contract_vehicle_id " +
-            "JOIN contract c ON cv.contract_id = c.contract_id " +
-            "WHERE c.contract_id = #{c_id} ")
+    @Select("SELECT COUNT (p.passenger_id)\n" +
+            "FROM passenger p\n" +
+            "JOIN contract_vehicles cv ON p.contract_vehicle_id = cv.contract_vehicle_id \n" +
+            "JOIN contract_detail cd ON cv.contract_detail_id = cd.contract_detail_id\n" +
+            "JOIN contract c ON c.contract_id = cd.contract_id\n" +
+            "WHERE c.contract_id = #{c_id}")
     int getPassengerCountFromContract(@Param("c_id") int contractId);
 
     @Delete("DELETE \n" +

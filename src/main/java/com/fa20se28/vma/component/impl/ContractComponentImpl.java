@@ -27,7 +27,9 @@ import com.fa20se28.vma.request.ContractUpdateReq;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Component
@@ -76,7 +78,13 @@ public class ContractComponentImpl implements ContractComponent {
                 if (contractTripRow == 0) {
                     throw new DataException("Can not insert Contract Detail record");
                 } else {
+                    Map<String, String> nonDuplicateAssignedVehicles = new HashMap<>();
                     for (String vehicleId : trip.getAssignedVehicles()) {
+                        if (nonDuplicateAssignedVehicles.containsKey(vehicleId)) {
+                            throw new InvalidParamException("Duplicate vehicle id: " + vehicleId + " .A vehicle can only be on 1 trip at a time");
+                        } else {
+                            nonDuplicateAssignedVehicles.put(vehicleId, vehicleId);
+                        }
                         Optional<IssuedVehicle> optionalIssuedVehicle =
                                 issuedVehicleMapper.getCurrentIssuedVehicleWithDriverById(vehicleId);
 
@@ -167,7 +175,13 @@ public class ContractComponentImpl implements ContractComponent {
             if (contractTripRow == 0) {
                 throw new DataException("Can not insert Contract Detail record");
             } else {
+                Map<String, String> nonDuplicateAssignedVehicles = new HashMap<>();
                 for (String vehicleId : theReturnedContractTripReq.getAssignedVehicles()) {
+                    if (nonDuplicateAssignedVehicles.containsKey(vehicleId)) {
+                        throw new InvalidParamException("Duplicate vehicle id: " + vehicleId + " .A vehicle can only be on 1 trip at a time");
+                    } else {
+                        nonDuplicateAssignedVehicles.put(vehicleId, vehicleId);
+                    }
                     Optional<IssuedVehicle> optionalIssuedVehicle =
                             issuedVehicleMapper.getCurrentIssuedVehicleWithDriverById(vehicleId);
 
@@ -242,7 +256,13 @@ public class ContractComponentImpl implements ContractComponent {
         if (deletedContractVehicleRecords == 0) {
             throw new DataException("Can not delete contract vehicles of contract detail id: " + contractTripId);
         }
+        Map<String, String> nonDuplicateAssignedVehicles = new HashMap<>();
         for (String vehicleId : assignedVehicles) {
+            if (nonDuplicateAssignedVehicles.containsKey(vehicleId)) {
+                throw new InvalidParamException("Duplicate vehicle id: " + vehicleId + " .A vehicle can only be on 1 trip at a time");
+            } else {
+                nonDuplicateAssignedVehicles.put(vehicleId, vehicleId);
+            }
             Optional<IssuedVehicle> optionalIssuedVehicle =
                     issuedVehicleMapper.getCurrentIssuedVehicleWithDriverById(vehicleId);
 

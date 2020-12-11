@@ -1,15 +1,15 @@
 package com.fa20se28.vma.request;
 
 public class ContractVehicleReq {
-    private int contractId;
+    private int contractDetailId;
     private String vehicleId;
 
-    public int getContractId() {
-        return contractId;
+    public int getContractDetailId() {
+        return contractDetailId;
     }
 
-    public void setContractId(int contractId) {
-        this.contractId = contractId;
+    public void setContractDetailId(int contractDetailId) {
+        this.contractDetailId = contractDetailId;
     }
 
     public String getVehicleId() {

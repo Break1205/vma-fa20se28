@@ -75,7 +75,7 @@ public class ContractController {
     @PatchMapping("/trip/{trip-id}/vehicles")
     public void updateContractTripVehicles(@PathVariable("trip-id") int contractTripId,
                                            @RequestBody List<String> assignedVehicles) {
-        contractService.updateContractTripVehicles(contractTripId,assignedVehicles);
+        contractService.updateContractTripVehicles(contractTripId, assignedVehicles);
     }
 
     @PatchMapping("/schedule")
