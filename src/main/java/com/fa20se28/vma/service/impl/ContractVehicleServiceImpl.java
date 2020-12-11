@@ -45,8 +45,8 @@ public class ContractVehicleServiceImpl implements ContractVehicleService {
     }
 
     @Override
-    public ContractVehicleStatus getVehicleStatus(int contractId, int issuedVehicleId) {
-        return contractVehicleComponent.getVehicleStatus(contractId, issuedVehicleId);
+    public ContractVehicleStatus getVehicleStatus(int contractDetailId, int issuedVehicleId) {
+        return contractVehicleComponent.getVehicleStatus(contractDetailId, issuedVehicleId);
     }
 
     @Override
@@ -56,8 +56,8 @@ public class ContractVehicleServiceImpl implements ContractVehicleService {
 
 
     @Override
-    public TripListRes getTrips(TripListReq tripListReq, int viewOption) {
-        return new TripListRes(contractVehicleComponent.getVehicleTrips(tripListReq, viewOption));
+    public TripListRes getTrips(TripListReq tripListReq, int page) {
+        return new TripListRes(contractVehicleComponent.getVehicleTrips(tripListReq, page));
     }
 
     @Override

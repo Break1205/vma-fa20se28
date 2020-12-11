@@ -7,6 +7,9 @@ import com.fa20se28.vma.response.ContractDetailRes;
 import com.fa20se28.vma.response.ContractPageRes;
 import com.fa20se28.vma.service.ContractService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 public class ContractServiceImpl implements ContractService {
@@ -17,6 +20,7 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
+    @Transactional
     public void createContract(ContractReq contractReq) {
         contractComponent.createContract(contractReq);
     }
@@ -44,6 +48,11 @@ public class ContractServiceImpl implements ContractService {
     @Override
     public void updateContractTrip(ContractTripUpdateReq contractTripUpdateReq) {
         contractComponent.updateContractTrip(contractTripUpdateReq);
+    }
+
+    @Override
+    public void updateContractTripVehicles(int contractTripId, List<String> assignedVehicles) {
+        contractComponent.updateContractTripVehicles(contractTripId, assignedVehicles);
     }
 
     @Override

@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/contracts")
@@ -30,8 +31,8 @@ public class ContractController {
     @GetMapping
     public ContractPageRes getContracts(
             @RequestParam(required = false) ContractStatus contractStatus,
-            @RequestParam(required = false) @DateTimeFormat(pattern="yyyy-MM-dd") LocalDate durationFrom,
-            @RequestParam(required = false) @DateTimeFormat(pattern="yyyy-MM-dd") LocalDate durationTo,
+            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate durationFrom,
+            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate durationTo,
             @RequestParam(required = false, defaultValue = "0") float totalPriceMin,
             @RequestParam(required = false, defaultValue = "0") float totalPriceMax,
             @RequestParam(required = false, defaultValue = "0") int viewOption,
@@ -44,8 +45,8 @@ public class ContractController {
     @GetMapping("/count")
     public int getTotalContracts(
             @RequestParam(required = false) ContractStatus contractStatus,
-            @RequestParam(required = false) @DateTimeFormat(pattern="yyyy-MM-dd") LocalDate durationFrom,
-            @RequestParam(required = false) @DateTimeFormat(pattern="yyyy-MM-dd") LocalDate durationTo,
+            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate durationFrom,
+            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate durationTo,
             @RequestParam(required = false, defaultValue = "0") float totalPriceMin,
             @RequestParam(required = false, defaultValue = "0") float totalPriceMax,
             @RequestParam(required = false, defaultValue = "0") int viewOption) {
@@ -69,6 +70,12 @@ public class ContractController {
     @PatchMapping("/trip")
     public void updateContractTrip(@RequestBody ContractTripUpdateReq contractTripUpdateReq) {
         contractService.updateContractTrip(contractTripUpdateReq);
+    }
+
+    @PatchMapping("/trip/{trip-id}/vehicles")
+    public void updateContractTripVehicles(@PathVariable("trip-id") int contractTripId,
+                                           @RequestBody List<String> assignedVehicles) {
+        contractService.updateContractTripVehicles(contractTripId, assignedVehicles);
     }
 
     @PatchMapping("/schedule")

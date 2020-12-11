@@ -68,7 +68,7 @@ public class VehicleComponentImpl implements VehicleComponent {
     @Transactional
     public void withdrawVehicle(String vehicleId) {
         VehicleStatus status = vehicleMapper.getVehicleStatus(vehicleId);
-        switch(status) {
+        switch (status) {
             case AVAILABLE:
                 clearVehicle(vehicleId, VehicleStatus.AVAILABLE_NO_DRIVER);
                 break;
@@ -103,11 +103,14 @@ public class VehicleComponentImpl implements VehicleComponent {
             int vehicleRow;
             if (!notAdmin) {
                 vehicleRow = vehicleMapper.createVehicle(vehicle, VehicleStatus.AVAILABLE_NO_DRIVER);
+                int placeholderRow = issuedVehicleMapper.createPlaceholder(vehicle.getVehicleId());
+
+                if (placeholderRow == 0) {
+                    throw new DataException("Unknown error occurred. Data not added!");
+                }
             } else {
                 vehicleRow = vehicleMapper.createVehicle(vehicle, VehicleStatus.PENDING_APPROVAL);
             }
-
-            int placeholderRow = issuedVehicleMapper.createPlaceholder(vehicle.getVehicleId());
 
             if (vehicleRow != 0) {
                 addVehicleDocs(vehicle.getVehicleId(), vehicle.getVehicleDocuments(), false);
@@ -116,7 +119,7 @@ public class VehicleComponentImpl implements VehicleComponent {
                 }
             }
 
-            if (vehicleRow == 0 || placeholderRow == 0) {
+            if (vehicleRow == 0) {
                 throw new DataException("Unknown error occurred. Data not added!");
             }
         } else {
@@ -221,7 +224,7 @@ public class VehicleComponentImpl implements VehicleComponent {
         int placeholderRow = issuedVehicleMapper.createPlaceholder(vehicleId);
         int vehicleStatusRow = vehicleMapper.updateVehicleStatus(vehicleId, VehicleStatus.AVAILABLE_NO_DRIVER);
 
-        if (vehicleStatusRow == 0 || placeholderRow == 0) {
+        if (placeholderRow == 0 || vehicleStatusRow == 0) {
             throw new DataException("Unknown error occurred. Data not added!");
         }
     }
@@ -241,7 +244,7 @@ public class VehicleComponentImpl implements VehicleComponent {
         if (vehicleLogRow == 0) {
             throw new DataException("Unknown error occurred. Data not added!");
         } else {
-            for (VehicleDocument doc: vehicleDocumentMapper.getVehicleDocuments(vehicleId, 1)) {
+            for (VehicleDocument doc : vehicleDocumentMapper.getVehicleDocuments(vehicleId, 1)) {
                 int moveDocRow = vehicleDocumentMapper.moveDeniedVehicleDocumentToLog(doc, vehicleId, requestId);
                 int moveImageRow = 0;
                 int deleteImageRow = 0;
@@ -270,7 +273,7 @@ public class VehicleComponentImpl implements VehicleComponent {
     @Override
     @Transactional
     public void addVehicleDocs(String vehicleId, List<VehicleDocumentReq> vehicleDocumentReqs, boolean notAdmin) {
-        for (VehicleDocumentReq doc: vehicleDocumentReqs) {
+        for (VehicleDocumentReq doc : vehicleDocumentReqs) {
             int vehicleDoc;
             if (!vehicleDocumentMapper.isDocumentExist(doc.getVehicleDocumentId())) {
                 vehicleDoc = vehicleDocumentMapper.createVehicleDocument(doc, vehicleId, false);
@@ -291,7 +294,7 @@ public class VehicleComponentImpl implements VehicleComponent {
             if (vehicleDoc == 0) {
                 throw new DataException("Unknown error occurred. Data not modified!");
             } else {
-                for (String image: doc.getImageLinks()) {
+                for (String image : doc.getImageLinks()) {
                     int vehicleDocImage = vehicleDocumentImageMapper.createVehicleDocumentImage(doc.getVehicleDocumentId(), image);
 
                     if (vehicleDocImage == 0) {

@@ -30,7 +30,7 @@ public class ContractVehicleController {
 
 
     @PostMapping
-    public void assignVehicleForContract(@RequestBody ContractVehicleReq contractVehicleReq) {
+    public void assignVehicleForContractDetail(@RequestBody ContractVehicleReq contractVehicleReq) {
         contractVehicleService.assignVehicleForContract(contractVehicleReq);
     }
 
@@ -59,19 +59,19 @@ public class ContractVehicleController {
         contractVehicleService.endTrip(tripReq);
     }
 
-    @GetMapping("/{issued-vehicle-id}/trips/{contract-id}")
-    public ContractVehicleStatus getVehicleStatusByVehicleIdAndContractId(
-            @PathVariable("contract-id") int contractId,
+    @GetMapping("/{issued-vehicle-id}/trips/{contract-detail-id}")
+    public ContractVehicleStatus getVehicleStatusByVehicleIdAndContractDetailId(
+            @PathVariable("contract-detail-id") int contractDetailId,
             @PathVariable("issued-vehicle-id") int issuedVehicleId) {
-        return contractVehicleService.getVehicleStatus(contractId, issuedVehicleId);
+        return contractVehicleService.getVehicleStatus(contractDetailId, issuedVehicleId);
     }
 
     @GetMapping("/{issued-vehicle-id}/trips")
     public TripListRes getTrips(
             @PathVariable("issued-vehicle-id") int issuedVehicleId,
             @RequestParam(required = false) ContractVehicleStatus vehicleStatus,
-            @RequestParam(required = false, defaultValue = "0") int viewOption) {
-        return contractVehicleService.getTrips(new TripListReq(issuedVehicleId, vehicleStatus), viewOption);
+            @RequestParam(required = false, defaultValue = "0") int page) {
+        return contractVehicleService.getTrips(new TripListReq(issuedVehicleId, vehicleStatus), page);
     }
 
     @GetMapping("/recommendation")
@@ -79,8 +79,8 @@ public class ContractVehicleController {
             @RequestParam(required = false, defaultValue = "0") int vehicleTypeId,
             @RequestParam(required = false, defaultValue = "0") int seatsMin,
             @RequestParam(required = false, defaultValue = "0") int seatsMax,
-            @RequestParam @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss") LocalDateTime startDate,
-            @RequestParam @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss") LocalDateTime endDate,
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime startDate,
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime endDate,
             @RequestParam(required = false, defaultValue = "0") int viewOption) {
         return contractVehicleService.getRecommendations(new VehicleRecommendationReq(vehicleTypeId, seatsMin, seatsMax, startDate, endDate), viewOption);
     }
@@ -90,8 +90,8 @@ public class ContractVehicleController {
             @RequestParam(required = false, defaultValue = "0") int vehicleTypeId,
             @RequestParam(required = false, defaultValue = "0") int seatsMin,
             @RequestParam(required = false, defaultValue = "0") int seatsMax,
-            @RequestParam @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss") LocalDateTime startDate,
-            @RequestParam @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss") LocalDateTime endDate) {
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime startDate,
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime endDate) {
         return contractVehicleService.getTotalRecommendations(new VehicleRecommendationReq(vehicleTypeId, seatsMin, seatsMax, startDate, endDate));
     }
 }

@@ -104,6 +104,19 @@ public interface IssuedVehicleMapper {
             "ORDER BY iv.create_date DESC ")
     int getCurrentIssuedVehicleId(@Param("v_id") String vehicleId);
 
+    @Select("SELECT TOP 1 \n" +
+            "iv.issued_vehicle_id,\n" +
+            "iv.driver_id\n" +
+            "FROM issued_vehicle iv\n" +
+            "WHERE iv.vehicle_id = #{v_id}\n" +
+            "ORDER BY iv.create_date DESC ")
+    @Results(id = "issuedVehicleWithDriverResult", value = {
+            @Result(property = "issuedVehicleId", column = "issued_vehicle_id"),
+            @Result(property = "vehicleId", column = "vehicle_id"),
+            @Result(property = "driverId", column = "driver_id")
+    })
+    Optional<IssuedVehicle> getCurrentIssuedVehicleWithDriverById(@Param("v_id") String vehicleId);
+
     @Select("SELECT iv.issued_vehicle_id, iv.vehicle_id, iv.issued_date, iv.returned_date " +
             "FROM issued_vehicle iv " +
             "WHERE iv.driver_id = #{dv_id} " +
