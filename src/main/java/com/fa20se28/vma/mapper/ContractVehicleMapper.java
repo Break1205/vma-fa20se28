@@ -41,12 +41,15 @@ public interface ContractVehicleMapper {
             @Param("iv_id") int issuedVehicleId,
             @Param("cv_status") ContractVehicleStatus vehicleStatus);
 
+    // todo: add contract_detail_id
     @Select("SELECT cv.contract_vehicle_id, cv.contract_vehicle_status, v.vehicle_id, vt.vehicle_type_id, vt.vehicle_type_name, v.seats " +
             "FROM contract_vehicles cv " +
             "JOIN issued_vehicle iv ON cv.issued_vehicle_id = iv.issued_vehicle_id " +
             "JOIN vehicle v ON iv.vehicle_id = v.vehicle_id " +
             "JOIN vehicle_type vt ON vt.vehicle_type_id = v.vehicle_type_id " +
-            "WHERE cv.contract_id = #{cv_id} ")
+            "JOIN contract_detail cd ON cv.contract_detail_id = cd.contract_detail_id " +
+            "JOIN contract c ON c.contract_id = cd.contract_id " +
+            "WHERE c.contract_id = #{cv_id} ")
     @Results(id = "contractVehicleResult", value = {
             @Result(property = "contractVehicleId", column = "contract_vehicle_id"),
             @Result(property = "vehicleId", column = "vehicle_id"),
@@ -219,5 +222,20 @@ public interface ContractVehicleMapper {
     @Delete("DELETE " +
             "FROM contract_vehicles " +
             "WHERE contract_detail_id = #{cd_id} ")
-    int deleteContractVehicle(@Param("cd_id") int contractId);
+    int deleteContractVehicles(@Param("cd_id") int contractDetailId);
+
+    @Select("SELECT \n" +
+            "contract_vehicle_id, \n" +
+            "contract_detail_id,\n" +
+            "issued_vehicle_id, \n" +
+            "contract_vehicle_status\n" +
+            "FROM contract_vehicles \n" +
+            "WHERE contract_detail_id = #{cd_id}")
+    @Results(id = "contractVehicleByContractDetailId",value = {
+            @Result(property = "contractVehicleId",column = "contract_vehicle_id"),
+            @Result(property = "contractDetailId",column = "contract_detail_id"),
+            @Result(property = "issuedVehicleId",column = "issued_vehicle_id"),
+            @Result(property = "contractVehicleStatus",column = "contract_vehicle_status")
+    })
+    List<ContractVehicle> getContractVehiclesByContractDetailId(@Param("cd_id") int contractTripId);
 }

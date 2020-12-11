@@ -3,6 +3,8 @@ package com.fa20se28.vma.component.impl;
 import com.fa20se28.vma.component.ContractComponent;
 import com.fa20se28.vma.configuration.exception.DataException;
 import com.fa20se28.vma.configuration.exception.InvalidParamException;
+import com.fa20se28.vma.configuration.exception.ResourceIsInUsedException;
+import com.fa20se28.vma.configuration.exception.ResourceNotFoundException;
 import com.fa20se28.vma.enums.ContractStatus;
 import com.fa20se28.vma.enums.ContractVehicleStatus;
 import com.fa20se28.vma.mapper.ContractDetailMapper;
@@ -10,8 +12,11 @@ import com.fa20se28.vma.mapper.ContractDetailScheduleMapper;
 import com.fa20se28.vma.mapper.ContractMapper;
 import com.fa20se28.vma.mapper.ContractVehicleMapper;
 import com.fa20se28.vma.mapper.IssuedVehicleMapper;
+import com.fa20se28.vma.mapper.PassengerMapper;
 import com.fa20se28.vma.model.ContractDetail;
 import com.fa20se28.vma.model.ContractLM;
+import com.fa20se28.vma.model.ContractVehicle;
+import com.fa20se28.vma.model.IssuedVehicle;
 import com.fa20se28.vma.request.ContractPageReq;
 import com.fa20se28.vma.request.ContractReq;
 import com.fa20se28.vma.request.ContractTripReq;
@@ -23,6 +28,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class ContractComponentImpl implements ContractComponent {
@@ -31,20 +37,23 @@ public class ContractComponentImpl implements ContractComponent {
     private final ContractDetailScheduleMapper contractDetailScheduleMapper;
     private final ContractVehicleMapper contractVehicleMapper;
     private final IssuedVehicleMapper issuedVehicleMapper;
+    private final PassengerMapper passengerMapper;
 
     public ContractComponentImpl(ContractMapper contractMapper,
                                  ContractDetailMapper contractDetailMapper,
                                  ContractDetailScheduleMapper contractDetailScheduleMapper,
-                                 ContractVehicleMapper contractVehicleMapper, IssuedVehicleMapper issuedVehicleMapper) {
+                                 ContractVehicleMapper contractVehicleMapper,
+                                 IssuedVehicleMapper issuedVehicleMapper,
+                                 PassengerMapper passengerMapper) {
         this.contractMapper = contractMapper;
         this.contractDetailMapper = contractDetailMapper;
         this.contractDetailScheduleMapper = contractDetailScheduleMapper;
         this.contractVehicleMapper = contractVehicleMapper;
         this.issuedVehicleMapper = issuedVehicleMapper;
+        this.passengerMapper = passengerMapper;
     }
 
 
-    // todo: contract_vehicle
     @Override
     @Transactional
     public void createContract(ContractReq contractReq) {
@@ -68,11 +77,20 @@ public class ContractComponentImpl implements ContractComponent {
                     throw new DataException("Can not insert Contract Detail record");
                 } else {
                     for (String vehicleId : trip.getAssignedVehicles()) {
-                        int currentIssuedId = issuedVehicleMapper.getCurrentIssuedVehicleId(vehicleId);
+                        Optional<IssuedVehicle> optionalIssuedVehicle =
+                                issuedVehicleMapper.getCurrentIssuedVehicleWithDriverById(vehicleId);
+
+                        if (optionalIssuedVehicle.isPresent()) {
+                            if (optionalIssuedVehicle.get().getDriverId() == null) {
+                                throw new InvalidParamException("Vehicle with id: " + vehicleId + " doesn't have any driver");
+                            }
+                        } else {
+                            throw new ResourceNotFoundException("Vehicle with id: " + vehicleId + " not found");
+                        }
 
                         int contractVehicleRow = contractVehicleMapper.assignVehicleForContract(
                                 trip.getContractDetailId(),
-                                currentIssuedId,
+                                optionalIssuedVehicle.get().getIssuedVehicleId(),
                                 ContractVehicleStatus.NOT_STARTED
                         );
 
@@ -129,7 +147,7 @@ public class ContractComponentImpl implements ContractComponent {
                 int deletedContractDetailScheduleRecord =
                         contractDetailScheduleMapper.deleteContractSchedule(contractDetailsId.get(0));
                 int deletedContractVehicleRecord =
-                        contractVehicleMapper.deleteContractVehicle(contractDetailsId.get(0));
+                        contractVehicleMapper.deleteContractVehicles(contractDetailsId.get(0));
                 int deletedContractDetailRecord =
                         contractDetailMapper.deleteContractDetailById(contractDetailsId.get(0));
                 if (deletedContractDetailRecord == 0
@@ -150,11 +168,20 @@ public class ContractComponentImpl implements ContractComponent {
                 throw new DataException("Can not insert Contract Detail record");
             } else {
                 for (String vehicleId : theReturnedContractTripReq.getAssignedVehicles()) {
-                    int currentIssuedId = issuedVehicleMapper.getCurrentIssuedVehicleId(vehicleId);
+                    Optional<IssuedVehicle> optionalIssuedVehicle =
+                            issuedVehicleMapper.getCurrentIssuedVehicleWithDriverById(vehicleId);
+
+                    if (optionalIssuedVehicle.isPresent()) {
+                        if (optionalIssuedVehicle.get().getDriverId() == null) {
+                            throw new InvalidParamException("Vehicle with id: " + vehicleId + " doesn't have any driver");
+                        }
+                    } else {
+                        throw new ResourceNotFoundException("Vehicle with id: " + vehicleId + " not found");
+                    }
 
                     int contractVehicleRow = contractVehicleMapper.assignVehicleForContract(
                             theReturnedContractTripReq.getContractDetailId(),
-                            currentIssuedId,
+                            optionalIssuedVehicle.get().getIssuedVehicleId(),
                             ContractVehicleStatus.NOT_STARTED
                     );
 
@@ -162,8 +189,6 @@ public class ContractComponentImpl implements ContractComponent {
                         throw new DataException("Can not insert Contract Vehicle record");
                     }
                 }
-
-                int contractDetailId = contractDetailMapper.getContractDetailId(contractMapper.getContractId(contractUpdateReq.getContractOwnerId()));
 
                 for (ContractTripScheduleReq location : theReturnedContractTripReq.getLocations()) {
                     int scheduleRow = contractDetailScheduleMapper.createContractSchedule(
@@ -190,6 +215,54 @@ public class ContractComponentImpl implements ContractComponent {
 
         if (row == 0) {
             throw new DataException("Unknown error occurred. Data not modified!");
+        }
+    }
+
+    @Override
+    @Transactional
+    public void updateContractTripVehicles(int contractTripId, List<String> assignedVehicles) {
+        if (assignedVehicles.isEmpty()) {
+            throw new InvalidParamException("Must have at least 1 vehicle for contract trip: " + contractTripId);
+        }
+        List<ContractVehicle> contractVehicleList = contractVehicleMapper.getContractVehiclesByContractDetailId(contractTripId);
+        for (ContractVehicle contractVehicle : contractVehicleList) {
+            if (contractVehicle.getContractVehicleStatus().equals(ContractVehicleStatus.NOT_STARTED)) {
+                int deletedPassengersRecord = passengerMapper.deletePassengersFromContractVehicle(contractVehicle.getContractVehicleId());
+                if (deletedPassengersRecord < 0) {
+                    throw new DataException("Can not delete passengers of contract vehicle id: " + contractVehicle.getContractVehicleId());
+                }
+            } else {
+                throw new ResourceIsInUsedException(
+                        "Contract Vehicle with id: "
+                                + contractVehicle.getContractVehicleId() + " is "
+                                + contractVehicle.getContractVehicleStatus() + ". Can not modify");
+            }
+        }
+        int deletedContractVehicleRecords = contractVehicleMapper.deleteContractVehicles(contractTripId);
+        if (deletedContractVehicleRecords == 0) {
+            throw new DataException("Can not delete contract vehicles of contract detail id: " + contractTripId);
+        }
+        for (String vehicleId : assignedVehicles) {
+            Optional<IssuedVehicle> optionalIssuedVehicle =
+                    issuedVehicleMapper.getCurrentIssuedVehicleWithDriverById(vehicleId);
+
+            if (optionalIssuedVehicle.isPresent()) {
+                if (optionalIssuedVehicle.get().getDriverId() == null) {
+                    throw new InvalidParamException("Vehicle with id: " + vehicleId + " doesn't have any driver");
+                }
+            } else {
+                throw new ResourceNotFoundException("Vehicle with id: " + vehicleId + " not found");
+            }
+
+            int contractVehicleRow = contractVehicleMapper.assignVehicleForContract(
+                    contractTripId,
+                    optionalIssuedVehicle.get().getIssuedVehicleId(),
+                    ContractVehicleStatus.NOT_STARTED
+            );
+
+            if (contractVehicleRow == 0) {
+                throw new DataException("Can not insert Contract Vehicle record");
+            }
         }
     }
 
