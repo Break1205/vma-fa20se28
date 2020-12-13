@@ -1,6 +1,5 @@
 package com.fa20se28.vma.mapper;
 
-import com.fa20se28.vma.model.ContractDetailReport;
 import com.fa20se28.vma.model.ContractReport;
 import com.fa20se28.vma.model.ContributorIncome;
 import com.fa20se28.vma.model.ContributorIncomesDetail;
@@ -265,63 +264,6 @@ public interface ReportMapper {
     List<RevenueExpense> getCompanyRevenueExpenseForReport(@Param("firstDayOfMonth") String firstDayOfMonth,
                                                            @Param("lastDayOfMonth") String lastDayOfMonth);
 
-    @Select("SELECT  " +
-            "c.contract_id,  " +
-            "c.signed_date,  " +
-            "c.signed_location,  " +
-            "cu.address,  " +
-            "cu.phone_number,  " +
-            "cu.fax,  " +
-            "cu.tax_code, " +
-            "cu.account_number,  " +
-            "cu.customer_name,  " +
-            "c.estimated_passenger_count,  " +
-            "c.total_price, " +
-            "cd.departure_location, " +
-            "cd.departure_time, " +
-            "cd.destination_location, " +
-            "cd.destination_time, " +
-            "c.estimated_vehicle_count, " +
-            "c.duration_from, " +
-            "c.duration_to " +
-            "FROM contract c  " +
-            "JOIN customer cu  " +
-            "ON c.contract_owner_id = cu.customer_id  " +
-            "JOIN ( " +
-            "SELECT  " +
-            "TOP 1 " +
-            "contract_id,  " +
-            "departure_location,  " +
-            "departure_time,  " +
-            "destination_location,  " +
-            "destination_time " +
-            "FROM contract_detail  " +
-            "ORDER BY create_date  " +
-            ") cd  " +
-            "ON c.contract_id = cd.contract_id " +
-            "WHERE c.contract_id = #{contractId}")
-    @Results(id = "contractDetailReport", value = {
-            @Result(property = "contractId", column = "contract_id"),
-            @Result(property = "signedDate", column = "signed_date"),
-            @Result(property = "signedLocation", column = "signed_location"),
-            @Result(property = "address", column = "address"),
-            @Result(property = "phoneNumber", column = "phone_number"),
-            @Result(property = "fax", column = "fax"),
-            @Result(property = "taxCode", column = "tax_code"),
-            @Result(property = "accountNumber", column = "account_number"),
-            @Result(property = "customerName", column = "customer_name"),
-            @Result(property = "numberOfPassengers", column = "estimated_passenger_count"),
-            @Result(property = "contractValue", column = "total_price"),
-            @Result(property = "departureLocation", column = "departure_location"),
-            @Result(property = "departureTime", column = "departure_time"),
-            @Result(property = "destinationLocation", column = "destination_location"),
-            @Result(property = "destinationTime", column = "destination_time"),
-            @Result(property = "numberOfVehicles", column = "estimated_vehicle_count"),
-            @Result(property = "durationFrom", column = "duration_from"),
-            @Result(property = "durationTo", column = "duration_to")
-    })
-    ContractDetailReport getContractDetailReport(int contractId);
-
     @Select({"<script>" +
             "SELECT  " +
             "vv.vehicle_id,  " +
@@ -362,22 +304,15 @@ public interface ReportMapper {
             "ON v.vehicle_id = iv.vehicle_id " +
             "JOIN contract_vehicles cv " +
             "ON iv.issued_vehicle_id = cv.issued_vehicle_id " +
+            "JOIN contract_detail cd " +
+            "ON cv.contract_detail_id = cd.contract_detail_id " +
             "JOIN contract c " +
-            "ON cv.contract_id = c.contract_id " +
-            "JOIN (  " +
-            "SELECT  " +
-            "TOP 1 " +
-            "contract_id,  " +
-            "destination_time  " +
-            "FROM contract_detail  " +
-            "ORDER BY create_date  " +
-            ") cd " +
             "ON c.contract_id = cd.contract_id " +
-            "WHERE c.contract_status = 'FINISHED' " +
-            "AND cd.destination_time between '${firstDayOfMonth}' AND '${lastDayOfMonth}'  " +
+            "WHERE c.contract_status = 'FINISHED'" +
+            "AND cd.destination_time between '${firstDayOfMonth}' AND '${lastDayOfMonth}' " +
             "<if test = \"ownerId!=null\" > " +
             "AND v.owner_id = #{ownerId}  " +
-            "</if> " +
+            "</if>  " +
             "</script>"})
     @Results(id = "contributorIncomesDetailResult", value = {
             @Result(property = "ownerId", column = "owner_id"),
@@ -393,7 +328,6 @@ public interface ReportMapper {
     @Select({"<script>" +
             "SELECT " +
             "u.user_id, " +
-            "u.base_salary, " +
             "CONVERT(varchar,c.contract_id) contract_id, " +
             "iv.vehicle_id, " +
             "c.total_price/c.actual_vehicle_count*10/100 driver_earned  " +
@@ -404,21 +338,19 @@ public interface ReportMapper {
             "ON u.user_id = iv.driver_id  " +
             "JOIN contract_vehicles cv " +
             "ON iv.issued_vehicle_id = cv.issued_vehicle_id " +
+            "JOIN contract_detail cd  " +
+            "ON cv.contract_detail_id = cd.contract_detail_id " +
             "JOIN contract c " +
-            "ON cv.contract_id = c.contract_id " +
-            "JOIN contract_detail cd " +
-            "ON c.contract_id = cd.contract_id " +
+            "ON cd.contract_id = c.contract_id " +
             "WHERE ur.role_id = 3 " +
-            "AND c.contract_status = 'FINISHED'  " +
+            "AND c.contract_status = 'FINISHED' " +
             "AND cd.destination_time between '${firstDayOfMonth}' AND '${lastDayOfMonth}' " +
             "<if test = \"driverId!=null\" > " +
             "AND u.user_id = #{driverId}  " +
             "</if>  " +
-            "GROUP BY u.user_id,u.base_salary,iv.vehicle_id,c.total_price,c.actual_vehicle_count,c.contract_id" +
             "</script>"})
     @Results(id = "driverIncomesResult", value = {
             @Result(property = "userId", column = "user_id"),
-            @Result(property = "baseSalary", column = "base_salary"),
             @Result(property = "contractId", column = "contract_id"),
             @Result(property = "vehicleId", column = "vehicle_id"),
             @Result(property = "driverEarned", column = "driver_earned"),

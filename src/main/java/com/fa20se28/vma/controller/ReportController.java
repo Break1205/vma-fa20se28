@@ -111,20 +111,35 @@ public class ReportController {
                 new ReportReq(null, vehicleId, year, quarter, null, null));
     }
 
+    //TODO: FIXED
 
-    @GetMapping("revenue-expense")
-    public ResponseEntity<InputStreamResource> exportRevenueExpenseReport(
-            @RequestParam(required = false) String vehicleId,
-            @RequestParam(required = false) Quarter quarter,
-            @RequestParam(required = false) Integer year) throws IOException {
-        if (vehicleId != null) {
-            return reportService.exportReportByType(
-                    new ReportReq(null, vehicleId, year, quarter, ReportType.VEHICLE_REVENUE_EXPENSE, null));
-        } else {
-            return reportService.exportReportByType(
-                    new ReportReq(null, null, year, quarter, ReportType.COMPANY_REVENUE_EXPENSE, null));
-        }
-    }
+//    @GetMapping("revenue-expense")
+//    public ResponseEntity<InputStreamResource> exportRevenueExpenseReport(
+//            @RequestParam(required = false) String vehicleId,
+//            @RequestParam(required = false) Quarter quarter,
+//            @RequestParam(required = false) Integer year) throws IOException {
+//        if (vehicleId != null) {
+//            return reportService.exportReportByType(
+//                    new ReportReq(null, vehicleId, year, quarter, ReportType.VEHICLE_REVENUE_EXPENSE, null));
+//        } else {
+//            return reportService.exportReportByType(
+//                    new ReportReq(null, null, year, quarter, ReportType.COMPANY_REVENUE_EXPENSE, null));
+//        }
+//    }
+//
+//    @GetMapping("revenues-expenses/data")
+//    public RevenueExpenseReportRes getRevenueExpenseReportData(
+//            @RequestParam(required = false) String vehicleId,
+//            @RequestParam(required = false) Quarter quarter,
+//            @RequestParam(required = false) Integer year) {
+//        if (vehicleId != null) {
+//            return reportService.getVehicleRevenueExpenseReportData(
+//                    new ReportReq(null, vehicleId, year, quarter, null, null));
+//        } else {
+//            return reportService.getCompanyRevenueExpenseReportData(
+//                    new ReportReq(null, null, year, quarter, null, null));
+//        }
+//    }
 
     @GetMapping("contributor-income")
     public ResponseEntity<InputStreamResource> exportContributorsIncomesReport(
@@ -134,47 +149,6 @@ public class ReportController {
                 new ReportReq(null, null, year, quarter, ReportType.CONTRIBUTORS_INCOMES, null));
     }
 
-    @GetMapping("contributor-income/{contributor-id}")
-    public ResponseEntity<InputStreamResource> exportContributorIncomesReport(
-            @PathVariable("contributor-id") String contributorId,
-            @RequestParam(required = false) Quarter quarter,
-            @RequestParam(required = false) Integer year) throws IOException {
-        return reportService.exportReportByType(
-                new ReportReq(contributorId, null, year, quarter, ReportType.CONTRIBUTOR_INCOMES, null));
-    }
-
-    @GetMapping("driver-income")
-    public ResponseEntity<InputStreamResource> exportDriversIncomesReport(
-            @RequestParam(required = false) Quarter quarter,
-            @RequestParam(required = false) Integer year) throws IOException {
-        return reportService.exportReportByType(
-                new ReportReq(null, null, year, quarter, ReportType.DRIVERS_INCOMES, null));
-    }
-
-    @GetMapping("driver-income/{driver-id}")
-    public ResponseEntity<InputStreamResource> exportDriverIncomesReport(
-            @PathVariable("driver-id") String driverId,
-            @RequestParam(required = false) Quarter quarter,
-            @RequestParam(required = false) Integer year) throws IOException {
-        return reportService.exportReportByType(
-                new ReportReq(driverId, null, year, quarter, ReportType.DRIVER_INCOMES, null));
-    }
-
-
-    @GetMapping("revenues-expenses/data")
-    public RevenueExpenseReportRes getRevenueExpenseReportData(
-            @RequestParam(required = false) String vehicleId,
-            @RequestParam(required = false) Quarter quarter,
-            @RequestParam(required = false) Integer year) {
-        if (vehicleId != null) {
-            return reportService.getVehicleRevenueExpenseReportData(
-                    new ReportReq(null, vehicleId, year, quarter, null, null));
-        } else {
-            return reportService.getCompanyRevenueExpenseReportData(
-                    new ReportReq(null, null, year, quarter, null, null));
-        }
-    }
-
     @GetMapping("contributor-income/data")
     public ContributorIncomeRes getContributorsIncomesReportData(
             @RequestParam(required = false) Quarter quarter,
@@ -182,6 +156,15 @@ public class ReportController {
         return reportService.getContributorsIncomesReportData(
                 new ReportReq(null, null, year, quarter, null, null));
 
+    }
+
+    @GetMapping("contributor-income/{contributor-id}")
+    public ResponseEntity<InputStreamResource> exportContributorIncomesReport(
+            @PathVariable("contributor-id") String contributorId,
+            @RequestParam(required = false) Quarter quarter,
+            @RequestParam(required = false) Integer year) throws IOException {
+        return reportService.exportReportByType(
+                new ReportReq(contributorId, null, year, quarter, ReportType.CONTRIBUTOR_INCOMES, null));
     }
 
     @GetMapping("contributor-income/{contributor-id}/data")
@@ -201,6 +184,14 @@ public class ReportController {
                 new ReportReq(contributorId, null, year, null, null, null));
     }
 
+    @GetMapping("driver-income")
+    public ResponseEntity<InputStreamResource> exportDriversIncomesReport(
+            @RequestParam(required = false) Quarter quarter,
+            @RequestParam(required = false) Integer year) throws IOException {
+        return reportService.exportReportByType(
+                new ReportReq(null, null, year, quarter, ReportType.DRIVERS_INCOMES, null));
+    }
+
     @GetMapping("driver-income/data")
     public DriversIncomeRes getDriversIncomesReportData(
             @RequestParam(required = false) Quarter quarter,
@@ -208,6 +199,15 @@ public class ReportController {
         return reportService.getDriversIncomesReportData(
                 new ReportReq(null, null, year, quarter, null, null));
 
+    }
+
+    @GetMapping("driver-income/{driver-id}")
+    public ResponseEntity<InputStreamResource> exportDriverIncomesReport(
+            @PathVariable("driver-id") String driverId,
+            @RequestParam(required = false) Quarter quarter,
+            @RequestParam(required = false) Integer year) throws IOException {
+        return reportService.exportReportByType(
+                new ReportReq(driverId, null, year, quarter, ReportType.DRIVER_INCOMES, null));
     }
 
     @GetMapping("driver-income/{driver-id}/data")

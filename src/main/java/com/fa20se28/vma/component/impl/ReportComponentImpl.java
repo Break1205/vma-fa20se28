@@ -553,7 +553,7 @@ public class ReportComponentImpl implements ReportComponent {
         Row row = sheet.createRow(rowCount);
         createCell(row, 2, "Total Value", style);
         Cell valueCell = row.createCell(3);
-        valueCell.setCellFormula("SUM(D5:D" + (rowCount - 1) + ")");
+        valueCell.setCellFormula("SUM(D5:D" + (rowCount) + ")");
         valueCell.setCellStyle(style);
     }
 
@@ -641,7 +641,7 @@ public class ReportComponentImpl implements ReportComponent {
 
         Row baseSalaryRow = sheet.createRow(HEADER_ROW + 1);
         createCell(baseSalaryRow, 0, "Base Salary", baseSalaryStyle);
-        createCell(baseSalaryRow, 1, driverIncomes.get(0) != null ? driverIncomes.get(0).getBaseSalary() : "N/A", baseSalaryStyle);
+        createCell(baseSalaryRow, 1, getDriverBaseSalary(reportReq.getUserId()), baseSalaryStyle);
 
         Row totalSalaryRow = sheet.createRow(rowCount + 1);
         createCell(totalSalaryRow, 2, "Total Salary", style);
@@ -846,9 +846,6 @@ public class ReportComponentImpl implements ReportComponent {
         float earnedValue = 0;
         for (DriverIncomes driverIncomesDetail : driverIncomes) {
             earnedValue += driverIncomesDetail.getDriverEarned();
-        }
-        if (!driverIncomes.isEmpty()) {
-            earnedValue += driverIncomes.get(0).getBaseSalary();
         }
         driverIncomeRes.setEarnedValue(earnedValue);
         return driverIncomeRes;
