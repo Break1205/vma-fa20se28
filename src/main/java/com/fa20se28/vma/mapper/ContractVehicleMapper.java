@@ -2,7 +2,7 @@ package com.fa20se28.vma.mapper;
 
 import com.fa20se28.vma.enums.ContractVehicleStatus;
 import com.fa20se28.vma.model.*;
-import com.fa20se28.vma.request.VehicleRecommendationReq;
+import com.fa20se28.vma.request.VehicleContractReq;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -136,7 +136,6 @@ public interface ContractVehicleMapper {
             "SELECT DISTINCT v.vehicle_id, v.model, vt.vehicle_type_id, vt.vehicle_type_name, v.seats, v.year_of_manufacture " +
             "FROM vehicle v " +
             "JOIN vehicle_type vt ON v.vehicle_type_id = vt.vehicle_type_id " +
-            "JOIN issued_vehicle iv ON iv.vehicle_id = v.vehicle_id " +
             "WHERE " +
             "v.vehicle_status NOT IN " +
             "( " +
@@ -155,39 +154,51 @@ public interface ContractVehicleMapper {
             "<if test = \"vr_req.vehicleTypeId != 0\" > " +
             "AND vt.vehicle_type_id =  #{vr_req.vehicleTypeId} " +
             "</if> " +
-            "AND iv.issued_vehicle_id NOT IN " +
+            "<if test = \"vr_req.yearMin != null\" > " +
+            "AND v.year_of_manufacture &gt;= #{vr_req.yearMin} " +
+            "</if> " +
+            "<if test = \"vr_req.yearMax != null\" > " +
+            "AND v.year_of_manufacture &lt;= #{vr_req.yearMax} " +
+            "</if> " +
+            "AND v.vehicle_id IN " +
+            "( " +
+            "SELECT iv.vehicle_id " +
+            "FROM issued_vehicle iv " +
+            "WHERE iv.issued_vehicle_id NOT IN " +
             "( " +
             "SELECT cv.issued_vehicle_id " +
             "FROM contract_vehicles cv " +
-            "JOIN [contract] c ON cv.contract_id = c.contract_id " +
-            "WHERE c.contract_id IN " +
+            "JOIN contract_detail cd ON cd.contract_detail_id = cv.contract_detail_id " +
+            "WHERE cv.contract_detail_id IN " +
             "( " +
-            "SELECT DISTINCT c.contract_id " +
-            "FROM [contract] c " +
-            "JOIN contract_detail cd ON c.contract_id = cd.contract_id " +
+            "SELECT cd.contract_detail_id " +
+            "FROM contract_detail cd " +
             "WHERE " +
-            "cd.departure_time &lt; (SELECT DATEADD(hour, +6, CAST(#{vr_req.endDate} AS datetime) )) " +
-            "AND cd.destination_time &gt;= (SELECT DATEADD(hour, -6,  CAST(#{vr_req.startDate} AS datetime) )) " +
+            "cd.departure_time &lt; (SELECT DATEADD(hour, +3, CAST(#{vr_req.endDate} AS datetime) )) " +
+            "AND cd.destination_time &gt;= (SELECT DATEADD(hour, -3,  CAST(#{vr_req.startDate} AS datetime) )) " +
             ") " +
+            "GROUP BY cv.issued_vehicle_id " +
+            ") " +
+            "GROUP BY iv.vehicle_id " +
             ") " +
             "ORDER BY v.year_of_manufacture DESC " +
             "OFFSET ${r_offset} ROWS " +
             "FETCH NEXT 10 ROWS ONLY " +
             "</script>"})
-    @Results(id = "recommendationResult", value = {
+    @Results(id = "availableVehiclesResult", value = {
             @Result(property = "vehicleId", column = "vehicle_id"),
             @Result(property = "vehicleType.vehicleTypeId", column = "vehicle_type_id"),
-            @Result(property = "vehicleType.vehicleTypeName", column = "vehicle_type_name")
+            @Result(property = "vehicleType.vehicleTypeName", column = "vehicle_type_name"),
+            @Result(property = "yearOfManufacture", column = "year_of_manufacture")
     })
-    List<VehicleRecommendation> getRecommendations(
-            @Param("vr_req") VehicleRecommendationReq vehicleRecommendationReq,
+    List<VehicleContract> getAvailableVehicles(
+            @Param("vr_req") VehicleContractReq vehicleContractReq,
             @Param("r_offset") int offset);
 
     @Select({"<script> " +
-            "SELECT COUNT(DISTINCT v.vehicle_id) " +
+            "SELECT COUNT(v.vehicle_id) " +
             "FROM vehicle v " +
             "JOIN vehicle_type vt ON v.vehicle_type_id = vt.vehicle_type_id " +
-            "JOIN issued_vehicle iv ON iv.vehicle_id = v.vehicle_id " +
             "WHERE " +
             "v.vehicle_status NOT IN " +
             "( " +
@@ -206,23 +217,35 @@ public interface ContractVehicleMapper {
             "<if test = \"vr_req.vehicleTypeId != 0\" > " +
             "AND vt.vehicle_type_id =  #{vr_req.vehicleTypeId} " +
             "</if> " +
-            "AND iv.issued_vehicle_id NOT IN " +
+            "<if test = \"vr_req.yearMin != null\" > " +
+            "AND v.year_of_manufacture &gt;= #{vr_req.yearMin} " +
+            "</if> " +
+            "<if test = \"vr_req.yearMax != null\" > " +
+            "AND v.year_of_manufacture &lt;= #{vr_req.yearMax} " +
+            "</if> " +
+            "AND v.vehicle_id IN " +
+            "( " +
+            "SELECT iv.vehicle_id " +
+            "FROM issued_vehicle iv " +
+            "WHERE iv.issued_vehicle_id NOT IN " +
             "( " +
             "SELECT cv.issued_vehicle_id " +
             "FROM contract_vehicles cv " +
-            "JOIN [contract] c ON cv.contract_id = c.contract_id " +
-            "WHERE c.contract_id IN " +
+            "JOIN contract_detail cd ON cd.contract_detail_id = cv.contract_detail_id " +
+            "WHERE cv.contract_detail_id IN " +
             "( " +
-            "SELECT DISTINCT c.contract_id " +
-            "FROM [contract] c " +
-            "JOIN contract_detail cd ON c.contract_id = cd.contract_id " +
+            "SELECT cd.contract_detail_id " +
+            "FROM contract_detail cd " +
             "WHERE " +
             "cd.departure_time &lt; (SELECT DATEADD(hour, +3, CAST(#{vr_req.endDate} AS datetime) )) " +
             "AND cd.destination_time &gt;= (SELECT DATEADD(hour, -3,  CAST(#{vr_req.startDate} AS datetime) )) " +
             ") " +
+            "GROUP BY cv.issued_vehicle_id " +
+            ") " +
+            "GROUP BY iv.vehicle_id " +
             ") " +
             "</script>"})
-    int getRecommendationCount(@Param("vr_req") VehicleRecommendationReq vehicleRecommendationReq);
+    int getRecommendationCount(@Param("vr_req") VehicleContractReq vehicleContractReq);
 
     @Delete("DELETE " +
             "FROM contract_vehicles " +

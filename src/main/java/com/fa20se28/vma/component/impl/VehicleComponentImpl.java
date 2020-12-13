@@ -195,9 +195,9 @@ public class VehicleComponentImpl implements VehicleComponent {
         if (!vehicleMapper.isVehicleExist(vehicle.getVehicleId())) {
             createVehicle(vehicle, true);
         } else {
-            if (vehicleMapper.getVehicleStatus(vehicle.getVehicleId()) != VehicleStatus.PENDING_APPROVAL
-                    && vehicleMapper.getVehicleStatus(vehicle.getVehicleId()) != VehicleStatus.REJECTED
-                    && vehicleMapper.getVehicleStatus(vehicle.getVehicleId()) != VehicleStatus.DELETED) {
+            VehicleStatus status = vehicleMapper.getVehicleStatus(vehicle.getVehicleId());
+
+            if (status != VehicleStatus.PENDING_APPROVAL && status != VehicleStatus.REJECTED && status != VehicleStatus.DELETED) {
                 throw new ResourceIsInUsedException("Vehicle is already approved!");
             }
 

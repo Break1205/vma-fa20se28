@@ -5,7 +5,7 @@ import com.fa20se28.vma.request.*;
 import com.fa20se28.vma.response.ContractVehicleRes;
 import com.fa20se28.vma.response.PassengerRes;
 import com.fa20se28.vma.response.TripListRes;
-import com.fa20se28.vma.response.VehicleRecommendationRes;
+import com.fa20se28.vma.response.VehicleContractRes;
 
 public interface ContractVehicleService {
     PassengerRes getPassengerList(int contractVehicleId);
@@ -26,7 +26,7 @@ public interface ContractVehicleService {
 
     void endTrip(TripReq tripReq);
 
-    VehicleRecommendationRes getRecommendations(VehicleRecommendationReq vehicleRecommendationReq, int viewOption);
+    VehicleContractRes getAvailableVehicles(VehicleContractReq vehicleContractReq, int pageNum, int viewOption);
 
-    int getTotalRecommendations(VehicleRecommendationReq vehicleRecommendationReq);
+    int getTotalAvailableVehicles(VehicleContractReq vehicleContractReq);
 }

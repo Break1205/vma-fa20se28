@@ -1,10 +1,16 @@
 package com.fa20se28.vma.model;
 
-public class VehicleRecommendation {
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import java.time.LocalDate;
+
+public class VehicleContract {
     private String vehicleId;
     private String model;
     private VehicleType vehicleType;
     private int seats;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy")
+    private LocalDate yearOfManufacture;
 
     public String getVehicleId() {
         return vehicleId;
@@ -36,5 +42,13 @@ public class VehicleRecommendation {
 
     public void setSeats(int seats) {
         this.seats = seats;
+    }
+
+    public LocalDate getYearOfManufacture() {
+        return yearOfManufacture;
+    }
+
+    public void setYearOfManufacture(LocalDate yearOfManufacture) {
+        this.yearOfManufacture = yearOfManufacture;
     }
 }
