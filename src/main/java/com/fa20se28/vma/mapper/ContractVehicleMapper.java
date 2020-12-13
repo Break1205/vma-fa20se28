@@ -245,7 +245,15 @@ public interface ContractVehicleMapper {
             "GROUP BY iv.vehicle_id " +
             ") " +
             "</script>"})
-    int getRecommendationCount(@Param("vr_req") VehicleContractReq vehicleContractReq);
+    int getAvailableVehicleCount(@Param("vr_req") VehicleContractReq vehicleContractReq);
+
+    @Select("")
+    List<VehicleContract> getAlreadyUsedVehicles(
+            @Param("vr_req") VehicleContractReq vehicleContractReq,
+            @Param("r_offset") int offset);
+
+    @Select("")
+    int getAlreadyUsedVehicleCount(@Param("vr_req") VehicleContractReq vehicleContractReq);
 
     @Delete("DELETE " +
             "FROM contract_vehicles " +

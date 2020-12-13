@@ -138,7 +138,7 @@ public class ContractVehicleServiceImpl implements ContractVehicleService {
     }
 
     @Override
-    public int getTotalAvailableVehicles(VehicleContractReq vehicleContractReq) {
-        return contractVehicleComponent.getTotalAvailableVehicles(vehicleContractReq);
+    public int getTotalAvailableVehicles(VehicleContractReq vehicleContractReq, int viewOption) {
+        return contractVehicleComponent.getTotalAvailableVehicles(vehicleContractReq, viewOption);
     }
 }

@@ -28,5 +28,5 @@ public interface ContractVehicleService {
 
     VehicleContractRes getAvailableVehicles(VehicleContractReq vehicleContractReq, int pageNum, int viewOption);
 
-    int getTotalAvailableVehicles(VehicleContractReq vehicleContractReq);
+    int getTotalAvailableVehicles(VehicleContractReq vehicleContractReq, int viewOption);
 }

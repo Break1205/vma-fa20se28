@@ -96,7 +96,8 @@ public class ContractVehicleController {
             @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime startDate,
             @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime endDate,
             @RequestParam(required = false) String yearMin,
-            @RequestParam(required = false) String yearMax) {
-        return contractVehicleService.getTotalAvailableVehicles(new VehicleContractReq(vehicleTypeId, seatsMin, seatsMax, startDate, endDate, yearMin, yearMax));
+            @RequestParam(required = false) String yearMax,
+            @RequestParam(required = false, defaultValue = "0") int viewOption) {
+        return contractVehicleService.getTotalAvailableVehicles(new VehicleContractReq(vehicleTypeId, seatsMin, seatsMax, startDate, endDate, yearMin, yearMax), viewOption);
     }
 }

@@ -194,12 +194,16 @@ public class ContractVehicleComponentImpl implements ContractVehicleComponent {
         if (viewOption == 0) {
             return contractVehicleMapper.getAvailableVehicles(vehicleContractReq, pageNum * 10);
         } else {
-            return null;
+            return contractVehicleMapper.getAlreadyUsedVehicles(vehicleContractReq, pageNum * 10);
         }
     }
 
     @Override
-    public int getTotalAvailableVehicles(VehicleContractReq vehicleContractReq) {
-        return contractVehicleMapper.getRecommendationCount(vehicleContractReq);
+    public int getTotalAvailableVehicles(VehicleContractReq vehicleContractReq, int viewOption) {
+        if (viewOption == 0) {
+            return contractVehicleMapper.getAvailableVehicleCount(vehicleContractReq);
+        } else {
+            return contractVehicleMapper.getAlreadyUsedVehicleCount(vehicleContractReq);
+        }
     }
 }
