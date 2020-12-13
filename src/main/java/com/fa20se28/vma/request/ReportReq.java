@@ -9,13 +9,15 @@ public class ReportReq {
     private Quarter quarter;
     private ReportType reportType;
     private String userId;
+    private String status;
 
-    public ReportReq(String userId, String vehicleId, Integer year, Quarter quarter, ReportType reportType) {
+    public ReportReq(String userId, String vehicleId, Integer year, Quarter quarter, ReportType reportType, String status) {
         this.userId = userId;
         this.vehicleId = vehicleId;
         this.year = year;
         this.quarter = quarter;
         this.reportType = reportType;
+        this.status = status;
     }
 
     public String getVehicleId() {
@@ -56,5 +58,13 @@ public class ReportReq {
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

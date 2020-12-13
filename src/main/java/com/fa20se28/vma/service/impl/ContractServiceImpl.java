@@ -2,14 +2,13 @@ package com.fa20se28.vma.service.impl;
 
 import com.fa20se28.vma.component.ContractComponent;
 import com.fa20se28.vma.enums.ContractStatus;
-import com.fa20se28.vma.request.*;
+import com.fa20se28.vma.request.ContractPageReq;
+import com.fa20se28.vma.request.ContractReq;
 import com.fa20se28.vma.response.ContractDetailRes;
 import com.fa20se28.vma.response.ContractPageRes;
 import com.fa20se28.vma.service.ContractService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 public class ContractServiceImpl implements ContractService {
@@ -41,23 +40,8 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    public void updateContract(ContractUpdateReq contractUpdateReq) {
-        contractComponent.updateContract(contractUpdateReq);
-    }
-
-    @Override
-    public void updateContractTrip(ContractTripUpdateReq contractTripUpdateReq) {
-        contractComponent.updateContractTrip(contractTripUpdateReq);
-    }
-
-    @Override
-    public void updateContractTripVehicles(int contractTripId, List<String> assignedVehicles) {
-        contractComponent.updateContractTripVehicles(contractTripId, assignedVehicles);
-    }
-
-    @Override
-    public void updateContractTripSchedule(ContractTripScheduleUpdateReq contractTripScheduleUpdateReq) {
-        contractComponent.updateContractTripSchedule(contractTripScheduleUpdateReq);
+    public void updateContract(ContractReq contractReq) {
+        contractComponent.updateContract(contractReq);
     }
 
     @Override

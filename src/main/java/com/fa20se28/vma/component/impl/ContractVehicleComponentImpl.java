@@ -21,17 +21,17 @@ public class ContractVehicleComponentImpl implements ContractVehicleComponent {
     private final PassengerMapper passengerMapper;
     private final ContractMapper contractMapper;
     private final ContractVehicleMapper contractVehicleMapper;
-    private final ContractDetailMapper contractDetailMapper;
-    private final ContractDetailScheduleMapper contractDetailScheduleMapper;
     private final IssuedVehicleMapper issuedVehicleMapper;
     private final VehicleMapper vehicleMapper;
 
-    public ContractVehicleComponentImpl(PassengerMapper passengerMapper, ContractMapper contractMapper, ContractVehicleMapper contractVehicleMapper, ContractDetailMapper contractDetailMapper, ContractDetailScheduleMapper contractDetailScheduleMapper, IssuedVehicleMapper issuedVehicleMapper, VehicleMapper vehicleMapper) {
+    public ContractVehicleComponentImpl(PassengerMapper passengerMapper,
+                                        ContractMapper contractMapper,
+                                        ContractVehicleMapper contractVehicleMapper,
+                                        IssuedVehicleMapper issuedVehicleMapper,
+                                        VehicleMapper vehicleMapper) {
         this.passengerMapper = passengerMapper;
         this.contractMapper = contractMapper;
         this.contractVehicleMapper = contractVehicleMapper;
-        this.contractDetailMapper = contractDetailMapper;
-        this.contractDetailScheduleMapper = contractDetailScheduleMapper;
         this.issuedVehicleMapper = issuedVehicleMapper;
         this.vehicleMapper = vehicleMapper;
     }
@@ -190,12 +190,20 @@ public class ContractVehicleComponentImpl implements ContractVehicleComponent {
     }
 
     @Override
-    public List<VehicleRecommendation> getRecommendations(VehicleRecommendationReq vehicleRecommendationReq, int viewOption) {
-        return contractVehicleMapper.getRecommendations(vehicleRecommendationReq, viewOption * 10);
+    public List<VehicleContract> getAvailableVehicles(VehicleContractReq vehicleContractReq, int pageNum, int viewOption) {
+        if (viewOption == 0) {
+            return contractVehicleMapper.getAvailableVehicles(vehicleContractReq, pageNum * 10);
+        } else {
+            return contractVehicleMapper.getAlreadyUsedVehicles(vehicleContractReq, pageNum * 10);
+        }
     }
 
     @Override
-    public int getTotalRecommendations(VehicleRecommendationReq vehicleRecommendationReq) {
-        return contractVehicleMapper.getRecommendationCount(vehicleRecommendationReq);
+    public int getTotalAvailableVehicles(VehicleContractReq vehicleContractReq, int viewOption) {
+        if (viewOption == 0) {
+            return contractVehicleMapper.getAvailableVehicleCount(vehicleContractReq);
+        } else {
+            return contractVehicleMapper.getAlreadyUsedVehicleCount(vehicleContractReq);
+        }
     }
 }

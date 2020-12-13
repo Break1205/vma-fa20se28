@@ -1,17 +1,26 @@
 package com.fa20se28.vma.controller;
 
 import com.fa20se28.vma.enums.ContractStatus;
-import com.fa20se28.vma.request.*;
+import com.fa20se28.vma.request.ContractPageReq;
+import com.fa20se28.vma.request.ContractReq;
 import com.fa20se28.vma.response.ContractDetailRes;
 import com.fa20se28.vma.response.ContractPageRes;
 import com.fa20se28.vma.response.ContractStatusRes;
 import com.fa20se28.vma.service.ContractService;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/contracts")
@@ -62,25 +71,9 @@ public class ContractController {
         contractService.updateContractStatus(contractStatus, contractId);
     }
 
-    @PatchMapping
-    public void updateContract(@RequestBody ContractUpdateReq contractUpdateReq) {
-        contractService.updateContract(contractUpdateReq);
-    }
-
-    @PatchMapping("/trip")
-    public void updateContractTrip(@RequestBody ContractTripUpdateReq contractTripUpdateReq) {
-        contractService.updateContractTrip(contractTripUpdateReq);
-    }
-
-    @PatchMapping("/trip/{trip-id}/vehicles")
-    public void updateContractTripVehicles(@PathVariable("trip-id") int contractTripId,
-                                           @RequestBody List<String> assignedVehicles) {
-        contractService.updateContractTripVehicles(contractTripId, assignedVehicles);
-    }
-
-    @PatchMapping("/schedule")
-    public void updateContractTripSchedule(@RequestBody ContractTripScheduleUpdateReq contractTripScheduleUpdateReq) {
-        contractService.updateContractTripSchedule(contractTripScheduleUpdateReq);
+    @PutMapping
+    public void updateContract(@RequestBody ContractReq contractReq) {
+        contractService.updateContract(contractReq);
     }
 
     @GetMapping("/{contract-id}")

@@ -21,9 +21,6 @@ import com.fa20se28.vma.request.ContractPageReq;
 import com.fa20se28.vma.request.ContractReq;
 import com.fa20se28.vma.request.ContractTripReq;
 import com.fa20se28.vma.request.ContractTripScheduleReq;
-import com.fa20se28.vma.request.ContractTripScheduleUpdateReq;
-import com.fa20se28.vma.request.ContractTripUpdateReq;
-import com.fa20se28.vma.request.ContractUpdateReq;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -73,53 +70,7 @@ public class ContractComponentImpl implements ContractComponent {
         if (row == 0) {
             throw new DataException("Can not insert Contract record!");
         } else {
-            for (ContractTripReq trip : contractReq.getTrips()) {
-                int contractTripRow = contractDetailMapper.createContractDetail(trip, contractMapper.getContractId(contractReq.getContractOwnerId()));
-                if (contractTripRow == 0) {
-                    throw new DataException("Can not insert Contract Detail record");
-                } else {
-                    Map<String, String> nonDuplicateAssignedVehicles = new HashMap<>();
-                    for (String vehicleId : trip.getAssignedVehicles()) {
-                        if (nonDuplicateAssignedVehicles.containsKey(vehicleId)) {
-                            throw new InvalidParamException("Duplicate vehicle id: " + vehicleId + " .A vehicle can only be on 1 trip at a time");
-                        } else {
-                            nonDuplicateAssignedVehicles.put(vehicleId, vehicleId);
-                        }
-                        Optional<IssuedVehicle> optionalIssuedVehicle =
-                                issuedVehicleMapper.getCurrentIssuedVehicleWithDriverById(vehicleId);
-
-                        if (optionalIssuedVehicle.isPresent()) {
-                            if (optionalIssuedVehicle.get().getDriverId() == null) {
-                                throw new InvalidParamException("Vehicle with id: " + vehicleId + " doesn't have any driver");
-                            }
-                        } else {
-                            throw new ResourceNotFoundException("Vehicle with id: " + vehicleId + " not found");
-                        }
-
-                        int contractVehicleRow = contractVehicleMapper.assignVehicleForContract(
-                                trip.getContractDetailId(),
-                                optionalIssuedVehicle.get().getIssuedVehicleId(),
-                                ContractVehicleStatus.NOT_STARTED
-                        );
-
-                        if (contractVehicleRow == 0) {
-                            throw new DataException("Can not insert Contract Vehicle record");
-                        }
-                    }
-
-                    int contractDetailId = contractDetailMapper.getContractDetailId(contractMapper.getContractId(contractReq.getContractOwnerId()));
-
-                    for (ContractTripScheduleReq location : trip.getLocations()) {
-                        int scheduleRow = contractDetailScheduleMapper.createContractSchedule(
-                                location.getLocation(),
-                                contractDetailId);
-
-                        if (scheduleRow == 0) {
-                            throw new DataException("Can not insert Contract Detail Schedule record");
-                        }
-                    }
-                }
-            }
+            createContractDetailAndScheduleAndVehicles(contractReq);
         }
     }
 
@@ -145,38 +96,64 @@ public class ContractComponentImpl implements ContractComponent {
 
     @Override
     @Transactional
-    public void updateContract(ContractUpdateReq contractUpdateReq) {
-        ContractDetail contractDetail = contractMapper.getContractDetails(contractUpdateReq.getContractId());
-        // currently round trip and want to make it 1 way trip
-        if (!contractUpdateReq.isRoundTrip() && contractDetail.isRoundTrip()) {
-            List<Integer> contractDetailsId =
-                    contractDetailMapper.getContractDetailsByContractIdId(contractUpdateReq.getContractId());
-            if (contractDetailsId.size() == 2) {
-                int deletedContractDetailScheduleRecord =
-                        contractDetailScheduleMapper.deleteContractSchedule(contractDetailsId.get(0));
-                int deletedContractVehicleRecord =
-                        contractVehicleMapper.deleteContractVehicles(contractDetailsId.get(0));
-                int deletedContractDetailRecord =
-                        contractDetailMapper.deleteContractDetailById(contractDetailsId.get(0));
-                if (deletedContractDetailRecord == 0
-                        || deletedContractVehicleRecord == 0
-                        || deletedContractDetailScheduleRecord < 0) {
-                    throw new DataException("Delete contract detail/contract detail schedule/contract vehicles failed.");
-                }
+    public void updateContract(ContractReq contractReq) {
+        if (contractReq.isRoundTrip()) {
+            if (contractReq.getTrips().size() != 2) {
+                throw new InvalidParamException("This contract is round-trip. Therefore it needs 2 trips/vehicles");
             }
-            // currently 1 way trip and want to make it round trip
-        } else if (contractUpdateReq.isRoundTrip() && !contractDetail.isRoundTrip()) {
-            if (contractUpdateReq.getTrips().size() != 2) {
-                throw new InvalidParamException("From one way trip to round trip. Therefore it needs 2 trips/vehicles");
+        } else {
+            if (contractReq.getTrips().size() != 1) {
+                throw new InvalidParamException("This contract is one-way-trip. Therefore it needs 1 trip/vehicle");
             }
-            ContractTripReq theReturnedContractTripReq = contractUpdateReq.getTrips().get(1);
+        }
+        List<ContractVehicle> contractVehicles = contractVehicleMapper.getContractVehiclesByContractId(contractReq.getContractId());
+        for (ContractVehicle contractVehicle : contractVehicles) {
+            if (!contractVehicle.getContractVehicleStatus().equals(ContractVehicleStatus.NOT_STARTED)) {
+                throw new ResourceIsInUsedException(
+                        "Contract Vehicle with id: "
+                                + contractVehicle.getContractVehicleId() + " is "
+                                + contractVehicle.getContractVehicleStatus() + ". Can not modify");
+            }
+        }
 
-            int contractTripRow = contractDetailMapper.createContractDetail(theReturnedContractTripReq, contractUpdateReq.getContractId());
+        int deletedPassengersRecord = passengerMapper.deletePassengersFromContractVehicle(contractReq.getContractId());
+        if (deletedPassengersRecord < 0) {
+            throw new DataException("Can not delete passengers of contract vehicle id: " + contractReq.getContractId());
+        }
+
+        int deleteContractDetailSchedule = contractDetailScheduleMapper.deleteContractSchedule(contractReq.getContractId());
+        if (deleteContractDetailSchedule < 0) {
+            throw new DataException("Can not delete schedule of contract id: " + contractReq.getContractId());
+        }
+
+        int deletedContractVehicleRecords = contractVehicleMapper.deleteContractVehicles(contractReq.getContractId());
+        if (deletedContractVehicleRecords == 0) {
+            throw new DataException("Can not delete contract vehicles of contract id: " + contractReq.getContractId());
+        }
+
+        int deleteContractDetailRecords = contractDetailMapper.deleteContractDetailById(contractReq.getContractId());
+        if (deleteContractDetailRecords == 0) {
+            throw new DataException("Can not delete contract details of contract id: " + contractReq.getContractId());
+        }
+
+        int contractRecord = contractMapper.updateContract(contractReq);
+
+        if (contractRecord == 0) {
+            throw new DataException("Can not update contract record");
+        } else {
+            createContractDetailAndScheduleAndVehicles(contractReq);
+        }
+    }
+
+
+    private void createContractDetailAndScheduleAndVehicles(ContractReq contractReq) {
+        for (ContractTripReq trip : contractReq.getTrips()) {
+            int contractTripRow = contractDetailMapper.createContractDetail(trip, contractMapper.getContractId(contractReq.getContractOwnerId()));
             if (contractTripRow == 0) {
                 throw new DataException("Can not insert Contract Detail record");
             } else {
                 Map<String, String> nonDuplicateAssignedVehicles = new HashMap<>();
-                for (String vehicleId : theReturnedContractTripReq.getAssignedVehicles()) {
+                for (String vehicleId : trip.getAssignedVehicles()) {
                     if (nonDuplicateAssignedVehicles.containsKey(vehicleId)) {
                         throw new InvalidParamException("Duplicate vehicle id: " + vehicleId + " .A vehicle can only be on 1 trip at a time");
                     } else {
@@ -194,7 +171,7 @@ public class ContractComponentImpl implements ContractComponent {
                     }
 
                     int contractVehicleRow = contractVehicleMapper.assignVehicleForContract(
-                            theReturnedContractTripReq.getContractDetailId(),
+                            trip.getContractTripId(),
                             optionalIssuedVehicle.get().getIssuedVehicleId(),
                             ContractVehicleStatus.NOT_STARTED
                     );
@@ -204,103 +181,16 @@ public class ContractComponentImpl implements ContractComponent {
                     }
                 }
 
-                for (ContractTripScheduleReq location : theReturnedContractTripReq.getLocations()) {
+                int contractDetailId = contractDetailMapper.getContractDetailId(contractMapper.getContractId(contractReq.getContractOwnerId()));
+
+                for (ContractTripScheduleReq location : trip.getLocations()) {
                     int scheduleRow = contractDetailScheduleMapper.createContractSchedule(
                             location.getLocation(),
-                            theReturnedContractTripReq.getContractDetailId());
+                            contractDetailId);
 
                     if (scheduleRow == 0) {
                         throw new DataException("Can not insert Contract Detail Schedule record");
                     }
-                }
-            }
-        }
-        int row = contractMapper.updateContract(contractUpdateReq);
-
-        if (row == 0) {
-            throw new DataException("Unknown error occurred. Data not modified!");
-        }
-    }
-
-    @Override
-    @Transactional
-    public void updateContractTrip(ContractTripUpdateReq contractTripUpdateReq) {
-        int row = contractDetailMapper.updateContractDetail(contractTripUpdateReq);
-
-        if (row == 0) {
-            throw new DataException("Unknown error occurred. Data not modified!");
-        }
-    }
-
-    @Override
-    @Transactional
-    public void updateContractTripVehicles(int contractTripId, List<String> assignedVehicles) {
-        if (assignedVehicles.isEmpty()) {
-            throw new InvalidParamException("Must have at least 1 vehicle for contract trip: " + contractTripId);
-        }
-        List<ContractVehicle> contractVehicleList = contractVehicleMapper.getContractVehiclesByContractDetailId(contractTripId);
-        for (ContractVehicle contractVehicle : contractVehicleList) {
-            if (contractVehicle.getContractVehicleStatus().equals(ContractVehicleStatus.NOT_STARTED)) {
-                int deletedPassengersRecord = passengerMapper.deletePassengersFromContractVehicle(contractVehicle.getContractVehicleId());
-                if (deletedPassengersRecord < 0) {
-                    throw new DataException("Can not delete passengers of contract vehicle id: " + contractVehicle.getContractVehicleId());
-                }
-            } else {
-                throw new ResourceIsInUsedException(
-                        "Contract Vehicle with id: "
-                                + contractVehicle.getContractVehicleId() + " is "
-                                + contractVehicle.getContractVehicleStatus() + ". Can not modify");
-            }
-        }
-        int deletedContractVehicleRecords = contractVehicleMapper.deleteContractVehicles(contractTripId);
-        if (deletedContractVehicleRecords == 0) {
-            throw new DataException("Can not delete contract vehicles of contract detail id: " + contractTripId);
-        }
-        Map<String, String> nonDuplicateAssignedVehicles = new HashMap<>();
-        for (String vehicleId : assignedVehicles) {
-            if (nonDuplicateAssignedVehicles.containsKey(vehicleId)) {
-                throw new InvalidParamException("Duplicate vehicle id: " + vehicleId + " .A vehicle can only be on 1 trip at a time");
-            } else {
-                nonDuplicateAssignedVehicles.put(vehicleId, vehicleId);
-            }
-            Optional<IssuedVehicle> optionalIssuedVehicle =
-                    issuedVehicleMapper.getCurrentIssuedVehicleWithDriverById(vehicleId);
-
-            if (optionalIssuedVehicle.isPresent()) {
-                if (optionalIssuedVehicle.get().getDriverId() == null) {
-                    throw new InvalidParamException("Vehicle with id: " + vehicleId + " doesn't have any driver");
-                }
-            } else {
-                throw new ResourceNotFoundException("Vehicle with id: " + vehicleId + " not found");
-            }
-
-            int contractVehicleRow = contractVehicleMapper.assignVehicleForContract(
-                    contractTripId,
-                    optionalIssuedVehicle.get().getIssuedVehicleId(),
-                    ContractVehicleStatus.NOT_STARTED
-            );
-
-            if (contractVehicleRow == 0) {
-                throw new DataException("Can not insert Contract Vehicle record");
-            }
-        }
-    }
-
-    @Override
-    @Transactional
-    public void updateContractTripSchedule(ContractTripScheduleUpdateReq contractTripScheduleUpdateReq) {
-        int clearScheduleRow = contractDetailScheduleMapper.deleteContractSchedule(contractTripScheduleUpdateReq.getContractTripId());
-
-        if (clearScheduleRow == 0) {
-            throw new DataException("Unknown error occurred. Data not modified!");
-        } else {
-            for (ContractTripScheduleReq location : contractTripScheduleUpdateReq.getLocations()) {
-                int scheduleRow = contractDetailScheduleMapper.createContractSchedule(
-                        location.getLocation(),
-                        contractTripScheduleUpdateReq.getContractTripId());
-
-                if (scheduleRow == 0) {
-                    throw new DataException("Unknown error occurred. Data not modified!");
                 }
             }
         }

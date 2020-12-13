@@ -226,11 +226,11 @@ public class RequestServiceImpl implements RequestService {
     public int createVehicleDocumentRequest(VehicleDocumentRequestReq vehicleDocumentRequestReq) {
         Authentication authentication = authenticationComponent.getAuthentication();
 
-        if (requestComponent.createVehicleDocumentRequest(vehicleDocumentRequestReq, authentication.getName()) == 1) {
-            if (vehicleDocumentRequestReq.getRequestType().equals(RequestType.NEW_VEHICLE_DOCUMENT)) {
-                vehicleDocumentComponent.createVehicleDocumentFromRequest(vehicleDocumentRequestReq.getVehicleDocument());
-            }
+        if (vehicleDocumentRequestReq.getRequestType().equals(RequestType.NEW_VEHICLE_DOCUMENT)) {
+            vehicleDocumentComponent.createVehicleDocumentFromRequest(vehicleDocumentRequestReq.getVehicleDocument());
+        }
 
+        if (requestComponent.createVehicleDocumentRequest(vehicleDocumentRequestReq, authentication.getName()) == 1) {
             return 1;
         }
 
@@ -288,8 +288,9 @@ public class RequestServiceImpl implements RequestService {
     public int reportIssue(ReportIssueReq reportIssueReq) {
         Authentication authentication = authenticationComponent.getAuthentication();
 
+        vehicleComponent.updateVehicleStatus(reportIssueReq.getVehicleId(), VehicleStatus.NEED_REPAIR);
+
         if (requestComponent.reportIssueRequest(reportIssueReq, authentication.getName()) == 1) {
-            vehicleComponent.updateVehicleStatus(reportIssueReq.getVehicleId(), VehicleStatus.NEED_REPAIR);
             return 1;
         }
 

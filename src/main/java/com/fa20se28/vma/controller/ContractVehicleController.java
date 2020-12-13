@@ -74,24 +74,30 @@ public class ContractVehicleController {
         return contractVehicleService.getTrips(new TripListReq(issuedVehicleId, vehicleStatus), page);
     }
 
-    @GetMapping("/recommendation")
-    public VehicleRecommendationRes getVehicleRecommendations(
+    @GetMapping("/available-vehicles")
+    public VehicleContractRes getAvailableVehicles(
             @RequestParam(required = false, defaultValue = "0") int vehicleTypeId,
             @RequestParam(required = false, defaultValue = "0") int seatsMin,
             @RequestParam(required = false, defaultValue = "0") int seatsMax,
             @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime startDate,
             @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime endDate,
-            @RequestParam(required = false, defaultValue = "0") int viewOption) {
-        return contractVehicleService.getRecommendations(new VehicleRecommendationReq(vehicleTypeId, seatsMin, seatsMax, startDate, endDate), viewOption);
+            @RequestParam(required = false) String yearMin,
+            @RequestParam(required = false) String yearMax,
+            @RequestParam(required = false, defaultValue = "0") int viewOption,
+            @RequestParam(required = false, defaultValue = "0") int pageNum) {
+        return contractVehicleService.getAvailableVehicles(new VehicleContractReq(vehicleTypeId, seatsMin, seatsMax, startDate, endDate, yearMin, yearMax), pageNum, viewOption);
     }
 
-    @GetMapping("/recommendation/count")
-    public int getTotalRecommendations(
+    @GetMapping("/available-vehicles/count")
+    public int getTotalAvailableVehicles(
             @RequestParam(required = false, defaultValue = "0") int vehicleTypeId,
             @RequestParam(required = false, defaultValue = "0") int seatsMin,
             @RequestParam(required = false, defaultValue = "0") int seatsMax,
             @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime startDate,
-            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime endDate) {
-        return contractVehicleService.getTotalRecommendations(new VehicleRecommendationReq(vehicleTypeId, seatsMin, seatsMax, startDate, endDate));
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime endDate,
+            @RequestParam(required = false) String yearMin,
+            @RequestParam(required = false) String yearMax,
+            @RequestParam(required = false, defaultValue = "0") int viewOption) {
+        return contractVehicleService.getTotalAvailableVehicles(new VehicleContractReq(vehicleTypeId, seatsMin, seatsMax, startDate, endDate, yearMin, yearMax), viewOption);
     }
 }
