@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.time.LocalDateTime;
 
-public class VehicleRecommendationReq {
+public class VehicleContractReq {
     private int vehicleTypeId;
     private int seatsMin;
     private int seatsMax;
@@ -12,13 +12,17 @@ public class VehicleRecommendationReq {
     private LocalDateTime startDate;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime endDate;
+    private String yearMin;
+    private String yearMax;
 
-    public VehicleRecommendationReq(int vehicleTypeId, int seatsMin, int seatsMax, LocalDateTime startDate, LocalDateTime endDate) {
+    public VehicleContractReq(int vehicleTypeId, int seatsMin, int seatsMax, LocalDateTime startDate, LocalDateTime endDate, String yearMin, String yearMax) {
         this.vehicleTypeId = vehicleTypeId;
         this.seatsMin = seatsMin;
         this.seatsMax = seatsMax;
         this.startDate = startDate;
         this.endDate = endDate;
+        this.yearMin = yearMin;
+        this.yearMax = yearMax;
     }
 
     public int getVehicleTypeId() {
@@ -59,5 +63,21 @@ public class VehicleRecommendationReq {
 
     public void setEndDate(LocalDateTime endDate) {
         this.endDate = endDate;
+    }
+
+    public String getYearMin() {
+        return yearMin;
+    }
+
+    public void setYearMin(String yearMin) {
+        this.yearMin = yearMin;
+    }
+
+    public String getYearMax() {
+        return yearMax;
+    }
+
+    public void setYearMax(String yearMax) {
+        this.yearMax = yearMax;
     }
 }

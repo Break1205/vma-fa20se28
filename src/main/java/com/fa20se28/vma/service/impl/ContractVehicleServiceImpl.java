@@ -7,7 +7,7 @@ import com.fa20se28.vma.request.*;
 import com.fa20se28.vma.response.ContractVehicleRes;
 import com.fa20se28.vma.response.PassengerRes;
 import com.fa20se28.vma.response.TripListRes;
-import com.fa20se28.vma.response.VehicleRecommendationRes;
+import com.fa20se28.vma.response.VehicleContractRes;
 import com.fa20se28.vma.service.ContractVehicleService;
 import com.fa20se28.vma.service.FirebaseService;
 import org.springframework.stereotype.Service;
@@ -133,12 +133,12 @@ public class ContractVehicleServiceImpl implements ContractVehicleService {
     }
 
     @Override
-    public VehicleRecommendationRes getRecommendations(VehicleRecommendationReq vehicleRecommendationReq, int viewOption) {
-        return new VehicleRecommendationRes(contractVehicleComponent.getRecommendations(vehicleRecommendationReq, viewOption));
+    public VehicleContractRes getAvailableVehicles(VehicleContractReq vehicleContractReq, int pageNum, int viewOption) {
+        return new VehicleContractRes(contractVehicleComponent.getAvailableVehicles(vehicleContractReq, pageNum, viewOption));
     }
 
     @Override
-    public int getTotalRecommendations(VehicleRecommendationReq vehicleRecommendationReq) {
-        return contractVehicleComponent.getTotalRecommendations(vehicleRecommendationReq);
+    public int getTotalAvailableVehicles(VehicleContractReq vehicleContractReq, int viewOption) {
+        return contractVehicleComponent.getTotalAvailableVehicles(vehicleContractReq, viewOption);
     }
 }

@@ -4,7 +4,7 @@ import com.fa20se28.vma.enums.ContractVehicleStatus;
 import com.fa20se28.vma.model.Passenger;
 import com.fa20se28.vma.model.Trip;
 import com.fa20se28.vma.model.VehicleBasic;
-import com.fa20se28.vma.model.VehicleRecommendation;
+import com.fa20se28.vma.model.VehicleContract;
 import com.fa20se28.vma.request.*;
 
 import java.util.List;
@@ -30,7 +30,7 @@ public interface ContractVehicleComponent {
 
     void completeContract(int contractId);
 
-    List<VehicleRecommendation> getRecommendations(VehicleRecommendationReq vehicleRecommendationReq, int viewOption);
+    List<VehicleContract> getAvailableVehicles(VehicleContractReq vehicleContractReq, int pageNum, int viewOption);
 
-    int getTotalRecommendations(VehicleRecommendationReq vehicleRecommendationReq);
+    int getTotalAvailableVehicles(VehicleContractReq vehicleContractReq, int viewOption);
 }

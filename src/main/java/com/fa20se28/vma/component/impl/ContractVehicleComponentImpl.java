@@ -190,12 +190,20 @@ public class ContractVehicleComponentImpl implements ContractVehicleComponent {
     }
 
     @Override
-    public List<VehicleRecommendation> getRecommendations(VehicleRecommendationReq vehicleRecommendationReq, int viewOption) {
-        return contractVehicleMapper.getRecommendations(vehicleRecommendationReq, viewOption * 10);
+    public List<VehicleContract> getAvailableVehicles(VehicleContractReq vehicleContractReq, int pageNum, int viewOption) {
+        if (viewOption == 0) {
+            return contractVehicleMapper.getAvailableVehicles(vehicleContractReq, pageNum * 10);
+        } else {
+            return contractVehicleMapper.getAlreadyUsedVehicles(vehicleContractReq, pageNum * 10);
+        }
     }
 
     @Override
-    public int getTotalRecommendations(VehicleRecommendationReq vehicleRecommendationReq) {
-        return contractVehicleMapper.getRecommendationCount(vehicleRecommendationReq);
+    public int getTotalAvailableVehicles(VehicleContractReq vehicleContractReq, int viewOption) {
+        if (viewOption == 0) {
+            return contractVehicleMapper.getAvailableVehicleCount(vehicleContractReq);
+        } else {
+            return contractVehicleMapper.getAlreadyUsedVehicleCount(vehicleContractReq);
+        }
     }
 }
