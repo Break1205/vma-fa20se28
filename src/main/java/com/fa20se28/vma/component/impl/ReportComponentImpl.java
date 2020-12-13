@@ -101,7 +101,7 @@ public class ReportComponentImpl implements ReportComponent {
         } else if (reportReq.getReportType().equals(ReportType.MAINTENANCE_ALL_VEHICLES)) {
             writeMaintenanceAllVehicleHeaderLine(style);
         } else if (reportReq.getReportType().equals(ReportType.CONTRACTS)) {
-            writeContractsHeaderLine(style);
+            writeContractsHeaderLine(reportReq, style);
         } else if (reportReq.getReportType().equals(ReportType.VEHICLE_REVENUE_EXPENSE)) {
             writeVehicleRevenueExpenseHeaderLine(reportReq, style);
         } else if (reportReq.getReportType().equals(ReportType.COMPANY_REVENUE_EXPENSE)) {
@@ -342,13 +342,19 @@ public class ReportComponentImpl implements ReportComponent {
     // end Maintenance
 
     // Contracts
-    private void writeContractsHeaderLine(CellStyle style) {
+    private void writeContractsHeaderLine(ReportReq reportReq, CellStyle style) {
         Row rowFromAndTo = sheet.createRow(HEADER_ROW);
 
         createCell(rowFromAndTo, 0, "From", style);
         createCell(rowFromAndTo, 1, firstAndLast.get(0).toString(), style);
         createCell(rowFromAndTo, 2, "To", style);
         createCell(rowFromAndTo, 3, firstAndLast.get(1).toString(), style);
+
+        if (reportReq.getStatus() != null) {
+            createCell(rowFromAndTo, 5, "Contract Status", style);
+            createCell(rowFromAndTo, 6, reportReq.getStatus(), style);
+        }
+
 
         Row row = sheet.createRow(HEADER_ROW + 1);
 
@@ -397,6 +403,17 @@ public class ReportComponentImpl implements ReportComponent {
         valueCell.setCellFormula("SUM(C4:C" + (rowCount - 1) + ")");
         valueCell.setCellStyle(style);
     }
+
+    @Override
+    public List<ContractReport> getContractsReportData(ReportReq reportReq) {
+        List<LocalDate> firstAndLast = getFirstAndLastDayInAMonth(reportReq);
+        return reportMapper.getContractsReport(
+                firstAndLast.get(0).toString(),
+                firstAndLast.get(1).toString(),
+                reportReq.getStatus());
+    }
+
+    // End Contract
 
     // Vehicle Revenue Expense
     private void writeVehicleRevenueExpenseHeaderLine(ReportReq reportReq, CellStyle style) {
@@ -447,7 +464,6 @@ public class ReportComponentImpl implements ReportComponent {
         valueCell.setCellFormula("SUM(D5:D" + (rowCount - 1) + ")");
         valueCell.setCellStyle(style);
     }
-
     // end Vehicle Revenue Expense
 
 
@@ -668,14 +684,6 @@ public class ReportComponentImpl implements ReportComponent {
         }
     }
     // end driver income
-
-    @Override
-    public List<ContractReport> getContractsReportData(ReportReq reportReq) {
-        List<LocalDate> firstAndLast = getFirstAndLastDayInAMonth(reportReq);
-        return reportMapper.getContractsReport(
-                firstAndLast.get(0).toString(),
-                firstAndLast.get(1).toString());
-    }
 
     @Override
     public List<RevenueExpense> getVehicleRevenueExpenseReportData(ReportReq reportReq) {

@@ -128,7 +128,8 @@ public interface ReportMapper {
                                                                @Param("lastDayOfMonth") String lastDayOfMonth,
                                                                @Param("vehicleId") String vehicleId);
 
-    @Select("SELECT " +
+    @Select({"<script>" +
+            "SELECT " +
             "c.contract_id, " +
             "c.total_price contract_value,  " +
             "c.is_round_trip,  " +
@@ -155,8 +156,12 @@ public interface ReportMapper {
             "FROM contract_detail  " +
             "ORDER BY create_date) cd  " +
             "ON c.contract_id = cd.contract_id " +
-            "WHERE c.contract_status = 'FINISHED'  " +
-            "AND cd.departure_time between '${firstDayOfMonth}' AND '${lastDayOfMonth}' ")
+            "WHERE 1 =1  " +
+            "<if test = \"status!=null\" >  " +
+            "AND c.contract_status = #{status}  " +
+            "</if> " +
+            "AND cd.departure_time between '${firstDayOfMonth}' AND '${lastDayOfMonth}' " +
+            "</script>"})
     @Results(id = "contractReportResult", value = {
             @Result(property = "contractId", column = "contract_id"),
             @Result(property = "contractValue", column = "contract_value"),
@@ -172,7 +177,8 @@ public interface ReportMapper {
             @Result(property = "taxCode", column = "tax_code"),
     })
     List<ContractReport> getContractsReport(@Param("firstDayOfMonth") String firstDayOfMonth,
-                                            @Param("lastDayOfMonth") String lastDayOfMonth);
+                                            @Param("lastDayOfMonth") String lastDayOfMonth,
+                                            @Param("status") String status);
 
     @Select("SELECT " +
             "cd.destination_time date,  " +
