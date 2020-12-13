@@ -224,10 +224,11 @@ public interface ContractVehicleMapper {
             "</script>"})
     int getRecommendationCount(@Param("vr_req") VehicleRecommendationReq vehicleRecommendationReq);
 
-    @Delete("DELETE " +
-            "FROM contract_vehicles " +
-            "WHERE contract_detail_id = #{cd_id} ")
-    int deleteContractVehicles(@Param("cd_id") int contractDetailId);
+    @Delete("DELETE cv FROM contract_vehicles cv\n" +
+            "JOIN contract_detail cd \n" +
+            "ON cv.contract_detail_id = cd.contract_detail_id \n" +
+            "WHERE cd.contract_id = #{c_id}\n")
+    int deleteContractVehicles(@Param("c_id") int contractId);
 
     @Select("SELECT \n" +
             "contract_vehicle_id, \n" +

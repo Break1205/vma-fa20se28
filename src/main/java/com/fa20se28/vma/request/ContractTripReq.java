@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public class ContractTripReq {
-    private int contractDetailId;
+    private int contractTripId;
     private String departureLocation;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime departureTime;
@@ -16,12 +16,12 @@ public class ContractTripReq {
     private List<ContractTripScheduleReq> locations;
     private List<String> assignedVehicles;
 
-    public int getContractDetailId() {
-        return contractDetailId;
+    public int getContractTripId() {
+        return contractTripId;
     }
 
-    public void setContractDetailId(int contractDetailId) {
-        this.contractDetailId = contractDetailId;
+    public void setContractTripId(int contractTripId) {
+        this.contractTripId = contractTripId;
     }
 
     public String getDepartureLocation() {

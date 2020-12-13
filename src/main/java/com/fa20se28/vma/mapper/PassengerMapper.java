@@ -44,8 +44,11 @@ public interface PassengerMapper {
             "WHERE c.contract_id = #{c_id}")
     int getPassengerCountFromContract(@Param("c_id") int contractId);
 
-    @Delete("DELETE \n" +
-            "FROM passenger \n" +
-            "WHERE contract_vehicle_id = #{cv_id}")
-    int deletePassengersFromContractVehicle(@Param("cv_id") int contractVehicleId);
+    @Delete("DELETE p FROM passenger p \n" +
+            "JOIN contract_vehicles cv \n" +
+            "ON p.contract_vehicle_id = cv.contract_vehicle_id \n" +
+            "JOIN contract_detail cd \n" +
+            "ON cv.contract_detail_id = cd.contract_detail_id \n" +
+            "WHERE cd.contract_id = #{c_id}")
+    int deletePassengersFromContractVehicle(@Param("c_id") int contractId);
 }

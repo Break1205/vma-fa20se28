@@ -1,11 +1,21 @@
 package com.fa20se28.vma.mapper;
 
 import com.fa20se28.vma.enums.ContractStatus;
-import com.fa20se28.vma.model.*;
+import com.fa20se28.vma.model.Contract;
+import com.fa20se28.vma.model.ContractDetail;
+import com.fa20se28.vma.model.ContractLM;
+import com.fa20se28.vma.model.ContractTrip;
+import com.fa20se28.vma.model.ContractTripSchedule;
 import com.fa20se28.vma.request.ContractPageReq;
 import com.fa20se28.vma.request.ContractReq;
-import com.fa20se28.vma.request.ContractUpdateReq;
-import org.apache.ibatis.annotations.*;
+import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Many;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Result;
+import org.apache.ibatis.annotations.Results;
+import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
 
@@ -74,7 +84,7 @@ public interface ContractMapper {
             "other_information = #{c_request.otherInformation} " +
             "WHERE " +
             "contract_id = #{c_request.contractId} ")
-    int updateContract(@Param("c_request") ContractUpdateReq contractUpdateReq);
+    int updateContract(@Param("c_request") ContractReq contractUpdateReq);
 
     @Select({"<script> " +
             "SELECT " +

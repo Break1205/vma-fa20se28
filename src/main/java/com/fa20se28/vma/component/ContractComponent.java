@@ -16,13 +16,8 @@ public interface ContractComponent {
 
     void updateContractStatus(ContractStatus contractStatus, int contractId);
 
-    void updateContract(ContractUpdateReq contractUpdateReq);
-
-    void updateContractTrip(ContractTripUpdateReq contractTripUpdateReq);
-
-    void updateContractTripSchedule(ContractTripScheduleUpdateReq contractTripScheduleUpdateReq);
+    void updateContract(ContractReq contractReq);
 
     ContractDetail getContractDetails(int contractId);
 
-    void updateContractTripVehicles(int contractTripId, List<String> assignedVehicles);
 }

@@ -1,8 +1,13 @@
 package com.fa20se28.vma.mapper;
 
 import com.fa20se28.vma.request.ContractTripReq;
-import com.fa20se28.vma.request.ContractTripUpdateReq;
-import org.apache.ibatis.annotations.*;
+import org.apache.ibatis.annotations.Delete;
+import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Options;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
 
@@ -22,7 +27,7 @@ public interface ContractDetailMapper {
             "#{cd_request.destinationLocation}, " +
             "#{cd_request.destinationTime}," +
             "getDate()) ")
-    @Options(keyProperty = "cd_request.contractDetailId", useGeneratedKeys = true)
+    @Options(keyProperty = "cd_request.contractTripId", useGeneratedKeys = true)
     int createContractDetail(
             @Param("cd_request") ContractTripReq contractTripReq,
             @Param("c_id") int contractId);
@@ -35,7 +40,7 @@ public interface ContractDetailMapper {
             "destination_time = #{cd_request.destinationTime}  " +
             "WHERE " +
             "contract_detail_id = #{cd_request.contractTripId} ")
-    int updateContractDetail(@Param("cd_request") ContractTripUpdateReq contractTripUpdateReq);
+    int updateContractDetail(@Param("cd_request") List<ContractTripReq> contractTripReq);
 
     @Select("SELECT TOP 1 contract_detail_id " +
             "FROM contract_detail " +
@@ -53,6 +58,6 @@ public interface ContractDetailMapper {
 
     @Delete("DELETE " +
             "FROM contract_detail " +
-            "WHERE contract_detail_id = #{cd_id} ")
-    int deleteContractDetailById(@Param("cd_id") int contractId);
+            "WHERE contract_id = #{c_id} ")
+    int deleteContractDetailById(@Param("c_id") int contractId);
 }
