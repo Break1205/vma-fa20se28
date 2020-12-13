@@ -22,7 +22,7 @@ public interface ReportService {
 
     ScheduleRes getScheduleReportDate(ReportReq reportReq);
 
-    VehicleReportRes getVehicleReportData();
+    VehicleReportRes getVehicleReportData(ReportReq reportReq);
 
     MaintenanceReportRes getMaintenanceReportData(ReportReq reportReq);
 

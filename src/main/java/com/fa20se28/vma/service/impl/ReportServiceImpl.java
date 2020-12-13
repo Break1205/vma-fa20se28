@@ -72,9 +72,9 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
-    public VehicleReportRes getVehicleReportData() {
+    public VehicleReportRes getVehicleReportData(ReportReq reportReq) {
         VehicleReportRes vehicleReportRes = new VehicleReportRes();
-        vehicleReportRes.setVehicleReports(reportComponent.getVehicleReportData());
+        vehicleReportRes.setVehicleReports(reportComponent.getVehicleReportData(reportReq));
         return vehicleReportRes;
     }
 
