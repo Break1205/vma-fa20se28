@@ -451,7 +451,7 @@ public class ReportComponentImpl implements ReportComponent {
             createCell(row, columnCount++, revenueExpense.getDate().toString(), style);
             createCell(row, columnCount++, revenueExpense.getType(), style);
             createCell(row, columnCount++,
-                    revenueExpense.getType().equals("CONTRACT REVENUE")
+                    revenueExpense.getType().equals("CONTRACT_REVENUE")
                             ? revenueExpense.getValue()
                             : -revenueExpense.getValue(), style);
             createCell(row, columnCount++, revenueExpense.getContractId(), style);
@@ -464,6 +464,16 @@ public class ReportComponentImpl implements ReportComponent {
         valueCell.setCellFormula("SUM(D5:D" + (rowCount - 1) + ")");
         valueCell.setCellStyle(style);
     }
+
+    @Override
+    public List<RevenueExpense> getVehicleRevenueExpenseReportData(ReportReq reportReq) {
+        List<LocalDate> firstAndLast = getFirstAndLastDayInAMonth(reportReq);
+        return reportMapper.getVehicleRevenueExpenseForReport(
+                firstAndLast.get(0).toString(),
+                firstAndLast.get(1).toString(),
+                reportReq.getVehicleId());
+    }
+
     // end Vehicle Revenue Expense
 
 
@@ -498,7 +508,7 @@ public class ReportComponentImpl implements ReportComponent {
             createCell(row, columnCount++, revenueExpense.getDate().toString(), style);
             createCell(row, columnCount++, revenueExpense.getType(), style);
             createCell(row, columnCount++,
-                    revenueExpense.getType().equals("CONTRACT REVENUE")
+                    revenueExpense.getType().equals("CONTRACT_REVENUE")
                             ? revenueExpense.getValue()
                             : -revenueExpense.getValue(), style);
             createCell(row, columnCount++, revenueExpense.getContractId(), style);
@@ -511,7 +521,16 @@ public class ReportComponentImpl implements ReportComponent {
         valueCell.setCellFormula("SUM(D4:D" + (rowCount - 1) + ")");
         valueCell.setCellStyle(style);
     }
+
+    @Override
+    public List<RevenueExpense> getCompanyRevenueExpenseReportData(ReportReq reportReq) {
+        List<LocalDate> firstAndLast = getFirstAndLastDayInAMonth(reportReq);
+        return reportMapper.getCompanyRevenueExpenseForReport(
+                firstAndLast.get(0).toString(),
+                firstAndLast.get(1).toString());
+    }
     // end Company Revenue Expense
+
 
     // Contributor Income
     private void writeContributorIncomesHeaderLine(ReportReq reportReq, CellStyle style) {
@@ -684,23 +703,6 @@ public class ReportComponentImpl implements ReportComponent {
         }
     }
     // end driver income
-
-    @Override
-    public List<RevenueExpense> getVehicleRevenueExpenseReportData(ReportReq reportReq) {
-        List<LocalDate> firstAndLast = getFirstAndLastDayInAMonth(reportReq);
-        return reportMapper.getVehicleRevenueExpenseForReport(
-                firstAndLast.get(0).toString(),
-                firstAndLast.get(1).toString(),
-                reportReq.getVehicleId());
-    }
-
-    @Override
-    public List<RevenueExpense> getCompanyRevenueExpenseReportData(ReportReq reportReq) {
-        List<LocalDate> firstAndLast = getFirstAndLastDayInAMonth(reportReq);
-        return reportMapper.getCompanyRevenueExpenseForReport(
-                firstAndLast.get(0).toString(),
-                firstAndLast.get(1).toString());
-    }
 
     @Override
     public Map<String, EstimateAndEarnedIncome> calculateContributorEstimatedAndEarnedIncome(ReportReq reportReq) {
