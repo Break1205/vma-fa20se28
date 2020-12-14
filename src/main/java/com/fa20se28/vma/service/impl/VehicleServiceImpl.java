@@ -98,6 +98,7 @@ public class VehicleServiceImpl implements VehicleService {
     @Override
     public VehicleOverviewRes getOverview(String ownerId) {
         return new VehicleOverviewRes(
+                vehicleComponent.getTotalVehicle(ownerId),
                 vehicleComponent.getTotal(
                         new VehiclePageReq(null, null, 0, 0, 0, VehicleStatus.AVAILABLE, 0, 0), 1, ownerId),
                 vehicleComponent.getTotal(

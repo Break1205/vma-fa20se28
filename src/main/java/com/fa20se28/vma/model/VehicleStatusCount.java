@@ -4,6 +4,11 @@ public class VehicleStatusCount {
     private String statusName;
     private int statusCount;
 
+    public VehicleStatusCount(String statusName, int statusCount) {
+        this.statusName = statusName;
+        this.statusCount = statusCount;
+    }
+
     public String getStatusName() {
         return statusName;
     }

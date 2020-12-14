@@ -11,6 +11,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Component
 public class VehicleComponentImpl implements VehicleComponent {
@@ -342,6 +344,20 @@ public class VehicleComponentImpl implements VehicleComponent {
 
     @Override
     public List<VehicleStatusCount> getStatusCount(String ownerId) {
-        return vehicleMapper.getStatusCount(ownerId);
+        List<VehicleStatusCount> statusCounts = vehicleMapper.getStatusCount(ownerId);
+
+        List<VehicleStatus> missingStatus = Stream.of(VehicleStatus.values()).collect(Collectors.toList());
+        missingStatus.removeAll(vehicleMapper.getStatusInFleet(ownerId));
+
+        for (VehicleStatus status: missingStatus) {
+            statusCounts.add(new VehicleStatusCount(status.toString(), 0));
+        }
+
+        return statusCounts;
+    }
+
+    @Override
+    public int getTotalVehicle(String ownerId) {
+        return vehicleMapper.getTotalVehicle(ownerId);
     }
 }

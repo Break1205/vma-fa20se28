@@ -6,16 +6,26 @@ import com.fa20se28.vma.model.VehicleTypeCount;
 import java.util.List;
 
 public class VehicleOverviewRes {
+    private int totalVehicles;
     private int availableVehicleCount;
     private int onRouteVehicleCount;
     private List<VehicleTypeCount> typeCount;
     private List<VehicleStatusCount> statusCount;
 
-    public VehicleOverviewRes(int availableVehicleCount, int onRouteVehicleCount, List<VehicleTypeCount> typeCount, List<VehicleStatusCount> statusCount) {
+    public VehicleOverviewRes(int totalVehicles, int availableVehicleCount, int onRouteVehicleCount, List<VehicleTypeCount> typeCount, List<VehicleStatusCount> statusCount) {
+        this.totalVehicles = totalVehicles;
         this.availableVehicleCount = availableVehicleCount;
         this.onRouteVehicleCount = onRouteVehicleCount;
         this.typeCount = typeCount;
         this.statusCount = statusCount;
+    }
+
+    public int getTotalVehicles() {
+        return totalVehicles;
+    }
+
+    public void setTotalVehicles(int totalVehicles) {
+        this.totalVehicles = totalVehicles;
     }
 
     public int getAvailableVehicleCount() {

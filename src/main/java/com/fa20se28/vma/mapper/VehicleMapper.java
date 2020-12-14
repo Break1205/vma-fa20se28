@@ -319,8 +319,8 @@ public interface VehicleMapper {
 
     @Select("SELECT vt.vehicle_type_name, COUNT(v.vehicle_id) AS total " +
             "FROM vehicle v " +
-            "JOIN vehicle_type vt ON vt.vehicle_type_id = v.vehicle_type_id " +
-            "WHERE v.owner_id = #{v_owner_id} " +
+            "RIGHT JOIN vehicle_type vt ON vt.vehicle_type_id = v.vehicle_type_id " +
+            "AND v.owner_id = #{v_owner_id} " +
             "GROUP BY vt.vehicle_type_name ")
     @Results(id = "typeCount", value = {
             @Result(property = "typeName", column = "vehicle_type_name"),
@@ -337,4 +337,15 @@ public interface VehicleMapper {
             @Result(property = "statusCount", column = "total")
     })
     List<VehicleStatusCount> getStatusCount(@Param("v_owner_id") String ownerId);
+
+    @Select("SELECT v.vehicle_status " +
+            "FROM vehicle v " +
+            "WHERE v.owner_id = #{v_owner_id} " +
+            "GROUP BY v.vehicle_status ")
+    List<VehicleStatus> getStatusInFleet(@Param("v_owner_id") String ownerId);
+
+    @Select("SELECT COUNT(vehicle_id) " +
+            "FROM vehicle " +
+            "WHERE owner_id = #{v_owner_id} ")
+    int getTotalVehicle(@Param("v_owner_id") String ownerId);
 }
