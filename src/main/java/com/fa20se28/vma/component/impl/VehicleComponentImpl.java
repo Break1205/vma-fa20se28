@@ -355,4 +355,9 @@ public class VehicleComponentImpl implements VehicleComponent {
 
         return statusCounts;
     }
+
+    @Override
+    public int getTotalVehicle(String ownerId) {
+        return vehicleMapper.getTotalVehicle(ownerId);
+    }
 }

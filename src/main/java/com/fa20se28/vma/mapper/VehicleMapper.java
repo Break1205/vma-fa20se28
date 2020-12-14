@@ -343,4 +343,9 @@ public interface VehicleMapper {
             "WHERE v.owner_id = #{v_owner_id} " +
             "GROUP BY v.vehicle_status ")
     List<VehicleStatus> getStatusInFleet(@Param("v_owner_id") String ownerId);
+
+    @Select("SELECT COUNT(vehicle_id) " +
+            "FROM vehicle " +
+            "WHERE owner_id = #{v_owner_id} ")
+    int getTotalVehicle(@Param("v_owner_id") String ownerId);
 }
