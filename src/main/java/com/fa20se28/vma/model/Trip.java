@@ -7,7 +7,7 @@ import java.util.List;
 public class Trip {
     private int contractVehicleId;
     private int contractId;
-    private List<ContractTrip> contractTrips;
+    private ContractTrip contractTrip;
     private ContractVehicleStatus contractVehicleStatus;
 
     public int getContractVehicleId() {
@@ -26,12 +26,12 @@ public class Trip {
         this.contractId = contractId;
     }
 
-    public List<ContractTrip> getContractTrips() {
-        return contractTrips;
+    public ContractTrip getContractTrip() {
+        return contractTrip;
     }
 
-    public void setContractTrips(List<ContractTrip> contractTrips) {
-        this.contractTrips = contractTrips;
+    public void setContractTrip(ContractTrip contractTrip) {
+        this.contractTrip = contractTrip;
     }
 
     public ContractVehicleStatus getContractVehicleStatus() {
