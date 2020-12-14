@@ -22,7 +22,7 @@ public interface ReportComponent {
 
     List<Schedule> getScheduleReportData(ReportReq reportReq);
 
-    List<VehicleReport> getVehicleReportData();
+    List<VehicleReport> getVehicleReportData(ReportReq reportReq);
 
     List<MaintenanceReport> getMaintenanceReportData(ReportReq reportReq);
 

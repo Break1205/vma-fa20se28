@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 public class ContractReq {
+    private int contractId;
     private String contractOwnerId;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate signedDate;
@@ -22,6 +23,14 @@ public class ContractReq {
     private float totalPrice;
     private boolean isRoundTrip;
     private String otherInformation;
+
+    public int getContractId() {
+        return contractId;
+    }
+
+    public void setContractId(int contractId) {
+        this.contractId = contractId;
+    }
 
     public String getContractOwnerId() {
         return contractOwnerId;

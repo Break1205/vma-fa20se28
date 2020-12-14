@@ -78,7 +78,7 @@ public interface ContractVehicleMapper {
             @Result(property = "contractId", column = "contract_id"),
             @Result(property = "contractVehicleId", column = "contract_vehicle_id"),
             @Result(property = "contractVehicleStatus", column = "contract_vehicle_status"),
-            @Result(property = "contractTrips", column = "contract_detail_id", many = @Many(select = "getContractTrips")),
+            @Result(property = "contractTrip", column = "contract_detail_id", one = @One(select = "getContractTrip")),
     })
     List<Trip> getVehicleTrips(
             @Param("cv_iv_id") int issuedVehicleId,
@@ -98,7 +98,7 @@ public interface ContractVehicleMapper {
             @Result(property = "destinationTime", column = "destination_time"),
             @Result(property = "locations", column = "contract_detail_id", many = @Many(select = "getContractTripSchedule"))
     })
-    List<ContractTrip> getContractTrips(@Param("contract_detail_id") int contractDetailId);
+    ContractTrip getContractTrip(@Param("contract_detail_id") int contractDetailId);
 
     @Select("SELECT " +
             "contract_detail_schedule_id, location " +
@@ -255,10 +255,11 @@ public interface ContractVehicleMapper {
     @Select("")
     int getAlreadyUsedVehicleCount(@Param("vr_req") VehicleContractReq vehicleContractReq);
 
-    @Delete("DELETE " +
-            "FROM contract_vehicles " +
-            "WHERE contract_detail_id = #{cd_id} ")
-    int deleteContractVehicles(@Param("cd_id") int contractDetailId);
+    @Delete("DELETE cv FROM contract_vehicles cv\n" +
+            "JOIN contract_detail cd \n" +
+            "ON cv.contract_detail_id = cd.contract_detail_id \n" +
+            "WHERE cd.contract_id = #{c_id}\n")
+    int deleteContractVehicles(@Param("c_id") int contractId);
 
     @Select("SELECT \n" +
             "contract_vehicle_id, \n" +

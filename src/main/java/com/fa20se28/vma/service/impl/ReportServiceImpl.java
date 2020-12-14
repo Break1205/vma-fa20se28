@@ -72,9 +72,9 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
-    public VehicleReportRes getVehicleReportData() {
+    public VehicleReportRes getVehicleReportData(ReportReq reportReq) {
         VehicleReportRes vehicleReportRes = new VehicleReportRes();
-        vehicleReportRes.setVehicleReports(reportComponent.getVehicleReportData());
+        vehicleReportRes.setVehicleReports(reportComponent.getVehicleReportData(reportReq));
         return vehicleReportRes;
     }
 
@@ -165,10 +165,7 @@ public class ReportServiceImpl implements ReportService {
             driverIncomeSummaryMonthRes.setQuarter(quarter);
 
             DriverIncomeRes driverIncomeRes = reportComponent.getDriversIncomeById(reportReq);
-            float baseSalary = reportComponent.getDriverBaseSalary(reportReq.getUserId());
-            if (driverIncomeRes.getEarnedValue() == 0) {
-                driverIncomeRes.setEarnedValue(baseSalary);
-            }
+
             driverIncomeSummaryMonthRes.setDriverIncomeRes(driverIncomeRes);
             driverIncomeSummaryMonthResList.add(driverIncomeSummaryMonthRes);
         }

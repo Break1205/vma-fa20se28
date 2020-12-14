@@ -19,8 +19,9 @@ public interface ContractDetailScheduleMapper {
             @Param("cdc_location") String location,
             @Param("cd_id") int contractDetailId);
 
-    @Delete("DELETE " +
-            "FROM contract_detail_schedule " +
-            "WHERE contract_detail_id = #{cd_id} ")
-    int deleteContractSchedule(@Param("cd_id") int contractDetailId);
+    @Delete("DELETE cds FROM contract_detail_schedule cds \n" +
+            "JOIN contract_detail cd \n" +
+            "ON cds.contract_detail_id = cd.contract_detail_id \n" +
+            "WHERE cd.contract_id = #{c_id}\n")
+    int deleteContractSchedule(@Param("c_id") int contractId);
 }
