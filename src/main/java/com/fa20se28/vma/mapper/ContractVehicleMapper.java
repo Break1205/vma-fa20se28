@@ -78,7 +78,7 @@ public interface ContractVehicleMapper {
             @Result(property = "contractId", column = "contract_id"),
             @Result(property = "contractVehicleId", column = "contract_vehicle_id"),
             @Result(property = "contractVehicleStatus", column = "contract_vehicle_status"),
-            @Result(property = "contractTrips", column = "contract_detail_id", many = @Many(select = "getContractTrips")),
+            @Result(property = "contractTrip", column = "contract_detail_id", one = @One(select = "getContractTrip")),
     })
     List<Trip> getVehicleTrips(
             @Param("cv_iv_id") int issuedVehicleId,
@@ -98,7 +98,7 @@ public interface ContractVehicleMapper {
             @Result(property = "destinationTime", column = "destination_time"),
             @Result(property = "locations", column = "contract_detail_id", many = @Many(select = "getContractTripSchedule"))
     })
-    List<ContractTrip> getContractTrips(@Param("contract_detail_id") int contractDetailId);
+    ContractTrip getContractTrip(@Param("contract_detail_id") int contractDetailId);
 
     @Select("SELECT " +
             "contract_detail_schedule_id, location " +
