@@ -4,6 +4,7 @@ import java.util.List;
 
 public class DriverIncomeSummaryYearRes {
     private Integer year;
+    private float totalEarned;
     private List<DriverIncomeSummaryMonthRes> driverIncomeSummaryMonthResList;
 
     public Integer getYear() {
@@ -20,5 +21,13 @@ public class DriverIncomeSummaryYearRes {
 
     public void setDriverIncomeSummaryMonthResList(List<DriverIncomeSummaryMonthRes> driverIncomeSummaryMonthResList) {
         this.driverIncomeSummaryMonthResList = driverIncomeSummaryMonthResList;
+    }
+
+    public float getTotalEarned() {
+        return totalEarned;
+    }
+
+    public void setTotalEarned(float totalEarned) {
+        this.totalEarned = totalEarned;
     }
 }

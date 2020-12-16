@@ -79,8 +79,8 @@ public class ContractVehicleComponentImpl implements ContractVehicleComponent {
     }
 
     @Override
-    public List<VehicleBasic> getContractVehicles(int contractId) {
-        return contractVehicleMapper.getContractVehicles(contractId);
+    public List<VehicleBasic> getContractVehicles(int contractDetailId) {
+        return contractVehicleMapper.getContractVehicles(contractDetailId);
     }
 
     @Override

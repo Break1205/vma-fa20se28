@@ -14,7 +14,7 @@ public interface ContractVehicleService {
 
     void assignVehicleForContract (ContractVehicleReq contractVehicleReq);
 
-    ContractVehicleRes getContractVehicles(int contractId);
+    ContractVehicleRes getContractVehiclesByContractDetailId(int contractId);
 
     ContractVehicleStatus getVehicleStatus(int contractDetailId, int issuedVehicleId);
 
