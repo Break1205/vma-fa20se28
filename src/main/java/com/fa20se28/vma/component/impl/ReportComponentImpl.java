@@ -443,31 +443,28 @@ public class ReportComponentImpl implements ReportComponent {
         int rowCount = HEADER_ROW + 3;
         int numberOfData = 1;
 
-        List<RevenueExpense> vehicleRevenueExpenses = getVehicleRevenueExpenseReportData(reportReq);
-
-        for (RevenueExpense revenueExpense : vehicleRevenueExpenses) {
+        RevenueExpenseReportRes revenueExpenseReportRes = getRevenueExpenseDetailReportData(reportReq);
+        for (RevenueExpense revenueExpense : revenueExpenseReportRes.getRevenueExpenses()) {
             Row row = sheet.createRow(rowCount++);
             int columnCount = 0;
             createCell(row, columnCount++, numberOfData++, style);
             createCell(row, columnCount++, revenueExpense.getDate().toString(), style);
             createCell(row, columnCount++, revenueExpense.getType(), style);
-            createCell(row, columnCount++,
-                    revenueExpense.getType().equals("CONTRACT_REVENUE")
-                            ? revenueExpense.getValue()
-                            : -revenueExpense.getValue(), style);
+            createCell(row, columnCount++, revenueExpense.getValue(), style);
             createCell(row, columnCount++, revenueExpense.getContractId(), style);
             createCell(row, columnCount, revenueExpense.getCustomerId(), style);
         }
 
-        Row row = sheet.createRow(rowCount);
-        createCell(row, 2, "Total Value", style);
-        Cell valueCell = row.createCell(3);
-        valueCell.setCellFormula("SUM(D5:D" + (rowCount) + ")");
-        valueCell.setCellStyle(style);
+        Row revenueRow = sheet.createRow(rowCount);
+        createCell(revenueRow, 2, "Total Revenue", style);
+        createCell(revenueRow, 3, revenueExpenseReportRes.getTotalRevenue(), style);
+
+        Row expenseRow = sheet.createRow(++rowCount);
+        createCell(expenseRow, 2, "Total Expense", style);
+        createCell(expenseRow, 3, revenueExpenseReportRes.getTotalExpense(), style);
     }
 
-    @Override
-    public List<RevenueExpense> getVehicleRevenueExpenseReportData(ReportReq reportReq) {
+    private List<RevenueExpense> getVehicleRevenueExpenseReportData(ReportReq reportReq) {
         List<LocalDate> firstAndLast = getFirstAndLastDayInAMonth(reportReq);
         return reportMapper.getVehicleRevenueExpenseForReport(
                 firstAndLast.get(0).toString(),
@@ -501,30 +498,28 @@ public class ReportComponentImpl implements ReportComponent {
         int rowCount = HEADER_ROW + 2;
         int numberOfData = 1;
 
-        List<RevenueExpense> companyRevenueExpense = getCompanyRevenueExpenseReportData(reportReq);
-        for (RevenueExpense revenueExpense : companyRevenueExpense) {
+        RevenueExpenseReportRes revenueExpenseReportRes = getRevenueExpenseDetailReportData(reportReq);
+        for (RevenueExpense revenueExpense : revenueExpenseReportRes.getRevenueExpenses()) {
             Row row = sheet.createRow(rowCount++);
             int columnCount = 0;
             createCell(row, columnCount++, numberOfData++, style);
             createCell(row, columnCount++, revenueExpense.getDate().toString(), style);
             createCell(row, columnCount++, revenueExpense.getType(), style);
-            createCell(row, columnCount++,
-                    revenueExpense.getType().equals("CONTRACT_REVENUE")
-                            ? revenueExpense.getValue()
-                            : -revenueExpense.getValue(), style);
+            createCell(row, columnCount++, revenueExpense.getValue(), style);
             createCell(row, columnCount++, revenueExpense.getContractId(), style);
             createCell(row, columnCount, revenueExpense.getCustomerId(), style);
         }
 
-        Row row = sheet.createRow(rowCount);
-        createCell(row, 2, "Total Value", style);
-        Cell valueCell = row.createCell(3);
-        valueCell.setCellFormula("SUM(D4:D" + (rowCount) + ")");
-        valueCell.setCellStyle(style);
+        Row revenueRow = sheet.createRow(rowCount);
+        createCell(revenueRow, 2, "Total Revenue", style);
+        createCell(revenueRow, 3, revenueExpenseReportRes.getTotalRevenue(), style);
+
+        Row expenseRow = sheet.createRow(++rowCount);
+        createCell(expenseRow, 2, "Total Expense", style);
+        createCell(expenseRow, 3, revenueExpenseReportRes.getTotalExpense(), style);
     }
 
-    @Override
-    public List<RevenueExpense> getCompanyRevenueExpenseReportData(ReportReq reportReq) {
+    private List<RevenueExpense> getCompanyRevenueExpenseReportData(ReportReq reportReq) {
         List<LocalDate> firstAndLast = getFirstAndLastDayInAMonth(reportReq);
         return reportMapper.getCompanyRevenueExpenseForReport(
                 firstAndLast.get(0).toString(),

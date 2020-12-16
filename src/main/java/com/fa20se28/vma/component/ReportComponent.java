@@ -29,10 +29,6 @@ public interface ReportComponent {
 
     List<ContractReport> getContractsReportData(ReportReq reportReq);
 
-    List<RevenueExpense> getVehicleRevenueExpenseReportData(ReportReq reportReq);
-
-    List<RevenueExpense> getCompanyRevenueExpenseReportData(ReportReq reportReq);
-
     RevenueExpenseReportRes getRevenueExpenseDetailReportData(ReportReq reportReq);
 
     Map<String, EstimateAndEarnedIncome> calculateContributorEstimatedAndEarnedIncome(ReportReq reportReq);

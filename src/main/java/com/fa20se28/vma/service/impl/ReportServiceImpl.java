@@ -96,13 +96,7 @@ public class ReportServiceImpl implements ReportService {
 
     @Override
     public RevenueExpenseReportRes getRevenueExpenseReportData(ReportReq reportReq) {
-        RevenueExpenseReportRes revenueExpenseReportRes = new RevenueExpenseReportRes();
-        if (reportReq.getVehicleId() != null) {
-            revenueExpenseReportRes.setRevenueExpenses(reportComponent.getVehicleRevenueExpenseReportData(reportReq));
-        } else {
-            revenueExpenseReportRes.setRevenueExpenses(reportComponent.getCompanyRevenueExpenseReportData(reportReq));
-        }
-        return revenueExpenseReportRes;
+        return reportComponent.getRevenueExpenseDetailReportData(reportReq);
     }
 
     @Override
