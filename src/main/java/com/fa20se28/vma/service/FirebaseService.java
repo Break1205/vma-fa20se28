@@ -15,4 +15,8 @@ public interface FirebaseService {
     String decodeToken(UserTokenReq token);
 
     void notifyUserByFCMToken(ClientRegistrationToken fcmToken, NotificationData notificationData);
+
+    void notifySubscribersByTopic(String topic, NotificationData notificationData);
+
+    void subscribeUserToTopic(ClientRegistrationToken clientRegistrationToken, String admin);
 }
