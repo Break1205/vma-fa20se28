@@ -29,9 +29,7 @@ public interface ReportService {
 
     ContractReportRes getContractsReportData(ReportReq reportReq);
 
-    RevenueExpenseReportRes getVehicleRevenueExpenseReportData(ReportReq reportReq);
-
-    RevenueExpenseReportRes getCompanyRevenueExpenseReportData(ReportReq reportReq);
+    RevenueExpenseReportRes getRevenueExpenseReportData(ReportReq reportReq);
 
     ContributorIncomeRes getContributorsIncomesReportData(ReportReq reportReq);
 
@@ -45,7 +43,5 @@ public interface ReportService {
 
     ContributorIncomeSummaryYearRes getContributorIncomeSummary(ReportReq reportReq);
 
-    RevenueExpenseSummaryYearRes getVehicleRevenueExpenseSummaryReportData(ReportReq reportReq);
-
-    RevenueExpenseSummaryYearRes getCompanyRevenueExpenseSummaryReportData(ReportReq reportReq);
+    RevenueExpenseSummaryYearRes getRevenueExpenseSummaryReportData(ReportReq reportReq);
 }

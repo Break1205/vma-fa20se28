@@ -131,13 +131,8 @@ public class ReportController {
             @RequestParam(required = false) String vehicleId,
             @RequestParam(required = false) Quarter quarter,
             @RequestParam(required = false) Integer year) {
-        if (vehicleId != null) {
-            return reportService.getVehicleRevenueExpenseReportData(
-                    new ReportReq(null, vehicleId, year, quarter, null, null));
-        } else {
-            return reportService.getCompanyRevenueExpenseReportData(
-                    new ReportReq(null, null, year, quarter, null, null));
-        }
+        return reportService.getRevenueExpenseReportData(
+                new ReportReq(null, vehicleId, year, quarter, null, null));
     }
 
     @GetMapping("revenues-expenses/summary/data")
@@ -145,13 +140,8 @@ public class ReportController {
             @RequestParam(required = false) String vehicleId,
             @RequestParam(required = false) Quarter quarter,
             @RequestParam(required = false) Integer year) {
-        if (vehicleId != null) {
-            return reportService.getVehicleRevenueExpenseSummaryReportData(
-                    new ReportReq(null, vehicleId, year, quarter, null, null));
-        } else {
-            return reportService.getCompanyRevenueExpenseSummaryReportData(
-                    new ReportReq(null, null, year, quarter, null, null));
-        }
+        return reportService.getRevenueExpenseSummaryReportData(
+                new ReportReq(null, vehicleId, year, quarter, null, null));
     }
 
     @GetMapping("contributor-income")

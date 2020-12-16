@@ -17,6 +17,7 @@ import com.fa20se28.vma.model.Schedule;
 import com.fa20se28.vma.model.VehicleReport;
 import com.fa20se28.vma.request.ReportReq;
 import com.fa20se28.vma.response.DriverIncomeRes;
+import com.fa20se28.vma.response.RevenueExpenseReportRes;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -458,10 +459,10 @@ public class ReportComponentImpl implements ReportComponent {
             createCell(row, columnCount, revenueExpense.getCustomerId(), style);
         }
 
-        Row row = sheet.createRow(++rowCount);
+        Row row = sheet.createRow(rowCount);
         createCell(row, 2, "Total Value", style);
         Cell valueCell = row.createCell(3);
-        valueCell.setCellFormula("SUM(D5:D" + (rowCount - 1) + ")");
+        valueCell.setCellFormula("SUM(D5:D" + (rowCount) + ")");
         valueCell.setCellStyle(style);
     }
 
@@ -472,8 +473,8 @@ public class ReportComponentImpl implements ReportComponent {
                 firstAndLast.get(0).toString(),
                 firstAndLast.get(1).toString(),
                 reportReq.getVehicleId());
-    }
 
+    }
     // end Vehicle Revenue Expense
 
 
@@ -515,10 +516,10 @@ public class ReportComponentImpl implements ReportComponent {
             createCell(row, columnCount, revenueExpense.getCustomerId(), style);
         }
 
-        Row row = sheet.createRow(++rowCount);
+        Row row = sheet.createRow(rowCount);
         createCell(row, 2, "Total Value", style);
         Cell valueCell = row.createCell(3);
-        valueCell.setCellFormula("SUM(D4:D" + (rowCount - 1) + ")");
+        valueCell.setCellFormula("SUM(D4:D" + (rowCount) + ")");
         valueCell.setCellStyle(style);
     }
 
@@ -529,7 +530,32 @@ public class ReportComponentImpl implements ReportComponent {
                 firstAndLast.get(0).toString(),
                 firstAndLast.get(1).toString());
     }
+
     // end Company Revenue Expense
+
+    // Revenue Expense Summary
+    @Override
+    public RevenueExpenseReportRes getRevenueExpenseDetailReportData(ReportReq reportReq) {
+        RevenueExpenseReportRes revenueExpenseReportRes = new RevenueExpenseReportRes();
+        if (reportReq.getVehicleId() != null) {
+            revenueExpenseReportRes.setRevenueExpenses(getVehicleRevenueExpenseReportData(reportReq));
+        } else {
+            revenueExpenseReportRes.setRevenueExpenses(getCompanyRevenueExpenseReportData(reportReq));
+        }
+        float totalRevenue = 0;
+        float totalExpense = 0;
+        for (RevenueExpense revenueExpense : revenueExpenseReportRes.getRevenueExpenses()) {
+            if (revenueExpense.getType().equals("CONTRACT_REVENUE")) {
+                totalRevenue += revenueExpense.getValue();
+            } else {
+                totalExpense += revenueExpense.getValue();
+            }
+        }
+        revenueExpenseReportRes.setTotalRevenue(totalRevenue);
+        revenueExpenseReportRes.setTotalExpense(totalExpense);
+        return revenueExpenseReportRes;
+    }
+    // End Revenue Expense Summary
 
 
     // Contributor Income

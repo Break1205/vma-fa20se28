@@ -12,6 +12,7 @@ import com.fa20se28.vma.model.Schedule;
 import com.fa20se28.vma.model.VehicleReport;
 import com.fa20se28.vma.request.ReportReq;
 import com.fa20se28.vma.response.DriverIncomeRes;
+import com.fa20se28.vma.response.RevenueExpenseReportRes;
 
 import java.io.IOException;
 import java.util.List;
@@ -31,6 +32,8 @@ public interface ReportComponent {
     List<RevenueExpense> getVehicleRevenueExpenseReportData(ReportReq reportReq);
 
     List<RevenueExpense> getCompanyRevenueExpenseReportData(ReportReq reportReq);
+
+    RevenueExpenseReportRes getRevenueExpenseDetailReportData(ReportReq reportReq);
 
     Map<String, EstimateAndEarnedIncome> calculateContributorEstimatedAndEarnedIncome(ReportReq reportReq);
 

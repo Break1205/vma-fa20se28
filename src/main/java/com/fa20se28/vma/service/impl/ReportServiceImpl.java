@@ -95,16 +95,13 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
-    public RevenueExpenseReportRes getVehicleRevenueExpenseReportData(ReportReq reportReq) {
+    public RevenueExpenseReportRes getRevenueExpenseReportData(ReportReq reportReq) {
         RevenueExpenseReportRes revenueExpenseReportRes = new RevenueExpenseReportRes();
-        revenueExpenseReportRes.setRevenueExpenses(reportComponent.getVehicleRevenueExpenseReportData(reportReq));
-        return revenueExpenseReportRes;
-    }
-
-    @Override
-    public RevenueExpenseReportRes getCompanyRevenueExpenseReportData(ReportReq reportReq) {
-        RevenueExpenseReportRes revenueExpenseReportRes = new RevenueExpenseReportRes();
-        revenueExpenseReportRes.setRevenueExpenses(reportComponent.getCompanyRevenueExpenseReportData(reportReq));
+        if (reportReq.getVehicleId() != null) {
+            revenueExpenseReportRes.setRevenueExpenses(reportComponent.getVehicleRevenueExpenseReportData(reportReq));
+        } else {
+            revenueExpenseReportRes.setRevenueExpenses(reportComponent.getCompanyRevenueExpenseReportData(reportReq));
+        }
         return revenueExpenseReportRes;
     }
 
@@ -189,48 +186,30 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
-    public RevenueExpenseSummaryYearRes getVehicleRevenueExpenseSummaryReportData(ReportReq reportReq) {
+    public RevenueExpenseSummaryYearRes getRevenueExpenseSummaryReportData(ReportReq reportReq) {
         RevenueExpenseSummaryYearRes revenueExpenseSummaryYearRes = new RevenueExpenseSummaryYearRes();
         LocalDate currentDate = LocalDate.now();
         int year = reportReq.getYear() != null ? reportReq.getYear() : currentDate.getYear();
         revenueExpenseSummaryYearRes.setYear(year);
 
         List<RevenueExpenseSummaryMonthRes> revenueExpenseSummaryMonthResList = new ArrayList<>();
+        float totalRevenue = 0;
+        float totalExpense = 0;
         for (Quarter quarter : monthsInYear) {
             RevenueExpenseSummaryMonthRes revenueExpenseSummaryMonthRes = new RevenueExpenseSummaryMonthRes();
             reportReq.setQuarter(quarter);
             revenueExpenseSummaryMonthRes.setQuarter(quarter);
 
-            RevenueExpenseReportRes revenueExpenseReportRes = new RevenueExpenseReportRes();
-            revenueExpenseReportRes.setRevenueExpenses(reportComponent.getVehicleRevenueExpenseReportData(reportReq));
-
+            RevenueExpenseReportRes revenueExpenseReportRes = reportComponent.getRevenueExpenseDetailReportData(reportReq);
             revenueExpenseSummaryMonthRes.setRevenueExpenseReportRes(revenueExpenseReportRes);
+
             revenueExpenseSummaryMonthResList.add(revenueExpenseSummaryMonthRes);
+            totalRevenue += revenueExpenseReportRes.getTotalRevenue();
+            totalExpense += revenueExpenseReportRes.getTotalExpense();
         }
         revenueExpenseSummaryYearRes.setRevenueExpenseSummaryMonthResList(revenueExpenseSummaryMonthResList);
-        return revenueExpenseSummaryYearRes;
-    }
-
-    @Override
-    public RevenueExpenseSummaryYearRes getCompanyRevenueExpenseSummaryReportData(ReportReq reportReq) {
-        RevenueExpenseSummaryYearRes revenueExpenseSummaryYearRes = new RevenueExpenseSummaryYearRes();
-        LocalDate currentDate = LocalDate.now();
-        int year = reportReq.getYear() != null ? reportReq.getYear() : currentDate.getYear();
-        revenueExpenseSummaryYearRes.setYear(year);
-
-        List<RevenueExpenseSummaryMonthRes> revenueExpenseSummaryMonthResList = new ArrayList<>();
-        for (Quarter quarter : monthsInYear) {
-            RevenueExpenseSummaryMonthRes revenueExpenseSummaryMonthRes = new RevenueExpenseSummaryMonthRes();
-            reportReq.setQuarter(quarter);
-            revenueExpenseSummaryMonthRes.setQuarter(quarter);
-
-            RevenueExpenseReportRes revenueExpenseReportRes = new RevenueExpenseReportRes();
-            revenueExpenseReportRes.setRevenueExpenses(reportComponent.getCompanyRevenueExpenseReportData(reportReq));
-
-            revenueExpenseSummaryMonthRes.setRevenueExpenseReportRes(revenueExpenseReportRes);
-            revenueExpenseSummaryMonthResList.add(revenueExpenseSummaryMonthRes);
-        }
-        revenueExpenseSummaryYearRes.setRevenueExpenseSummaryMonthResList(revenueExpenseSummaryMonthResList);
+        revenueExpenseSummaryYearRes.setTotalRevenue(totalRevenue);
+        revenueExpenseSummaryYearRes.setTotalExpense(totalExpense);
         return revenueExpenseSummaryYearRes;
     }
 }

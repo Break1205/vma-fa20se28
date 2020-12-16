@@ -4,6 +4,8 @@ import java.util.List;
 
 public class RevenueExpenseSummaryYearRes {
     private Integer year;
+    private float totalExpense;
+    private float totalRevenue;
     private List<RevenueExpenseSummaryMonthRes> revenueExpenseSummaryMonthResList;
 
     public Integer getYear() {
@@ -20,5 +22,21 @@ public class RevenueExpenseSummaryYearRes {
 
     public void setRevenueExpenseSummaryMonthResList(List<RevenueExpenseSummaryMonthRes> revenueExpenseSummaryMonthResList) {
         this.revenueExpenseSummaryMonthResList = revenueExpenseSummaryMonthResList;
+    }
+
+    public float getTotalExpense() {
+        return totalExpense;
+    }
+
+    public void setTotalExpense(float totalExpense) {
+        this.totalExpense = totalExpense;
+    }
+
+    public float getTotalRevenue() {
+        return totalRevenue;
+    }
+
+    public void setTotalRevenue(float totalRevenue) {
+        this.totalRevenue = totalRevenue;
     }
 }
