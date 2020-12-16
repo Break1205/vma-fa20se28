@@ -15,6 +15,8 @@ import com.fa20se28.vma.response.DriverIncomeRes;
 import com.fa20se28.vma.response.DriversIncomeRes;
 import com.fa20se28.vma.response.MaintenanceReportRes;
 import com.fa20se28.vma.response.RevenueExpenseReportRes;
+import com.fa20se28.vma.response.RevenueExpenseSummaryMonthRes;
+import com.fa20se28.vma.response.RevenueExpenseSummaryYearRes;
 import com.fa20se28.vma.response.ScheduleRes;
 import com.fa20se28.vma.response.VehicleReportRes;
 import com.fa20se28.vma.service.ReportService;
@@ -171,5 +173,51 @@ public class ReportServiceImpl implements ReportService {
         }
         driverIncomeSummaryYearRes.setDriverIncomeSummaryMonthResList(driverIncomeSummaryMonthResList);
         return driverIncomeSummaryYearRes;
+    }
+
+    @Override
+    public RevenueExpenseSummaryYearRes getVehicleRevenueExpenseSummaryReportData(ReportReq reportReq) {
+        RevenueExpenseSummaryYearRes revenueExpenseSummaryYearRes = new RevenueExpenseSummaryYearRes();
+        LocalDate currentDate = LocalDate.now();
+        int year = reportReq.getYear() != null ? reportReq.getYear() : currentDate.getYear();
+        revenueExpenseSummaryYearRes.setYear(year);
+
+        List<RevenueExpenseSummaryMonthRes> revenueExpenseSummaryMonthResList = new ArrayList<>();
+        for (Quarter quarter : monthsInYear) {
+            RevenueExpenseSummaryMonthRes revenueExpenseSummaryMonthRes = new RevenueExpenseSummaryMonthRes();
+            reportReq.setQuarter(quarter);
+            revenueExpenseSummaryMonthRes.setQuarter(quarter);
+
+            RevenueExpenseReportRes revenueExpenseReportRes = new RevenueExpenseReportRes();
+            revenueExpenseReportRes.setRevenueExpenses(reportComponent.getVehicleRevenueExpenseReportData(reportReq));
+
+            revenueExpenseSummaryMonthRes.setRevenueExpenseReportRes(revenueExpenseReportRes);
+            revenueExpenseSummaryMonthResList.add(revenueExpenseSummaryMonthRes);
+        }
+        revenueExpenseSummaryYearRes.setRevenueExpenseSummaryMonthResList(revenueExpenseSummaryMonthResList);
+        return revenueExpenseSummaryYearRes;
+    }
+
+    @Override
+    public RevenueExpenseSummaryYearRes getCompanyRevenueExpenseSummaryReportData(ReportReq reportReq) {
+        RevenueExpenseSummaryYearRes revenueExpenseSummaryYearRes = new RevenueExpenseSummaryYearRes();
+        LocalDate currentDate = LocalDate.now();
+        int year = reportReq.getYear() != null ? reportReq.getYear() : currentDate.getYear();
+        revenueExpenseSummaryYearRes.setYear(year);
+
+        List<RevenueExpenseSummaryMonthRes> revenueExpenseSummaryMonthResList = new ArrayList<>();
+        for (Quarter quarter : monthsInYear) {
+            RevenueExpenseSummaryMonthRes revenueExpenseSummaryMonthRes = new RevenueExpenseSummaryMonthRes();
+            reportReq.setQuarter(quarter);
+            revenueExpenseSummaryMonthRes.setQuarter(quarter);
+
+            RevenueExpenseReportRes revenueExpenseReportRes = new RevenueExpenseReportRes();
+            revenueExpenseReportRes.setRevenueExpenses(reportComponent.getCompanyRevenueExpenseReportData(reportReq));
+
+            revenueExpenseSummaryMonthRes.setRevenueExpenseReportRes(revenueExpenseReportRes);
+            revenueExpenseSummaryMonthResList.add(revenueExpenseSummaryMonthRes);
+        }
+        revenueExpenseSummaryYearRes.setRevenueExpenseSummaryMonthResList(revenueExpenseSummaryMonthResList);
+        return revenueExpenseSummaryYearRes;
     }
 }

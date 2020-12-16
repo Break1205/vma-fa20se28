@@ -15,6 +15,7 @@ import com.fa20se28.vma.response.DriverIncomeSummaryYearRes;
 import com.fa20se28.vma.response.DriversIncomeRes;
 import com.fa20se28.vma.response.MaintenanceReportRes;
 import com.fa20se28.vma.response.RevenueExpenseReportRes;
+import com.fa20se28.vma.response.RevenueExpenseSummaryYearRes;
 import com.fa20se28.vma.response.ScheduleRes;
 import com.fa20se28.vma.response.VehicleReportRes;
 import com.fa20se28.vma.service.ReportService;
@@ -135,6 +136,20 @@ public class ReportController {
                     new ReportReq(null, vehicleId, year, quarter, null, null));
         } else {
             return reportService.getCompanyRevenueExpenseReportData(
+                    new ReportReq(null, null, year, quarter, null, null));
+        }
+    }
+
+    @GetMapping("revenues-expenses/summary/data")
+    public RevenueExpenseSummaryYearRes getRevenueExpenseSummaryReportData(
+            @RequestParam(required = false) String vehicleId,
+            @RequestParam(required = false) Quarter quarter,
+            @RequestParam(required = false) Integer year) {
+        if (vehicleId != null) {
+            return reportService.getVehicleRevenueExpenseSummaryReportData(
+                    new ReportReq(null, vehicleId, year, quarter, null, null));
+        } else {
+            return reportService.getCompanyRevenueExpenseSummaryReportData(
                     new ReportReq(null, null, year, quarter, null, null));
         }
     }

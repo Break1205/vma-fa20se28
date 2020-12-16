@@ -87,6 +87,20 @@ public class ContractComponentImpl implements ContractComponent {
     @Override
     @Transactional
     public void updateContractStatus(ContractStatus contractStatus, int contractId) {
+        ContractDetail contractDetail = contractMapper.getContractDetails(contractId);
+        if (contractDetail.getContractStatus().equals(contractStatus)) {
+            return;
+        } else if (contractDetail.getContractStatus().equals(ContractStatus.FINISHED)) {
+            return;
+        } else if (contractDetail.getContractStatus().equals(ContractStatus.CANCELLED)) {
+            return;
+        } else if (contractStatus.equals(ContractStatus.FINISHED) && contractDetail.getContractStatus().equals(ContractStatus.IN_PROGRESS)) {
+            throw new InvalidParamException("Contract will be finished when the last contract vehicle completed. " +
+                    "No need to update the contract status");
+        } else if (contractStatus.equals(ContractStatus.IN_PROGRESS) && contractDetail.getContractStatus().equals(ContractStatus.NOT_STARTED)) {
+            throw new InvalidParamException("Contract will be in progress when the first contract vehicle start in progress. " +
+                    "No need to update the contract status");
+        }
         int row = contractMapper.updateStatus(contractStatus, contractId);
 
         if (row == 0) {

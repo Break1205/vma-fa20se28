@@ -10,6 +10,7 @@ import com.fa20se28.vma.response.DriverIncomeRes;
 import com.fa20se28.vma.response.DriversIncomeRes;
 import com.fa20se28.vma.response.MaintenanceReportRes;
 import com.fa20se28.vma.response.RevenueExpenseReportRes;
+import com.fa20se28.vma.response.RevenueExpenseSummaryYearRes;
 import com.fa20se28.vma.response.ScheduleRes;
 import com.fa20se28.vma.response.VehicleReportRes;
 import org.springframework.core.io.InputStreamResource;
@@ -43,4 +44,8 @@ public interface ReportService {
     DriverIncomeSummaryYearRes getDriverIncomeSummary(ReportReq reportReq);
 
     ContributorIncomeSummaryYearRes getContributorIncomeSummary(ReportReq reportReq);
+
+    RevenueExpenseSummaryYearRes getVehicleRevenueExpenseSummaryReportData(ReportReq reportReq);
+
+    RevenueExpenseSummaryYearRes getCompanyRevenueExpenseSummaryReportData(ReportReq reportReq);
 }

@@ -552,6 +552,7 @@ public class ReportComponentImpl implements ReportComponent {
         createCell(row, 2, "Date", style);
         createCell(row, 3, "Value", style);
         createCell(row, 4, "Contract Id", style);
+        createCell(row, 5, "Contract Detail Id", style);
     }
 
     private void writeContributorIncomesDataLine(ReportReq reportReq, CellStyle style) {
@@ -566,7 +567,8 @@ public class ReportComponentImpl implements ReportComponent {
             createCell(row, columnCount++, contributorIncomesDetail.getVehicleId(), style);
             createCell(row, columnCount++, contributorIncomesDetail.getDate().toString(), style);
             createCell(row, columnCount++, contributorIncomesDetail.getValue(), style);
-            createCell(row, columnCount, contributorIncomesDetail.getContractId(), style);
+            createCell(row, columnCount++, contributorIncomesDetail.getContractId(), style);
+            createCell(row, columnCount, contributorIncomesDetail.getContractDetailId(), style);
         }
 
         Row row = sheet.createRow(rowCount);
@@ -628,8 +630,9 @@ public class ReportComponentImpl implements ReportComponent {
 
         createCell(row, 0, "No", style);
         createCell(row, 1, "Contract Id", style);
-        createCell(row, 2, "Vehicle Id", style);
-        createCell(row, 3, "Driver Earned", style);
+        createCell(row, 2, "Contract Detail Id", style);
+        createCell(row, 3, "Vehicle Id", style);
+        createCell(row, 4, "Driver Earned", style);
     }
 
     private void writeDriverIncomesDataLine(ReportReq reportReq, CellStyle style) {
@@ -642,14 +645,15 @@ public class ReportComponentImpl implements ReportComponent {
             int columnCount = 0;
             createCell(row, columnCount++, numberOfData++, style);
             createCell(row, columnCount++, driverIncomesDetail.getContractId(), style);
+            createCell(row, columnCount++, driverIncomesDetail.getContractDetailId(), style);
             createCell(row, columnCount++, driverIncomesDetail.getVehicleId(), style);
             createCell(row, columnCount, driverIncomesDetail.getDriverEarned(), style);
         }
 
         Row row = sheet.createRow(rowCount);
-        createCell(row, 2, "Total Earned", style);
-        Cell valueCell = row.createCell(3);
-        valueCell.setCellFormula("SUM(D6:D" + (rowCount) + ")");
+        createCell(row, 3, "Total Earned", style);
+        Cell valueCell = row.createCell(4);
+        valueCell.setCellFormula("SUM(E6:E" + (rowCount) + ")");
         valueCell.setCellStyle(style);
 
         CellStyle baseSalaryStyle = workbook.createCellStyle();
@@ -661,12 +665,6 @@ public class ReportComponentImpl implements ReportComponent {
         Row baseSalaryRow = sheet.createRow(HEADER_ROW + 1);
         createCell(baseSalaryRow, 0, "Base Salary", baseSalaryStyle);
         createCell(baseSalaryRow, 1, getDriverBaseSalary(reportReq.getUserId()), baseSalaryStyle);
-
-        Row totalSalaryRow = sheet.createRow(rowCount + 1);
-        createCell(totalSalaryRow, 2, "Total Salary", style);
-        Cell totalSalaryCell = totalSalaryRow.createCell(3);
-        totalSalaryCell.setCellFormula("B3+D" + (rowCount + 1));
-        totalSalaryCell.setCellStyle(style);
     }
 
     private void writeDriversIncomesHeaderLine(CellStyle style) {
@@ -682,8 +680,9 @@ public class ReportComponentImpl implements ReportComponent {
         createCell(row, 0, "No", style);
         createCell(row, 1, "Driver Id", style);
         createCell(row, 2, "Contract Id", style);
-        createCell(row, 3, "Vehicle Id", style);
-        createCell(row, 4, "Driver Earned", style);
+        createCell(row, 3, "Contract Detail Id", style);
+        createCell(row, 4, "Vehicle Id", style);
+        createCell(row, 5, "Driver Earned", style);
     }
 
 
@@ -698,6 +697,7 @@ public class ReportComponentImpl implements ReportComponent {
             createCell(row, columnCount++, numberOfData++, style);
             createCell(row, columnCount++, driverIncomesDetail.getUserId(), style);
             createCell(row, columnCount++, driverIncomesDetail.getContractId(), style);
+            createCell(row, columnCount++, driverIncomesDetail.getContractDetailId(), style);
             createCell(row, columnCount++, driverIncomesDetail.getVehicleId(), style);
             createCell(row, columnCount, driverIncomesDetail.getDriverEarned(), style);
         }
