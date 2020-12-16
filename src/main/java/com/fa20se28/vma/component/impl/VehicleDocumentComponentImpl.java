@@ -2,6 +2,7 @@ package com.fa20se28.vma.component.impl;
 
 import com.fa20se28.vma.component.VehicleDocumentComponent;
 import com.fa20se28.vma.configuration.exception.DataException;
+import com.fa20se28.vma.configuration.exception.ResourceIsInUsedException;
 import com.fa20se28.vma.mapper.VehicleDocumentImageMapper;
 import com.fa20se28.vma.mapper.VehicleDocumentMapper;
 import com.fa20se28.vma.model.VehicleDocument;
@@ -76,18 +77,24 @@ public class VehicleDocumentComponentImpl implements VehicleDocumentComponent {
     @Override
     @Transactional
     public void createVehicleDocumentFromRequest(VehicleDocumentStandaloneReq vehicleDocumentStandaloneReq) {
-        if (!vehicleDocumentMapper.isDocumentExist(vehicleDocumentStandaloneReq.getVehicleDocumentReq().getVehicleDocumentId())) {
+        String documentId = vehicleDocumentStandaloneReq.getVehicleDocumentReq().getVehicleDocumentId();
+
+        if (!vehicleDocumentMapper.isDocumentExist(documentId)) {
             createVehicleDocument(vehicleDocumentStandaloneReq, true);
         } else {
-            int docRow = vehicleDocumentMapper.updateVehicleDocument(
-                    new VehicleDocumentUpdateReq(
-                            vehicleDocumentStandaloneReq.getVehicleDocumentReq().getVehicleDocumentId(),
-                            vehicleDocumentStandaloneReq.getVehicleDocumentReq().getVehicleDocumentType(),
-                            vehicleDocumentStandaloneReq.getVehicleDocumentReq().getRegisteredLocation(),
-                            vehicleDocumentStandaloneReq.getVehicleDocumentReq().getRegisteredDate(),
-                            vehicleDocumentStandaloneReq.getVehicleDocumentReq().getExpiryDate()));
+            if (!vehicleDocumentMapper.checkIfDocumentIsInUse(documentId)) {
+                throw new ResourceIsInUsedException("A document with id " + documentId + " is still valid");
+            } else {
+                int docRow = vehicleDocumentMapper.updateVehicleDocument(
+                        new VehicleDocumentUpdateReq(
+                                vehicleDocumentStandaloneReq.getVehicleDocumentReq().getVehicleDocumentId(),
+                                vehicleDocumentStandaloneReq.getVehicleDocumentReq().getVehicleDocumentType(),
+                                vehicleDocumentStandaloneReq.getVehicleDocumentReq().getRegisteredLocation(),
+                                vehicleDocumentStandaloneReq.getVehicleDocumentReq().getRegisteredDate(),
+                                vehicleDocumentStandaloneReq.getVehicleDocumentReq().getExpiryDate()));
 
-            addDocImages(docRow, vehicleDocumentStandaloneReq.getVehicleDocumentReq().getVehicleDocumentId(), vehicleDocumentStandaloneReq.getVehicleDocumentReq().getImageLinks());
+                addDocImages(docRow, vehicleDocumentStandaloneReq.getVehicleDocumentReq().getVehicleDocumentId(), vehicleDocumentStandaloneReq.getVehicleDocumentReq().getImageLinks());
+            }
         }
     }
 

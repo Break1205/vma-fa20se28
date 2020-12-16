@@ -3,6 +3,7 @@ package com.fa20se28.vma.service.impl;
 import com.fa20se28.vma.component.AuthenticationComponent;
 import com.fa20se28.vma.component.UserComponent;
 import com.fa20se28.vma.configuration.exception.InvalidParamException;
+import com.fa20se28.vma.enums.NotificationType;
 import com.fa20se28.vma.enums.UserStatus;
 import com.fa20se28.vma.model.ClientRegistrationToken;
 import com.fa20se28.vma.model.Role;
@@ -65,7 +66,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void changePassword(String userId, String password) {
-        userComponent.changePassword(userId,password);
+        userComponent.changePassword(userId, password);
     }
 
     @Override
@@ -129,6 +130,15 @@ public class UserServiceImpl implements UserService {
     @Override
     public int updateClientRegistrationToken(ClientRegistrationToken clientRegistrationToken) {
         Authentication authentication = authenticationComponent.getAuthentication();
+        List<Role> roles = userComponent.findUserRoles(authentication.getName());
+        if (!roles.isEmpty()) {
+            for (Role role : roles) {
+                if (role.getRoleName().equals("ADMIN")) {
+                    firebaseService.subscribeUserToTopic(clientRegistrationToken, "admin");
+                    break;
+                }
+            }
+        }
         return userComponent.updateClientRegistrationToken(clientRegistrationToken, authentication.getName());
     }
 

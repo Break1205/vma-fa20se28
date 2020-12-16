@@ -5,6 +5,7 @@ import com.fa20se28.vma.model.*;
 import com.fa20se28.vma.request.VehicleContractReq;
 import org.apache.ibatis.annotations.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Mapper
@@ -289,4 +290,18 @@ public interface ContractVehicleMapper {
             @Result(property = "contractVehicleStatus", column = "contract_vehicle_status")
     })
     List<ContractVehicle> getContractVehiclesByContractId(@Param("c_id") int contractId);
+
+    @Select("SELECT " +
+            "CASE WHEN " +
+            "COUNT(cv.contract_vehicle_id) > 0 THEN 1 " +
+            "ELSE 0 END Result " +
+            "FROM contract_vehicles cv " +
+            "JOIN contract_detail cd ON cv.contract_detail_id = cd.contract_detail_id " +
+            "WHERE cv.issued_vehicle_id = #{iv_id} " +
+            "AND (cv.contract_vehicle_status = 'NOT_STARTED' OR cv.contract_vehicle_status = 'IN_PROGRESS') " +
+            "AND (cd.destination_time <= #{t_current} " +
+            "OR cd.departure_time >= #{t_current}) ")
+    boolean checkIfThereIsRemainingTrip(
+            @Param("iv_id") int issuedVehicleId,
+            @Param("t_current") LocalDateTime currentDatTime);
 }

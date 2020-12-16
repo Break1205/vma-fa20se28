@@ -99,6 +99,11 @@ public interface VehicleDocumentMapper {
     VehicleDocument getVehicleDocumentById(
             @Param("d_id") String documentId);
 
+    @Select("SELECT is_deleted " +
+            "FROM vehicle_document " +
+            "WHERE vehicle_document_id = #{d_id} ")
+    boolean checkIfDocumentIsInUse(@Param("d_id") String documentId);
+
     @Insert("INSERT INTO vehicle_document_log " +
             "(vehicle_document_id, " +
             "vehicle_id, " +

@@ -2,7 +2,6 @@ package com.fa20se28.vma.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-import java.util.Date;
 import java.util.List;
 
 public class VehicleReq {
@@ -17,7 +16,7 @@ public class VehicleReq {
     private String chassisNumber;
     private String engineNumber;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy")
-    private Date yearOfManufacture;
+    private String yearOfManufacture;
     private float distanceDriven;
     private List<VehicleDocumentReq> vehicleDocuments;
     private VehicleValueReq vehicleValue;
@@ -102,11 +101,11 @@ public class VehicleReq {
         this.engineNumber = engineNumber;
     }
 
-    public Date getYearOfManufacture() {
+    public String getYearOfManufacture() {
         return yearOfManufacture;
     }
 
-    public void setYearOfManufacture(Date yearOfManufacture) {
+    public void setYearOfManufacture(String yearOfManufacture) {
         this.yearOfManufacture = yearOfManufacture;
     }
 

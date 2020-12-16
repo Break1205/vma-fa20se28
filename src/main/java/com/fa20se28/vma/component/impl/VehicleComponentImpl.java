@@ -10,6 +10,7 @@ import com.fa20se28.vma.request.*;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -21,25 +22,26 @@ public class VehicleComponentImpl implements VehicleComponent {
     private final VehicleDocumentMapper vehicleDocumentMapper;
     private final VehicleDocumentImageMapper vehicleDocumentImageMapper;
     private final VehicleValueMapper vehicleValueMapper;
+    private final ContractVehicleMapper contractVehicleMapper;
 
     public VehicleComponentImpl(
             VehicleMapper vehicleMapper,
             IssuedVehicleMapper issuedVehicleMapper,
             VehicleDocumentMapper vehicleDocumentMapper,
             VehicleDocumentImageMapper vehicleDocumentImageMapper,
-            VehicleValueMapper vehicleValueMapper) {
+            VehicleValueMapper vehicleValueMapper, ContractVehicleMapper contractVehicleMapper) {
         this.vehicleMapper = vehicleMapper;
         this.issuedVehicleMapper = issuedVehicleMapper;
         this.vehicleDocumentMapper = vehicleDocumentMapper;
         this.vehicleDocumentImageMapper = vehicleDocumentImageMapper;
         this.vehicleValueMapper = vehicleValueMapper;
+        this.contractVehicleMapper = contractVehicleMapper;
     }
 
     @Override
     public int getTotal(VehiclePageReq request, int viewOption, String ownerId) {
         return vehicleMapper.getTotal(request, viewOption, ownerId);
     }
-
 
     @Override
     public List<Vehicle> getVehicles(VehiclePageReq request, int viewOption, int pageNum, String ownerId, int takeAll) {
@@ -69,32 +71,16 @@ public class VehicleComponentImpl implements VehicleComponent {
     @Override
     @Transactional
     public void withdrawVehicle(String vehicleId) {
-        VehicleStatus status = vehicleMapper.getVehicleStatus(vehicleId);
-        switch (status) {
-            case AVAILABLE:
-                clearVehicle(vehicleId, VehicleStatus.AVAILABLE_NO_DRIVER);
-                break;
-            case NEED_REPAIR:
-                clearVehicle(vehicleId, VehicleStatus.NEED_REPAIR);
-                break;
-            default:
-                throw new ResourceIsInUsedException("Vehicle is still occupied!");
-        }
-    }
-
-    @Override
-    public void clearVehicle(String vehicleId, VehicleStatus vehicleStatus) {
-        int withDrawRow = issuedVehicleMapper.updateIssuedVehicle(vehicleId, null, 1);
-        int createPlaceHolderRow = issuedVehicleMapper.createPlaceholder(vehicleId);
-        int updateStatusRow;
-        if (vehicleStatus.equals(VehicleStatus.AVAILABLE_NO_DRIVER)) {
-            updateStatusRow = vehicleMapper.updateVehicleStatus(vehicleId, vehicleStatus);
+        if (contractVehicleMapper.checkIfThereIsRemainingTrip(issuedVehicleMapper.getCurrentIssuedVehicleId(vehicleId), LocalDateTime.now())) {
+            throw new ResourceIsInUsedException("Vehicle still has remaining trip(s)!");
         } else {
-            updateStatusRow = 1;
-        }
+            int withDrawRow = issuedVehicleMapper.updateIssuedVehicle(vehicleId, null, 1);
+            int createPlaceHolderRow = issuedVehicleMapper.createPlaceholder(vehicleId);
+            int updateStatusRow = vehicleMapper.updateVehicleStatus(vehicleId, VehicleStatus.AVAILABLE_NO_DRIVER);
 
-        if (withDrawRow == 0 || createPlaceHolderRow == 0 || updateStatusRow == 0) {
-            throw new DataException("Unknown error occurred. Data not modified!");
+            if (withDrawRow == 0 || createPlaceHolderRow == 0 || updateStatusRow == 0) {
+                throw new DataException("Unknown error occurred. Data not modified!");
+            }
         }
     }
 

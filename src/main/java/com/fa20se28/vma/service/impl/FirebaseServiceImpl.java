@@ -23,6 +23,7 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.Notification;
+import com.google.firebase.messaging.TopicManagementResponse;
 import com.google.firebase.messaging.WebpushConfig;
 import com.google.firebase.messaging.WebpushNotification;
 import org.springframework.context.annotation.Bean;
@@ -31,6 +32,9 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 @Service
 public class FirebaseServiceImpl implements FirebaseService {
@@ -102,26 +106,68 @@ public class FirebaseServiceImpl implements FirebaseService {
     }
 
     @Override
-    public void notifyUserByFCMToken(ClientRegistrationToken fcmToken, NotificationData notificationData) {
+    public void notifySubscribersByTopic(String topic, NotificationData notificationData) {
         String title = "";
-        if (notificationData.getNotificationType().equals(NotificationType.REQUEST_ACCEPTED)) {
-            title = "Hurray! Your request has been accepted";
-        } else if (notificationData.getNotificationType().equals(NotificationType.REQUEST_DENIED)) {
-            title = "Sorry! Your request has been denied";
-        } else if (notificationData.getNotificationType().equals(NotificationType.CONTRACT_ASSIGNED)) {
-            title = "Contract Assigned";
-        } else if (notificationData.getNotificationType().equals(NotificationType.LICENSE_EXPIRED)) {
-            title = "Your license is almost expired";
-        } else if (notificationData.getNotificationType().equals(NotificationType.START_TRIP)) {
+        if (notificationData.getNotificationType().equals(NotificationType.START_TRIP)) {
             title = "Contract Vehicle Status";
         } else if (notificationData.getNotificationType().equals(NotificationType.END_TRIP)) {
             title = "Contract Vehicle Status";
         } else if (notificationData.getNotificationType().equals(NotificationType.CONTRACT_STARTED)) {
             title = "Contract Status";
-        }else if (notificationData.getNotificationType().equals(NotificationType.CONTRACT_COMPLETED)) {
+        } else if (notificationData.getNotificationType().equals(NotificationType.CONTRACT_COMPLETED)) {
             title = "Contract Status";
+        } else if (notificationData.getNotificationType().equals(NotificationType.CREATE_REQUEST)) {
+            title = "New Request";
+        } else {
+            return;
+        }
+        Message message = Message.builder().setWebpushConfig( // web
+                WebpushConfig.builder()
+                        .setNotification(
+                                WebpushNotification.builder()
+                                        .setTitle(title)
+                                        .setBody(notificationData.getBody())
+                                        .setSilent(false)
+                                        .setRenotify(true)
+                                        .setRequireInteraction(true)
+                                        .build())
+                        .putData("id", notificationData.getId())
+                        .putData("notificationType", notificationData.getNotificationType().toString())
+                        .build())
+                .setTopic("admin").build();
+        try {
+            FirebaseMessaging.getInstance().send(message);
+        } catch (FirebaseMessagingException e) {
+            throw new InvalidFirebaseMessagingException("Firebase Messaging Exception: ", e, e.getMessagingErrorCode());
+        }
+    }
+
+    @Override
+    public void subscribeUserToTopic(ClientRegistrationToken clientRegistrationToken, String topic) {
+        List<String> registrationTokens = Collections.singletonList(clientRegistrationToken.getToken());
+        try {
+            TopicManagementResponse response = FirebaseMessaging.getInstance().subscribeToTopic(registrationTokens, topic);
+        } catch (FirebaseMessagingException e) {
+            throw new InvalidFirebaseMessagingException("Firebase Messaging Exception: ", e, e.getMessagingErrorCode());
+        }
+    }
+
+    // mobile
+    @Override
+    public void notifyUserByFCMToken(ClientRegistrationToken fcmToken, NotificationData notificationData) {
+        String title = "";
+        if (notificationData.getNotificationType().equals(NotificationType.LICENSE_EXPIRED)) {
+            title = "Your license is almost expired";
+        } else if (notificationData.getNotificationType().equals(NotificationType.REQUEST_ACCEPTED)) {
+            title = "Hurray! Your request has been accepted";
+        } else if (notificationData.getNotificationType().equals(NotificationType.REQUEST_DENIED)) {
+            title = "Sorry! Your request has been denied";
+        } else if (notificationData.getNotificationType().equals(NotificationType.CONTRACT_ASSIGNED)) {
+            title = "Contract Assigned";
         } else if (notificationData.getNotificationType().equals(NotificationType.VEHICLE_CHANGED)) {
             title = "Vehicle Reassigned";
+        } else {
+            return;
         }
         Message message = Message.builder()
                 .setNotification(
@@ -143,20 +189,6 @@ public class FirebaseServiceImpl implements FirebaseService {
                                 .putData("id", notificationData.getId())
                                 .putData("notificationType", notificationData.getNotificationType().toString())
                                 .build())
-                .setWebpushConfig( // web
-                        WebpushConfig.builder()
-                                .setNotification(
-                                        WebpushNotification.builder()
-                                                .setTitle(title)
-                                                .setBody(notificationData.getBody())
-                                                .setSilent(false)
-                                                .setRenotify(true)
-                                                .setRequireInteraction(true)
-                                                .build())
-                                .putData("id", notificationData.getId())
-                                .putData("notificationType", notificationData.getNotificationType().toString())
-                                .build()
-                )
                 .setApnsConfig( // ios
                         ApnsConfig.builder()
                                 .setAps(

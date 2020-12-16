@@ -177,7 +177,7 @@ public class RequestServiceImpl implements RequestService {
             return requestComponent.updateRequestStatus(requestDetail.getRequestId(), RequestStatus.ACCEPTED);
         }
         if (requestDetail.getRequestType().equals(RequestType.VEHICLE_NEEDS_REPAIR)) {
-            vehicleComponent.withdrawVehicle(requestDetail.getVehicleId());
+            vehicleComponent.updateVehicleStatus(requestDetail.getVehicleId(), VehicleStatus.NEED_REPAIR);
             return requestComponent.updateRequestStatus(requestDetail.getRequestId(), RequestStatus.ACCEPTED);
         }
         return 0;
@@ -287,8 +287,6 @@ public class RequestServiceImpl implements RequestService {
     @Override
     public int reportIssue(ReportIssueReq reportIssueReq) {
         Authentication authentication = authenticationComponent.getAuthentication();
-
-        vehicleComponent.updateVehicleStatus(reportIssueReq.getVehicleId(), VehicleStatus.NEED_REPAIR);
 
         if (requestComponent.reportIssueRequest(reportIssueReq, authentication.getName()) == 1) {
             return 1;
