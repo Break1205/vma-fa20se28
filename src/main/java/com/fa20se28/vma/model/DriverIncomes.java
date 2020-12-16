@@ -3,6 +3,7 @@ package com.fa20se28.vma.model;
 public class DriverIncomes {
     private String userId;
     private String contractId;
+    private String contractDetailId;
     private String vehicleId;
     private float driverEarned;
 
@@ -36,5 +37,13 @@ public class DriverIncomes {
 
     public void setDriverEarned(float driverEarned) {
         this.driverEarned = driverEarned;
+    }
+
+    public String getContractDetailId() {
+        return contractDetailId;
+    }
+
+    public void setContractDetailId(String contractDetailId) {
+        this.contractDetailId = contractDetailId;
     }
 }

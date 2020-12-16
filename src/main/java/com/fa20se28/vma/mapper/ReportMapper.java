@@ -278,7 +278,8 @@ public interface ReportMapper {
             "v.vehicle_id, " +
             "cd.destination_time date, " +
             "c.total_price/c.actual_vehicle_count*25/100 value, " +
-            "CONVERT(varchar,c.contract_id) contract_id  " +
+            "CONVERT(varchar,c.contract_id) contract_id, " +
+            "cd.contract_detail_id  " +
             "FROM vehicle v  " +
             "JOIN issued_vehicle iv  " +
             "ON v.vehicle_id = iv.vehicle_id " +
@@ -300,6 +301,7 @@ public interface ReportMapper {
             @Result(property = "date", column = "date"),
             @Result(property = "value", column = "value"),
             @Result(property = "contractId", column = "contract_id"),
+            @Result(property = "contractDetailId", column = "contract_detail_id"),
     })
     List<ContributorIncomesDetail> getContributorIncomesDetail(@Param("ownerId") String ownerId,
                                                                @Param("firstDayOfMonth") String firstDayOfMonth,
@@ -309,6 +311,7 @@ public interface ReportMapper {
             "SELECT " +
             "u.user_id, " +
             "CONVERT(varchar,c.contract_id) contract_id, " +
+            "cd.contract_detail_id, " +
             "iv.vehicle_id, " +
             "c.total_price/c.actual_vehicle_count*10/100 driver_earned  " +
             "FROM [user] u " +
@@ -332,6 +335,7 @@ public interface ReportMapper {
     @Results(id = "driverIncomesResult", value = {
             @Result(property = "userId", column = "user_id"),
             @Result(property = "contractId", column = "contract_id"),
+            @Result(property = "contractDetailId", column = "contract_detail_id"),
             @Result(property = "vehicleId", column = "vehicle_id"),
             @Result(property = "driverEarned", column = "driver_earned"),
     })
