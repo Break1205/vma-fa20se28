@@ -40,8 +40,8 @@ public class ContractVehicleServiceImpl implements ContractVehicleService {
     }
 
     @Override
-    public ContractVehicleRes getContractVehicles(int contractId) {
-        return new ContractVehicleRes(contractVehicleComponent.getContractVehicles(contractId));
+    public ContractVehicleRes getContractVehiclesByContractDetailId(int contractDetailId) {
+        return new ContractVehicleRes(contractVehicleComponent.getContractVehicles(contractDetailId));
     }
 
     @Override

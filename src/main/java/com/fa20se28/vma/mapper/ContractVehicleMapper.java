@@ -48,7 +48,7 @@ public interface ContractVehicleMapper {
             "JOIN vehicle_type vt ON vt.vehicle_type_id = v.vehicle_type_id " +
             "JOIN contract_detail cd ON cv.contract_detail_id = cd.contract_detail_id " +
             "JOIN contract c ON c.contract_id = cd.contract_id " +
-            "WHERE c.contract_id = #{c_id} ")
+            "WHERE cd.contract_detail_id = #{cd_id} ")
     @Results(id = "contractVehicleResult", value = {
             @Result(property = "contractVehicleId", column = "contract_vehicle_id"),
             @Result(property = "contractDetailId", column = "contract_detail_id"),
@@ -58,7 +58,7 @@ public interface ContractVehicleMapper {
             @Result(property = "seats", column = "seats"),
             @Result(property = "contractVehicleStatus", column = "contract_vehicle_status")
     })
-    List<VehicleBasic> getContractVehicles(@Param("c_id") int contractId);
+    List<VehicleBasic> getContractVehicles(@Param("cd_id") int contractDetailId);
 
     @Select({"<script> " +
             "SELECT " +
