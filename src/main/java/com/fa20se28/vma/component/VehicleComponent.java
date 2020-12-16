@@ -17,8 +17,6 @@ public interface VehicleComponent {
 
     void withdrawVehicle(String vehicleId);
 
-    void clearVehicle(String vehicleId, VehicleStatus vehicleStatus);
-
     void createVehicle(VehicleReq vehicle, boolean notAdmin);
 
     void deleteVehicle(String vehicleId);

@@ -194,7 +194,7 @@ public interface VehicleMapper {
             "#{v_request.origin}, " +
             "#{v_request.chassisNumber}, " +
             "#{v_request.engineNumber}, " +
-            "#{v_request.yearOfManufacture}, " +
+            "CAST(CONCAT(#{v_request.yearOfManufacture}, '-01-01') AS date), " +
             "getdate(), " +
             "#{v_request.distanceDriven}) ")
     int createVehicle(
@@ -268,7 +268,7 @@ public interface VehicleMapper {
             "origin_of_manufacture = #{v_request.origin}, " +
             "chassis_number = #{v_request.chassisNumber}, " +
             "engine_number = #{v_request.engineNumber}, " +
-            "year_of_manufacture = #{v_request.yearOfManufacture}, " +
+            "year_of_manufacture = CAST(CONCAT(#{v_request.yearOfManufacture}, '-01-01') AS DATE), " +
             "distance_driven = #{v_request.distanceDriven} " +
             "WHERE " +
             "vehicle_id = #{v_request.vehicleId} ")
