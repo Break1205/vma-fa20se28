@@ -4,6 +4,8 @@ import java.util.List;
 
 public class ContributorIncomeSummaryYearRes {
     private Integer year;
+    private float totalEstimated;
+    private float totalEarned;
     private List<ContributorIncomeSummaryMonthRes> contributorIncomeSummaryMonthResList;
 
     public Integer getYear() {
@@ -20,5 +22,21 @@ public class ContributorIncomeSummaryYearRes {
 
     public void setContributorIncomeSummaryMonthResList(List<ContributorIncomeSummaryMonthRes> contributorIncomeSummaryMonthResList) {
         this.contributorIncomeSummaryMonthResList = contributorIncomeSummaryMonthResList;
+    }
+
+    public float getTotalEstimated() {
+        return totalEstimated;
+    }
+
+    public void setTotalEstimated(float totalEstimated) {
+        this.totalEstimated = totalEstimated;
+    }
+
+    public float getTotalEarned() {
+        return totalEarned;
+    }
+
+    public void setTotalEarned(float totalEarned) {
+        this.totalEarned = totalEarned;
     }
 }

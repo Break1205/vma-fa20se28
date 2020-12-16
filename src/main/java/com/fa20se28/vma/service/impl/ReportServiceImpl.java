@@ -123,21 +123,30 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public ContributorIncomeSummaryYearRes getContributorIncomeSummary(ReportReq reportReq) {
         ContributorIncomeSummaryYearRes contributorIncomeSummaryYearRes = new ContributorIncomeSummaryYearRes();
+
         LocalDate currentDate = LocalDate.now();
         int year = reportReq.getYear() != null ? reportReq.getYear() : currentDate.getYear();
         contributorIncomeSummaryYearRes.setYear(year);
         List<ContributorIncomeSummaryMonthRes> contributorIncomeSummaryMonthResList = new ArrayList<>();
+
+        float totalEstimated = 0;
+        float totalEarned = 0;
         for (Quarter quarter : monthsInYear) {
             ContributorIncomeSummaryMonthRes contributorIncomeSummaryMonthRes = new ContributorIncomeSummaryMonthRes();
             reportReq.setQuarter(quarter);
-
             contributorIncomeSummaryMonthRes.setQuarter(quarter);
-            contributorIncomeSummaryMonthRes.setContributorEarnedAndEstimatedIncome(
-                    reportComponent.getContributorEarnedAndEstimatedIncomeById(reportReq));
+
+            ContributorEarnedAndEstimatedIncome contributorEarnedAndEstimatedIncome = reportComponent.getContributorEarnedAndEstimatedIncomeById(reportReq);
+            contributorIncomeSummaryMonthRes.setContributorEarnedAndEstimatedIncome(contributorEarnedAndEstimatedIncome);
 
             contributorIncomeSummaryMonthResList.add(contributorIncomeSummaryMonthRes);
+            totalEstimated += contributorEarnedAndEstimatedIncome.getEstimated();
+            totalEarned += contributorEarnedAndEstimatedIncome.getEarned();
         }
+
         contributorIncomeSummaryYearRes.setContributorIncomeSummaryMonthResList(contributorIncomeSummaryMonthResList);
+        contributorIncomeSummaryYearRes.setTotalEarned(totalEarned);
+        contributorIncomeSummaryYearRes.setTotalEstimated(totalEstimated);
         return contributorIncomeSummaryYearRes;
     }
 
@@ -156,22 +165,26 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public DriverIncomeSummaryYearRes getDriverIncomeSummary(ReportReq reportReq) {
         DriverIncomeSummaryYearRes driverIncomeSummaryYearRes = new DriverIncomeSummaryYearRes();
+
         LocalDate currentDate = LocalDate.now();
         int year = reportReq.getYear() != null ? reportReq.getYear() : currentDate.getYear();
         driverIncomeSummaryYearRes.setYear(year);
 
         List<DriverIncomeSummaryMonthRes> driverIncomeSummaryMonthResList = new ArrayList<>();
+        float totalEarned = 0;
         for (Quarter quarter : monthsInYear) {
             DriverIncomeSummaryMonthRes driverIncomeSummaryMonthRes = new DriverIncomeSummaryMonthRes();
             reportReq.setQuarter(quarter);
             driverIncomeSummaryMonthRes.setQuarter(quarter);
 
             DriverIncomeRes driverIncomeRes = reportComponent.getDriversIncomeById(reportReq);
-
             driverIncomeSummaryMonthRes.setDriverIncomeRes(driverIncomeRes);
+
             driverIncomeSummaryMonthResList.add(driverIncomeSummaryMonthRes);
+            totalEarned += driverIncomeRes.getEarnedValue();
         }
         driverIncomeSummaryYearRes.setDriverIncomeSummaryMonthResList(driverIncomeSummaryMonthResList);
+        driverIncomeSummaryYearRes.setTotalEarned(totalEarned);
         return driverIncomeSummaryYearRes;
     }
 
