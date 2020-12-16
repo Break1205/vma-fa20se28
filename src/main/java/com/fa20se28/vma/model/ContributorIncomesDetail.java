@@ -8,6 +8,7 @@ public class ContributorIncomesDetail {
     private LocalDate date;
     private float value;
     private String contractId;
+    private String contractDetailId;
 
     public String getOwnerId() {
         return ownerId;
@@ -47,5 +48,13 @@ public class ContributorIncomesDetail {
 
     public void setContractId(String contractId) {
         this.contractId = contractId;
+    }
+
+    public String getContractDetailId() {
+        return contractDetailId;
+    }
+
+    public void setContractDetailId(String contractDetailId) {
+        this.contractDetailId = contractDetailId;
     }
 }

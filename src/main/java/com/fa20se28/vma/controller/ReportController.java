@@ -15,6 +15,7 @@ import com.fa20se28.vma.response.DriverIncomeSummaryYearRes;
 import com.fa20se28.vma.response.DriversIncomeRes;
 import com.fa20se28.vma.response.MaintenanceReportRes;
 import com.fa20se28.vma.response.RevenueExpenseReportRes;
+import com.fa20se28.vma.response.RevenueExpenseSummaryYearRes;
 import com.fa20se28.vma.response.ScheduleRes;
 import com.fa20se28.vma.response.VehicleReportRes;
 import com.fa20se28.vma.service.ReportService;
@@ -111,35 +112,37 @@ public class ReportController {
                 new ReportReq(null, vehicleId, year, quarter, null, null));
     }
 
-    //TODO: FIXED
+    @GetMapping("revenue-expense")
+    public ResponseEntity<InputStreamResource> exportRevenueExpenseReport(
+            @RequestParam(required = false) String vehicleId,
+            @RequestParam(required = false) Quarter quarter,
+            @RequestParam(required = false) Integer year) throws IOException {
+        if (vehicleId != null) {
+            return reportService.exportReportByType(
+                    new ReportReq(null, vehicleId, year, quarter, ReportType.VEHICLE_REVENUE_EXPENSE, null));
+        } else {
+            return reportService.exportReportByType(
+                    new ReportReq(null, null, year, quarter, ReportType.COMPANY_REVENUE_EXPENSE, null));
+        }
+    }
 
-//    @GetMapping("revenue-expense")
-//    public ResponseEntity<InputStreamResource> exportRevenueExpenseReport(
-//            @RequestParam(required = false) String vehicleId,
-//            @RequestParam(required = false) Quarter quarter,
-//            @RequestParam(required = false) Integer year) throws IOException {
-//        if (vehicleId != null) {
-//            return reportService.exportReportByType(
-//                    new ReportReq(null, vehicleId, year, quarter, ReportType.VEHICLE_REVENUE_EXPENSE, null));
-//        } else {
-//            return reportService.exportReportByType(
-//                    new ReportReq(null, null, year, quarter, ReportType.COMPANY_REVENUE_EXPENSE, null));
-//        }
-//    }
-//
-//    @GetMapping("revenues-expenses/data")
-//    public RevenueExpenseReportRes getRevenueExpenseReportData(
-//            @RequestParam(required = false) String vehicleId,
-//            @RequestParam(required = false) Quarter quarter,
-//            @RequestParam(required = false) Integer year) {
-//        if (vehicleId != null) {
-//            return reportService.getVehicleRevenueExpenseReportData(
-//                    new ReportReq(null, vehicleId, year, quarter, null, null));
-//        } else {
-//            return reportService.getCompanyRevenueExpenseReportData(
-//                    new ReportReq(null, null, year, quarter, null, null));
-//        }
-//    }
+    @GetMapping("revenues-expenses/data")
+    public RevenueExpenseReportRes getRevenueExpenseReportData(
+            @RequestParam(required = false) String vehicleId,
+            @RequestParam(required = false) Quarter quarter,
+            @RequestParam(required = false) Integer year) {
+        return reportService.getRevenueExpenseReportData(
+                new ReportReq(null, vehicleId, year, quarter, null, null));
+    }
+
+    @GetMapping("revenues-expenses/summary/data")
+    public RevenueExpenseSummaryYearRes getRevenueExpenseSummaryReportData(
+            @RequestParam(required = false) String vehicleId,
+            @RequestParam(required = false) Quarter quarter,
+            @RequestParam(required = false) Integer year) {
+        return reportService.getRevenueExpenseSummaryReportData(
+                new ReportReq(null, vehicleId, year, quarter, null, null));
+    }
 
     @GetMapping("contributor-income")
     public ResponseEntity<InputStreamResource> exportContributorsIncomesReport(
