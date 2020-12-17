@@ -119,6 +119,9 @@ public class RequestServiceImpl implements RequestService {
             ClientRegistrationToken clientRegistrationToken = userComponent.findClientRegistrationTokenByUserId(requestDetail.getUserId());
             if (requestStatus.equals(RequestStatus.ACCEPTED)) {
                 if (acceptRequest(requestDetail) == 1) {
+                    if (clientRegistrationToken == null) {
+                        return 0;
+                    }
                     NotificationData notificationData = new NotificationData(
                             NotificationType.REQUEST_ACCEPTED,
                             "Request " + requestDetail.getRequestType() + " with id " + requestId + " has been accepted",
@@ -129,6 +132,9 @@ public class RequestServiceImpl implements RequestService {
                 return 0;
             } else if (requestStatus.equals(RequestStatus.DENIED)) {
                 if (denyRequest(requestDetail) == 1) {
+                    if (clientRegistrationToken == null) {
+                        return 0;
+                    }
                     NotificationData notificationData = new NotificationData(
                             NotificationType.REQUEST_DENIED,
                             "Request " + requestDetail.getRequestType() + " with id " + requestId + " has been denied",
