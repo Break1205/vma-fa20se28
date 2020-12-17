@@ -121,19 +121,20 @@ public class FirebaseServiceImpl implements FirebaseService {
         } else {
             return;
         }
-        Message message = Message.builder().setWebpushConfig( // web
-                WebpushConfig.builder()
-                        .setNotification(
-                                WebpushNotification.builder()
-                                        .setTitle(title)
-                                        .setBody(notificationData.getBody())
-                                        .setSilent(false)
-                                        .setRenotify(true)
-                                        .setRequireInteraction(true)
-                                        .build())
-                        .putData("id", notificationData.getId())
-                        .putData("notificationType", notificationData.getNotificationType().toString())
-                        .build())
+        Message message = Message.builder()
+                .setWebpushConfig( // web
+                        WebpushConfig.builder()
+                                .setNotification(
+                                        WebpushNotification.builder()
+                                                .setTitle(title)
+                                                .setBody(notificationData.getBody())
+                                                .setSilent(false)
+                                                .setRenotify(true)
+                                                .setRequireInteraction(true)
+                                                .build())
+                                .putData("id", notificationData.getId())
+                                .putData("notificationType", notificationData.getNotificationType().toString())
+                                .build())
                 .setTopic("admin").build();
         try {
             FirebaseMessaging.getInstance().send(message);

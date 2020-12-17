@@ -18,5 +18,5 @@ public interface FirebaseService {
 
     void notifySubscribersByTopic(String topic, NotificationData notificationData);
 
-    void subscribeUserToTopic(ClientRegistrationToken clientRegistrationToken, String admin);
+    void subscribeUserToTopic(ClientRegistrationToken clientRegistrationToken, String topic);
 }
