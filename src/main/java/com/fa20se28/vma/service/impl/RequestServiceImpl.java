@@ -46,18 +46,26 @@ public class RequestServiceImpl implements RequestService {
         this.firebaseService = firebaseService;
     }
 
+    private int createNotificationForAdmin(int requestId, String userId) {
+        if (requestId >= 1) {
+            NotificationData createReq = new NotificationData(
+                    NotificationType.CREATE_REQUEST,
+                    "User with id: " + userId + " has sent a new request!",
+                    String.valueOf(requestId));
+
+            firebaseService.notifySubscribersByTopic("admin", createReq);
+            return 1;
+        }
+        return 0;
+    }
+
     @Override
     public int createNewDocumentRequest(RequestReq requestReq) {
         Authentication authentication = authenticationComponent.getAuthentication();
+
         if (userDocumentComponent.createUserDocumentWithRequest(
                 requestReq.getUserDocumentReq(), authentication.getName()) == 1) {
-            if (requestComponent
-                    .createRequest(
-                            requestReq,
-                            authentication.getName()) == 1) {
-                return 1;
-            }
-            return 0;
+            createNotificationForAdmin(requestComponent.createRequest(requestReq, authentication.getName()), authentication.getName());
         }
         return 0;
     }
@@ -67,13 +75,7 @@ public class RequestServiceImpl implements RequestService {
         Authentication authentication = authenticationComponent.getAuthentication();
         if (userDocumentComponent.updateUserDocumentWithRequest(
                 requestReq.getUserDocumentReq(), authentication.getName()) == 1) {
-            if (requestComponent
-                    .createRequest(
-                            requestReq,
-                            authentication.getName()) == 1) {
-                return 1;
-            }
-            return 0;
+            createNotificationForAdmin(requestComponent.createRequest(requestReq, authentication.getName()), authentication.getName());
         }
         return 0;
     }
@@ -81,13 +83,7 @@ public class RequestServiceImpl implements RequestService {
     @Override
     public int createDeleteDocumentRequest(RequestReq requestReq) {
         Authentication authentication = authenticationComponent.getAuthentication();
-        if (requestComponent
-                .createRequest(
-                        requestReq,
-                        authentication.getName()) == 1) {
-            return 1;
-        }
-        return 0;
+        return createNotificationForAdmin(requestComponent.createRequest(requestReq, authentication.getName()), authentication.getName());
     }
 
     @Override
@@ -236,11 +232,7 @@ public class RequestServiceImpl implements RequestService {
             vehicleDocumentComponent.createVehicleDocumentFromRequest(vehicleDocumentRequestReq.getVehicleDocument());
         }
 
-        if (requestComponent.createVehicleDocumentRequest(vehicleDocumentRequestReq, authentication.getName()) == 1) {
-            return 1;
-        }
-
-        return 0;
+        return createNotificationForAdmin(requestComponent.createVehicleDocumentRequest(vehicleDocumentRequestReq, authentication.getName()),  authentication.getName());
     }
 
     @Override
@@ -251,22 +243,14 @@ public class RequestServiceImpl implements RequestService {
             vehicleComponent.createVehicleFromRequest(vehicleRequestReq.getVehicleReq());
         }
 
-        if (requestComponent.createVehicleRequest(vehicleRequestReq, authentication.getName()) == 1) {
-            return 1;
-        }
-
-        return 0;
+        return createNotificationForAdmin(requestComponent.createVehicleRequest(vehicleRequestReq, authentication.getName()), authentication.getName());
     }
 
     @Override
     public int createVehicleChangeRequest(VehicleChangeRequestReq vehicleChangeRequestReq) {
         Authentication authentication = authenticationComponent.getAuthentication();
 
-        if (requestComponent.createVehicleChangeRequest(vehicleChangeRequestReq, authentication.getName()) == 1) {
-            return 1;
-        }
-
-        return 0;
+        return createNotificationForAdmin(requestComponent.createVehicleChangeRequest(vehicleChangeRequestReq, authentication.getName()), authentication.getName());
     }
 
     @Override
@@ -294,10 +278,6 @@ public class RequestServiceImpl implements RequestService {
     public int reportIssue(ReportIssueReq reportIssueReq) {
         Authentication authentication = authenticationComponent.getAuthentication();
 
-        if (requestComponent.reportIssueRequest(reportIssueReq, authentication.getName()) == 1) {
-            return 1;
-        }
-
-        return 0;
+        return createNotificationForAdmin(requestComponent.reportIssueRequest(reportIssueReq, authentication.getName()), authentication.getName());
     }
 }

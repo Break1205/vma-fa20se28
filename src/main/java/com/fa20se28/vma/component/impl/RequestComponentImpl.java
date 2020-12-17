@@ -1,6 +1,7 @@
 package com.fa20se28.vma.component.impl;
 
 import com.fa20se28.vma.component.RequestComponent;
+import com.fa20se28.vma.configuration.exception.DataException;
 import com.fa20se28.vma.configuration.exception.ResourceNotFoundException;
 import com.fa20se28.vma.enums.RequestStatus;
 import com.fa20se28.vma.mapper.RequestMapper;
@@ -10,6 +11,7 @@ import com.fa20se28.vma.response.RequestRes;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,13 +26,22 @@ public class RequestComponentImpl implements RequestComponent {
     @Override
     @Transactional
     public int createRequest(RequestReq requestReq, String userId) {
-        return requestMapper.insertRequest(
+        ReqInsertReq insertReq = new ReqInsertReq(
                 userId,
                 requestReq.getUserDocumentReq().getUserDocumentId(),
                 null, null,
                 RequestStatus.PENDING,
                 requestReq.getRequestType(),
-                requestReq.getDescription());
+                requestReq.getDescription(),
+                LocalDateTime.now());
+
+        int row = requestMapper.insertRequest(insertReq);
+
+        if (row == 0) {
+            throw new DataException("Unknown error occurred. Data not modified!");
+        }
+
+        return insertReq.getRequestId();
     }
 
     @Override
@@ -60,45 +71,81 @@ public class RequestComponentImpl implements RequestComponent {
     @Override
     @Transactional
     public int createVehicleDocumentRequest(VehicleDocumentRequestReq vehicleDocumentRequestReq, String userId) {
-        return requestMapper.insertRequest(
+        ReqInsertReq insertReq = new ReqInsertReq(
                 userId, null,
                 vehicleDocumentRequestReq.getVehicleDocument().getVehicleId(),
                 vehicleDocumentRequestReq.getVehicleDocument().getVehicleDocumentReq().getVehicleDocumentId(),
                 RequestStatus.PENDING,
                 vehicleDocumentRequestReq.getRequestType(),
-                vehicleDocumentRequestReq.getDescription());
+                vehicleDocumentRequestReq.getDescription(),
+                LocalDateTime.now());
+
+        int row =  requestMapper.insertRequest(insertReq);
+
+        if (row == 0) {
+            throw new DataException("Unknown error occurred. Data not modified!");
+        }
+
+        return insertReq.getRequestId();
     }
 
     @Override
     @Transactional
     public int createVehicleRequest(VehicleRequestReq vehicleRequestReq, String userId) {
-        return requestMapper.insertRequest(
+        ReqInsertReq insertReq = new ReqInsertReq(
                 userId, null,
                 vehicleRequestReq.getVehicleReq().getVehicleId(),
                 null,
                 RequestStatus.PENDING,
                 vehicleRequestReq.getRequestType(),
-                vehicleRequestReq.getDescription());
+                vehicleRequestReq.getDescription(),
+                LocalDateTime.now());
+
+        int row =  requestMapper.insertRequest(insertReq);
+
+        if (row == 0) {
+            throw new DataException("Unknown error occurred. Data not modified!");
+        }
+
+        return insertReq.getRequestId();
     }
 
     @Override
     @Transactional
     public int createVehicleChangeRequest(VehicleChangeRequestReq vehicleChangeRequestReq, String userId) {
-        return requestMapper.insertRequest(
+        ReqInsertReq insertReq = new ReqInsertReq(
                 userId, null, null, null,
                 RequestStatus.PENDING,
                 vehicleChangeRequestReq.getRequestType(),
-                vehicleChangeRequestReq.getDescription());
+                vehicleChangeRequestReq.getDescription(),
+                LocalDateTime.now());
+
+        int row =  requestMapper.insertRequest(insertReq);
+
+        if (row == 0) {
+            throw new DataException("Unknown error occurred. Data not modified!");
+        }
+
+        return insertReq.getRequestId();
     }
 
     @Override
     @Transactional
     public int reportIssueRequest(ReportIssueReq reportIssueReq, String userId) {
-        return requestMapper.insertRequest(
+        ReqInsertReq insertReq = new ReqInsertReq(
                 userId, null,
                 reportIssueReq.getVehicleId(), null,
                 RequestStatus.PENDING,
                 reportIssueReq.getRequestType(),
-                reportIssueReq.getDescription());
+                reportIssueReq.getDescription(),
+                LocalDateTime.now());
+
+        int row =  requestMapper.insertRequest(insertReq);
+
+        if (row == 0) {
+            throw new DataException("Unknown error occurred. Data not modified!");
+        }
+
+        return insertReq.getRequestId();
     }
 }
