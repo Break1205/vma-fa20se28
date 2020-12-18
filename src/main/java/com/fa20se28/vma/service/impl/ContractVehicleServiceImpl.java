@@ -2,8 +2,10 @@ package com.fa20se28.vma.service.impl;
 
 import com.fa20se28.vma.component.ContractVehicleComponent;
 import com.fa20se28.vma.component.UserComponent;
+import com.fa20se28.vma.component.VehicleComponent;
 import com.fa20se28.vma.enums.ContractVehicleStatus;
 import com.fa20se28.vma.enums.NotificationType;
+import com.fa20se28.vma.model.ClientRegistrationToken;
 import com.fa20se28.vma.model.NotificationData;
 import com.fa20se28.vma.request.*;
 import com.fa20se28.vma.response.ContractVehicleRes;
@@ -19,11 +21,13 @@ public class ContractVehicleServiceImpl implements ContractVehicleService {
     private final ContractVehicleComponent contractVehicleComponent;
     private final UserComponent userComponent;
     private final FirebaseService firebaseService;
+    private final VehicleComponent vehicleComponent;
 
-    public ContractVehicleServiceImpl(ContractVehicleComponent contractVehicleComponent, UserComponent userComponent, FirebaseService firebaseService) {
+    public ContractVehicleServiceImpl(ContractVehicleComponent contractVehicleComponent, UserComponent userComponent, FirebaseService firebaseService, VehicleComponent vehicleComponent) {
         this.contractVehicleComponent = contractVehicleComponent;
         this.userComponent = userComponent;
         this.firebaseService = firebaseService;
+        this.vehicleComponent = vehicleComponent;
     }
 
     @Override
@@ -39,6 +43,16 @@ public class ContractVehicleServiceImpl implements ContractVehicleService {
     @Override
     public void assignVehicleForContract(ContractVehicleReq contractVehicleReq) {
         contractVehicleComponent.assignVehicleForContract(contractVehicleReq);
+
+        ClientRegistrationToken clientRegistrationToken = userComponent.findClientRegistrationTokenByUserId(
+                vehicleComponent.getCurrentDriver(contractVehicleReq.getVehicleId()).getUserId());
+
+        NotificationData notificationData = new NotificationData(
+                NotificationType.CONTRACT_ASSIGNED,
+                "You have been assigned with a trip!",
+                String.valueOf(contractVehicleReq.getContractDetailId()));
+
+        firebaseService.notifyUserByFCMToken(clientRegistrationToken, notificationData);
     }
 
     @Override

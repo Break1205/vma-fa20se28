@@ -52,4 +52,6 @@ public interface VehicleComponent {
     List<VehicleStatusCount> getStatusCount(String ownerId);
 
     int getTotalVehicle(String ownerId);
+
+    UserBasic getCurrentDriver(String vehicleId);
 }

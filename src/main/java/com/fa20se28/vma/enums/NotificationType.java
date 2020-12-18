@@ -6,6 +6,7 @@ public enum NotificationType {
     CONTRACT_STARTED, // web
     CONTRACT_COMPLETED, // web
     CONTRACT_ASSIGNED, // mobile
+    CONTRACT_DROPPED, // mobile
     START_TRIP, // web
     END_TRIP, // web
     LICENSE_EXPIRED, // mobile
