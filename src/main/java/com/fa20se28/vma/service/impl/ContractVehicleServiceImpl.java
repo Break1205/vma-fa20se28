@@ -47,13 +47,15 @@ public class ContractVehicleServiceImpl implements ContractVehicleService {
         ClientRegistrationToken clientRegistrationToken = userComponent.findClientRegistrationTokenByUserId(
                 vehicleComponent.getCurrentDriver(contractVehicleReq.getVehicleId()).getUserId());
 
-        NotificationData notificationData = new NotificationData(
-                NotificationType.CONTRACT_ASSIGNED,
-                "You have been assigned with a trip!",
-                String.valueOf(contractVehicleReq.getContractDetailId()),
-                null);
+       if (clientRegistrationToken != null) {
+           NotificationData notificationData = new NotificationData(
+                   NotificationType.CONTRACT_ASSIGNED,
+                   "You have been assigned with a trip!",
+                   String.valueOf(contractVehicleReq.getContractDetailId()),
+                   null);
 
-        firebaseService.notifyUserByFCMToken(clientRegistrationToken, notificationData);
+           firebaseService.notifyUserByFCMToken(clientRegistrationToken, notificationData);
+       }
     }
 
     @Override
