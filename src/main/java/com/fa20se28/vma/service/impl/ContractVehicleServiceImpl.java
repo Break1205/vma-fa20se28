@@ -50,7 +50,8 @@ public class ContractVehicleServiceImpl implements ContractVehicleService {
         NotificationData notificationData = new NotificationData(
                 NotificationType.CONTRACT_ASSIGNED,
                 "You have been assigned with a trip!",
-                String.valueOf(contractVehicleReq.getContractDetailId()));
+                String.valueOf(contractVehicleReq.getContractDetailId()),
+                null);
 
         firebaseService.notifyUserByFCMToken(clientRegistrationToken, notificationData);
     }
@@ -84,7 +85,8 @@ public class ContractVehicleServiceImpl implements ContractVehicleService {
             NotificationData startContractData = new NotificationData(
                     NotificationType.CONTRACT_STARTED,
                     "Contract with ID " + tripReq.getContractId() + " is in progress",
-                    String.valueOf(tripReq.getContractId()));
+                    String.valueOf(tripReq.getContractId())
+                    , null);
 
             firebaseService.notifySubscribersByTopic("admin", startContractData);
         }
@@ -92,7 +94,8 @@ public class ContractVehicleServiceImpl implements ContractVehicleService {
         NotificationData startTripData = new NotificationData(
                 NotificationType.START_TRIP,
                 "Vehicle with ID " + tripReq.getVehicleId() + " assigned to contract with ID " + tripReq.getContractId() + " is on route",
-                String.valueOf(tripReq.getVehicleId()));
+                String.valueOf(tripReq.getVehicleId())
+                , null);
 
         firebaseService.notifySubscribersByTopic("admin", startTripData);
     }
@@ -104,7 +107,8 @@ public class ContractVehicleServiceImpl implements ContractVehicleService {
         NotificationData endTripData = new NotificationData(
                 NotificationType.END_TRIP,
                 "Vehicle with ID " + tripReq.getVehicleId() + " assigned to contract with ID " + tripReq.getContractId() + " is finished",
-                String.valueOf(tripReq.getVehicleId()));
+                String.valueOf(tripReq.getVehicleId())
+                , null);
 
         firebaseService.notifySubscribersByTopic("admin", endTripData);
 
@@ -112,7 +116,8 @@ public class ContractVehicleServiceImpl implements ContractVehicleService {
             NotificationData endContractData = new NotificationData(
                     NotificationType.CONTRACT_COMPLETED,
                     "Contract with ID " + tripReq.getContractId() + " is completed",
-                    String.valueOf(tripReq.getContractId()));
+                    String.valueOf(tripReq.getContractId()),
+                    null);
 
             firebaseService.notifySubscribersByTopic("admin", endContractData);
         }

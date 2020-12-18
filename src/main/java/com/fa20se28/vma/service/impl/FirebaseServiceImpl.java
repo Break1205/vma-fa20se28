@@ -104,7 +104,7 @@ public class FirebaseServiceImpl implements FirebaseService {
             title = "Contract Status";
         } else if (notificationData.getNotificationType().equals(NotificationType.CONTRACT_COMPLETED)) {
             title = "Contract Status";
-        } else if (notificationData.getNotificationType().equals(NotificationType.CREATE_REQUEST)) {
+        } else if (notificationData.getNotificationType().equals(NotificationType.NEW_REQUEST)) {
             title = "New Request";
         } else {
             return;
@@ -122,6 +122,7 @@ public class FirebaseServiceImpl implements FirebaseService {
                                                 .build())
                                 .putData("id", notificationData.getId())
                                 .putData("notificationType", notificationData.getNotificationType().toString())
+                                .putData("requestType", notificationData.getRequestType() != null ? notificationData.getRequestType() : "")
                                 .build())
                 .setTopic("admin").build();
         try {
