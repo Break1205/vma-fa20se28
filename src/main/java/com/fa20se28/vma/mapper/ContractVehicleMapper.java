@@ -145,6 +145,7 @@ public interface ContractVehicleMapper {
             "WHERE vs.vehicle_status = 'REJECTED' " +
             "OR vs.vehicle_status = 'PENDING_APPROVAL' " +
             "OR vs.vehicle_status = 'DELETED' " +
+            "OR vs.vehicle_status = 'AVAILABLE_NO_DRIVER' " +
             ") " +
             "<if test = \"vr_req.seatsMin != 0\" > " +
             "AND v.seats &gt;= #{vr_req.seatsMin} " +
@@ -208,6 +209,7 @@ public interface ContractVehicleMapper {
             "WHERE vs.vehicle_status = 'REJECTED' " +
             "OR vs.vehicle_status = 'PENDING_APPROVAL' " +
             "OR vs.vehicle_status = 'DELETED' " +
+            "OR vs.vehicle_status = 'AVAILABLE_NO_DRIVER' " +
             ") " +
             "<if test = \"vr_req.seatsMin != 0\" > " +
             "AND v.seats &gt;= #{vr_req.seatsMin} " +
