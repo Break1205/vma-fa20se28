@@ -42,13 +42,15 @@ public class ContractServiceImpl implements ContractService {
                     ClientRegistrationToken clientRegistrationToken = userComponent.findClientRegistrationTokenByUserId(
                             vehicleComponent.getCurrentDriver(vehicleId).getUserId());
 
-                    NotificationData notificationData = new NotificationData(
-                            NotificationType.CONTRACT_ASSIGNED,
-                            "You have been assigned with a trip!",
-                            String.valueOf(trip.getContractTripId())
-                            , null);
+                    if (clientRegistrationToken != null) {
+                        NotificationData notificationData = new NotificationData(
+                                NotificationType.CONTRACT_ASSIGNED,
+                                "You have been assigned with a trip!",
+                                String.valueOf(trip.getContractTripId())
+                                , null);
 
-                    firebaseService.notifyUserByFCMToken(clientRegistrationToken, notificationData);
+                        firebaseService.notifyUserByFCMToken(clientRegistrationToken, notificationData);
+                    }
                 }
             }
         } else {
@@ -57,13 +59,15 @@ public class ContractServiceImpl implements ContractService {
                     ClientRegistrationToken clientRegistrationToken = userComponent.findClientRegistrationTokenByUserId(
                             vehicleComponent.getCurrentDriver(vehicleId).getUserId());
 
-                    NotificationData notificationData = new NotificationData(
-                            NotificationType.CONTRACT_DROPPED,
-                            "Your trip has been dropped!",
-                            String.valueOf(trip.getContractTripId())
-                            , null);
+                    if (clientRegistrationToken != null) {
+                        NotificationData notificationData = new NotificationData(
+                                NotificationType.CONTRACT_DROPPED,
+                                "Your trip has been dropped!",
+                                String.valueOf(trip.getContractTripId())
+                                , null);
 
-                    firebaseService.notifyUserByFCMToken(clientRegistrationToken, notificationData);
+                        firebaseService.notifyUserByFCMToken(clientRegistrationToken, notificationData);
+                    }
                 }
             }
         }

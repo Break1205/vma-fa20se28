@@ -805,7 +805,7 @@ public class ReportComponentImpl implements ReportComponent {
                         firstAndLast.get(0).toString(),
                         firstAndLast.get(1).toString());
 
-        long totalDaysInThisQuarter = firstAndLast.get(0).until(firstAndLast.get(1), ChronoUnit.DAYS);
+        long totalDaysInThisQuarter = firstAndLast.get(0).until(firstAndLast.get(1), ChronoUnit.DAYS) + 1;
         // calculate estimated
 
         float estimatedValue = 0;
@@ -819,7 +819,7 @@ public class ReportComponentImpl implements ReportComponent {
                 totalDays = contributorIncome.getStartDate().until(contributorIncome.getEndDate(), ChronoUnit.DAYS);
                 estimatedValue += (contributorIncome.getValue() / 30) * totalDays;
             } else {
-                totalDays = firstAndLast.get(0).until(contributorIncome.getEndDate(), ChronoUnit.DAYS);
+                totalDays = firstAndLast.get(0).until(contributorIncome.getEndDate(), ChronoUnit.DAYS) + 1;
                 if (totalDays <= totalDaysInThisQuarter) {
                     estimatedValue += (contributorIncome.getValue() / 30) * totalDays;
                 }
