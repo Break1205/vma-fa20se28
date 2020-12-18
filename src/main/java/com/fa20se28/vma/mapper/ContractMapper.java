@@ -8,14 +8,7 @@ import com.fa20se28.vma.model.ContractTrip;
 import com.fa20se28.vma.model.ContractTripSchedule;
 import com.fa20se28.vma.request.ContractPageReq;
 import com.fa20se28.vma.request.ContractReq;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Many;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.Results;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -59,6 +52,7 @@ public interface ContractMapper {
             "#{c_request.isRoundTrip}, " +
             "#{c_request.otherInformation}, " +
             "getDate()) ")
+    @Options(keyProperty = "c_request.contractId", useGeneratedKeys = true)
     int createContract(
             @Param("c_request") ContractReq contractReq,
             @Param("c_status") ContractStatus status);

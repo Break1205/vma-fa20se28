@@ -1,8 +1,8 @@
 package com.fa20se28.vma.mapper;
 
 import com.fa20se28.vma.enums.RequestStatus;
-import com.fa20se28.vma.enums.RequestType;
 import com.fa20se28.vma.model.RequestDetail;
+import com.fa20se28.vma.request.ReqInsertReq;
 import com.fa20se28.vma.request.RequestPageReq;
 import com.fa20se28.vma.response.RequestRes;
 import org.apache.ibatis.annotations.*;
@@ -23,22 +23,16 @@ public interface RequestMapper {
             "create_date, " +
             "description) " +
             "VALUES " +
-            "(#{r_u_id}, " +
-            "#{r_ud_id}, " +
-            "#{r_v_id}, " +
-            "#{r_vd_id}, " +
-            "#{r_status}, " +
-            "#{r_req_type}, " +
-            "getDate(), " +
-            "#{r_desc}) ")
-    int insertRequest(
-            @Param("r_u_id") String userId,
-            @Param("r_ud_id") String userDocumentId,
-            @Param("r_v_id") String vehicleId,
-            @Param("r_vd_id") String vehicleDocId,
-            @Param("r_status") RequestStatus requestStatus,
-            @Param("r_req_type") RequestType requestType,
-            @Param("r_desc") String desc);
+            "(#{r_insert.userId}, " +
+            "#{r_insert.userDocumentId}, " +
+            "#{r_insert.vehicleId}, " +
+            "#{r_insert.vehicleDocId}, " +
+            "#{r_insert.requestStatus}, " +
+            "#{r_insert.requestType}, " +
+            "#{r_insert.createDate}, " +
+            "#{r_insert.desc}) ")
+    @Options(keyProperty = "requestId", useGeneratedKeys = true)
+    int insertRequest(@Param("r_insert") ReqInsertReq object);
 
     @Select({"<script>" +
             "SELECT \n" +

@@ -2,8 +2,10 @@ package com.fa20se28.vma.service.impl;
 
 import com.fa20se28.vma.component.ContractVehicleComponent;
 import com.fa20se28.vma.component.UserComponent;
+import com.fa20se28.vma.component.VehicleComponent;
 import com.fa20se28.vma.enums.ContractVehicleStatus;
 import com.fa20se28.vma.enums.NotificationType;
+import com.fa20se28.vma.model.ClientRegistrationToken;
 import com.fa20se28.vma.model.NotificationData;
 import com.fa20se28.vma.request.*;
 import com.fa20se28.vma.response.ContractVehicleRes;
@@ -19,11 +21,13 @@ public class ContractVehicleServiceImpl implements ContractVehicleService {
     private final ContractVehicleComponent contractVehicleComponent;
     private final UserComponent userComponent;
     private final FirebaseService firebaseService;
+    private final VehicleComponent vehicleComponent;
 
-    public ContractVehicleServiceImpl(ContractVehicleComponent contractVehicleComponent, UserComponent userComponent, FirebaseService firebaseService) {
+    public ContractVehicleServiceImpl(ContractVehicleComponent contractVehicleComponent, UserComponent userComponent, FirebaseService firebaseService, VehicleComponent vehicleComponent) {
         this.contractVehicleComponent = contractVehicleComponent;
         this.userComponent = userComponent;
         this.firebaseService = firebaseService;
+        this.vehicleComponent = vehicleComponent;
     }
 
     @Override
@@ -39,6 +43,17 @@ public class ContractVehicleServiceImpl implements ContractVehicleService {
     @Override
     public void assignVehicleForContract(ContractVehicleReq contractVehicleReq) {
         contractVehicleComponent.assignVehicleForContract(contractVehicleReq);
+
+        ClientRegistrationToken clientRegistrationToken = userComponent.findClientRegistrationTokenByUserId(
+                vehicleComponent.getCurrentDriver(contractVehicleReq.getVehicleId()).getUserId());
+
+        NotificationData notificationData = new NotificationData(
+                NotificationType.CONTRACT_ASSIGNED,
+                "You have been assigned with a trip!",
+                String.valueOf(contractVehicleReq.getContractDetailId()),
+                null);
+
+        firebaseService.notifyUserByFCMToken(clientRegistrationToken, notificationData);
     }
 
     @Override
@@ -70,7 +85,8 @@ public class ContractVehicleServiceImpl implements ContractVehicleService {
             NotificationData startContractData = new NotificationData(
                     NotificationType.CONTRACT_STARTED,
                     "Contract with ID " + tripReq.getContractId() + " is in progress",
-                    String.valueOf(tripReq.getContractId()));
+                    String.valueOf(tripReq.getContractId())
+                    , null);
 
             firebaseService.notifySubscribersByTopic("admin", startContractData);
         }
@@ -78,7 +94,8 @@ public class ContractVehicleServiceImpl implements ContractVehicleService {
         NotificationData startTripData = new NotificationData(
                 NotificationType.START_TRIP,
                 "Vehicle with ID " + tripReq.getVehicleId() + " assigned to contract with ID " + tripReq.getContractId() + " is on route",
-                String.valueOf(tripReq.getVehicleId()));
+                String.valueOf(tripReq.getVehicleId())
+                , null);
 
         firebaseService.notifySubscribersByTopic("admin", startTripData);
     }
@@ -90,7 +107,8 @@ public class ContractVehicleServiceImpl implements ContractVehicleService {
         NotificationData endTripData = new NotificationData(
                 NotificationType.END_TRIP,
                 "Vehicle with ID " + tripReq.getVehicleId() + " assigned to contract with ID " + tripReq.getContractId() + " is finished",
-                String.valueOf(tripReq.getVehicleId()));
+                String.valueOf(tripReq.getVehicleId())
+                , null);
 
         firebaseService.notifySubscribersByTopic("admin", endTripData);
 
@@ -98,7 +116,8 @@ public class ContractVehicleServiceImpl implements ContractVehicleService {
             NotificationData endContractData = new NotificationData(
                     NotificationType.CONTRACT_COMPLETED,
                     "Contract with ID " + tripReq.getContractId() + " is completed",
-                    String.valueOf(tripReq.getContractId()));
+                    String.valueOf(tripReq.getContractId()),
+                    null);
 
             firebaseService.notifySubscribersByTopic("admin", endContractData);
         }

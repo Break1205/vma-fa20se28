@@ -346,4 +346,9 @@ public class VehicleComponentImpl implements VehicleComponent {
     public int getTotalVehicle(String ownerId) {
         return vehicleMapper.getTotalVehicle(ownerId);
     }
+
+    @Override
+    public UserBasic getCurrentDriver(String vehicleId) {
+        return issuedVehicleMapper.getAssignedDriver(vehicleId);
+    }
 }
