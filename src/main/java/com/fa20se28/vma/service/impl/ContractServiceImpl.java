@@ -37,29 +37,31 @@ public class ContractServiceImpl implements ContractService {
 
     private void createNotificationForUser(List<ContractTripReq> contractTripReqs, List<ContractTrip> contractTrips, boolean newTrip) {
         if (newTrip) {
-            for (ContractTripReq trip: contractTripReqs) {
-                for (String vehicleId: trip.getAssignedVehicles()) {
+            for (ContractTripReq trip : contractTripReqs) {
+                for (String vehicleId : trip.getAssignedVehicles()) {
                     ClientRegistrationToken clientRegistrationToken = userComponent.findClientRegistrationTokenByUserId(
                             vehicleComponent.getCurrentDriver(vehicleId).getUserId());
 
                     NotificationData notificationData = new NotificationData(
                             NotificationType.CONTRACT_ASSIGNED,
                             "You have been assigned with a trip!",
-                            String.valueOf(trip.getContractTripId()));
+                            String.valueOf(trip.getContractTripId())
+                            , null);
 
                     firebaseService.notifyUserByFCMToken(clientRegistrationToken, notificationData);
                 }
             }
         } else {
-            for (ContractTrip trip: contractTrips) {
-                for (String vehicleId: trip.getAssignedVehicles()) {
+            for (ContractTrip trip : contractTrips) {
+                for (String vehicleId : trip.getAssignedVehicles()) {
                     ClientRegistrationToken clientRegistrationToken = userComponent.findClientRegistrationTokenByUserId(
                             vehicleComponent.getCurrentDriver(vehicleId).getUserId());
 
                     NotificationData notificationData = new NotificationData(
                             NotificationType.CONTRACT_DROPPED,
                             "Your trip has been dropped!",
-                            String.valueOf(trip.getContractTripId()));
+                            String.valueOf(trip.getContractTripId())
+                            , null);
 
                     firebaseService.notifyUserByFCMToken(clientRegistrationToken, notificationData);
                 }

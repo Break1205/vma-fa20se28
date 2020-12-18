@@ -9,11 +9,13 @@ public class NotificationData {
     // because we user fcm token to send to the specific client mobile already
     // this is for mobile/web to handle their flow
     private String id;
+    private String requestType;
 
-    public NotificationData(NotificationType notificationType, String body, String id) {
+    public NotificationData(NotificationType notificationType, String body, String id, String requestType) {
         this.notificationType = notificationType;
         this.body = body;
         this.id = id;
+        this.requestType = requestType;
     }
 
     public NotificationType getNotificationType() {
@@ -38,5 +40,13 @@ public class NotificationData {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getRequestType() {
+        return requestType;
+    }
+
+    public void setRequestType(String requestType) {
+        this.requestType = requestType;
     }
 }

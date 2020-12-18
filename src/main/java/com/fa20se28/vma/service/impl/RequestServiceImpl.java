@@ -1,6 +1,11 @@
 package com.fa20se28.vma.service.impl;
 
-import com.fa20se28.vma.component.*;
+import com.fa20se28.vma.component.AuthenticationComponent;
+import com.fa20se28.vma.component.RequestComponent;
+import com.fa20se28.vma.component.UserComponent;
+import com.fa20se28.vma.component.UserDocumentComponent;
+import com.fa20se28.vma.component.VehicleComponent;
+import com.fa20se28.vma.component.VehicleDocumentComponent;
 import com.fa20se28.vma.component.impl.UserDocumentComponentImpl;
 import com.fa20se28.vma.configuration.exception.RequestAlreadyHandledException;
 import com.fa20se28.vma.enums.NotificationType;
@@ -11,7 +16,12 @@ import com.fa20se28.vma.model.AssignedVehicle;
 import com.fa20se28.vma.model.ClientRegistrationToken;
 import com.fa20se28.vma.model.NotificationData;
 import com.fa20se28.vma.model.RequestDetail;
-import com.fa20se28.vma.request.*;
+import com.fa20se28.vma.request.ReportIssueReq;
+import com.fa20se28.vma.request.RequestPageReq;
+import com.fa20se28.vma.request.RequestReq;
+import com.fa20se28.vma.request.VehicleChangeRequestReq;
+import com.fa20se28.vma.request.VehicleDocumentRequestReq;
+import com.fa20se28.vma.request.VehicleRequestReq;
 import com.fa20se28.vma.response.RequestDetailRes;
 import com.fa20se28.vma.response.RequestPageRes;
 import com.fa20se28.vma.service.FirebaseService;
@@ -46,13 +56,13 @@ public class RequestServiceImpl implements RequestService {
         this.firebaseService = firebaseService;
     }
 
-    private int createNotificationForAdmin(int requestId, String userId) {
+    private int createNotificationForAdmin(int requestId, String userId, RequestType requestType) {
         if (requestId >= 1) {
             NotificationData createReq = new NotificationData(
-                    NotificationType.CREATE_REQUEST,
+                    NotificationType.NEW_REQUEST,
                     "User with id: " + userId + " has sent a new request!",
-                    String.valueOf(requestId));
-
+                    String.valueOf(requestId),
+                    requestType.toString());
             firebaseService.notifySubscribersByTopic("admin", createReq);
             return 1;
         }
@@ -65,7 +75,10 @@ public class RequestServiceImpl implements RequestService {
 
         if (userDocumentComponent.createUserDocumentWithRequest(
                 requestReq.getUserDocumentReq(), authentication.getName()) == 1) {
-            createNotificationForAdmin(requestComponent.createRequest(requestReq, authentication.getName()), authentication.getName());
+            createNotificationForAdmin(
+                    requestComponent.createRequest(requestReq, authentication.getName()),
+                    authentication.getName(),
+                    requestReq.getRequestType());
         }
         return 0;
     }
@@ -75,7 +88,10 @@ public class RequestServiceImpl implements RequestService {
         Authentication authentication = authenticationComponent.getAuthentication();
         if (userDocumentComponent.updateUserDocumentWithRequest(
                 requestReq.getUserDocumentReq(), authentication.getName()) == 1) {
-            createNotificationForAdmin(requestComponent.createRequest(requestReq, authentication.getName()), authentication.getName());
+            createNotificationForAdmin(
+                    requestComponent.createRequest(requestReq, authentication.getName()),
+                    authentication.getName(),
+                    requestReq.getRequestType());
         }
         return 0;
     }
@@ -83,7 +99,10 @@ public class RequestServiceImpl implements RequestService {
     @Override
     public int createDeleteDocumentRequest(RequestReq requestReq) {
         Authentication authentication = authenticationComponent.getAuthentication();
-        return createNotificationForAdmin(requestComponent.createRequest(requestReq, authentication.getName()), authentication.getName());
+        return createNotificationForAdmin(
+                requestComponent.createRequest(requestReq, authentication.getName()),
+                authentication.getName(),
+                requestReq.getRequestType());
     }
 
     @Override
@@ -121,7 +140,8 @@ public class RequestServiceImpl implements RequestService {
                     NotificationData notificationData = new NotificationData(
                             NotificationType.REQUEST_ACCEPTED,
                             "Request " + requestDetail.getRequestType() + " with id " + requestId + " has been accepted",
-                            String.valueOf(requestId));
+                            String.valueOf(requestId),
+                            null);
                     firebaseService.notifyUserByFCMToken(clientRegistrationToken, notificationData);
                     return 1;
                 }
@@ -134,7 +154,8 @@ public class RequestServiceImpl implements RequestService {
                     NotificationData notificationData = new NotificationData(
                             NotificationType.REQUEST_DENIED,
                             "Request " + requestDetail.getRequestType() + " with id " + requestId + " has been denied",
-                            String.valueOf(requestId));
+                            String.valueOf(requestId),
+                            null);
                     firebaseService.notifyUserByFCMToken(clientRegistrationToken, notificationData);
                     return 1;
                 }
@@ -232,7 +253,10 @@ public class RequestServiceImpl implements RequestService {
             vehicleDocumentComponent.createVehicleDocumentFromRequest(vehicleDocumentRequestReq.getVehicleDocument());
         }
 
-        return createNotificationForAdmin(requestComponent.createVehicleDocumentRequest(vehicleDocumentRequestReq, authentication.getName()),  authentication.getName());
+        return createNotificationForAdmin(
+                requestComponent.createVehicleDocumentRequest(vehicleDocumentRequestReq, authentication.getName()),
+                authentication.getName(),
+                vehicleDocumentRequestReq.getRequestType());
     }
 
     @Override
@@ -243,14 +267,20 @@ public class RequestServiceImpl implements RequestService {
             vehicleComponent.createVehicleFromRequest(vehicleRequestReq.getVehicleReq());
         }
 
-        return createNotificationForAdmin(requestComponent.createVehicleRequest(vehicleRequestReq, authentication.getName()), authentication.getName());
+        return createNotificationForAdmin(
+                requestComponent.createVehicleRequest(vehicleRequestReq, authentication.getName()),
+                authentication.getName(),
+                vehicleRequestReq.getRequestType());
     }
 
     @Override
     public int createVehicleChangeRequest(VehicleChangeRequestReq vehicleChangeRequestReq) {
         Authentication authentication = authenticationComponent.getAuthentication();
 
-        return createNotificationForAdmin(requestComponent.createVehicleChangeRequest(vehicleChangeRequestReq, authentication.getName()), authentication.getName());
+        return createNotificationForAdmin(
+                requestComponent.createVehicleChangeRequest(vehicleChangeRequestReq, authentication.getName()),
+                authentication.getName(),
+                vehicleChangeRequestReq.getRequestType());
     }
 
     @Override
@@ -264,7 +294,7 @@ public class RequestServiceImpl implements RequestService {
             NotificationData notificationData = new NotificationData(
                     NotificationType.VEHICLE_CHANGED,
                     "You have been reassigned to a new vehicle with ID " + targetVehicleId,
-                    String.valueOf(targetVehicleId));
+                    String.valueOf(targetVehicleId), null);
             firebaseService.notifyUserByFCMToken(
                     userComponent.findClientRegistrationTokenByUserId(driverId),
                     notificationData);
@@ -278,6 +308,9 @@ public class RequestServiceImpl implements RequestService {
     public int reportIssue(ReportIssueReq reportIssueReq) {
         Authentication authentication = authenticationComponent.getAuthentication();
 
-        return createNotificationForAdmin(requestComponent.reportIssueRequest(reportIssueReq, authentication.getName()), authentication.getName());
+        return createNotificationForAdmin(
+                requestComponent.reportIssueRequest(reportIssueReq, authentication.getName()),
+                authentication.getName(),
+                reportIssueReq.getRequestType());
     }
 }
