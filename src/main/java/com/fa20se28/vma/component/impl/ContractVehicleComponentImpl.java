@@ -13,7 +13,7 @@ import com.fa20se28.vma.request.*;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
+import java.time.YearMonth;
 import java.util.List;
 import java.util.Optional;
 
@@ -120,42 +120,32 @@ public class ContractVehicleComponentImpl implements ContractVehicleComponent {
             if (!vehicleMapper.getVehicleStatus(tripReq.getVehicleId()).equals(VehicleStatus.AVAILABLE)) {
                 throw new DataException("Vehicle is still occupied!");
             } else {
-                LocalDateTime currentTime = LocalDateTime.now();
-                if (currentTime.isBefore(detail.getTrips().get(0).getDepartureTime())) {
-                    throw new DataException("Vehicle cannot start trip at this time!");
-                } else {
-                    contractVehicleRow = contractVehicleMapper.updateContractedVehicleStatus(tripReq.getContractDetailId(), currentIssuedId, ContractVehicleStatus.IN_PROGRESS);
-                    vehicleRow = vehicleMapper.updateVehicleStatus(tripReq.getVehicleId(), VehicleStatus.ON_ROUTE);
+                contractVehicleRow = contractVehicleMapper.updateContractedVehicleStatus(tripReq.getContractDetailId(), currentIssuedId, ContractVehicleStatus.IN_PROGRESS);
+                vehicleRow = vehicleMapper.updateVehicleStatus(tripReq.getVehicleId(), VehicleStatus.ON_ROUTE);
 
-                    if (detail.getContractStatus().equals(ContractStatus.NOT_STARTED)) {
-                        startContract(tripReq.getContractId());
-                        return 1;
-                    }
+                if (detail.getContractStatus().equals(ContractStatus.NOT_STARTED)) {
+                    startContract(tripReq.getContractId());
+                    return 1;
                 }
             }
         } else {
             if (!vehicleMapper.getVehicleStatus(tripReq.getVehicleId()).equals(VehicleStatus.ON_ROUTE)) {
                 throw new DataException("Vehicle is not used!");
             } else {
-                LocalDateTime currentTime = LocalDateTime.now();
-                if (currentTime.isAfter(detail.getTrips().get(0).getDestinationTime())) {
-                    throw new DataException("Trip has already expired!");
-                } else {
-                    contractVehicleRow = contractVehicleMapper.updateContractedVehicleStatus(tripReq.getContractDetailId(), currentIssuedId, ContractVehicleStatus.COMPLETED);
-                    vehicleRow = vehicleMapper.updateVehicleStatus(tripReq.getVehicleId(), VehicleStatus.AVAILABLE);
-                    if (detail.getContractStatus().equals(ContractStatus.IN_PROGRESS)) {
-                        List<ContractVehicle> contractVehicles = contractVehicleMapper.getContractVehiclesByContractId(tripReq.getContractId());
-                        boolean contractFinished = true;
-                        for (ContractVehicle contractVehicle : contractVehicles) {
-                            if (!contractVehicle.getContractVehicleStatus().equals(ContractVehicleStatus.COMPLETED)) {
-                                contractFinished = false;
-                                break;
-                            }
+                contractVehicleRow = contractVehicleMapper.updateContractedVehicleStatus(tripReq.getContractDetailId(), currentIssuedId, ContractVehicleStatus.COMPLETED);
+                vehicleRow = vehicleMapper.updateVehicleStatus(tripReq.getVehicleId(), VehicleStatus.AVAILABLE);
+                if (detail.getContractStatus().equals(ContractStatus.IN_PROGRESS)) {
+                    List<ContractVehicle> contractVehicles = contractVehicleMapper.getContractVehiclesByContractId(tripReq.getContractId());
+                    boolean contractFinished = true;
+                    for (ContractVehicle contractVehicle : contractVehicles) {
+                        if (!contractVehicle.getContractVehicleStatus().equals(ContractVehicleStatus.COMPLETED)) {
+                            contractFinished = false;
+                            break;
                         }
-                        if (contractFinished) {
-                            completeContract(tripReq.getContractId());
-                            return 1;
-                        }
+                    }
+                    if (contractFinished) {
+                        completeContract(tripReq.getContractId());
+                        return 1;
                     }
                 }
             }
