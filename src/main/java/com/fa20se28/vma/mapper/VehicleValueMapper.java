@@ -5,6 +5,7 @@ import com.fa20se28.vma.request.VehicleValueReq;
 import com.fa20se28.vma.request.VehicleValueUpdateReq;
 import org.apache.ibatis.annotations.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Mapper
@@ -62,4 +63,22 @@ public interface VehicleValueMapper {
             @Result(property = "isDeleted", column = "is_deleted")
     })
     List<VehicleValue> getValuesByVehicleId(@Param("v_id") String vehicleId);
+
+    @Select("SELECT " +
+            "vehicle_value_id, " +
+            "value, " +
+            "start_date," +
+            "end_date, " +
+            "is_deleted " +
+            "FROM vehicle_value " +
+            "WHERE vehicle_id = #{v_id} " +
+            "AND start_date < #{vv_to} " +
+            "AND end_date >= #{vv_from} " +
+            "AND is_deleted = 0 " +
+            "ORDER BY create_date DESC ")
+    @ResultMap("vehicleValues")
+    List<VehicleValue> getValueInTimeframe(
+            @Param("v_id") String vehicleId,
+            @Param("vv_from") LocalDate fromDate,
+            @Param("vv_to") LocalDate toDate);
 }
