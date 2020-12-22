@@ -11,6 +11,8 @@ public class VehicleContract {
     private int seats;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy")
     private LocalDate yearOfManufacture;
+    private float currentEarnedValue;
+    private float expectedValue;
 
     public String getVehicleId() {
         return vehicleId;
@@ -50,5 +52,21 @@ public class VehicleContract {
 
     public void setYearOfManufacture(LocalDate yearOfManufacture) {
         this.yearOfManufacture = yearOfManufacture;
+    }
+
+    public float getCurrentEarnedValue() {
+        return currentEarnedValue;
+    }
+
+    public void setCurrentEarnedValue(float currentEarnedValue) {
+        this.currentEarnedValue = currentEarnedValue;
+    }
+
+    public float getExpectedValue() {
+        return expectedValue;
+    }
+
+    public void setExpectedValue(float expectedValue) {
+        this.expectedValue = expectedValue;
     }
 }

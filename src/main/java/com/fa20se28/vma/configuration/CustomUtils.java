@@ -6,6 +6,7 @@ import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 
 import java.beans.PropertyDescriptor;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -34,5 +35,23 @@ public class CustomUtils {
         }
         String[] result = new String[emptyNames.size()];
         return emptyNames.toArray(result);
+    }
+
+    // Compare if date1 <= date2
+    public static boolean isBeforeOrEqualDate(LocalDate date, LocalDate dateCompare) {
+        if (date != null && dateCompare !=null) {
+            return !date.isAfter(dateCompare);
+        }
+
+        return false;
+    }
+
+    // Compare if date1 >= date2
+    public static boolean isAfterOrEqualDate(LocalDate date, LocalDate dateCompare) {
+        if (date != null && dateCompare !=null) {
+            return !date.isBefore(dateCompare);
+        }
+
+        return false;
     }
 }
