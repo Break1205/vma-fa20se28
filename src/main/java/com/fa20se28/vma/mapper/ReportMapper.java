@@ -222,7 +222,7 @@ public interface ReportMapper {
     @Select("SELECT " +
             "c.duration_to date,  " +
             "'CONTRACT_REVENUE' type, " +
-            "(c.total_price)-(c.total_price*25/100)-(c.total_price*10/100) value,  " +
+            "(c.total_price)-(c.total_price*20/100)-(c.total_price*10/100) value,  " +
             "CONVERT(varchar,c.contract_id) contract_id, " +
             "cu.customer_id " +
             "FROM contract c  " +
@@ -277,7 +277,7 @@ public interface ReportMapper {
             "v.owner_id, " +
             "v.vehicle_id, " +
             "cd.destination_time date, " +
-            "c.total_price/c.actual_vehicle_count*25/100 value, " +
+            "c.total_price/c.actual_vehicle_count*20/100 value, " +
             "CONVERT(varchar,c.contract_id) contract_id, " +
             "cd.contract_detail_id  " +
             "FROM vehicle v  " +
