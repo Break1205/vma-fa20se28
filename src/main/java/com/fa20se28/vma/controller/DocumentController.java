@@ -1,5 +1,6 @@
 package com.fa20se28.vma.controller;
 
+import com.fa20se28.vma.enums.DocumentStatus;
 import com.fa20se28.vma.request.UserDocumentReq;
 import com.fa20se28.vma.request.VehicleDocumentStandaloneReq;
 import com.fa20se28.vma.request.VehicleDocumentUpdateReq;
@@ -24,13 +25,13 @@ public class DocumentController {
 
     @GetMapping("/users/{user-id}/user-documents")
     public UserDocumentRes getUserDocuments(@PathVariable("user-id") String userId,
-                                            @RequestParam(defaultValue = "0") int option) {
-        return userDocumentService.getUserDocuments(userId, option);
+                                            @RequestParam(required = false) DocumentStatus documentStatus) {
+        return userDocumentService.getUserDocuments(userId, documentStatus);
     }
 
-    @GetMapping("/user-documents/{user-document-id}")
-    public UserDocumentDetailRes getUserDocumentDetail(@PathVariable("user-document-id") String userDocumentId) {
-        return userDocumentService.getUserDocumentDetailById(userDocumentId);
+    @GetMapping("/user-documents/{user-document-number}")
+    public UserDocumentDetailRes getUserDocumentDetail(@PathVariable("user-document-number") String userDocumentNumber) {
+        return userDocumentService.getUserDocumentDetailById(userDocumentNumber);
     }
 
     @GetMapping("/user-documents/types")

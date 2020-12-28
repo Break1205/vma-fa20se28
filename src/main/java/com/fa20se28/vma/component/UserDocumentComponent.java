@@ -1,5 +1,6 @@
 package com.fa20se28.vma.component;
 
+import com.fa20se28.vma.enums.DocumentStatus;
 import com.fa20se28.vma.model.UserDocument;
 import com.fa20se28.vma.model.UserDocumentDetail;
 import com.fa20se28.vma.request.UserDocumentReq;
@@ -7,7 +8,7 @@ import com.fa20se28.vma.request.UserDocumentReq;
 import java.util.List;
 
 public interface UserDocumentComponent {
-    List<UserDocument> findUserDocumentByUserId(String id, int option);
+    List<UserDocument> findUserDocumentByUserId(String id, DocumentStatus documentStatus);
 
     int createUserDocument(UserDocumentReq userDocumentReq, String userId);
 
@@ -23,5 +24,5 @@ public interface UserDocumentComponent {
 
     int denyUpdateDocumentRequest(String userDocumentId);
 
-    UserDocumentDetail findUserDocumentDetailById(String userDocumentId);
+    UserDocumentDetail findUserDocumentDetailByNumber(String userDocumentId, DocumentStatus documentStatus);
 }

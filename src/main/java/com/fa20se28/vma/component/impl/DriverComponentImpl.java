@@ -2,6 +2,7 @@ package com.fa20se28.vma.component.impl;
 
 import com.fa20se28.vma.component.DriverComponent;
 import com.fa20se28.vma.configuration.exception.ResourceNotFoundException;
+import com.fa20se28.vma.enums.DocumentStatus;
 import com.fa20se28.vma.mapper.DriverMapper;
 import com.fa20se28.vma.mapper.UserDocumentMapper;
 import com.fa20se28.vma.mapper.UserMapper;
@@ -33,7 +34,7 @@ public class DriverComponentImpl implements DriverComponent {
         optionalDriverDetail.ifPresent(detail ->
                 detail.
                         setUserDocumentList(userDocumentMapper.
-                                findUserDocumentByUserId(userId, 0)));
+                                findUserDocumentByUserId(userId, DocumentStatus.VALID)));
         return optionalDriverDetail.orElseThrow(() ->
                 new ResourceNotFoundException("Driver with id: " + userId + " not found"));
     }
