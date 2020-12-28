@@ -4,6 +4,5 @@ public enum DocumentStatus {
     VALID,
     REJECTED,
     PENDING,
-    DELETED,
-    OUTDATED
+    DELETED
 }
