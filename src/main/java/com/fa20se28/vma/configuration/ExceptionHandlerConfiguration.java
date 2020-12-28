@@ -1,5 +1,6 @@
 package com.fa20se28.vma.configuration;
 
+import com.fa20se28.vma.configuration.exception.DataException;
 import com.fa20se28.vma.configuration.exception.InvalidFirebaseMessagingException;
 import com.fa20se28.vma.configuration.exception.InvalidFirebaseTokenException;
 import com.fa20se28.vma.configuration.exception.InvalidParamException;
@@ -122,6 +123,14 @@ public class ExceptionHandlerConfiguration extends ResponseEntityExceptionHandle
             apiError.setMessage("An internal server error has occurred");
             apiError.setDebugMessage(e.getLocalizedMessage());
         }
+        return buildResponseEntity(apiError);
+    }
+
+    @ExceptionHandler(DataException.class)
+    protected ResponseEntity<Object> handleDataException(DataException e) {
+        ApiError apiError = new ApiError(HttpStatus.INTERNAL_SERVER_ERROR);
+        apiError.setMessage("Data Exception");
+        apiError.setDebugMessage(e.getLocalizedMessage());
         return buildResponseEntity(apiError);
     }
 
