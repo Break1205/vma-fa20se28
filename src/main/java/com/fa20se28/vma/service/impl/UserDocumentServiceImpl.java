@@ -28,7 +28,7 @@ public class UserDocumentServiceImpl implements UserDocumentService {
 
     @Override
     public int createUserDocument(UserDocumentReq userDocumentReq, String userId) {
-        return userDocumentComponent.createUserDocument(userDocumentReq, userId);
+        return userDocumentComponent.createUserDocument(userDocumentReq, userId, DocumentStatus.VALID);
     }
 
     @Override

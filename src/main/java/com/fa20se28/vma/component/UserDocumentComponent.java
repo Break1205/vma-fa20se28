@@ -10,19 +10,22 @@ import java.util.List;
 public interface UserDocumentComponent {
     List<UserDocument> findUserDocumentByUserId(String id, DocumentStatus documentStatus);
 
-    int createUserDocument(UserDocumentReq userDocumentReq, String userId);
+    int createUserDocument(UserDocumentReq userDocumentReq, String userId, DocumentStatus documentStatus);
 
     int updateUserDocument(UserDocumentReq userDocumentReq, String userId);
 
-    int createUserDocumentWithRequest(UserDocumentReq userDocumentReq, String userId);
-
-    int updateUserDocumentWithRequest(UserDocumentReq userDocumentReq, String userId);
-
     void deleteUserDocument(String userDocumentId);
+
+    int createUserDocumentWithRequest(UserDocumentReq userDocumentReq, String userId, DocumentStatus documentStatus);
+
+    int createUpdateUserDocumentWithRequest(UserDocumentReq userDocumentReq, String userId, DocumentStatus pending);
+
+    void deleteUserDocumentWithRequest(String userDocumentId);
 
     int acceptNewDocumentRequest(String userDocumentId);
 
     int denyUpdateDocumentRequest(String userDocumentId);
 
     UserDocumentDetail findUserDocumentDetailByNumber(String userDocumentId, DocumentStatus documentStatus);
+
 }

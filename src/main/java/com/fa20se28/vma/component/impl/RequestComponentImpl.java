@@ -28,7 +28,7 @@ public class RequestComponentImpl implements RequestComponent {
     public int createRequest(RequestReq requestReq, String userId) {
         ReqInsertReq insertReq = new ReqInsertReq(
                 userId,
-                requestReq.getUserDocumentReq().getUserDocumentId(),
+                String.valueOf(requestReq.getUserDocumentReq().getUserDocumentId()),
                 null, null,
                 RequestStatus.PENDING,
                 requestReq.getRequestType(),
@@ -80,7 +80,7 @@ public class RequestComponentImpl implements RequestComponent {
                 vehicleDocumentRequestReq.getDescription(),
                 LocalDateTime.now());
 
-        int row =  requestMapper.insertRequest(insertReq);
+        int row = requestMapper.insertRequest(insertReq);
 
         if (row == 0) {
             throw new DataException("Unknown error occurred. Data not modified!");
@@ -101,7 +101,7 @@ public class RequestComponentImpl implements RequestComponent {
                 vehicleRequestReq.getDescription(),
                 LocalDateTime.now());
 
-        int row =  requestMapper.insertRequest(insertReq);
+        int row = requestMapper.insertRequest(insertReq);
 
         if (row == 0) {
             throw new DataException("Unknown error occurred. Data not modified!");
@@ -120,7 +120,7 @@ public class RequestComponentImpl implements RequestComponent {
                 vehicleChangeRequestReq.getDescription(),
                 LocalDateTime.now());
 
-        int row =  requestMapper.insertRequest(insertReq);
+        int row = requestMapper.insertRequest(insertReq);
 
         if (row == 0) {
             throw new DataException("Unknown error occurred. Data not modified!");
@@ -140,7 +140,7 @@ public class RequestComponentImpl implements RequestComponent {
                 reportIssueReq.getDescription(),
                 LocalDateTime.now());
 
-        int row =  requestMapper.insertRequest(insertReq);
+        int row = requestMapper.insertRequest(insertReq);
 
         if (row == 0) {
             throw new DataException("Unknown error occurred. Data not modified!");

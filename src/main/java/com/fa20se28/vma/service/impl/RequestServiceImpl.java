@@ -8,6 +8,7 @@ import com.fa20se28.vma.component.VehicleComponent;
 import com.fa20se28.vma.component.VehicleDocumentComponent;
 import com.fa20se28.vma.component.impl.UserDocumentComponentImpl;
 import com.fa20se28.vma.configuration.exception.RequestAlreadyHandledException;
+import com.fa20se28.vma.enums.DocumentStatus;
 import com.fa20se28.vma.enums.NotificationType;
 import com.fa20se28.vma.enums.RequestStatus;
 import com.fa20se28.vma.enums.RequestType;
@@ -70,11 +71,12 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
+    @Transactional
     public int createNewDocumentRequest(RequestReq requestReq) {
         Authentication authentication = authenticationComponent.getAuthentication();
 
         if (userDocumentComponent.createUserDocumentWithRequest(
-                requestReq.getUserDocumentReq(), authentication.getName()) == 1) {
+                requestReq.getUserDocumentReq(), authentication.getName(), DocumentStatus.PENDING) == 1) {
             createNotificationForAdmin(
                     requestComponent.createRequest(requestReq, authentication.getName()),
                     authentication.getName(),
@@ -84,10 +86,12 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
+    @Transactional
     public int createUpdateDocumentRequest(RequestReq requestReq) {
         Authentication authentication = authenticationComponent.getAuthentication();
-        if (userDocumentComponent.updateUserDocumentWithRequest(
-                requestReq.getUserDocumentReq(), authentication.getName()) == 1) {
+
+        if (userDocumentComponent.createUpdateUserDocumentWithRequest(
+                requestReq.getUserDocumentReq(), authentication.getName(), DocumentStatus.PENDING) == 1) {
             createNotificationForAdmin(
                     requestComponent.createRequest(requestReq, authentication.getName()),
                     authentication.getName(),
@@ -97,8 +101,10 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
+    @Transactional
     public int createDeleteDocumentRequest(RequestReq requestReq) {
         Authentication authentication = authenticationComponent.getAuthentication();
+
         return createNotificationForAdmin(
                 requestComponent.createRequest(requestReq, authentication.getName()),
                 authentication.getName(),
@@ -177,7 +183,7 @@ public class RequestServiceImpl implements RequestService {
             }
         }
         if (requestDetail.getRequestType().equals(RequestType.DELETE_DOCUMENT)) {
-            userDocumentComponent.deleteUserDocument(requestDetail.getUserDocumentId());
+            userDocumentComponent.deleteUserDocumentWithRequest(requestDetail.getUserDocumentId());
             return requestComponent.updateRequestStatus(requestDetail.getRequestId(), RequestStatus.ACCEPTED);
         }
         if (requestDetail.getRequestType().equals(RequestType.NEW_VEHICLE_DOCUMENT)) {
@@ -208,8 +214,9 @@ public class RequestServiceImpl implements RequestService {
 
     private int denyRequest(RequestDetail requestDetail) {
         if (requestDetail.getRequestType().equals(RequestType.NEW_DOCUMENT)) {
-            userDocumentComponent.deleteUserDocument(requestDetail.getUserDocumentId());
-            return requestComponent.updateRequestStatus(requestDetail.getRequestId(), RequestStatus.DENIED);
+            if (userDocumentComponent.denyUpdateDocumentRequest(requestDetail.getUserDocumentId()) == 1) {
+                return requestComponent.updateRequestStatus(requestDetail.getRequestId(), RequestStatus.DENIED);
+            }
         }
         if (requestDetail.getRequestType().equals(RequestType.UPDATE_DOCUMENT)) {
             if (userDocumentComponent.denyUpdateDocumentRequest(requestDetail.getUserDocumentId()) == 1) {

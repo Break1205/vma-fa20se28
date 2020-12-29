@@ -24,9 +24,9 @@ public interface UserDocumentMapper {
             "ud.other_information " +
             "FROM user_document ud " +
             "WHERE ud.user_id = #{user_id} " +
-            "<if test = \"documentStatus!=null\" >\n" +
-            "AND ud.status = #{documentStatus} \n" +
-            "</if> \n" +
+            "<if test = \"documentStatus!=null\" > " +
+            "AND ud.status = #{documentStatus}  " +
+            "</if>  " +
             "</script>"})
     @Results(id = "userDocumentResult", value = {
             @Result(property = "userDocumentId", column = "user_document_id"),
@@ -91,23 +91,23 @@ public interface UserDocumentMapper {
                        @Param("userDocumentId") int userDocumentId,
                        @Param("userId") String userId);
 
-    @Update("UPDATE user_document \n" +
-            "SET status = 'DELETED' \n" +
+    @Update("UPDATE user_document  " +
+            "SET status = 'DELETED'  " +
             "WHERE user_document_id = '${user_document_id}'")
     void deleteUserDocument(@Param("user_document_id") String userDocumentId);
 
-    @Select("SELECT \n" +
+    @Select("SELECT  " +
             "user_document_id, " +
-            "user_document_number, \n" +
-            "user_id, \n" +
-            "registered_location, \n" +
-            "registered_date, \n" +
-            "expiry_date, \n" +
-            "create_date, \n" +
+            "user_document_number,  " +
+            "user_id,  " +
+            "registered_location,  " +
+            "registered_date,  " +
+            "expiry_date,  " +
+            "create_date,  " +
             "other_information," +
-            "status, \n" +
-            "user_document_type\n" +
-            "FROM user_document \n" +
+            "status,  " +
+            "user_document_type " +
+            "FROM user_document  " +
             "WHERE user_document_number = #{userDocumentNumber} " +
             "AND status = #{status}")
     @Results(id = "userDocumentDetailResult", value = {
@@ -125,9 +125,31 @@ public interface UserDocumentMapper {
     Optional<UserDocumentDetail> findUserDocumentDetail(@Param("userDocumentNumber") String userDocumentNumber,
                                                         @Param("status") DocumentStatus documentStatus);
 
-    @Select("SELECT\n" +
-            "user_document_type \n" +
-            "FROM user_document \n" +
-            "WHERE status = 'VALID' AND user_id = #{userId}")
-    List<UserDocumentType> getCurrentUserDocumentTypes(@Param("userId") String userId);
+    @Select("SELECT " +
+            "user_document_id, " +
+            "user_document_type  " +
+            "FROM user_document  " +
+            "WHERE status = #{documentStatus} AND user_id = #{userId}")
+    @Results(id = "currentUserDocumentResult", value = {
+            @Result(property = "userDocumentId", column = "user_document_id"),
+            @Result(property = "userDocumentType", column = "user_document_type"),
+    })
+    List<UserDocument> getCurrentUserDocuments(@Param("userId") String userId,
+                                               @Param("documentStatus") DocumentStatus documentStatus);
+
+    @Select("SELECT " +
+            "user_id," +
+            "user_document_type " +
+            "FROM user_document " +
+            "WHERE user_document_id = #{userDocumentId}")
+    @Results(id = "currentUserDocumentDetailResult", value = {
+            @Result(property = "userId", column = "user_id"),
+            @Result(property = "userDocumentType", column = "user_document_type"),
+    })
+    UserDocumentDetail findUserDocumentByUserDocumentId(@Param("userDocumentId") String userDocumentId);
+
+    @Update("UPDATE user_document " +
+            "SET status = #{documentStatus} " +
+            "WHERE user_document_id = #{userDocumentId}")
+    int updateStatus(@Param("userDocumentId") String userDocumentId, @Param("documentStatus") DocumentStatus documentStatus);
 }

@@ -53,8 +53,8 @@ public class DocumentController {
 
     @DeleteMapping("/admin/user-documents")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteUserDocument(@RequestParam String userDocumentId) {
-        userDocumentService.deleteUserDocument(userDocumentId);
+    public void deleteUserDocument(@RequestParam String userDocumentNumber) {
+        userDocumentService.deleteUserDocument(userDocumentNumber);
     }
 
     @GetMapping("/vehicles/documents")
