@@ -4,7 +4,7 @@ import java.util.Date;
 
 public class UserDocumentImageDetail {
     private int userDocumentImageId;
-    private String userDocumentId;
+    private int userDocumentId;
     private String imageLink;
     private Date createDate;
 
@@ -16,11 +16,11 @@ public class UserDocumentImageDetail {
         this.userDocumentImageId = userDocumentImageId;
     }
 
-    public String getUserDocumentId() {
+    public int getUserDocumentId() {
         return userDocumentId;
     }
 
-    public void setUserDocumentId(String userDocumentId) {
+    public void setUserDocumentId(int userDocumentId) {
         this.userDocumentId = userDocumentId;
     }
 

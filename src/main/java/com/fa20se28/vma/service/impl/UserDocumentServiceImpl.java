@@ -1,6 +1,7 @@
 package com.fa20se28.vma.service.impl;
 
 import com.fa20se28.vma.component.UserDocumentComponent;
+import com.fa20se28.vma.enums.DocumentStatus;
 import com.fa20se28.vma.request.UserDocumentReq;
 import com.fa20se28.vma.response.UserDocumentDetailRes;
 import com.fa20se28.vma.response.UserDocumentRes;
@@ -16,8 +17,8 @@ public class UserDocumentServiceImpl implements UserDocumentService {
     }
 
     @Override
-    public UserDocumentRes getUserDocuments(String id, int option) {
-        return new UserDocumentRes(userDocumentComponent.findUserDocumentByUserId(id, option));
+    public UserDocumentRes getUserDocuments(String userId, DocumentStatus documentStatus) {
+        return new UserDocumentRes(userDocumentComponent.findUserDocumentByUserId(userId, documentStatus));
     }
 
     @Override
@@ -27,7 +28,7 @@ public class UserDocumentServiceImpl implements UserDocumentService {
 
     @Override
     public int createUserDocument(UserDocumentReq userDocumentReq, String userId) {
-        return userDocumentComponent.createUserDocument(userDocumentReq, userId);
+        return userDocumentComponent.createUserDocument(userDocumentReq, userId, DocumentStatus.VALID);
     }
 
     @Override
@@ -36,19 +37,9 @@ public class UserDocumentServiceImpl implements UserDocumentService {
     }
 
     @Override
-    public int createUserDocumentWithRequest(UserDocumentReq userDocumentReq, String userId) {
-        return userDocumentComponent.createUserDocumentWithRequest(userDocumentReq, userId);
-    }
-
-    @Override
-    public int updateUserDocumentWithRequest(UserDocumentReq userDocumentReq, String userId) {
-        return userDocumentComponent.updateUserDocumentWithRequest(userDocumentReq, userId);
-    }
-
-    @Override
     public UserDocumentDetailRes getUserDocumentDetailById(String userDocumentId) {
         UserDocumentDetailRes userDocumentDetailRes = new UserDocumentDetailRes();
-        userDocumentDetailRes.setUserDocumentDetail(userDocumentComponent.findUserDocumentDetailById(userDocumentId));
+        userDocumentDetailRes.setUserDocumentDetail(userDocumentComponent.findUserDocumentDetailByNumber(userDocumentId, DocumentStatus.VALID));
         return userDocumentDetailRes;
     }
 }

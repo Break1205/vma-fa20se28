@@ -1,12 +1,13 @@
 package com.fa20se28.vma.component.impl;
 
 import com.fa20se28.vma.component.UserDocumentComponent;
+import com.fa20se28.vma.configuration.exception.DataException;
 import com.fa20se28.vma.configuration.exception.ResourceNotFoundException;
+import com.fa20se28.vma.enums.DocumentStatus;
 import com.fa20se28.vma.mapper.UserDocumentImageMapper;
 import com.fa20se28.vma.mapper.UserDocumentMapper;
 import com.fa20se28.vma.model.UserDocument;
 import com.fa20se28.vma.model.UserDocumentDetail;
-import com.fa20se28.vma.model.UserDocumentImageDetail;
 import com.fa20se28.vma.request.UserDocumentImageReq;
 import com.fa20se28.vma.request.UserDocumentReq;
 import org.springframework.stereotype.Component;
@@ -27,8 +28,8 @@ public class UserDocumentComponentImpl implements UserDocumentComponent {
     }
 
     @Override
-    public List<UserDocument> findUserDocumentByUserId(String id, int option) {
-        return userDocumentMapper.findUserDocumentByUserId(id, option);
+    public List<UserDocument> findUserDocumentByUserId(String userId, DocumentStatus documentStatus) {
+        return userDocumentMapper.findUserDocumentByUserId(userId, documentStatus);
     }
 
     /*
@@ -36,140 +37,170 @@ public class UserDocumentComponentImpl implements UserDocumentComponent {
     * */
     @Transactional
     @Override
-    public int createUserDocument(UserDocumentReq userDocumentReq, String userId) {
-        int userDocumentImageLogRecords = 0;
-        int userDocumentRecords = userDocumentMapper.insertDocument(userDocumentReq, userId);
-        int userDocumentLogRecords = userDocumentMapper.insertDocumentLog(userDocumentReq, userId);
+    public int createUserDocument(UserDocumentReq userDocumentReq, String userId, DocumentStatus documentStatus) {
+        List<UserDocument> currentUserDocuments = userDocumentMapper.getCurrentUserDocuments(userId, DocumentStatus.VALID);
+        for (UserDocument userDocument : currentUserDocuments) {
+            if (userDocumentReq.getUserDocumentType().equals(userDocument.getUserDocumentType())) {
+                throw new DataException("User with id: " + userId + " had already has " + userDocument.getUserDocumentType());
+            }
+        }
+        Optional<UserDocumentDetail> optionalUserDocumentDetail = userDocumentMapper
+                .findUserDocumentDetail(userDocumentReq.getUserDocumentNumber(), DocumentStatus.VALID);
+        if (optionalUserDocumentDetail.isPresent()) {
+            throw new DataException("Document with number: " + userDocumentReq.getUserDocumentNumber() + " is duplicated");
+        }
+        int userDocumentImageRecords = 0;
+        int userDocumentRecords = userDocumentMapper.insertDocument(userDocumentReq, userId, documentStatus);
+        if (userDocumentRecords == 0) {
+            throw new DataException("Can not insert User Document Record");
+        }
         for (UserDocumentImageReq userDocumentImageReq : userDocumentReq.getUserDocumentImages()) {
-            userDocumentImageMapper
+            userDocumentImageRecords += userDocumentImageMapper
                     .insertUserDocumentImage(
                             userDocumentImageReq, userDocumentReq.getUserDocumentId());
-            userDocumentImageLogRecords += userDocumentImageMapper
-                    .insertUserDocumentImageLog(
-                            userDocumentImageReq, userDocumentReq.getUserDocumentId());
         }
-        if (userDocumentRecords == 1
-                && userDocumentLogRecords == 1
-                && userDocumentImageLogRecords >= 0) {
+        if (userDocumentImageRecords >= 0) {
             return 1;
         }
-        return 0;
+        throw new DataException("Can not insert User Document Image Record");
     }
 
     @Transactional
     @Override
     public int updateUserDocument(UserDocumentReq userDocumentReq, String userId) {
-        int userDocumentImageLogRecords = 0;
-        int userDocumentRecords = userDocumentMapper.updateDocument(userDocumentReq, userId);
-        int userDocumentLogRecords = userDocumentMapper.insertDocumentLog(userDocumentReq, userId);
-        for (UserDocumentImageReq userDocumentImageReq : userDocumentReq.getUserDocumentImages()) {
-            userDocumentImageMapper.updateUserDocumentImage(userDocumentImageReq, userDocumentReq.getUserDocumentId());
-            userDocumentImageLogRecords += userDocumentImageMapper.insertUserDocumentImageLog(
-                    userDocumentImageReq, userDocumentReq.getUserDocumentId());
+        UserDocumentDetail userDocumentDetail = findUserDocumentDetailByNumber(userDocumentReq.getUserDocumentNumber(), DocumentStatus.VALID);
+        if (userDocumentDetail == null) {
+            throw new ResourceNotFoundException("Can not find User Document with number: " + userDocumentReq.getUserDocumentNumber());
         }
-        if (userDocumentRecords == 1
-                && userDocumentLogRecords == 1
-                && userDocumentImageLogRecords >= 0) {
+        if (!userId.equals(userDocumentDetail.getUserId())) {
+            throw new DataException("This Document does not belong to User with id: " + userId);
+        }
+
+        int userDocumentRecords = userDocumentMapper.updateDocument(userDocumentReq, userDocumentDetail.getUserDocumentId(), userId);
+        if (userDocumentRecords == 0) {
+            throw new DataException("Can not update User Document Record");
+        }
+
+        userDocumentImageMapper.deleteUserDocumentImage(String.valueOf(userDocumentDetail.getUserDocumentId()));
+        int userDocumentImageRecords = 0;
+        for (UserDocumentImageReq userDocumentImageReq : userDocumentReq.getUserDocumentImages()) {
+            userDocumentImageRecords += userDocumentImageMapper
+                    .insertUserDocumentImage(
+                            userDocumentImageReq, userDocumentDetail.getUserDocumentId());
+        }
+        if (userDocumentImageRecords >= 0) {
             return 1;
         }
-        return 0;
+        throw new DataException("Can not update User Document Image Record");
+
     }
 
     @Transactional
     @Override
-    public void deleteUserDocument(String userDocumentId) {
+    public void deleteUserDocument(String userDocumentNumber) {
+        UserDocumentDetail userDocumentDetail = findUserDocumentDetailByNumber(userDocumentNumber, DocumentStatus.VALID);
+        if (userDocumentDetail == null) {
+            throw new ResourceNotFoundException("Can not find User Document with number: " + userDocumentNumber);
+        }
+        userDocumentMapper.deleteUserDocument(String.valueOf(userDocumentDetail.getUserDocumentId()));
+        userDocumentImageMapper.deleteUserDocumentImage(String.valueOf(userDocumentDetail.getUserDocumentId()));
+    }
+
+    @Override
+    public void deleteUserDocumentWithRequest(String userDocumentId) {
         userDocumentMapper.deleteUserDocument(userDocumentId);
         userDocumentImageMapper.deleteUserDocumentImage(userDocumentId);
     }
 
-    @Transactional
     @Override
-    public int createUserDocumentWithRequest(UserDocumentReq userDocumentReq, String userId) {
-        int userDocumentImageRecords = 0;
-        int userDocumentRecords = userDocumentMapper.insertDocument(userDocumentReq, userId);
-        for (UserDocumentImageReq userDocumentImageReq : userDocumentReq.getUserDocumentImages()) {
-            userDocumentImageRecords += userDocumentImageMapper.insertUserDocumentImage(
-                    userDocumentImageReq, userDocumentReq.getUserDocumentId());
+    public int createUserDocumentWithRequest(UserDocumentReq userDocumentReq, String userId, DocumentStatus documentStatus) {
+        Optional<UserDocumentDetail> optionalUserDocumentDetail = userDocumentMapper
+                .findUserDocumentDetail(userDocumentReq.getUserDocumentNumber(), DocumentStatus.VALID);
+        if (optionalUserDocumentDetail.isPresent()) {
+            throw new DataException("Document with number: " + userDocumentReq.getUserDocumentNumber() + " is duplicated");
         }
-        if (userDocumentRecords == 1
-                && userDocumentImageRecords >= 0) {
+        List<UserDocument> currentUserDocuments = userDocumentMapper.getCurrentUserDocuments(userId, DocumentStatus.PENDING);
+        for (UserDocument userDocument : currentUserDocuments) {
+            if (userDocument.getUserDocumentType().equals(userDocumentReq.getUserDocumentType())) {
+                throw new DataException("There is already a PENDING User Document of this type: " +
+                        userDocumentReq.getUserDocumentType() + ". Waiting to be handle");
+            }
+        }
+        int userDocumentImageRecords = 0;
+        int userDocumentRecords = userDocumentMapper.insertDocument(userDocumentReq, userId, documentStatus);
+        if (userDocumentRecords == 0) {
+            throw new DataException("Can not insert User Document Record");
+        }
+        for (UserDocumentImageReq userDocumentImageReq : userDocumentReq.getUserDocumentImages()) {
+            userDocumentImageRecords += userDocumentImageMapper
+                    .insertUserDocumentImage(
+                            userDocumentImageReq, userDocumentReq.getUserDocumentId());
+        }
+        if (userDocumentImageRecords >= 0) {
             return 1;
         }
-        return 0;
+        throw new DataException("Can not insert User Document Image Record");
     }
 
-
-    @Transactional
     @Override
-    public int updateUserDocumentWithRequest(UserDocumentReq userDocumentReq, String userId) {
-        int userDocumentImageRecords = 0;
-        int userDocumentRecords = userDocumentMapper.updateDocument(userDocumentReq, userId);
-        for (UserDocumentImageReq userDocumentImageReq : userDocumentReq.getUserDocumentImages()) {
-            userDocumentImageRecords += userDocumentImageMapper.updateUserDocumentImage(
-                    userDocumentImageReq, userDocumentReq.getUserDocumentId());
+    public int createUpdateUserDocumentWithRequest(UserDocumentReq userDocumentReq, String userId, DocumentStatus documentStatus) {
+        List<UserDocument> currentUserDocuments = userDocumentMapper.getCurrentUserDocuments(userId, DocumentStatus.PENDING);
+        for (UserDocument userDocument : currentUserDocuments) {
+            if (userDocument.getUserDocumentType().equals(userDocumentReq.getUserDocumentType())) {
+                throw new DataException("There is already a PENDING User Document of this type: " +
+                        userDocumentReq.getUserDocumentType() + ". Waiting to be handle");
+            }
         }
-        if (userDocumentRecords == 1
-                && userDocumentImageRecords >= 0) {
+        int userDocumentImageRecords = 0;
+        int userDocumentRecords = userDocumentMapper.insertDocument(userDocumentReq, userId, documentStatus);
+        if (userDocumentRecords == 0) {
+            throw new DataException("Can not insert User Document Record");
+        }
+        for (UserDocumentImageReq userDocumentImageReq : userDocumentReq.getUserDocumentImages()) {
+            userDocumentImageRecords += userDocumentImageMapper
+                    .insertUserDocumentImage(
+                            userDocumentImageReq, userDocumentReq.getUserDocumentId());
+        }
+        if (userDocumentImageRecords >= 0) {
             return 1;
         }
-        return 0;
+        throw new DataException("Can not insert User Document Image Record");
     }
 
     @Override
     public int acceptNewDocumentRequest(String userDocumentId) {
-        Optional<UserDocumentDetail> optionalUserDocumentDetail =
-                userDocumentMapper.findUserDocumentDetail(userDocumentId);
-        optionalUserDocumentDetail.ifPresent(detail ->
-                detail.setUserDocumentImages(
-                        userDocumentImageMapper.findUserDocumentImageDetail(userDocumentId)));
-        if (optionalUserDocumentDetail.isPresent()) {
-            int userDocumentLog = userDocumentMapper
-                    .acceptNewUserDocumentLog(optionalUserDocumentDetail.get());
-            int userDocumentImageLog = 0;
-            for (UserDocumentImageDetail imageDetail : optionalUserDocumentDetail.get().getUserDocumentImages()) {
-                userDocumentImageLog += userDocumentImageMapper
-                        .acceptNewUserDocumentImageLog(imageDetail);
+        UserDocumentDetail userDocumentDetail = userDocumentMapper.findUserDocumentByUserDocumentId(userDocumentId);
+        if (userDocumentDetail.getUserId() != null) {
+            List<UserDocument> currentUserDocuments = userDocumentMapper.getCurrentUserDocuments(userDocumentDetail.getUserId(), DocumentStatus.VALID);
+            for (UserDocument userDocument : currentUserDocuments) {
+                if (userDocumentDetail.getUserDocumentType().equals(userDocument.getUserDocumentType())) {
+                    int success = userDocumentMapper.updateStatus(userDocument.getUserDocumentId(), DocumentStatus.OUTDATED);
+                    if (success != 1) {
+                        throw new DataException("Can not update status of user document with id: " + userDocument.getUserDocumentId());
+                    }
+                }
             }
-            if (userDocumentLog == 1
-                    && userDocumentImageLog >= 0) {
-                return 1;
-            }
-            return 0;
+            return userDocumentMapper.updateStatus(userDocumentId, DocumentStatus.VALID);
         }
         return 0;
     }
 
     @Override
     public int denyUpdateDocumentRequest(String userDocumentId) {
-        Optional<UserDocumentDetail> optionalUserDocumentDetail =
-                userDocumentMapper.findUserDocumentDetailFromLog(userDocumentId);
-        optionalUserDocumentDetail.ifPresent(detail ->
-                detail.setUserDocumentImages(
-                        userDocumentImageMapper.findUserDocumentImageDetailLog(userDocumentId)));
-        if (optionalUserDocumentDetail.isPresent()) {
-            int userDocumentLog = userDocumentMapper
-                    .denyUpdateUserDocument(optionalUserDocumentDetail.get());
-            int userDocumentImageLog = 0;
-            for (UserDocumentImageDetail imageDetail : optionalUserDocumentDetail.get().getUserDocumentImages()) {
-                userDocumentImageLog += userDocumentImageMapper
-                        .denyNewUserDocumentImageLog(imageDetail);
-            }
-            if (userDocumentLog == 1
-                    && userDocumentImageLog >= 0) {
-                return 1;
-            }
-            return 0;
+        int success = userDocumentMapper.updateStatus(userDocumentId, DocumentStatus.REJECTED);
+        if (success != 1) {
+            throw new DataException("Can not update status of user document with id: " + userDocumentId);
         }
-        return 0;
+        return success;
     }
 
     @Override
-    public UserDocumentDetail findUserDocumentDetailById(String userDocumentId) {
-        Optional<UserDocumentDetail> optionalUserDocumentDetail = userDocumentMapper.findUserDocumentDetail(userDocumentId);
+    public UserDocumentDetail findUserDocumentDetailByNumber(String userDocumentNumber, DocumentStatus documentStatus) {
+        Optional<UserDocumentDetail> optionalUserDocumentDetail = userDocumentMapper.findUserDocumentDetail(userDocumentNumber, documentStatus);
         optionalUserDocumentDetail.ifPresent(detail ->
                 detail.setUserDocumentImages(
-                        userDocumentImageMapper.findUserDocumentImageDetail(userDocumentId)));
-        return optionalUserDocumentDetail.orElseThrow(() -> new ResourceNotFoundException("User document with id: " + userDocumentId + " not found"));
+                        userDocumentImageMapper.findUserDocumentImageDetail(optionalUserDocumentDetail.get().getUserDocumentId())));
+        return optionalUserDocumentDetail.orElseThrow(() -> new ResourceNotFoundException("User document with number: " + userDocumentNumber + " not found"));
     }
 }
 

@@ -1,19 +1,16 @@
 package com.fa20se28.vma.service;
 
+import com.fa20se28.vma.enums.DocumentStatus;
 import com.fa20se28.vma.request.UserDocumentReq;
 import com.fa20se28.vma.response.UserDocumentDetailRes;
 import com.fa20se28.vma.response.UserDocumentRes;
 
 public interface UserDocumentService {
-    UserDocumentRes getUserDocuments(String id, int option);
+    UserDocumentRes getUserDocuments(String id, DocumentStatus documentStatus);
 
     int createUserDocument(UserDocumentReq userDocumentReq, String userId);
 
     int updateUserDocument(UserDocumentReq userDocumentReq, String userId);
-
-    int createUserDocumentWithRequest(UserDocumentReq userDocumentReq, String userId);
-
-    int updateUserDocumentWithRequest(UserDocumentReq userDocumentReq, String userId);
 
     void deleteUserDocument(String userDocumentId);
 

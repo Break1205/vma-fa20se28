@@ -5,6 +5,7 @@ import com.fa20se28.vma.configuration.CustomUtils;
 import com.fa20se28.vma.configuration.exception.DataException;
 import com.fa20se28.vma.configuration.exception.ResourceIsInUsedException;
 import com.fa20se28.vma.configuration.exception.ResourceNotFoundException;
+import com.fa20se28.vma.enums.DocumentStatus;
 import com.fa20se28.vma.enums.UserStatus;
 import com.fa20se28.vma.mapper.IssuedVehicleMapper;
 import com.fa20se28.vma.mapper.UserDocumentImageMapper;
@@ -152,13 +153,11 @@ public class UserComponentImpl implements UserComponent {
         userReq.setPassword(passwordEncoder.encode(userReq.getPassword()));
         int userRecord = userMapper.insertUser(userReq);
         for (UserDocumentReq userDocumentReq : userReq.getUserDocumentList()) {
-            documentRecords += userDocumentMapper.insertDocument(userDocumentReq, userReq.getUserId());
-            userDocumentMapper.insertDocumentLog(userDocumentReq, userReq.getUserId());
+            documentRecords += userDocumentMapper.insertDocument(userDocumentReq, userReq.getUserId(), DocumentStatus.VALID);
             for (UserDocumentImageReq userDocumentImageReq : userDocumentReq.getUserDocumentImages()) {
                 documentImageRecords += userDocumentImageMapper
                         .insertUserDocumentImage(
-                                userDocumentImageReq, userDocumentReq.getUserDocumentId());
-                userDocumentImageMapper.insertUserDocumentImageLog(userDocumentImageReq, userDocumentReq.getUserDocumentId());
+                                userDocumentImageReq, Integer.parseInt(userDocumentReq.getUserDocumentNumber()));
             }
         }
         int userRoles = userMapper.insertRoleForUserId(userReq.getUserId(), roleId);

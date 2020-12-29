@@ -3,26 +3,35 @@ package com.fa20se28.vma.request;
 import com.fa20se28.vma.enums.UserDocumentType;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 public class UserDocumentReq {
-    private String userDocumentId;
+    private int userDocumentId;
+    private String userDocumentNumber;
     private UserDocumentType userDocumentType;
     private String registeredLocation;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private Date registeredDate;
+    private LocalDate registeredDate;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private Date expiryDate;
+    private LocalDate expiryDate;
     private String otherInformation;
     private List<UserDocumentImageReq> userDocumentImages;
 
-    public String getUserDocumentId() {
+    public int getUserDocumentId() {
         return userDocumentId;
     }
 
-    public void setUserDocumentId(String userDocumentId) {
+    public void setUserDocumentId(int userDocumentId) {
         this.userDocumentId = userDocumentId;
+    }
+
+    public String getUserDocumentNumber() {
+        return userDocumentNumber;
+    }
+
+    public void setUserDocumentNumber(String userDocumentNumber) {
+        this.userDocumentNumber = userDocumentNumber;
     }
 
     public UserDocumentType getUserDocumentType() {
@@ -41,19 +50,19 @@ public class UserDocumentReq {
         this.registeredLocation = registeredLocation;
     }
 
-    public Date getRegisteredDate() {
+    public LocalDate getRegisteredDate() {
         return registeredDate;
     }
 
-    public void setRegisteredDate(Date registeredDate) {
+    public void setRegisteredDate(LocalDate registeredDate) {
         this.registeredDate = registeredDate;
     }
 
-    public Date getExpiryDate() {
+    public LocalDate getExpiryDate() {
         return expiryDate;
     }
 
-    public void setExpiryDate(Date expiryDate) {
+    public void setExpiryDate(LocalDate expiryDate) {
         this.expiryDate = expiryDate;
     }
 

@@ -7,6 +7,7 @@ import java.util.List;
 
 public class UserDocument {
     private String userDocumentId;
+    private String userDocumentNumber;
     private UserDocumentType userDocumentType;
     private String registeredLocation;
     private LocalDate registeredDate;
@@ -20,6 +21,14 @@ public class UserDocument {
 
     public void setUserDocumentId(String userDocumentId) {
         this.userDocumentId = userDocumentId;
+    }
+
+    public String getUserDocumentNumber() {
+        return userDocumentNumber;
+    }
+
+    public void setUserDocumentNumber(String userDocumentNumber) {
+        this.userDocumentNumber = userDocumentNumber;
     }
 
     public UserDocumentType getUserDocumentType() {
