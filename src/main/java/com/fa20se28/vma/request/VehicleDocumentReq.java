@@ -7,7 +7,8 @@ import java.time.LocalDate;
 import java.util.List;
 
 public class VehicleDocumentReq {
-    private String vehicleDocumentId;
+    private int vehicleDocumentId;
+    private String vehicleDocumentNumber;
     private VehicleDocumentType vehicleDocumentType;
     private String registeredLocation;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
@@ -16,12 +17,20 @@ public class VehicleDocumentReq {
     private LocalDate expiryDate;
     private List<String> imageLinks;
 
-    public String getVehicleDocumentId() {
+    public int getVehicleDocumentId() {
         return vehicleDocumentId;
     }
 
-    public void setVehicleDocumentId(String vehicleDocumentId) {
+    public void setVehicleDocumentId(int vehicleDocumentId) {
         this.vehicleDocumentId = vehicleDocumentId;
+    }
+
+    public String getVehicleDocumentNumber() {
+        return vehicleDocumentNumber;
+    }
+
+    public void setVehicleDocumentNumber(String vehicleDocumentNumber) {
+        this.vehicleDocumentNumber = vehicleDocumentNumber;
     }
 
     public VehicleDocumentType getVehicleDocumentType() {

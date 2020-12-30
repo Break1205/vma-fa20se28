@@ -16,18 +16,13 @@ public class VehicleServiceImpl implements VehicleService {
     }
 
     @Override
-    public int getTotal(VehiclePageReq request, int viewOption, String ownerId) {
-        return vehicleComponent.getTotal(request, viewOption, ownerId);
+    public int getTotal(VehiclePageReq request, int useStatus, String ownerId) {
+        return vehicleComponent.getTotal(request, useStatus, ownerId);
     }
 
     @Override
-    public VehiclePageRes getVehicles(VehiclePageReq request, int viewOption, int pageNum, String ownerId, int takeAll) {
-        return new VehiclePageRes(vehicleComponent.getVehicles(request, viewOption, pageNum, ownerId, takeAll));
-    }
-
-    @Override
-    public VehicleDropDownRes getVehiclesDropDown(VehicleDropDownReq request, int pageNum, String ownerId) {
-        return new VehicleDropDownRes(vehicleComponent.getVehiclesDropDown(request, pageNum, ownerId));
+    public VehiclePageRes getVehicles(VehiclePageReq request, int useStatus, int pageNum, String ownerId, int takeAll) {
+        return new VehiclePageRes(vehicleComponent.getVehicles(request, useStatus, pageNum, ownerId, takeAll));
     }
 
     @Override

@@ -5,10 +5,10 @@ import com.fa20se28.vma.enums.VehicleStatus;
 public class Vehicle {
     private String vehicleId;
     private String model;
-    private String vehicleTypeName;
+    private VehicleType vehicleType;
     private int seats;
     private VehicleStatus vehicleStatus;
-    private float vehicleDistance;
+    private float distanceDriven;
 
     public String getVehicleId() {
         return vehicleId;
@@ -26,12 +26,12 @@ public class Vehicle {
         this.model = model;
     }
 
-    public String getVehicleTypeName() {
-        return vehicleTypeName;
+    public VehicleType getVehicleType() {
+        return vehicleType;
     }
 
-    public void setVehicleTypeName(String vehicleTypeName) {
-        this.vehicleTypeName = vehicleTypeName;
+    public void setVehicleType(VehicleType vehicleType) {
+        this.vehicleType = vehicleType;
     }
 
     public int getSeats() {
@@ -50,12 +50,12 @@ public class Vehicle {
         this.vehicleStatus = vehicleStatus;
     }
 
-    public float getVehicleDistance() {
-        return vehicleDistance;
+    public float getDistanceDriven() {
+        return distanceDriven;
     }
 
-    public void setVehicleDistance(float vehicleDistance) {
-        this.vehicleDistance = vehicleDistance;
+    public void setDistanceDriven(float distanceDriven) {
+        this.distanceDriven = distanceDriven;
     }
 
     @Override

@@ -2,7 +2,7 @@ package com.fa20se28.vma.component.impl;
 
 import com.fa20se28.vma.component.UserComponent;
 import com.fa20se28.vma.configuration.CustomUtils;
-import com.fa20se28.vma.configuration.exception.DataException;
+import com.fa20se28.vma.configuration.exception.DataExecutionException;
 import com.fa20se28.vma.configuration.exception.ResourceIsInUsedException;
 import com.fa20se28.vma.configuration.exception.ResourceNotFoundException;
 import com.fa20se28.vma.enums.DocumentStatus;
@@ -80,7 +80,7 @@ public class UserComponentImpl implements UserComponent {
         if (optionalUserDetail.isPresent()) {
             int userUpdateSuccess = userMapper.updatePassword(userId, passwordEncoder.encode(password));
             if (userUpdateSuccess < 0) {
-                throw new DataException("Can not change password of user: " + userId);
+                throw new DataExecutionException("Can not change password of user: " + userId);
             }
         } else {
             throw new ResourceNotFoundException("User with id: " + userId + " not found");

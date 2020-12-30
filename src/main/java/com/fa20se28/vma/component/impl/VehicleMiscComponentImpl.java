@@ -1,7 +1,7 @@
 package com.fa20se28.vma.component.impl;
 
 import com.fa20se28.vma.component.VehicleMiscComponent;
-import com.fa20se28.vma.configuration.exception.DataException;
+import com.fa20se28.vma.configuration.exception.DataExecutionException;
 import com.fa20se28.vma.mapper.BrandMapper;
 import com.fa20se28.vma.mapper.VehicleTypeMapper;
 import com.fa20se28.vma.model.Brand;
@@ -41,7 +41,7 @@ public class VehicleMiscComponentImpl implements VehicleMiscComponent {
         int row = brandMapper.createBrand(brandReq);
 
         if (row == 0) {
-            throw new DataException("Unknown error occurred. Data not modified!");
+            throw new DataExecutionException("Unknown error occurred. Data not modified!");
         }
 
     }
@@ -52,7 +52,7 @@ public class VehicleMiscComponentImpl implements VehicleMiscComponent {
         int row = brandMapper.updateBrand(brandUpdateReq);
 
         if (row == 0) {
-            throw new DataException("Unknown error occurred. Data not modified!");
+            throw new DataExecutionException("Unknown error occurred. Data not modified!");
         }
     }
 
@@ -62,7 +62,7 @@ public class VehicleMiscComponentImpl implements VehicleMiscComponent {
         int row = vehicleTypeMapper.createType(vehicleTypeReq);
 
         if (row == 0) {
-            throw new DataException("Unknown error occurred. Data not modified!");
+            throw new DataExecutionException("Unknown error occurred. Data not modified!");
         }
     }
 
@@ -72,7 +72,7 @@ public class VehicleMiscComponentImpl implements VehicleMiscComponent {
         int row = vehicleTypeMapper.updateType(vehicleTypeUpdateReq);
 
         if (row == 0) {
-            throw new DataException("Unknown error occurred. Data not modified!");
+            throw new DataExecutionException("Unknown error occurred. Data not modified!");
         }
     }
 }

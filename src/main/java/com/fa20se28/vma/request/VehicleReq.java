@@ -9,7 +9,6 @@ public class VehicleReq {
     private int vehicleTypeId;
     private int brandId;
     private String ownerId;
-    private int seats;
     private String imageLink;
     private String model;
     private String origin;
@@ -18,6 +17,7 @@ public class VehicleReq {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy")
     private String yearOfManufacture;
     private float distanceDriven;
+    private int seatsId;
     private List<VehicleDocumentReq> vehicleDocuments;
     private VehicleValueReq vehicleValue;
 
@@ -51,14 +51,6 @@ public class VehicleReq {
 
     public void setOwnerId(String ownerId) {
         this.ownerId = ownerId;
-    }
-
-    public int getSeats() {
-        return seats;
-    }
-
-    public void setSeats(int seats) {
-        this.seats = seats;
     }
 
     public String getImageLink() {
@@ -115,6 +107,14 @@ public class VehicleReq {
 
     public void setDistanceDriven(float distanceDriven) {
         this.distanceDriven = distanceDriven;
+    }
+
+    public int getSeatsId() {
+        return seatsId;
+    }
+
+    public void setSeatsId(int seatsId) {
+        this.seatsId = seatsId;
     }
 
     public List<VehicleDocumentReq> getVehicleDocuments() {

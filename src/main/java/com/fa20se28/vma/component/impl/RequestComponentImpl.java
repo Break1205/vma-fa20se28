@@ -1,7 +1,7 @@
 package com.fa20se28.vma.component.impl;
 
 import com.fa20se28.vma.component.RequestComponent;
-import com.fa20se28.vma.configuration.exception.DataException;
+import com.fa20se28.vma.configuration.exception.DataExecutionException;
 import com.fa20se28.vma.configuration.exception.ResourceNotFoundException;
 import com.fa20se28.vma.enums.RequestStatus;
 import com.fa20se28.vma.mapper.RequestMapper;
@@ -38,7 +38,7 @@ public class RequestComponentImpl implements RequestComponent {
         int row = requestMapper.insertRequest(insertReq);
 
         if (row == 0) {
-            throw new DataException("Unknown error occurred. Data not modified!");
+            throw new DataExecutionException("Unknown error occurred. Data not modified!");
         }
 
         return insertReq.getRequestId();
@@ -68,13 +68,14 @@ public class RequestComponentImpl implements RequestComponent {
         return requestMapper.updateRequestStatus(requestId, requestStatus);
     }
 
+    // need fix
     @Override
     @Transactional
     public int createVehicleDocumentRequest(VehicleDocumentRequestReq vehicleDocumentRequestReq, String userId) {
         ReqInsertReq insertReq = new ReqInsertReq(
                 userId, null,
                 vehicleDocumentRequestReq.getVehicleDocument().getVehicleId(),
-                vehicleDocumentRequestReq.getVehicleDocument().getVehicleDocumentReq().getVehicleDocumentId(),
+                "fix here",
                 RequestStatus.PENDING,
                 vehicleDocumentRequestReq.getRequestType(),
                 vehicleDocumentRequestReq.getDescription(),
@@ -83,7 +84,7 @@ public class RequestComponentImpl implements RequestComponent {
         int row = requestMapper.insertRequest(insertReq);
 
         if (row == 0) {
-            throw new DataException("Unknown error occurred. Data not modified!");
+            throw new DataExecutionException("Unknown error occurred. Data not modified!");
         }
 
         return insertReq.getRequestId();
@@ -104,7 +105,7 @@ public class RequestComponentImpl implements RequestComponent {
         int row = requestMapper.insertRequest(insertReq);
 
         if (row == 0) {
-            throw new DataException("Unknown error occurred. Data not modified!");
+            throw new DataExecutionException("Unknown error occurred. Data not modified!");
         }
 
         return insertReq.getRequestId();
@@ -123,7 +124,7 @@ public class RequestComponentImpl implements RequestComponent {
         int row = requestMapper.insertRequest(insertReq);
 
         if (row == 0) {
-            throw new DataException("Unknown error occurred. Data not modified!");
+            throw new DataExecutionException("Unknown error occurred. Data not modified!");
         }
 
         return insertReq.getRequestId();
@@ -143,7 +144,7 @@ public class RequestComponentImpl implements RequestComponent {
         int row = requestMapper.insertRequest(insertReq);
 
         if (row == 0) {
-            throw new DataException("Unknown error occurred. Data not modified!");
+            throw new DataExecutionException("Unknown error occurred. Data not modified!");
         }
 
         return insertReq.getRequestId();

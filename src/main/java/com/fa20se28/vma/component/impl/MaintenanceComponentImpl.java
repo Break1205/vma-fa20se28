@@ -1,7 +1,7 @@
 package com.fa20se28.vma.component.impl;
 
 import com.fa20se28.vma.component.MaintenanceComponent;
-import com.fa20se28.vma.configuration.exception.DataException;
+import com.fa20se28.vma.configuration.exception.DataExecutionException;
 import com.fa20se28.vma.mapper.MaintenanceMapper;
 import com.fa20se28.vma.model.Maintenance;
 import com.fa20se28.vma.model.MaintenanceDetail;
@@ -28,7 +28,7 @@ public class MaintenanceComponentImpl implements MaintenanceComponent {
         int row = maintenanceMapper.createMaintenance(maintenanceReq);
 
         if (row == 0) {
-            throw new DataException("Unknown error occurred. Data not modified!");
+            throw new DataExecutionException("Unknown error occurred. Data not modified!");
         }
     }
 
@@ -38,7 +38,7 @@ public class MaintenanceComponentImpl implements MaintenanceComponent {
         int row = maintenanceMapper.updateMaintenance(maintenanceUpdateReq);
 
         if (row == 0) {
-            throw new DataException("Unknown error occurred. Data not modified!");
+            throw new DataExecutionException("Unknown error occurred. Data not modified!");
         }
     }
 
@@ -48,7 +48,7 @@ public class MaintenanceComponentImpl implements MaintenanceComponent {
         int row = maintenanceMapper.deleteMaintenance(maintenanceId);
 
         if (row == 0) {
-            throw new DataException("Unknown error occurred. Data not modified!");
+            throw new DataExecutionException("Unknown error occurred. Data not modified!");
         }
     }
 

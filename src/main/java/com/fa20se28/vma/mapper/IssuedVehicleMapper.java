@@ -1,9 +1,6 @@
 package com.fa20se28.vma.mapper;
 
-import com.fa20se28.vma.model.DriverHistory;
-import com.fa20se28.vma.model.IssuedVehicle;
-import com.fa20se28.vma.model.UserBasic;
-import com.fa20se28.vma.model.AssignedVehicle;
+import com.fa20se28.vma.model.*;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -12,8 +9,8 @@ import java.util.Optional;
 @Mapper
 public interface IssuedVehicleMapper {
     @Insert("INSERT INTO issued_vehicle(vehicle_id, driver_id, issued_date, returned_date, create_date) " +
-            "VALUES (#{iv_vehicle_id}, NULL, NULL, NULL, getdate()) ")
-    int createPlaceholder(@Param("iv_vehicle_id") String vehicleId);
+            "VALUES (#{v_id}, NULL, NULL, NULL, getDate()) ")
+    int createPlaceholder(@Param("v_id") String vehicleId);
 
     @Update({"<script>" +
             "UPDATE issued_vehicle " +
@@ -45,16 +42,6 @@ public interface IssuedVehicleMapper {
             "WHERE iv.vehicle_id = #{v_id} " +
             "ORDER BY iv.create_date DESC ")
     boolean isVehicleHasDriver(@Param("v_id") String vehicleId);
-
-    // Unused
-    @Select("SELECT TOP 1 " +
-            "CASE WHEN " +
-            "iv.returned_date IS NULL THEN 1 " +
-            "ELSE 0 END Result " +
-            "FROM issued_vehicle iv " +
-            "WHERE iv.driver_id = #{dr_id} " +
-            "ORDER BY iv.create_date DESC ")
-    boolean isDriverAlreadyAssigned(@Param("dr_id") String driverId);
 
     @Select("SELECT \n" +
             "issued_vehicle_id, \n" +
