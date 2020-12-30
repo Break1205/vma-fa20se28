@@ -5,11 +5,9 @@ import com.fa20se28.vma.request.*;
 import com.fa20se28.vma.response.*;
 
 public interface VehicleService {
-    int getTotal(VehiclePageReq request, int viewOption, String ownerId);
+    int getTotal(VehiclePageReq request, int useStatus, String ownerId);
 
-    VehiclePageRes getVehicles(VehiclePageReq request, int viewOption, int pageNum, String ownerId, int takeAll);
-
-    VehicleDropDownRes getVehiclesDropDown(VehicleDropDownReq request, int pageNum, String ownerId);
+    VehiclePageRes getVehicles(VehiclePageReq request, int useStatus, int pageNum, String ownerId, int takeAll);
 
     void assignDriverWithVehicle(String vehicleId, String driverId);
 

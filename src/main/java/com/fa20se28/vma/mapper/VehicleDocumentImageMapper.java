@@ -10,15 +10,13 @@ public interface VehicleDocumentImageMapper {
     @Insert("INSERT INTO vehicle_document_image " +
             "(vehicle_document_id, " +
             "image_link, " +
-            "create_date," +
-            "is_deleted) " +
+            "create_date) " +
             "VALUES " +
-            "(#{vehicle_document_id}, " +
+            "(#{vd_id}, " +
             "#{image_link}, " +
-            "getdate()," +
-            "0) ")
+            "getDate()) ")
     int createVehicleDocumentImage(
-            @Param("vehicle_document_id") String documentId,
+            @Param("vd_id") int vehicleDocumentId,
             @Param("image_link") String imageLink);
 
     @Update("UPDATE vehicle_document_image " +

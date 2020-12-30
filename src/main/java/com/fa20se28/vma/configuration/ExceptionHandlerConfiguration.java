@@ -1,13 +1,6 @@
 package com.fa20se28.vma.configuration;
 
-import com.fa20se28.vma.configuration.exception.DataException;
-import com.fa20se28.vma.configuration.exception.InvalidFirebaseMessagingException;
-import com.fa20se28.vma.configuration.exception.InvalidFirebaseTokenException;
-import com.fa20se28.vma.configuration.exception.InvalidParamException;
-import com.fa20se28.vma.configuration.exception.RequestAlreadyHandledException;
-import com.fa20se28.vma.configuration.exception.ResourceIsInUsedException;
-import com.fa20se28.vma.configuration.exception.ResourceNotFoundException;
-import com.fa20se28.vma.configuration.exception.TemplateException;
+import com.fa20se28.vma.configuration.exception.*;
 import com.fa20se28.vma.configuration.exception.model.ApiError;
 import com.google.firebase.auth.AuthErrorCode;
 import com.google.firebase.messaging.MessagingErrorCode;
@@ -126,9 +119,17 @@ public class ExceptionHandlerConfiguration extends ResponseEntityExceptionHandle
         return buildResponseEntity(apiError);
     }
 
-    @ExceptionHandler(DataException.class)
-    protected ResponseEntity<Object> handleDataException(DataException e) {
+    @ExceptionHandler(DataExecutionException.class)
+    protected ResponseEntity<Object> handleDataException(DataExecutionException e) {
         ApiError apiError = new ApiError(HttpStatus.INTERNAL_SERVER_ERROR);
+        apiError.setMessage("Data Exception");
+        apiError.setDebugMessage(e.getLocalizedMessage());
+        return buildResponseEntity(apiError);
+    }
+
+    @ExceptionHandler(InvalidStatusException.class)
+    protected ResponseEntity<Object> handleInvalidStatusException(InvalidStatusException e) {
+        ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST);
         apiError.setMessage("Data Exception");
         apiError.setDebugMessage(e.getLocalizedMessage());
         return buildResponseEntity(apiError);

@@ -1,5 +1,6 @@
 package com.fa20se28.vma.mapper;
 
+import com.fa20se28.vma.enums.DocumentStatus;
 import com.fa20se28.vma.model.VehicleDocument;
 import com.fa20se28.vma.request.VehicleDocumentReq;
 import com.fa20se28.vma.request.VehicleDocumentUpdateReq;
@@ -12,34 +13,36 @@ public interface VehicleDocumentMapper {
 
     @Select("SELECT " +
             "CASE WHEN " +
-            "Count(vd.vehicle_document_id) > 0 THEN 1 " +
+            "Count(vd.vehicle_document_number) > 0 THEN 1 " +
             "ELSE 0 END " +
             "FROM vehicle_document vd " +
-            "WHERE vd.vehicle_document_id = #{v_id} ")
-    boolean isDocumentExist(@Param("v_id") String vehicleDocumentId);
+            "WHERE vd.vehicle_document_number = #{d_num} " +
+            "AND vd.status = 'VALID' ")
+    boolean isDocumentExist(@Param("d_num") String vehicleDocumentNumber);
 
     @Insert("INSERT INTO vehicle_document " +
-            "(vehicle_document_id, " +
+            "(vehicle_document_number, " +
             "vehicle_id, " +
             "registered_location," +
             "registered_date, " +
             "expiry_date, " +
             "create_date, " +
             "vehicle_document_type, " +
-            "is_deleted) " +
+            "status) " +
             "VALUES " +
-            "(#{d_request.vehicleDocumentId}, " +
+            "(#{d_request.vehicleDocumentNumber}, " +
             "#{v_id}, " +
             "#{d_request.registeredLocation}, " +
             "#{d_request.registeredDate}, " +
             "#{d_request.expiryDate}, " +
             "getdate(), " +
             "#{d_request.vehicleDocumentType}, " +
-            "#{d_option}) ")
+            "#{d_status}) ")
+    @Options(keyProperty = "d_request.vehicleDocumentId", useGeneratedKeys = true)
     int createVehicleDocument(
             @Param("d_request") VehicleDocumentReq documentReq,
             @Param("v_id") String vehicleId,
-            @Param("d_option") boolean createOption);
+            @Param("d_status") DocumentStatus status);
 
     @Update("UPDATE vehicle_document " +
             "SET " +
@@ -124,4 +127,23 @@ public interface VehicleDocumentMapper {
             @Param("doc") VehicleDocument vDocument,
             @Param("v_id") String vehicleId,
             @Param("r_id") int requestId);
+
+    @Update("UPDATE vehicle_document " +
+            "SET " +
+            "status = 'DELETED' " +
+            "WHERE vehicle_id = #{v_id} " +
+            "AND status = 'VALID' ")
+    int deleteVehicleDocuments(@Param("v_id") String vehicleId);
+
+    @Update("UPDATE vehicle_document " +
+            "SET " +
+            "registered_location = #{d_request.registeredLocation}, " +
+            "registered_date = #{d_request.registeredDate}, " +
+            "expiry_date = #{d_request.expiryDate}, " +
+            "vehicle_document_type = #{d_request.vehicleDocumentType} " +
+            "WHERE " +
+            "vehicle_document_id = #{d_request.vehicleDocumentId} ")
+    int updateVehicleDocumentStatus(
+            @Param("v_id") String vehicleId,
+            @Param("d_status") DocumentStatus status);
 }

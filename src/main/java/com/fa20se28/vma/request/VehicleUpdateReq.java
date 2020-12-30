@@ -1,6 +1,5 @@
 package com.fa20se28.vma.request;
 
-import com.fa20se28.vma.enums.VehicleStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 public class VehicleUpdateReq {
@@ -8,8 +7,7 @@ public class VehicleUpdateReq {
     private int vehicleTypeId;
     private int brandId;
     private String ownerId;
-    private VehicleStatus vehicleStatus;
-    private int seats;
+    private int seatsId;
     private String imageLink;
     private String model;
     private String origin;
@@ -19,13 +17,12 @@ public class VehicleUpdateReq {
     private String yearOfManufacture;
     private float distanceDriven;
 
-    public VehicleUpdateReq(String vehicleId, int vehicleTypeId, int brandId, String ownerId, VehicleStatus vehicleStatus, int seats, String imageLink, String model, String origin, String chassisNumber, String engineNumber, String yearOfManufacture, float distanceDriven) {
+    public VehicleUpdateReq(String vehicleId, int vehicleTypeId, int brandId, String ownerId, int seatsId, String imageLink, String model, String origin, String chassisNumber, String engineNumber, String yearOfManufacture, float distanceDriven) {
         this.vehicleId = vehicleId;
         this.vehicleTypeId = vehicleTypeId;
         this.brandId = brandId;
         this.ownerId = ownerId;
-        this.vehicleStatus = vehicleStatus;
-        this.seats = seats;
+        this.seatsId = seatsId;
         this.imageLink = imageLink;
         this.model = model;
         this.origin = origin;
@@ -67,12 +64,12 @@ public class VehicleUpdateReq {
         this.ownerId = ownerId;
     }
 
-    public int getSeats() {
-        return seats;
+    public int getSeatsId() {
+        return seatsId;
     }
 
-    public void setSeats(int seats) {
-        this.seats = seats;
+    public void setSeatsId(int seatsId) {
+        this.seatsId = seatsId;
     }
 
     public String getImageLink() {
@@ -129,13 +126,5 @@ public class VehicleUpdateReq {
 
     public void setDistanceDriven(float distanceDriven) {
         this.distanceDriven = distanceDriven;
-    }
-
-    public VehicleStatus getVehicleStatus() {
-        return vehicleStatus;
-    }
-
-    public void setVehicleStatus(VehicleStatus vehicleStatus) {
-        this.vehicleStatus = vehicleStatus;
     }
 }

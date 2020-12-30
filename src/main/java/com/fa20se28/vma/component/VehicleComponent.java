@@ -7,11 +7,9 @@ import com.fa20se28.vma.request.*;
 import java.util.List;
 
 public interface VehicleComponent {
-    int getTotal(VehiclePageReq request, int viewOption, String ownerId);
+    int getTotal(VehiclePageReq request, int useStatus, String ownerId);
 
-    List<Vehicle> getVehicles(VehiclePageReq request, int viewOption, int pageNum, String ownerId, int takeAll);
-
-    List<VehicleDropDown> getVehiclesDropDown(VehicleDropDownReq request, int pageNum, String ownerId);
+    List<Vehicle> getVehicles(VehiclePageReq request, int useStatus, int pageNum, String ownerId, int takeAll);
 
     void assignVehicle(String vehicleId, String driverId);
 

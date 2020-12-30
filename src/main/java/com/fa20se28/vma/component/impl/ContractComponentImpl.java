@@ -1,7 +1,7 @@
 package com.fa20se28.vma.component.impl;
 
 import com.fa20se28.vma.component.ContractComponent;
-import com.fa20se28.vma.configuration.exception.DataException;
+import com.fa20se28.vma.configuration.exception.DataExecutionException;
 import com.fa20se28.vma.configuration.exception.InvalidParamException;
 import com.fa20se28.vma.configuration.exception.ResourceIsInUsedException;
 import com.fa20se28.vma.configuration.exception.ResourceNotFoundException;
@@ -68,7 +68,7 @@ public class ContractComponentImpl implements ContractComponent {
         int row = contractMapper.createContract(contractReq, ContractStatus.NOT_STARTED);
 
         if (row == 0) {
-            throw new DataException("Can not insert Contract record!");
+            throw new DataExecutionException("Can not insert Contract record!");
         } else {
             createContractDetailAndScheduleAndVehicles(contractReq);
         }
@@ -104,7 +104,7 @@ public class ContractComponentImpl implements ContractComponent {
         int row = contractMapper.updateStatus(contractStatus, contractId);
 
         if (row == 0) {
-            throw new DataException("Unknown error occurred. Data not modified!");
+            throw new DataExecutionException("Unknown error occurred. Data not modified!");
         }
     }
 
@@ -132,28 +132,28 @@ public class ContractComponentImpl implements ContractComponent {
 
         int deletedPassengersRecord = passengerMapper.deletePassengersFromContractVehicle(contractReq.getContractId());
         if (deletedPassengersRecord < 0) {
-            throw new DataException("Can not delete passengers of contract vehicle id: " + contractReq.getContractId());
+            throw new DataExecutionException("Can not delete passengers of contract vehicle id: " + contractReq.getContractId());
         }
 
         int deleteContractDetailSchedule = contractDetailScheduleMapper.deleteContractSchedule(contractReq.getContractId());
         if (deleteContractDetailSchedule < 0) {
-            throw new DataException("Can not delete schedule of contract id: " + contractReq.getContractId());
+            throw new DataExecutionException("Can not delete schedule of contract id: " + contractReq.getContractId());
         }
 
         int deletedContractVehicleRecords = contractVehicleMapper.deleteContractVehicles(contractReq.getContractId());
         if (deletedContractVehicleRecords == 0) {
-            throw new DataException("Can not delete contract vehicles of contract id: " + contractReq.getContractId());
+            throw new DataExecutionException("Can not delete contract vehicles of contract id: " + contractReq.getContractId());
         }
 
         int deleteContractDetailRecords = contractDetailMapper.deleteContractDetailById(contractReq.getContractId());
         if (deleteContractDetailRecords == 0) {
-            throw new DataException("Can not delete contract details of contract id: " + contractReq.getContractId());
+            throw new DataExecutionException("Can not delete contract details of contract id: " + contractReq.getContractId());
         }
 
         int contractRecord = contractMapper.updateContract(contractReq);
 
         if (contractRecord == 0) {
-            throw new DataException("Can not update contract record");
+            throw new DataExecutionException("Can not update contract record");
         } else {
             createContractDetailAndScheduleAndVehicles(contractReq);
         }
@@ -164,7 +164,7 @@ public class ContractComponentImpl implements ContractComponent {
         for (ContractTripReq trip : contractReq.getTrips()) {
             int contractTripRow = contractDetailMapper.createContractDetail(trip, contractMapper.getContractId(contractReq.getContractOwnerId()));
             if (contractTripRow == 0) {
-                throw new DataException("Can not insert Contract Detail record");
+                throw new DataExecutionException("Can not insert Contract Detail record");
             } else {
                 Map<String, String> nonDuplicateAssignedVehicles = new HashMap<>();
                 for (String vehicleId : trip.getAssignedVehicles()) {
@@ -191,7 +191,7 @@ public class ContractComponentImpl implements ContractComponent {
                     );
 
                     if (contractVehicleRow == 0) {
-                        throw new DataException("Can not insert Contract Vehicle record");
+                        throw new DataExecutionException("Can not insert Contract Vehicle record");
                     }
                 }
 
@@ -203,7 +203,7 @@ public class ContractComponentImpl implements ContractComponent {
                             contractDetailId);
 
                     if (scheduleRow == 0) {
-                        throw new DataException("Can not insert Contract Detail Schedule record");
+                        throw new DataExecutionException("Can not insert Contract Detail Schedule record");
                     }
                 }
             }

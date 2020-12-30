@@ -2,7 +2,7 @@ package com.fa20se28.vma.component.impl;
 
 import com.fa20se28.vma.component.ContractVehicleComponent;
 import com.fa20se28.vma.configuration.CustomUtils;
-import com.fa20se28.vma.configuration.exception.DataException;
+import com.fa20se28.vma.configuration.exception.DataExecutionException;
 import com.fa20se28.vma.configuration.exception.InvalidParamException;
 import com.fa20se28.vma.configuration.exception.ResourceNotFoundException;
 import com.fa20se28.vma.enums.ContractStatus;
@@ -54,7 +54,7 @@ public class ContractVehicleComponentImpl implements ContractVehicleComponent {
             int row = passengerMapper.createPassenger(passengerReq, contractVehiclePassengerReq.getContractVehicleId());
 
             if (row == 0) {
-                throw new DataException("Unknown error occurred. Data not modified!");
+                throw new DataExecutionException("Unknown error occurred. Data not modified!");
             }
         }
     }
@@ -79,7 +79,7 @@ public class ContractVehicleComponentImpl implements ContractVehicleComponent {
                 ContractVehicleStatus.NOT_STARTED);
 
         if (row == 0) {
-            throw new DataException("Unknown error occurred. Data not modified!");
+            throw new DataExecutionException("Unknown error occurred. Data not modified!");
         }
 
     }
@@ -103,7 +103,7 @@ public class ContractVehicleComponentImpl implements ContractVehicleComponent {
                 contractVehicleStatusUpdateReq.getVehicleStatus());
 
         if (row == 0) {
-            throw new DataException("Unknown error occurred. Data not modified!");
+            throw new DataExecutionException("Unknown error occurred. Data not modified!");
         }
     }
 
@@ -123,7 +123,7 @@ public class ContractVehicleComponentImpl implements ContractVehicleComponent {
 
         if (!option) {
             if (!vehicleMapper.getVehicleStatus(tripReq.getVehicleId()).equals(VehicleStatus.AVAILABLE)) {
-                throw new DataException("Vehicle is still occupied!");
+                throw new DataExecutionException("Vehicle is still occupied!");
             } else {
                 contractVehicleRow = contractVehicleMapper.updateContractedVehicleStatus(tripReq.getContractDetailId(), currentIssuedId, ContractVehicleStatus.IN_PROGRESS);
                 vehicleRow = vehicleMapper.updateVehicleStatus(tripReq.getVehicleId(), VehicleStatus.ON_ROUTE);
@@ -135,7 +135,7 @@ public class ContractVehicleComponentImpl implements ContractVehicleComponent {
             }
         } else {
             if (!vehicleMapper.getVehicleStatus(tripReq.getVehicleId()).equals(VehicleStatus.ON_ROUTE)) {
-                throw new DataException("Vehicle is not used!");
+                throw new DataExecutionException("Vehicle is not used!");
             } else {
                 contractVehicleRow = contractVehicleMapper.updateContractedVehicleStatus(tripReq.getContractDetailId(), currentIssuedId, ContractVehicleStatus.COMPLETED);
                 vehicleRow = vehicleMapper.updateVehicleStatus(tripReq.getVehicleId(), VehicleStatus.AVAILABLE);
@@ -157,7 +157,7 @@ public class ContractVehicleComponentImpl implements ContractVehicleComponent {
         }
 
         if (contractVehicleRow == 0 || vehicleRow == 0) {
-            throw new DataException("Unknown error occurred. Data not modified!");
+            throw new DataExecutionException("Unknown error occurred. Data not modified!");
         }
 
         return 0;
@@ -177,7 +177,7 @@ public class ContractVehicleComponentImpl implements ContractVehicleComponent {
         int row = contractMapper.updateStatus(ContractStatus.IN_PROGRESS, contractId);
 
         if (row == 0) {
-            throw new DataException("Unknown error occurred. Data not modified!");
+            throw new DataExecutionException("Unknown error occurred. Data not modified!");
         }
     }
 
@@ -191,7 +191,7 @@ public class ContractVehicleComponentImpl implements ContractVehicleComponent {
 
         int actualNumberRow = contractMapper.updateContractActual(actualPassengerCount, completedVehicleCount, contractId);
         if (contractStatusRow == 0 || actualNumberRow == 0) {
-            throw new DataException("Unknown error occurred. Data not modified!");
+            throw new DataExecutionException("Unknown error occurred. Data not modified!");
         }
     }
 

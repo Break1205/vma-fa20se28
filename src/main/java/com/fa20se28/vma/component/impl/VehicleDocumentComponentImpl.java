@@ -1,8 +1,7 @@
 package com.fa20se28.vma.component.impl;
 
 import com.fa20se28.vma.component.VehicleDocumentComponent;
-import com.fa20se28.vma.configuration.exception.DataException;
-import com.fa20se28.vma.configuration.exception.ResourceIsInUsedException;
+import com.fa20se28.vma.configuration.exception.DataExecutionException;
 import com.fa20se28.vma.mapper.VehicleDocumentImageMapper;
 import com.fa20se28.vma.mapper.VehicleDocumentMapper;
 import com.fa20se28.vma.model.VehicleDocument;
@@ -53,12 +52,12 @@ public class VehicleDocumentComponentImpl implements VehicleDocumentComponent {
         int row = vehicleDocumentMapper.updateVehicleDocument(vehicleDocumentUpdateReq);
 
         if (row == 0) {
-            throw new DataException("Unknown error occurred. Data not modified!");
+            throw new DataExecutionException("Unknown error occurred. Data not modified!");
         } else {
             for (VehicleDocumentImage image : vehicleDocumentUpdateReq.getImageLinks()) {
                 int imageRow = vehicleDocumentImageMapper.updateVehicleDocumentImage(vehicleDocumentUpdateReq.getVehicleDocumentId(), image);
                 if (imageRow == 0) {
-                    throw new DataException("Unknown error occurred. Data not modified!");
+                    throw new DataExecutionException("Unknown error occurred. Data not modified!");
                 }
             }
         }
@@ -70,7 +69,7 @@ public class VehicleDocumentComponentImpl implements VehicleDocumentComponent {
         int row = vehicleDocumentMapper.updateDocumentStatus(vehicleDocId, true);
 
         if (row == 0) {
-            throw new DataException("Unknown error occurred. Data not modified!");
+            throw new DataExecutionException("Unknown error occurred. Data not modified!");
         }
     }
 
@@ -112,7 +111,7 @@ public class VehicleDocumentComponentImpl implements VehicleDocumentComponent {
         int row = vehicleDocumentMapper.updateDocumentStatus(vehicleDocId, false);
 
         if (row == 0) {
-            throw new DataException("Unknown error occurred. Data not modified!");
+            throw new DataExecutionException("Unknown error occurred. Data not modified!");
         }
     }
 
@@ -134,7 +133,7 @@ public class VehicleDocumentComponentImpl implements VehicleDocumentComponent {
         }
 
         if (moveDocRow == 0 || moveImageRow == 0 || deleteImageRow == 0) {
-            throw new DataException("Unknown error occurred. Data not modified!");
+            throw new DataExecutionException("Unknown error occurred. Data not modified!");
         }
     }
 
@@ -142,7 +141,7 @@ public class VehicleDocumentComponentImpl implements VehicleDocumentComponent {
     @Transactional
     public void addDocImages(int resultRow, String vehicleDocId, List<String> images) {
         if (resultRow == 0) {
-            throw new DataException("Unknown error occurred. Data not modified!");
+            throw new DataExecutionException("Unknown error occurred. Data not modified!");
         } else {
             for (String image : images) {
                 int imageRow = vehicleDocumentImageMapper.createVehicleDocumentImage(vehicleDocId, image);

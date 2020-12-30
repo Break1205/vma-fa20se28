@@ -18,7 +18,7 @@ public class VehicleController {
 
     @GetMapping("/count")
     public int getTotal(
-            @RequestParam(required = false, defaultValue = "0") int viewOption,
+            @RequestParam(required = false, defaultValue = "0") int useStatus,
             @RequestParam(required = false) String ownerId,
             @RequestParam(required = false) String vehicleId,
             @RequestParam(required = false) String model,
@@ -30,12 +30,12 @@ public class VehicleController {
             @RequestParam(required = false, defaultValue = "0") float vehicleMaxDis) {
         return vehicleService.getTotal(
                 new VehiclePageReq(vehicleId, model, vehicleTypeId, seatsMin, seatsMax, vehicleStatus, vehicleMinDis, vehicleMaxDis),
-                viewOption, ownerId);
+                useStatus, ownerId);
     }
 
     @GetMapping
     public VehiclePageRes getVehicles(
-            @RequestParam(required = false, defaultValue = "0") int viewOption,
+            @RequestParam(required = false, defaultValue = "0") int useStatus,
             @RequestParam(required = false, defaultValue = "0") int pageNum,
             @RequestParam(required = false) String ownerId,
             @RequestParam(required = false) String vehicleId,
@@ -52,20 +52,7 @@ public class VehicleController {
                         vehicleId, model, vehicleTypeId,
                         seatsMin, seatsMax, vehicleStatus,
                         vehicleMinDis, vehicleMaxDis),
-                viewOption, pageNum, ownerId, takeAll);
-    }
-
-    @GetMapping("/dropdown")
-    public VehicleDropDownRes getVehiclesDropDown(
-            @RequestParam(required = false, defaultValue = "0") int pageNum,
-            @RequestParam(required = false) String ownerId,
-            @RequestParam(required = false) String vehicleId,
-            @RequestParam(required = false) String model,
-            @RequestParam(required = false, defaultValue = "0") int vehicleTypeId,
-            @RequestParam(required = false, defaultValue = "0") int seatsMin,
-            @RequestParam(required = false, defaultValue = "0") int seatsMax) {
-        return vehicleService.getVehiclesDropDown(
-                new VehicleDropDownReq(vehicleId, model, vehicleTypeId, seatsMin, seatsMax), pageNum, ownerId);
+                useStatus, pageNum, ownerId, takeAll);
     }
 
     @PatchMapping("/assignment/{vehicle-id}/{driver-id}")

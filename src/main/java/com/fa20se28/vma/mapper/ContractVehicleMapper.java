@@ -234,11 +234,11 @@ public interface ContractVehicleMapper {
             "COUNT(cv.contract_vehicle_id) > 0 THEN 1 " +
             "ELSE 0 END Result " +
             "FROM contract_vehicles cv " +
-            "JOIN contract_detail cd ON cv.contract_detail_id = cd.contract_detail_id " +
+            "JOIN contract_trip ct ON ct.contract_trip_id = ct.contract_trip_id " +
             "WHERE cv.issued_vehicle_id = #{iv_id} " +
             "AND (cv.contract_vehicle_status = 'NOT_STARTED' OR cv.contract_vehicle_status = 'IN_PROGRESS') " +
-            "AND (cd.destination_time <= #{t_current} " +
-            "OR cd.departure_time >= #{t_current}) ")
+            "AND (ct.destination_time <= #{t_current} " +
+            "OR ct.departure_time >= #{t_current}) ")
     boolean checkIfThereIsRemainingTrip(
             @Param("iv_id") int issuedVehicleId,
             @Param("t_current") LocalDateTime currentDateTime);
