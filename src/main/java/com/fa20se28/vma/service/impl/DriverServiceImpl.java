@@ -1,7 +1,6 @@
 package com.fa20se28.vma.service.impl;
 
 import com.fa20se28.vma.component.DriverComponent;
-import com.fa20se28.vma.component.impl.AuthenticationComponentImpl;
 import com.fa20se28.vma.model.DriverDetail;
 import com.fa20se28.vma.request.DriverPageReq;
 import com.fa20se28.vma.request.IssuedDriversPageReq;
@@ -9,7 +8,6 @@ import com.fa20se28.vma.response.DriverDetailRes;
 import com.fa20se28.vma.response.DriverPageRes;
 import com.fa20se28.vma.response.IssuedDriversPageRes;
 import com.fa20se28.vma.service.DriverService;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 @Service
