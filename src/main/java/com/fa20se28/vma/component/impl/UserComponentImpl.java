@@ -157,7 +157,7 @@ public class UserComponentImpl implements UserComponent {
             for (UserDocumentImageReq userDocumentImageReq : userDocumentReq.getUserDocumentImages()) {
                 documentImageRecords += userDocumentImageMapper
                         .insertUserDocumentImage(
-                                userDocumentImageReq, Integer.parseInt(userDocumentReq.getUserDocumentNumber()));
+                                userDocumentImageReq, userDocumentReq.getUserDocumentId());
             }
         }
         int userRoles = userMapper.insertRoleForUserId(userReq.getUserId(), roleId);
