@@ -38,7 +38,7 @@ public class ContributorComponentImpl implements ContributorComponent {
     @Override
     public List<ContributorRes> findContributors(
             ContributorPageReq contributorPageReq) {
-        return contributorMapper.findContributorsWhenFilter(contributorPageReq);
+        return contributorMapper.findContributors(contributorPageReq);
     }
 
     @Override
@@ -49,16 +49,6 @@ public class ContributorComponentImpl implements ContributorComponent {
 
     @Override
     public int findTotalContributorsWhenFilter(ContributorPageReq contributorPageReq) {
-        return contributorMapper.findTotalContributorsWhenFilter(contributorPageReq);
-    }
-
-    @Override
-    public int findTheHighestTotalVehicleInAllContributors() {
-        return contributorMapper.findTheHighestTotalVehiclesInAllContributors();
-    }
-
-    @Override
-    public int findTheLowestTotalVehicleInAllContributors() {
-        return contributorMapper.findTheLowestTotalVehiclesInAllContributors();
+        return contributorMapper.findTotalContributors(contributorPageReq);
     }
 }
