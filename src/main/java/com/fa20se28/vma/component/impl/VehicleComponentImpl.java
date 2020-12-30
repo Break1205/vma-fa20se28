@@ -185,6 +185,7 @@ public class VehicleComponentImpl implements VehicleComponent {
         return issuedVehicleMapper.getVehicleHistory(driverId);
     }
 
+    // To fix
     @Override
     @Transactional
     public void createVehicleFromRequest(VehicleReq vehicle) {
@@ -197,34 +198,36 @@ public class VehicleComponentImpl implements VehicleComponent {
                 throw new ResourceIsInUsedException("Vehicle is already approved!");
             }
 
-            int updateVehicleRow = vehicleMapper.updateVehicle(
-                    new VehicleUpdateReq(vehicle.getVehicleId(), vehicle.getVehicleTypeId(), vehicle.getBrandId(), vehicle.getOwnerId(),
-                            VehicleStatus.PENDING_APPROVAL, vehicle.getSeats(), vehicle.getImageLink(), vehicle.getModel(),
-                            vehicle.getOrigin(), vehicle.getChassisNumber(), vehicle.getEngineNumber(),
-                            vehicle.getYearOfManufacture(), vehicle.getDistanceDriven()));
-
-            if (updateVehicleRow != 0) {
-                addVehicleDocs(vehicle.getVehicleId(), vehicle.getVehicleDocuments(), true);
-                addVehicleValue(vehicle.getVehicleValue());
-            }
-
-            if (updateVehicleRow == 0) {
-                throw new DataException("Unknown error occurred. Data not added!");
-            }
+//            int updateVehicleRow = vehicleMapper.updateVehicle(
+//                    new VehicleUpdateReq(vehicle.getVehicleId(), vehicle.getVehicleTypeId(), vehicle.getBrandId(), vehicle.getOwnerId(),
+//                            VehicleStatus.PENDING_APPROVAL, vehicle.getSeats(), vehicle.getImageLink(), vehicle.getModel(),
+//                            vehicle.getOrigin(), vehicle.getChassisNumber(), vehicle.getEngineNumber(),
+//                            vehicle.getYearOfManufacture(), vehicle.getDistanceDriven()));
+//
+//            if (updateVehicleRow != 0) {
+//                addVehicleDocs(vehicle.getVehicleId(), vehicle.getVehicleDocuments(), true);
+//                addVehicleValue(vehicle.getVehicleValue());
+//            }
+//
+//            if (updateVehicleRow == 0) {
+//                throw new DataExecutionException("Unknown error occurred. Data not added!");
+//            }
         }
     }
 
+    // To be fixed
     @Override
     @Transactional
     public void acceptVehicle(String vehicleId) {
-        int placeholderRow = issuedVehicleMapper.createPlaceholder(vehicleId);
-        int vehicleStatusRow = vehicleMapper.updateVehicleStatus(vehicleId, VehicleStatus.AVAILABLE_NO_DRIVER);
-
-        if (placeholderRow == 0 || vehicleStatusRow == 0) {
-            throw new DataException("Unknown error occurred. Data not added!");
-        }
+//        int placeholderRow = issuedVehicleMapper.createPlaceholder(vehicleId);
+//        int vehicleStatusRow = vehicleMapper.updateVehicleStatus(vehicleId, VehicleStatus.AVAILABLE_NO_DRIVER);
+//
+//        if (placeholderRow == 0 || vehicleStatusRow == 0) {
+//            throw new DataExecutionException("Unknown error occurred. Data not added!");
+//        }
     }
 
+    // To be fixed
     @Override
     @Transactional
     public void denyVehicle(String vehicleId, int requestId) {
@@ -234,12 +237,36 @@ public class VehicleComponentImpl implements VehicleComponent {
             throw new DataExecutionException("Unknown error occurred. Data not added!");
         }
 
-            int vehicleValueRow = vehicleValueMapper.deleteValue(vehicleValueMapper.getCurrentValueId());
-
-            if (vehicleValueRow == 0) {
-                throw new DataException("Unknown error occurred. Data not added!");
-            }
-        }
+//        VehicleDetail vehicleDetail = vehicleMapper.getVehicleDetails(vehicleId);
+//        int vehicleLogRow = vehicleMapper.moveDeniedVehicleToLog(vehicleDetail, requestId);
+//
+//        if (vehicleLogRow == 0) {
+//            throw new DataExecutionException("Unknown error occurred. Data not added!");
+//        } else {
+//            for (VehicleDocument doc : vehicleDocumentMapper.getVehicleDocuments(vehicleId, 1)) {
+//                int moveDocRow = vehicleDocumentMapper.moveDeniedVehicleDocumentToLog(doc, vehicleId, requestId);
+//                int moveImageRow = 0;
+//                int deleteImageRow = 0;
+//
+//                List<VehicleDocumentImage> vehicleDocumentImages = vehicleDocumentImageMapper.getImageLinks(doc.getVehicleDocumentId(), 0);
+//                for (VehicleDocumentImage image : vehicleDocumentImages) {
+//                    vehicleDocumentImageMapper.moveDeniedVehicleDocumentImageToLog(image.getVehicleDocumentImageId(), requestId);
+//                    vehicleDocumentImageMapper.deleteImages(image.getVehicleDocumentImageId());
+//                    deleteImageRow++;
+//                    moveImageRow++;
+//                }
+//
+//                if (moveDocRow == 0 || moveImageRow == 0 || deleteImageRow == 0) {
+//                    throw new DataExecutionException("Unknown error occurred. Data not modified!");
+//                }
+//            }
+//
+//            int vehicleValueRow = vehicleValueMapper.deleteValue(vehicleValueMapper.getCurrentValueId());
+//
+//            if (vehicleValueRow == 0) {
+//                throw new DataExecutionException("Unknown error occurred. Data not added!");
+//            }
+//        }
     }
 
     @Override
@@ -253,13 +280,13 @@ public class VehicleComponentImpl implements VehicleComponent {
                 if (!notAdmin) {
                     throw new ResourceIsInUsedException("Document with ID " + doc.getVehicleDocumentNumber() + " already exist!");
                 } else {
-                    vehicleDoc = vehicleDocumentMapper.updateVehicleDocument(
-                            new VehicleDocumentUpdateReq(
-                                    doc.getVehicleDocumentId(),
-                                    doc.getVehicleDocumentType(),
-                                    doc.getRegisteredLocation(),
-                                    doc.getRegisteredDate(),
-                                    doc.getExpiryDate()));
+//                    vehicleDoc = vehicleDocumentMapper.updateVehicleDocument(
+//                            new VehicleDocumentUpdateReq(
+//                                    doc.getVehicleDocumentId(),
+//                                    doc.getVehicleDocumentType(),
+//                                    doc.getRegisteredLocation(),
+//                                    doc.getRegisteredDate(),
+//                                    doc.getExpiryDate()));
                 }
             }
 
