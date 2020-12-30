@@ -2,12 +2,8 @@ package com.fa20se28.vma.controller;
 
 import com.fa20se28.vma.enums.UserStatus;
 import com.fa20se28.vma.request.ContributorPageReq;
-import com.fa20se28.vma.request.DriverPageReq;
-import com.fa20se28.vma.request.UserPageReq;
 import com.fa20se28.vma.response.ContributorDetailRes;
 import com.fa20se28.vma.response.ContributorPageRes;
-import com.fa20se28.vma.response.DriverPageRes;
-import com.fa20se28.vma.response.UserPageRes;
 import com.fa20se28.vma.service.ContributorService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -51,8 +47,4 @@ public class ContributorController {
                 new ContributorPageReq(userId, name, phoneNumber, userStatus, min, max, 0));
     }
 
-    @GetMapping("total-vehicle")
-    public int getTheHighestOrLowestTotalVehicleInAllContributors(@RequestParam int option) {
-        return contributorService.getTheHighestOrLowestTotalVehicleInAllContributors(option);
-    }
 }
