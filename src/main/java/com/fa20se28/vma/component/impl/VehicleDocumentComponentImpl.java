@@ -34,16 +34,17 @@ public class VehicleDocumentComponentImpl implements VehicleDocumentComponent {
         return vehicleDocuments;
     }
 
+    // Need fix
     @Override
     @Transactional
     public void createVehicleDocument(VehicleDocumentStandaloneReq vehicleDocumentStandaloneReq, boolean notAdmin) {
-        if (!vehicleDocumentMapper.isDocumentExist(vehicleDocumentStandaloneReq.getVehicleDocumentReq().getVehicleDocumentId())) {
-            int docRow = vehicleDocumentMapper.createVehicleDocument(vehicleDocumentStandaloneReq.getVehicleDocumentReq(), vehicleDocumentStandaloneReq.getVehicleId(), notAdmin);
-
-            addDocImages(docRow, vehicleDocumentStandaloneReq.getVehicleDocumentReq().getVehicleDocumentId(), vehicleDocumentStandaloneReq.getVehicleDocumentReq().getImageLinks());
-        } else {
-            throw new DataException("Document with ID " + vehicleDocumentStandaloneReq.getVehicleDocumentReq().getVehicleDocumentId() + " already exist!");
-        }
+//        if (!vehicleDocumentMapper.isDocumentExist(vehicleDocumentStandaloneReq.getVehicleDocumentReq().getVehicleDocumentId())) {
+//            int docRow = vehicleDocumentMapper.createVehicleDocument(vehicleDocumentStandaloneReq.getVehicleDocumentReq(), vehicleDocumentStandaloneReq.getVehicleId(), notAdmin);
+//
+//            addDocImages(docRow, vehicleDocumentStandaloneReq.getVehicleDocumentReq().getVehicleDocumentId(), vehicleDocumentStandaloneReq.getVehicleDocumentReq().getImageLinks());
+//        } else {
+//            throw new DataExecutionException("Document with ID " + vehicleDocumentStandaloneReq.getVehicleDocumentReq().getVehicleDocumentId() + " already exist!");
+//        }
     }
 
     @Override
@@ -73,28 +74,29 @@ public class VehicleDocumentComponentImpl implements VehicleDocumentComponent {
         }
     }
 
+    // Need fix
     @Override
     @Transactional
     public void createVehicleDocumentFromRequest(VehicleDocumentStandaloneReq vehicleDocumentStandaloneReq) {
-        String documentId = vehicleDocumentStandaloneReq.getVehicleDocumentReq().getVehicleDocumentId();
-
-        if (!vehicleDocumentMapper.isDocumentExist(documentId)) {
-            createVehicleDocument(vehicleDocumentStandaloneReq, true);
-        } else {
-            if (!vehicleDocumentMapper.checkIfDocumentIsInUse(documentId)) {
-                throw new ResourceIsInUsedException("A document with id " + documentId + " is still valid");
-            } else {
-                int docRow = vehicleDocumentMapper.updateVehicleDocument(
-                        new VehicleDocumentUpdateReq(
-                                vehicleDocumentStandaloneReq.getVehicleDocumentReq().getVehicleDocumentId(),
-                                vehicleDocumentStandaloneReq.getVehicleDocumentReq().getVehicleDocumentType(),
-                                vehicleDocumentStandaloneReq.getVehicleDocumentReq().getRegisteredLocation(),
-                                vehicleDocumentStandaloneReq.getVehicleDocumentReq().getRegisteredDate(),
-                                vehicleDocumentStandaloneReq.getVehicleDocumentReq().getExpiryDate()));
-
-                addDocImages(docRow, vehicleDocumentStandaloneReq.getVehicleDocumentReq().getVehicleDocumentId(), vehicleDocumentStandaloneReq.getVehicleDocumentReq().getImageLinks());
-            }
-        }
+//        String documentId = vehicleDocumentStandaloneReq.getVehicleDocumentReq().getVehicleDocumentId();
+//
+//        if (!vehicleDocumentMapper.isDocumentExist(documentId)) {
+//            createVehicleDocument(vehicleDocumentStandaloneReq, true);
+//        } else {
+//            if (!vehicleDocumentMapper.checkIfDocumentIsInUse(documentId)) {
+//                throw new ResourceIsInUsedException("A document with id " + documentId + " is still valid");
+//            } else {
+//                int docRow = vehicleDocumentMapper.updateVehicleDocument(
+//                        new VehicleDocumentUpdateReq(
+//                                vehicleDocumentStandaloneReq.getVehicleDocumentReq().getVehicleDocumentId(),
+//                                vehicleDocumentStandaloneReq.getVehicleDocumentReq().getVehicleDocumentType(),
+//                                vehicleDocumentStandaloneReq.getVehicleDocumentReq().getRegisteredLocation(),
+//                                vehicleDocumentStandaloneReq.getVehicleDocumentReq().getRegisteredDate(),
+//                                vehicleDocumentStandaloneReq.getVehicleDocumentReq().getExpiryDate()));
+//
+//                addDocImages(docRow, vehicleDocumentStandaloneReq.getVehicleDocumentReq().getVehicleDocumentId(), vehicleDocumentStandaloneReq.getVehicleDocumentReq().getImageLinks());
+//            }
+//        }
     }
 
     @Override
@@ -137,19 +139,20 @@ public class VehicleDocumentComponentImpl implements VehicleDocumentComponent {
         }
     }
 
+    // Need fix
     @Override
     @Transactional
     public void addDocImages(int resultRow, String vehicleDocId, List<String> images) {
         if (resultRow == 0) {
             throw new DataExecutionException("Unknown error occurred. Data not modified!");
         } else {
-            for (String image : images) {
-                int imageRow = vehicleDocumentImageMapper.createVehicleDocumentImage(vehicleDocId, image);
-
-                if (imageRow == 0) {
-                    throw new DataException("Unknown error occurred. Data not modified!");
-                }
-            }
+//            for (String image : images) {
+//                int imageRow = vehicleDocumentImageMapper.createVehicleDocumentImage(vehicleDocId, image);
+//
+//                if (imageRow == 0) {
+//                    throw new DataExecutionException("Unknown error occurred. Data not modified!");
+//                }
+//            }
         }
     }
 
