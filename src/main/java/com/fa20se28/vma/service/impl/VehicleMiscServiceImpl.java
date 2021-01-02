@@ -1,11 +1,9 @@
 package com.fa20se28.vma.service.impl;
 
 import com.fa20se28.vma.component.VehicleMiscComponent;
-import com.fa20se28.vma.request.BrandReq;
-import com.fa20se28.vma.request.BrandUpdateReq;
-import com.fa20se28.vma.request.VehicleTypeReq;
-import com.fa20se28.vma.request.VehicleTypeUpdateReq;
+import com.fa20se28.vma.request.*;
 import com.fa20se28.vma.response.BrandRes;
+import com.fa20se28.vma.response.SeatsRes;
 import com.fa20se28.vma.response.VehicleTypesRes;
 import com.fa20se28.vma.service.VehicleMiscService;
 import org.springframework.stereotype.Service;
@@ -29,6 +27,11 @@ public class VehicleMiscServiceImpl implements VehicleMiscService {
     }
 
     @Override
+    public SeatsRes getSeats() {
+        return new SeatsRes(vehicleMiscComponent.getSeats());
+    }
+
+    @Override
     public void createBrand(BrandReq brandReq) {
         vehicleMiscComponent.createBrand(brandReq);
     }
@@ -46,5 +49,15 @@ public class VehicleMiscServiceImpl implements VehicleMiscService {
     @Override
     public void updateType(VehicleTypeUpdateReq vehicleTypeUpdateReq) {
         vehicleMiscComponent.updateType(vehicleTypeUpdateReq);
+    }
+
+    @Override
+    public void createSeats(SeatsReq seatsReq) {
+        vehicleMiscComponent.createSeat(seatsReq);
+    }
+
+    @Override
+    public void updateSeats(SeatsReq seatsReq) {
+        vehicleMiscComponent.updateSeat(seatsReq);
     }
 }

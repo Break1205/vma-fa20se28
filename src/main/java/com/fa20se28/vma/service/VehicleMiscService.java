@@ -1,16 +1,16 @@
 package com.fa20se28.vma.service;
 
-import com.fa20se28.vma.request.BrandReq;
-import com.fa20se28.vma.request.BrandUpdateReq;
-import com.fa20se28.vma.request.VehicleTypeReq;
-import com.fa20se28.vma.request.VehicleTypeUpdateReq;
+import com.fa20se28.vma.request.*;
 import com.fa20se28.vma.response.BrandRes;
+import com.fa20se28.vma.response.SeatsRes;
 import com.fa20se28.vma.response.VehicleTypesRes;
 
 public interface VehicleMiscService {
     VehicleTypesRes getTypes();
 
     BrandRes getBrands();
+
+    SeatsRes getSeats();
 
     void createBrand(BrandReq brandReq);
 
@@ -19,4 +19,8 @@ public interface VehicleMiscService {
     void createType(VehicleTypeReq vehicleTypeReq);
 
     void updateType(VehicleTypeUpdateReq vehicleTypeUpdateReq);
+
+    void createSeats(SeatsReq seatsReq);
+
+    void updateSeats(SeatsReq seatsReq);
 }
