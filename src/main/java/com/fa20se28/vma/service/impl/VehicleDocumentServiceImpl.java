@@ -1,6 +1,7 @@
 package com.fa20se28.vma.service.impl;
 
 import com.fa20se28.vma.component.VehicleDocumentComponent;
+import com.fa20se28.vma.enums.DocumentStatus;
 import com.fa20se28.vma.request.VehicleDocumentStandaloneReq;
 import com.fa20se28.vma.request.VehicleDocumentUpdateReq;
 import com.fa20se28.vma.response.VehicleDocumentRes;
@@ -17,12 +18,12 @@ public class VehicleDocumentServiceImpl implements VehicleDocumentService {
     }
 
     @Override
-    public VehicleDocumentRes getVehicleDocuments(String vehicleId, int viewOption) {
-        return new VehicleDocumentRes(vehicleDocumentComponent.getVehicleDocuments(vehicleId, viewOption));
+    public VehicleDocumentRes getVehicleDocuments(String vehicleId, int useStatus, DocumentStatus documentStatus) {
+        return new VehicleDocumentRes(vehicleDocumentComponent.getVehicleDocuments(vehicleId, useStatus, documentStatus));
     }
 
     @Override
-    public VehicleDocumentSingleRes getVehicleDocument(String vehicleDocId) {
+    public VehicleDocumentSingleRes getVehicleDocument(int vehicleDocId) {
         return new VehicleDocumentSingleRes(vehicleDocumentComponent.getVehicleDocument(vehicleDocId));
     }
 
@@ -37,7 +38,7 @@ public class VehicleDocumentServiceImpl implements VehicleDocumentService {
     }
 
     @Override
-    public void deleteDocument(String vehicleDocId) {
+    public void deleteDocument(int vehicleDocId) {
         vehicleDocumentComponent.deleteDocument(vehicleDocId);
     }
 }

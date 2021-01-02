@@ -60,8 +60,9 @@ public class DocumentController {
     @GetMapping("/vehicles/documents")
     public VehicleDocumentRes getVehicleDocuments(
             @RequestParam String vehicleId,
-            @RequestParam(defaultValue = "1") int viewOption) {
-        return vehicleDocumentService.getVehicleDocuments(vehicleId, viewOption);
+            @RequestParam(defaultValue = "0") int useStatus,
+            @RequestParam(required = false) DocumentStatus documentStatus) {
+        return vehicleDocumentService.getVehicleDocuments(vehicleId, useStatus, documentStatus);
     }
 
     @PostMapping("/vehicles/documents")
@@ -77,7 +78,7 @@ public class DocumentController {
 
     @DeleteMapping("/vehicles/documents")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteVehicleDocument(@RequestParam String vehicleDocId) {
+    public void deleteVehicleDocument(@RequestParam int vehicleDocId) {
         vehicleDocumentService.deleteDocument(vehicleDocId);
     }
 
@@ -86,8 +87,8 @@ public class DocumentController {
         return new VehicleDocumentTypeRes();
     }
 
-    @GetMapping("/vehicles/documents/{document-id}")
-    public VehicleDocumentSingleRes getVehicleDocumentById(@PathVariable("document-id") String vehicleDocId) {
+    @GetMapping("/vehicles/documents/{vehicle-document-id}")
+    public VehicleDocumentSingleRes getVehicleDocumentById(@PathVariable("vehicle-document-id") int vehicleDocId) {
         return vehicleDocumentService.getVehicleDocument(vehicleDocId);
     }
 }

@@ -1,5 +1,6 @@
 package com.fa20se28.vma.component;
 
+import com.fa20se28.vma.enums.DocumentStatus;
 import com.fa20se28.vma.model.VehicleDocument;
 import com.fa20se28.vma.request.VehicleDocumentStandaloneReq;
 import com.fa20se28.vma.request.VehicleDocumentUpdateReq;
@@ -7,21 +8,19 @@ import com.fa20se28.vma.request.VehicleDocumentUpdateReq;
 import java.util.List;
 
 public interface VehicleDocumentComponent {
-    List<VehicleDocument> getVehicleDocuments(String vehicleDocId, int viewOption);
+    List<VehicleDocument> getVehicleDocuments(String vehicleId, int useStatus, DocumentStatus documentStatus);
 
     void createVehicleDocument(VehicleDocumentStandaloneReq vehicleDocumentStandaloneReq, boolean notAdmin);
 
     void updateVehicleDocument(VehicleDocumentUpdateReq vehicleDocumentUpdateReq);
 
-    void deleteDocument(String vehicleDocId);
+    void deleteDocument(int vehicleDocId);
 
-    void createVehicleDocumentFromRequest(VehicleDocumentStandaloneReq vehicleDocumentStandaloneReq);
+    VehicleDocument getVehicleDocument(int vehicleDocId);
 
-    VehicleDocument getVehicleDocument(String vehicleDocId);
+    void acceptDocument(int vehicleDocId);
 
-    void acceptDocument(String vehicleDocId);
+    void denyDocument(int vehicleDocId);
 
-    void denyDocument(int requestId, String vehicleId, String vehicleDocId);
-
-    void addDocImages(int resultRow, String vehicleDocId, List<String> images);
+    void addDocImages(int resultRow, int documentId, List<String> images);
 }
