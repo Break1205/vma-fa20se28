@@ -1,10 +1,8 @@
 package com.fa20se28.vma.controller;
 
-import com.fa20se28.vma.request.BrandReq;
-import com.fa20se28.vma.request.BrandUpdateReq;
-import com.fa20se28.vma.request.VehicleTypeReq;
-import com.fa20se28.vma.request.VehicleTypeUpdateReq;
+import com.fa20se28.vma.request.*;
 import com.fa20se28.vma.response.BrandRes;
+import com.fa20se28.vma.response.SeatsRes;
 import com.fa20se28.vma.response.VehicleTypesRes;
 import com.fa20se28.vma.service.VehicleMiscService;
 import org.springframework.http.HttpStatus;
@@ -29,6 +27,11 @@ public class VehicleMiscController {
         return vehicleMiscService.getBrands();
     }
 
+    @GetMapping("/seats")
+    public SeatsRes getSeats() {
+        return vehicleMiscService.getSeats();
+    }
+
     @PostMapping("/brands")
     @ResponseStatus(HttpStatus.CREATED)
     public void createBrand(@RequestBody BrandReq brandReq) {
@@ -49,5 +52,16 @@ public class VehicleMiscController {
     @PatchMapping("/types")
     public void updateType(@RequestBody VehicleTypeUpdateReq vehicleTypeUpdateReq) {
         vehicleMiscService.updateType(vehicleTypeUpdateReq);
+    }
+
+    @PostMapping("/seats")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void createSeats(@RequestBody SeatsReq seatsReq) {
+        vehicleMiscService.createSeats(seatsReq);
+    }
+
+    @PatchMapping("/seats")
+    public void updateSeats(@RequestBody SeatsReq seatsReq) {
+        vehicleMiscService.updateSeats(seatsReq);
     }
 }
