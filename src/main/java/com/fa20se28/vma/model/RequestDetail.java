@@ -11,7 +11,7 @@ public class RequestDetail {
     private String fullName;
     private String userDocumentId;
     private String vehicleId;
-    private String vehicleDocumentId;
+    private int vehicleDocumentId;
     private RequestStatus requestStatus;
     private RequestType requestType;
     private String description;
@@ -49,11 +49,11 @@ public class RequestDetail {
         this.vehicleId = vehicleId;
     }
 
-    public String getVehicleDocumentId() {
+    public int getVehicleDocumentId() {
         return vehicleDocumentId;
     }
 
-    public void setVehicleDocumentId(String vehicleDocumentId) {
+    public void setVehicleDocumentId(int vehicleDocumentId) {
         this.vehicleDocumentId = vehicleDocumentId;
     }
 

@@ -103,7 +103,9 @@ public class VehicleComponentImpl implements VehicleComponent {
             int ownerRow = vehicleOwnerMapper.createVehicleOwner(vehicle.getVehicleId(), vehicle.getOwnerId(), LocalDate.now());
 
             if (vehicleRow != 0) {
-                addVehicleDocs(vehicle.getVehicleId(), vehicle.getVehicleDocuments(), false);
+                if (vehicle.getVehicleDocuments() != null) {
+                    addVehicleDocs(vehicle.getVehicleId(), vehicle.getVehicleDocuments(), false);
+                }
                 if (vehicle.getVehicleValue() != null) {
                     addVehicleValue(vehicle.getVehicleValue());
                 }
@@ -293,11 +295,13 @@ public class VehicleComponentImpl implements VehicleComponent {
             if (vehicleDoc == 0) {
                 throw new DataExecutionException("Unknown error occurred. One or more vehicle document creation failed !");
             } else {
-                for (String image : doc.getImageLinks()) {
-                    int vehicleDocImage = vehicleDocumentImageMapper.createVehicleDocumentImage(doc.getVehicleDocumentId(), image);
+                if (doc.getImageLinks() != null) {
+                    for (String image : doc.getImageLinks()) {
+                        int vehicleDocImage = vehicleDocumentImageMapper.createVehicleDocumentImage(doc.getVehicleDocumentId(), image);
 
-                    if (vehicleDocImage == 0) {
-                        throw new DataExecutionException("Unknown error occurred! Image creation failed!");
+                        if (vehicleDocImage == 0) {
+                            throw new DataExecutionException("Unknown error occurred! Image creation failed!");
+                        }
                     }
                 }
             }
