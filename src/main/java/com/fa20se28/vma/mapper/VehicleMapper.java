@@ -36,10 +36,10 @@ public interface VehicleMapper {
             "AND vt.vehicle_type_id = #{v_request.vehicleTypeId} " +
             "</if> " +
             "<if test = \"v_request.seatsMin != 0\" > " +
-            "AND v.seats &gt;= #{v_request.seatsMin} " +
+            "AND vs.seats &gt;= #{v_request.seatsMin} " +
             "</if> " +
             "<if test = \"v_request.seatsMax != 0\" > " +
-            "AND v.seats &lt;= #{v_request.seatsMax} " +
+            "AND vs.seats &lt;= #{v_request.seatsMax} " +
             "</if> " +
             "<if test = \"v_request.vehicleMinDis != 0\" > " +
             "AND v.distance_driven &gt;= #{v_request.vehicleMinDis} " +
@@ -82,10 +82,10 @@ public interface VehicleMapper {
             "AND vt.vehicle_type_id = #{v_request.vehicleTypeId} " +
             "</if> " +
             "<if test = \"v_request.seatsMin != 0\" > " +
-            "AND v.seats &gt;= #{v_request.seatsMin} " +
+            "AND vs.seats &gt;= #{v_request.seatsMin} " +
             "</if> " +
             "<if test = \"v_request.seatsMax != 0\" > " +
-            "AND v.seats &lt;= #{v_request.seatsMax} " +
+            "AND vs.seats &lt;= #{v_request.seatsMax} " +
             "</if> " +
             "<if test = \"v_request.vehicleMinDis != 0\" > " +
             "AND v.distance_driven &gt;= #{v_request.vehicleMinDis} " +
