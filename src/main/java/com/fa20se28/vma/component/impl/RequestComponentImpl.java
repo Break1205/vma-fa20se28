@@ -29,7 +29,7 @@ public class RequestComponentImpl implements RequestComponent {
         ReqInsertReq insertReq = new ReqInsertReq(
                 userId,
                 String.valueOf(requestReq.getUserDocumentReq().getUserDocumentId()),
-                null, null,
+                null, 0,
                 RequestStatus.PENDING,
                 requestReq.getRequestType(),
                 requestReq.getDescription(),
@@ -68,14 +68,13 @@ public class RequestComponentImpl implements RequestComponent {
         return requestMapper.updateRequestStatus(requestId, requestStatus);
     }
 
-    // need fix
     @Override
     @Transactional
     public int createVehicleDocumentRequest(VehicleDocumentRequestReq vehicleDocumentRequestReq, String userId) {
         ReqInsertReq insertReq = new ReqInsertReq(
                 userId, null,
-                vehicleDocumentRequestReq.getVehicleDocument().getVehicleId(),
-                "fix here",
+                null,
+                vehicleDocumentRequestReq.getVehicleDocument().getVehicleDocumentReq().getVehicleDocumentId(),
                 RequestStatus.PENDING,
                 vehicleDocumentRequestReq.getRequestType(),
                 vehicleDocumentRequestReq.getDescription(),
@@ -96,7 +95,7 @@ public class RequestComponentImpl implements RequestComponent {
         ReqInsertReq insertReq = new ReqInsertReq(
                 userId, null,
                 vehicleRequestReq.getVehicleReq().getVehicleId(),
-                null,
+                0,
                 RequestStatus.PENDING,
                 vehicleRequestReq.getRequestType(),
                 vehicleRequestReq.getDescription(),
@@ -115,7 +114,7 @@ public class RequestComponentImpl implements RequestComponent {
     @Transactional
     public int createVehicleChangeRequest(VehicleChangeRequestReq vehicleChangeRequestReq, String userId) {
         ReqInsertReq insertReq = new ReqInsertReq(
-                userId, null, null, null,
+                userId, null, null, 0,
                 RequestStatus.PENDING,
                 vehicleChangeRequestReq.getRequestType(),
                 vehicleChangeRequestReq.getDescription(),
@@ -135,7 +134,7 @@ public class RequestComponentImpl implements RequestComponent {
     public int reportIssueRequest(ReportIssueReq reportIssueReq, String userId) {
         ReqInsertReq insertReq = new ReqInsertReq(
                 userId, null,
-                reportIssueReq.getVehicleId(), null,
+                reportIssueReq.getVehicleId(), 0,
                 RequestStatus.PENDING,
                 reportIssueReq.getRequestType(),
                 reportIssueReq.getDescription(),

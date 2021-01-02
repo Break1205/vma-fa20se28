@@ -8,7 +8,8 @@ import java.time.LocalDate;
 import java.util.List;
 
 public class VehicleDocumentUpdateReq {
-    private String vehicleDocumentId;
+    private int vehicleDocumentId;
+    private String vehicleDocumentNumber;
     private VehicleDocumentType vehicleDocumentType;
     private String registeredLocation;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
@@ -17,20 +18,30 @@ public class VehicleDocumentUpdateReq {
     private LocalDate expiryDate;
     private List<VehicleDocumentImage> imageLinks;
 
-    public VehicleDocumentUpdateReq(String vehicleDocumentId, VehicleDocumentType vehicleDocumentType, String registeredLocation, LocalDate registeredDate, LocalDate expiryDate) {
+    public VehicleDocumentUpdateReq(int vehicleDocumentId, String vehicleDocumentNumber, VehicleDocumentType vehicleDocumentType, String registeredLocation, LocalDate registeredDate, LocalDate expiryDate, List<VehicleDocumentImage> imageLinks) {
         this.vehicleDocumentId = vehicleDocumentId;
+        this.vehicleDocumentNumber = vehicleDocumentNumber;
         this.vehicleDocumentType = vehicleDocumentType;
         this.registeredLocation = registeredLocation;
         this.registeredDate = registeredDate;
         this.expiryDate = expiryDate;
+        this.imageLinks = imageLinks;
     }
 
-    public String getVehicleDocumentId() {
+    public int getVehicleDocumentId() {
         return vehicleDocumentId;
     }
 
-    public void setVehicleDocumentId(String vehicleDocumentId) {
+    public void setVehicleDocumentId(int vehicleDocumentId) {
         this.vehicleDocumentId = vehicleDocumentId;
+    }
+
+    public String getVehicleDocumentNumber() {
+        return vehicleDocumentNumber;
+    }
+
+    public void setVehicleDocumentNumber(String vehicleDocumentNumber) {
+        this.vehicleDocumentNumber = vehicleDocumentNumber;
     }
 
     public VehicleDocumentType getVehicleDocumentType() {

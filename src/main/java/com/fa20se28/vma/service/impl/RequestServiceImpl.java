@@ -227,10 +227,7 @@ public class RequestServiceImpl implements RequestService {
             return requestComponent.updateRequestStatus(requestDetail.getRequestId(), RequestStatus.DENIED);
         }
         if (requestDetail.getRequestType().equals(RequestType.NEW_VEHICLE_DOCUMENT)) {
-            vehicleDocumentComponent.denyDocument(
-                    requestDetail.getRequestId(),
-                    requestDetail.getVehicleId(),
-                    requestDetail.getVehicleDocumentId());
+            vehicleDocumentComponent.denyDocument(requestDetail.getVehicleDocumentId());
             return requestComponent.updateRequestStatus(requestDetail.getRequestId(), RequestStatus.DENIED);
         }
         if (requestDetail.getRequestType().equals(RequestType.DELETE_VEHICLE_DOCUMENT)) {
@@ -257,7 +254,7 @@ public class RequestServiceImpl implements RequestService {
         Authentication authentication = authenticationComponent.getAuthentication();
 
         if (vehicleDocumentRequestReq.getRequestType().equals(RequestType.NEW_VEHICLE_DOCUMENT)) {
-            vehicleDocumentComponent.createVehicleDocumentFromRequest(vehicleDocumentRequestReq.getVehicleDocument());
+            vehicleDocumentComponent.createVehicleDocument(vehicleDocumentRequestReq.getVehicleDocument(), true);
         }
 
         return createNotificationForAdmin(

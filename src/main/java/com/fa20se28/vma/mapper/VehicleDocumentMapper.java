@@ -2,6 +2,7 @@ package com.fa20se28.vma.mapper;
 
 import com.fa20se28.vma.enums.DocumentStatus;
 import com.fa20se28.vma.model.VehicleDocument;
+import com.fa20se28.vma.model.VehicleDocumentImage;
 import com.fa20se28.vma.request.VehicleDocumentReq;
 import com.fa20se28.vma.request.VehicleDocumentUpdateReq;
 import org.apache.ibatis.annotations.*;
@@ -35,7 +36,7 @@ public interface VehicleDocumentMapper {
             "#{d_request.registeredLocation}, " +
             "#{d_request.registeredDate}, " +
             "#{d_request.expiryDate}, " +
-            "getdate(), " +
+            "getDate(), " +
             "#{d_request.vehicleDocumentType}, " +
             "#{d_status}) ")
     @Options(keyProperty = "d_request.vehicleDocumentId", useGeneratedKeys = true)
@@ -46,87 +47,67 @@ public interface VehicleDocumentMapper {
 
     @Update("UPDATE vehicle_document " +
             "SET " +
+            "vehicle_document_number = #{d_request.vehicleDocumentNumber}, " +
+            "vehicle_document_type = #{d_request.vehicleDocumentType}, " +
             "registered_location = #{d_request.registeredLocation}, " +
             "registered_date = #{d_request.registeredDate}, " +
-            "expiry_date = #{d_request.expiryDate}, " +
-            "vehicle_document_type = #{d_request.vehicleDocumentType} " +
-            "WHERE " +
-            "vehicle_document_id = #{d_request.vehicleDocumentId} ")
+            "expiry_date = #{d_request.expiryDate} " +
+            "WHERE vehicle_document_id = #{d_request.vehicleDocumentId} ")
     int updateVehicleDocument(@Param("d_request") VehicleDocumentUpdateReq documentReq);
 
-    @Select({"<script> " +
-            "SELECT " +
+    @Select("SELECT " +
             "vd.vehicle_document_id, " +
+            "vd.vehicle_document_number, " +
             "vd.vehicle_document_type, " +
+            "vd.status, " +
             "vd.registered_location, " +
             "vd.registered_date, " +
             "vd.expiry_date " +
             "FROM vehicle_document vd " +
             "WHERE vd.vehicle_id = #{v_id} " +
-            "<if test = \"d_option == 1\" > " +
-            "AND is_deleted = 0 " +
-            "</if> " +
-            "<if test = \"d_option == 2\" > " +
-            "AND is_deleted = 1 " +
-            "</if> " +
-            "</script> "})
+            "AND vd.status = #{d_status} ")
     @Results(id = "vehicleDocuments", value = {
             @Result(property = "vehicleDocumentId", column = "vehicle_document_id"),
+            @Result(property = "vehicleDocumentNumber", column = "vehicle_document_number"),
             @Result(property = "vehicleDocumentType", column = "vehicle_document_type"),
             @Result(property = "registeredLocation", column = "registered_location"),
             @Result(property = "registeredDate", column = "registered_date"),
-            @Result(property = "expiryDate", column = "expiry_date")
+            @Result(property = "expiryDate", column = "expiry_date"),
+            @Result(property = "imageLinks", column = "vehicle_document_id", many = @Many(select = "getImageLinks"))
     })
     List<VehicleDocument> getVehicleDocuments(
             @Param("v_id") String vehicleId,
-            @Param("d_option") int viewOption);
+            @Param("d_option") int viewOption,
+            @Param("d_status") DocumentStatus status);
+
+    @Select("SELECT vdi.vehicle_document_image_id, vdi.image_link " +
+            "FROM vehicle_document_image vdi " +
+            "WHERE vdi.vehicle_document_id = #{d_id} ")
+    @Results(id = "vehicleDocumentImage", value = {
+            @Result(property = "vehicleDocumentImageId", column = "vehicle_document_image_id"),
+            @Result(property = "imageLink", column = "image_link")
+    })
+    List<VehicleDocumentImage> getImageLinks(@Param("d_id") String documentId);
 
     @Update("UPDATE vehicle_document " +
-            "SET " +
-            "is_deleted = #{d_option} " +
-            "WHERE " +
-            "vehicle_document_id = #{d_id} ")
+            "SET status = #{d_status} " +
+            "WHERE vehicle_document_id = #{d_id} ")
     int updateDocumentStatus(
-            @Param("d_id") String vehicleDocumentId,
-            @Param("d_option") boolean option);
+            @Param("d_id") int vehicleDocumentId,
+            @Param("d_status") DocumentStatus status);
 
     @Select("SELECT " +
             "vd.vehicle_document_id, " +
+            "vd.vehicle_document_number, " +
             "vd.vehicle_document_type, " +
+            "vd.status, " +
             "vd.registered_location, " +
             "vd.registered_date, " +
             "vd.expiry_date " +
             "FROM vehicle_document vd " +
             "WHERE vd.vehicle_document_id = #{d_id} ")
     @ResultMap("vehicleDocuments")
-    VehicleDocument getVehicleDocumentById(
-            @Param("d_id") String documentId);
-
-    @Select("SELECT is_deleted " +
-            "FROM vehicle_document " +
-            "WHERE vehicle_document_id = #{d_id} ")
-    boolean checkIfDocumentIsInUse(@Param("d_id") String documentId);
-
-    @Insert("INSERT INTO vehicle_document_log " +
-            "(vehicle_document_id, " +
-            "vehicle_id, " +
-            "registered_location," +
-            "registered_date, " +
-            "expiry_date, " +
-            "vehicle_document_type, " +
-            "request_id) " +
-            "VALUES " +
-            "(#{doc.vehicleDocumentId}, " +
-            "#{v_id}, " +
-            "#{doc.registeredLocation}, " +
-            "#{doc.registeredDate}, " +
-            "#{doc.expiryDate}, " +
-            "#{doc.vehicleDocumentType}," +
-            "#{r_id}) ")
-    int moveDeniedVehicleDocumentToLog(
-            @Param("doc") VehicleDocument vDocument,
-            @Param("v_id") String vehicleId,
-            @Param("r_id") int requestId);
+    VehicleDocument getVehicleDocumentById(@Param("d_id") int vehicleDocId);
 
     @Update("UPDATE vehicle_document " +
             "SET " +
@@ -135,15 +116,10 @@ public interface VehicleDocumentMapper {
             "AND status = 'VALID' ")
     int deleteVehicleDocuments(@Param("v_id") String vehicleId);
 
-    @Update("UPDATE vehicle_document " +
-            "SET " +
-            "registered_location = #{d_request.registeredLocation}, " +
-            "registered_date = #{d_request.registeredDate}, " +
-            "expiry_date = #{d_request.expiryDate}, " +
-            "vehicle_document_type = #{d_request.vehicleDocumentType} " +
-            "WHERE " +
-            "vehicle_document_id = #{d_request.vehicleDocumentId} ")
-    int updateVehicleDocumentStatus(
-            @Param("v_id") String vehicleId,
-            @Param("d_status") DocumentStatus status);
+    @Select("SELECT TOP 1 vd.vehicle_document_id " +
+            "FROM vehicle_document vd " +
+            "WHERE vd.vehicle_document_number = #{d_num} " +
+            "AND vd.status = 'VALID' " +
+            "ORDER BY vd.create_date ")
+    int getCurrentIdOfVehicleDocument(@Param("d_num") String vehicleDocumentNumber);
 }

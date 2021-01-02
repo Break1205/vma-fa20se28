@@ -2,10 +2,19 @@ package com.fa20se28.vma.request;
 
 public class SeatsReq {
     private int seatsId;
+    private String seatsGroupName;
     private int seats;
     private float pricePerDay;
     private float pricePerDistance;
     private float pricePerHour;
+
+    public String getSeatsGroupName() {
+        return seatsGroupName;
+    }
+
+    public void setSeatsGroupName(String seatsGroupName) {
+        this.seatsGroupName = seatsGroupName;
+    }
 
     public int getSeatsId() {
         return seatsId;

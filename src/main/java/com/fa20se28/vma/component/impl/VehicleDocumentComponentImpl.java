@@ -2,6 +2,8 @@ package com.fa20se28.vma.component.impl;
 
 import com.fa20se28.vma.component.VehicleDocumentComponent;
 import com.fa20se28.vma.configuration.exception.DataExecutionException;
+import com.fa20se28.vma.configuration.exception.ResourceIsInUsedException;
+import com.fa20se28.vma.enums.DocumentStatus;
 import com.fa20se28.vma.mapper.VehicleDocumentImageMapper;
 import com.fa20se28.vma.mapper.VehicleDocumentMapper;
 import com.fa20se28.vma.model.VehicleDocument;
@@ -26,39 +28,54 @@ public class VehicleDocumentComponentImpl implements VehicleDocumentComponent {
     }
 
     @Override
-    public List<VehicleDocument> getVehicleDocuments(String vehicleId, int viewOption) {
-        List<VehicleDocument> vehicleDocuments = vehicleDocumentMapper.getVehicleDocuments(vehicleId, viewOption);
-        for (VehicleDocument vdoc : vehicleDocuments) {
-            vdoc.setImageLinks(vehicleDocumentImageMapper.getImageLinks(vdoc.getVehicleDocumentId(), 0));
+    public List<VehicleDocument> getVehicleDocuments(String vehicleId, int useStatus, DocumentStatus documentStatus) {
+        if (useStatus == 0) {
+            return vehicleDocumentMapper.getVehicleDocuments(vehicleId, useStatus, DocumentStatus.VALID);
+        } else {
+            return vehicleDocumentMapper.getVehicleDocuments(vehicleId, useStatus, documentStatus);
         }
-        return vehicleDocuments;
     }
 
-    // Need fix
     @Override
     @Transactional
     public void createVehicleDocument(VehicleDocumentStandaloneReq vehicleDocumentStandaloneReq, boolean notAdmin) {
-//        if (!vehicleDocumentMapper.isDocumentExist(vehicleDocumentStandaloneReq.getVehicleDocumentReq().getVehicleDocumentId())) {
-//            int docRow = vehicleDocumentMapper.createVehicleDocument(vehicleDocumentStandaloneReq.getVehicleDocumentReq(), vehicleDocumentStandaloneReq.getVehicleId(), notAdmin);
-//
-//            addDocImages(docRow, vehicleDocumentStandaloneReq.getVehicleDocumentReq().getVehicleDocumentId(), vehicleDocumentStandaloneReq.getVehicleDocumentReq().getImageLinks());
-//        } else {
-//            throw new DataExecutionException("Document with ID " + vehicleDocumentStandaloneReq.getVehicleDocumentReq().getVehicleDocumentId() + " already exist!");
-//        }
+        if (vehicleDocumentMapper.isDocumentExist(vehicleDocumentStandaloneReq.getVehicleDocumentReq().getVehicleDocumentNumber()) && !notAdmin) {
+            throw new ResourceIsInUsedException("Document number " + vehicleDocumentStandaloneReq.getVehicleDocumentReq().getVehicleDocumentNumber() + " already exist!");
+        } else {
+            int docRow;
+
+            if (!notAdmin) {
+                docRow = vehicleDocumentMapper.createVehicleDocument(vehicleDocumentStandaloneReq.getVehicleDocumentReq(), vehicleDocumentStandaloneReq.getVehicleId(), DocumentStatus.VALID);
+            } else {
+                docRow = vehicleDocumentMapper.createVehicleDocument(vehicleDocumentStandaloneReq.getVehicleDocumentReq(), vehicleDocumentStandaloneReq.getVehicleId(), DocumentStatus.PENDING);
+            }
+
+            addDocImages(docRow, vehicleDocumentStandaloneReq.getVehicleDocumentReq().getVehicleDocumentId(), vehicleDocumentStandaloneReq.getVehicleDocumentReq().getImageLinks());
+        }
     }
 
     @Override
     @Transactional
     public void updateVehicleDocument(VehicleDocumentUpdateReq vehicleDocumentUpdateReq) {
+        String documentNumber = vehicleDocumentMapper.getVehicleDocumentById(vehicleDocumentUpdateReq.getVehicleDocumentId()).getVehicleDocumentNumber();
+
+        if (!documentNumber.equals(vehicleDocumentUpdateReq.getVehicleDocumentNumber())) {
+            if (vehicleDocumentMapper.isDocumentExist(vehicleDocumentUpdateReq.getVehicleDocumentNumber())) {
+                throw new ResourceIsInUsedException("Document number " + vehicleDocumentUpdateReq.getVehicleDocumentNumber() + " already exist!");
+            }
+        }
+
         int row = vehicleDocumentMapper.updateVehicleDocument(vehicleDocumentUpdateReq);
 
         if (row == 0) {
-            throw new DataExecutionException("Unknown error occurred. Data not modified!");
+            throw new DataExecutionException("Unknown error occurred. Vehicle document update failed!");
         } else {
-            for (VehicleDocumentImage image : vehicleDocumentUpdateReq.getImageLinks()) {
-                int imageRow = vehicleDocumentImageMapper.updateVehicleDocumentImage(vehicleDocumentUpdateReq.getVehicleDocumentId(), image);
-                if (imageRow == 0) {
-                    throw new DataExecutionException("Unknown error occurred. Data not modified!");
+            if (vehicleDocumentUpdateReq.getImageLinks() != null) {
+                for (VehicleDocumentImage image : vehicleDocumentUpdateReq.getImageLinks()) {
+                    int imageRow = vehicleDocumentImageMapper.updateVehicleDocumentImage(vehicleDocumentUpdateReq.getVehicleDocumentId(), image);
+                    if (imageRow == 0) {
+                        throw new DataExecutionException("Unknown error occurred. Image update failed!");
+                    }
                 }
             }
         }
@@ -66,93 +83,61 @@ public class VehicleDocumentComponentImpl implements VehicleDocumentComponent {
 
     @Override
     @Transactional
-    public void deleteDocument(String vehicleDocId) {
-        int row = vehicleDocumentMapper.updateDocumentStatus(vehicleDocId, true);
+    public void deleteDocument(int vehicleDocId) {
+        int row = vehicleDocumentMapper.updateDocumentStatus(vehicleDocId, DocumentStatus.DELETED);
 
         if (row == 0) {
-            throw new DataExecutionException("Unknown error occurred. Data not modified!");
-        }
-    }
-
-    // Need fix
-    @Override
-    @Transactional
-    public void createVehicleDocumentFromRequest(VehicleDocumentStandaloneReq vehicleDocumentStandaloneReq) {
-//        String documentId = vehicleDocumentStandaloneReq.getVehicleDocumentReq().getVehicleDocumentId();
-//
-//        if (!vehicleDocumentMapper.isDocumentExist(documentId)) {
-//            createVehicleDocument(vehicleDocumentStandaloneReq, true);
-//        } else {
-//            if (!vehicleDocumentMapper.checkIfDocumentIsInUse(documentId)) {
-//                throw new ResourceIsInUsedException("A document with id " + documentId + " is still valid");
-//            } else {
-//                int docRow = vehicleDocumentMapper.updateVehicleDocument(
-//                        new VehicleDocumentUpdateReq(
-//                                vehicleDocumentStandaloneReq.getVehicleDocumentReq().getVehicleDocumentId(),
-//                                vehicleDocumentStandaloneReq.getVehicleDocumentReq().getVehicleDocumentType(),
-//                                vehicleDocumentStandaloneReq.getVehicleDocumentReq().getRegisteredLocation(),
-//                                vehicleDocumentStandaloneReq.getVehicleDocumentReq().getRegisteredDate(),
-//                                vehicleDocumentStandaloneReq.getVehicleDocumentReq().getExpiryDate()));
-//
-//                addDocImages(docRow, vehicleDocumentStandaloneReq.getVehicleDocumentReq().getVehicleDocumentId(), vehicleDocumentStandaloneReq.getVehicleDocumentReq().getImageLinks());
-//            }
-//        }
-    }
-
-    @Override
-    public VehicleDocument getVehicleDocument(String vehicleDocId) {
-        VehicleDocument vehicleDocument = vehicleDocumentMapper.getVehicleDocumentById(vehicleDocId);
-        vehicleDocument.setImageLinks(vehicleDocumentImageMapper.getImageLinks(vehicleDocument.getVehicleDocumentId(), 0));
-
-        return vehicleDocument;
-    }
-
-    @Override
-    @Transactional
-    public void acceptDocument(String vehicleDocId) {
-        int row = vehicleDocumentMapper.updateDocumentStatus(vehicleDocId, false);
-
-        if (row == 0) {
-            throw new DataExecutionException("Unknown error occurred. Data not modified!");
+            throw new DataExecutionException("Unknown error occurred. Vehicle document deletion failed!");
         }
     }
 
     @Override
-    @Transactional
-    public void denyDocument(int requestId, String vehicleId, String vehicleDocId) {
-        VehicleDocument vehicleDocument = vehicleDocumentMapper.getVehicleDocumentById(vehicleDocId);
-
-        int moveDocRow = vehicleDocumentMapper.moveDeniedVehicleDocumentToLog(vehicleDocument, vehicleId, requestId);
-        int moveImageRow = 0;
-        int deleteImageRow = 0;
-
-        List<VehicleDocumentImage> vehicleDocumentImages = vehicleDocumentImageMapper.getImageLinks(vehicleDocument.getVehicleDocumentId(), 0);
-        for (VehicleDocumentImage image : vehicleDocumentImages) {
-            vehicleDocumentImageMapper.moveDeniedVehicleDocumentImageToLog(image.getVehicleDocumentImageId(), requestId);
-            vehicleDocumentImageMapper.deleteImages(image.getVehicleDocumentImageId());
-            deleteImageRow++;
-            moveImageRow++;
-        }
-
-        if (moveDocRow == 0 || moveImageRow == 0 || deleteImageRow == 0) {
-            throw new DataExecutionException("Unknown error occurred. Data not modified!");
-        }
+    public VehicleDocument getVehicleDocument(int vehicleDocId) {
+        return vehicleDocumentMapper.getVehicleDocumentById(vehicleDocId);
     }
 
-    // Need fix
     @Override
     @Transactional
-    public void addDocImages(int resultRow, String vehicleDocId, List<String> images) {
-        if (resultRow == 0) {
-            throw new DataExecutionException("Unknown error occurred. Data not modified!");
+    public void acceptDocument(int vehicleDocId) {
+        int updateOldRow;
+
+        VehicleDocument currentDoc = vehicleDocumentMapper.getVehicleDocumentById(vehicleDocId);
+        if (vehicleDocumentMapper.isDocumentExist(currentDoc.getVehicleDocumentNumber())) {
+            updateOldRow = vehicleDocumentMapper.updateDocumentStatus(vehicleDocumentMapper.getCurrentIdOfVehicleDocument(currentDoc.getVehicleDocumentNumber()), DocumentStatus.OUTDATED);
         } else {
-//            for (String image : images) {
-//                int imageRow = vehicleDocumentImageMapper.createVehicleDocumentImage(vehicleDocId, image);
-//
-//                if (imageRow == 0) {
-//                    throw new DataExecutionException("Unknown error occurred. Data not modified!");
-//                }
-//            }
+            updateOldRow = 1;
+        }
+
+        int acceptRow = vehicleDocumentMapper.updateDocumentStatus(vehicleDocId, DocumentStatus.VALID);
+
+        if (updateOldRow == 0 || acceptRow == 0) {
+            throw new DataExecutionException("Unknown error occurred. Vehicle document approval failed!");
+        }
+    }
+
+    @Override
+    @Transactional
+    public void denyDocument(int vehicleDocId) {
+        int row = vehicleDocumentMapper.updateDocumentStatus(vehicleDocId, DocumentStatus.REJECTED);
+
+        if (row == 0) {
+            throw new DataExecutionException("Unknown error occurred. Vehicle document denial failed!");
+        }
+    }
+
+    @Override
+    @Transactional
+    public void addDocImages(int resultRow, int documentId, List<String> images) {
+        if (resultRow == 0) {
+            throw new DataExecutionException("Unknown error occurred. Document creation failed!");
+        } else {
+            for (String image : images) {
+                int imageRow = vehicleDocumentImageMapper.createVehicleDocumentImage(documentId, image);
+
+                if (imageRow == 0) {
+                    throw new DataExecutionException("Unknown error occurred. Image creation failed!");
+                }
+            }
         }
     }
 
