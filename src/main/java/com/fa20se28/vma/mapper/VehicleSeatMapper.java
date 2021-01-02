@@ -20,7 +20,7 @@ public interface VehicleSeatMapper {
     List<VehicleSeat> getSeats();
 
     @Insert("INSERT INTO vehicle_seat (seats_group_name, seats, price_per_day, price_per_distance, price_per_hour) " +
-            "VALUES (#{s_req.seatsGroupName} #{s_req.seats}, #{s_req.pricePerDay}, #{s_req.pricePerDistance}, #{s_req.pricePerHour}) ")
+            "VALUES (#{s_req.seatsGroupName}, #{s_req.seats}, #{s_req.pricePerDay}, #{s_req.pricePerDistance}, #{s_req.pricePerHour}) ")
     int createSeats(@Param("s_req") SeatsReq seatsReq);
 
     @Update("UPDATE vehicle_seat " +
