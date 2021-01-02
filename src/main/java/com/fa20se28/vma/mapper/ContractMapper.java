@@ -178,28 +178,28 @@ public interface ContractMapper {
     ContractDetail getContractDetails(@Param("c_id") int contractId);
 
     @Select("SELECT " +
-            "contract_detail_id, departure_time, destination_time, departure_location, destination_location " +
-            "FROM contract_detail " +
+            "contract_trip_id, departure_time, destination_time, departure_location, destination_location " +
+            "FROM contract_trip " +
             "WHERE contract_id = #{c_id} " +
-            "ORDER BY contract_detail_id ASC ")
+            "ORDER BY contract_trip_id ASC ")
     @Results(id = "contractTrips", value = {
-            @Result(property = "contractTripId", column = "contract_detail_id"),
+            @Result(property = "contractTripId", column = "contract_trip_id"),
             @Result(property = "departureLocation", column = "departure_location"),
             @Result(property = "departureTime", column = "departure_time"),
             @Result(property = "destinationLocation", column = "destination_location"),
             @Result(property = "destinationTime", column = "destination_time"),
-            @Result(property = "locations", column = "contract_detail_id", many = @Many(select = "getContractTripSchedule")),
-            @Result(property = "assignedVehicles", column = "contract_detail_id", many = @Many(select = "getAssignedVehicles"))
+            @Result(property = "locations", column = "contract_trip_id", many = @Many(select = "getContractTripSchedule")),
+            @Result(property = "assignedVehicles", column = "contract_trip_id", many = @Many(select = "getAssignedVehicles"))
     })
     List<ContractTrip> getContractTrips(@Param("c_id") int contractId);
 
     @Select("SELECT " +
-            "contract_detail_schedule_id, location " +
-            "FROM contract_detail_schedule " +
-            "WHERE contract_detail_id = #{cd_id} " +
-            "ORDER BY contract_detail_schedule_id ASC ")
+            "contract_trip_schedule_id, location " +
+            "FROM contract_trip_schedule " +
+            "WHERE contract_trip_id = #{cd_id} " +
+            "ORDER BY contract_trip_schedule_id ASC ")
     @Results(id = "tripSchedule", value = {
-            @Result(property = "locationId", column = "contract_detail_schedule_id")})
+            @Result(property = "locationId", column = "contract_trip_schedule_id")})
     List<ContractTripSchedule> getContractTripSchedule(@Param("cd_id") int contractDetailId);
 
     @Select("SELECT \n" +
@@ -207,8 +207,8 @@ public interface ContractMapper {
             "FROM contract_vehicles cv \n" +
             "JOIN issued_vehicle iv \n" +
             "ON cv.issued_vehicle_id = iv.issued_vehicle_id\n" +
-            "WHERE contract_detail_id = #{cd_id}\n" +
-            "ORDER BY contract_detail_id ASC")
+            "WHERE contract_trip_id = #{cd_id}\n" +
+            "ORDER BY contract_trip_id ASC")
     List<String> getAssignedVehicles(@Param("cd_id") int contractDetailId);
 
     @Update("UPDATE contract " +
