@@ -186,7 +186,7 @@ public interface VehicleMapper {
             @Result(property = "engineNumber", column = "engine_number"),
             @Result(property = "yearOfManufacture", column = "year_of_manufacture"),
             @Result(property = "dateOfRegistration", column = "date_of_registration"),
-            @Result(property = "vehicleDistance", column = "distance_driven"),
+            @Result(property = "distanceDriven", column = "distance_driven"),
             @Result(property = "owner", column = "vehicle_id", one = @One(select = "getVehicleOwner")),
             @Result(property = "assignedDriver", column = "vehicle_id", one = @One(select = "getAssignedDriver")),
             @Result(property = "values", column = "vehicle_id", many = @Many(select = "getVehicleValues"))
