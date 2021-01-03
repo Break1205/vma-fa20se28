@@ -35,11 +35,17 @@ public interface VehicleValueMapper {
     int updateValue(@Param("vv_req") VehicleValueUpdateReq vehicleValueUpdateReq);
 
     @Update("UPDATE vehicle_value " +
-            "SET " +
-            "is_deleted = '1' " +
+            "SET is_deleted = '1' " +
             "WHERE " +
             "vehicle_value_id = #{vv_id} ")
-    int deleteValue(int vehicleValueId);
+    int deleteValue(@Param("vv_id") int vehicleValueId);
+
+    @Update("UPDATE vehicle_value " +
+            "SET is_deleted = '1' " +
+            "WHERE " +
+            "vehicle_id = #{v_id} " +
+            "AND is_deleted = '0' ")
+    int deleteAllValues(@Param("v_id") String vehicleId);
 
     @Select("SELECT " +
             "vehicle_value_id, " +

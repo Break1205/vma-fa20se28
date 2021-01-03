@@ -135,7 +135,7 @@ public class ContractComponentImpl implements ContractComponent {
             throw new DataExecutionException("Can not delete passengers of contract vehicle id: " + contractReq.getContractId());
         }
 
-        int deleteContractDetailSchedule = contractDetailScheduleMapper.deleteContractSchedule(contractReq.getContractId());
+        int deleteContractDetailSchedule = contractDetailScheduleMapper.deleteContractTripSchedule(contractReq.getContractId());
         if (deleteContractDetailSchedule < 0) {
             throw new DataExecutionException("Can not delete schedule of contract id: " + contractReq.getContractId());
         }
@@ -145,7 +145,7 @@ public class ContractComponentImpl implements ContractComponent {
             throw new DataExecutionException("Can not delete contract vehicles of contract id: " + contractReq.getContractId());
         }
 
-        int deleteContractDetailRecords = contractDetailMapper.deleteContractDetailById(contractReq.getContractId());
+        int deleteContractDetailRecords = contractDetailMapper.deleteContractTrip(contractReq.getContractId());
         if (deleteContractDetailRecords == 0) {
             throw new DataExecutionException("Can not delete contract details of contract id: " + contractReq.getContractId());
         }
@@ -162,7 +162,7 @@ public class ContractComponentImpl implements ContractComponent {
 
     private void createContractDetailAndScheduleAndVehicles(ContractReq contractReq) {
         for (ContractTripReq trip : contractReq.getTrips()) {
-            int contractTripRow = contractDetailMapper.createContractDetail(trip, contractMapper.getContractId(contractReq.getContractOwnerId()));
+            int contractTripRow = contractDetailMapper.createContractTrip(trip, contractMapper.getContractId(contractReq.getContractOwnerId()));
             if (contractTripRow == 0) {
                 throw new DataExecutionException("Can not insert Contract Detail record");
             } else {
@@ -198,7 +198,7 @@ public class ContractComponentImpl implements ContractComponent {
                 int contractDetailId = contractDetailMapper.getContractDetailId(contractMapper.getContractId(contractReq.getContractOwnerId()));
 
                 for (ContractTripScheduleReq location : trip.getLocations()) {
-                    int scheduleRow = contractDetailScheduleMapper.createContractSchedule(
+                    int scheduleRow = contractDetailScheduleMapper.createContractTripSchedule(
                             location.getLocation(),
                             contractDetailId);
 

@@ -35,7 +35,7 @@ public interface VehicleComponent {
 
     void acceptVehicle(String vehicleId);
 
-    void denyVehicle(String vehicleId, int requestId);
+    void denyVehicle(String vehicleId);
 
     void addVehicleDocs(String vehicleId, List<VehicleDocumentReq> vehicleDocumentReqs, boolean notAdmin);
 

@@ -29,7 +29,7 @@ public class RequestComponentImpl implements RequestComponent {
         ReqInsertReq insertReq = new ReqInsertReq(
                 userId,
                 String.valueOf(requestReq.getUserDocumentReq().getUserDocumentId()),
-                null, 0,
+                null, null,
                 RequestStatus.PENDING,
                 requestReq.getRequestType(),
                 requestReq.getDescription(),
@@ -74,7 +74,7 @@ public class RequestComponentImpl implements RequestComponent {
         ReqInsertReq insertReq = new ReqInsertReq(
                 userId, null,
                 null,
-                vehicleDocumentRequestReq.getVehicleDocument().getVehicleDocumentReq().getVehicleDocumentId(),
+                Integer.toString(vehicleDocumentRequestReq.getVehicleDocument().getVehicleDocumentReq().getVehicleDocumentId()),
                 RequestStatus.PENDING,
                 vehicleDocumentRequestReq.getRequestType(),
                 vehicleDocumentRequestReq.getDescription(),
@@ -95,7 +95,7 @@ public class RequestComponentImpl implements RequestComponent {
         ReqInsertReq insertReq = new ReqInsertReq(
                 userId, null,
                 vehicleRequestReq.getVehicleReq().getVehicleId(),
-                0,
+                null,
                 RequestStatus.PENDING,
                 vehicleRequestReq.getRequestType(),
                 vehicleRequestReq.getDescription(),
@@ -114,7 +114,7 @@ public class RequestComponentImpl implements RequestComponent {
     @Transactional
     public int createVehicleChangeRequest(VehicleChangeRequestReq vehicleChangeRequestReq, String userId) {
         ReqInsertReq insertReq = new ReqInsertReq(
-                userId, null, null, 0,
+                userId, null, null, null,
                 RequestStatus.PENDING,
                 vehicleChangeRequestReq.getRequestType(),
                 vehicleChangeRequestReq.getDescription(),
@@ -134,7 +134,7 @@ public class RequestComponentImpl implements RequestComponent {
     public int reportIssueRequest(ReportIssueReq reportIssueReq, String userId) {
         ReqInsertReq insertReq = new ReqInsertReq(
                 userId, null,
-                reportIssueReq.getVehicleId(), 0,
+                reportIssueReq.getVehicleId(), null,
                 RequestStatus.PENDING,
                 reportIssueReq.getRequestType(),
                 reportIssueReq.getDescription(),

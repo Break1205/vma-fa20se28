@@ -122,4 +122,12 @@ public interface VehicleDocumentMapper {
             "AND vd.status = 'VALID' " +
             "ORDER BY vd.create_date ")
     int getCurrentIdOfVehicleDocument(@Param("d_num") String vehicleDocumentNumber);
+
+    @Update("UPDATE vehicle_document " +
+            "SET status = #{d_status} " +
+            "WHERE vehicle_id = #{v_id} " +
+            "AND status = 'PENDING' ")
+    int changeVehicleDocumentsStatusFromRequest(
+            @Param("v_id") String vehicleId,
+            @Param("d_status") DocumentStatus status);
 }
