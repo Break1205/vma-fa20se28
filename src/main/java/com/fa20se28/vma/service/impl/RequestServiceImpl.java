@@ -234,7 +234,7 @@ public class RequestServiceImpl implements RequestService {
             return requestComponent.updateRequestStatus(requestDetail.getRequestId(), RequestStatus.DENIED);
         }
         if (requestDetail.getRequestType().equals(RequestType.ADD_NEW_VEHICLE)) {
-            vehicleComponent.denyVehicle(requestDetail.getVehicleId(), requestDetail.getRequestId());
+            vehicleComponent.denyVehicle(requestDetail.getVehicleId());
             return requestComponent.updateRequestStatus(requestDetail.getRequestId(), RequestStatus.DENIED);
         }
         if (requestDetail.getRequestType().equals(RequestType.WITHDRAW_VEHICLE)) {

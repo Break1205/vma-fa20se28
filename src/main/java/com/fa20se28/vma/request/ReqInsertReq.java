@@ -10,13 +10,13 @@ public class ReqInsertReq {
     private String userId;
     private String userDocumentId;
     private String vehicleId;
-    private int vehicleDocId;
+    private String vehicleDocId;
     private RequestStatus requestStatus;
     private RequestType requestType;
     private String desc;
     private LocalDateTime createDate;
 
-    public ReqInsertReq(String userId, String userDocumentId, String vehicleId, int vehicleDocId, RequestStatus requestStatus, RequestType requestType, String desc, LocalDateTime createDate) {
+    public ReqInsertReq(String userId, String userDocumentId, String vehicleId, String vehicleDocId, RequestStatus requestStatus, RequestType requestType, String desc, LocalDateTime createDate) {
         this.userId = userId;
         this.userDocumentId = userDocumentId;
         this.vehicleId = vehicleId;
@@ -59,11 +59,11 @@ public class ReqInsertReq {
         this.vehicleId = vehicleId;
     }
 
-    public int getVehicleDocId() {
+    public String getVehicleDocId() {
         return vehicleDocId;
     }
 
-    public void setVehicleDocId(int vehicleDocId) {
+    public void setVehicleDocId(String vehicleDocId) {
         this.vehicleDocId = vehicleDocId;
     }
 
