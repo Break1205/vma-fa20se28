@@ -74,7 +74,7 @@ public class ContractVehicleComponentImpl implements ContractVehicleComponent {
         }
 
         int row = contractVehicleMapper.assignVehicleForContract(
-                contractVehicleReq.getContractDetailId(),
+                contractVehicleReq.getContractTripId(),
                 optionalIssuedVehicle.get().getIssuedVehicleId(),
                 ContractVehicleStatus.NOT_STARTED);
 
@@ -90,15 +90,15 @@ public class ContractVehicleComponentImpl implements ContractVehicleComponent {
     }
 
     @Override
-    public ContractVehicleStatus getVehicleStatus(int contractDetailId, int issuedVehicleId) {
-        return contractVehicleMapper.getVehicleStatus(contractDetailId, issuedVehicleId);
+    public ContractVehicleStatus getVehicleStatus(int contractTripId, int issuedVehicleId) {
+        return contractVehicleMapper.getVehicleStatus(contractTripId, issuedVehicleId);
     }
 
     @Override
     @Transactional
     public void updateContractVehicleStatus(ContractVehicleStatusUpdateReq contractVehicleStatusUpdateReq) {
         int row = contractVehicleMapper.updateContractedVehicleStatus(
-                contractVehicleStatusUpdateReq.getContractDetailId(),
+                contractVehicleStatusUpdateReq.getContractTripId(),
                 issuedVehicleMapper.getCurrentIssuedVehicleId(contractVehicleStatusUpdateReq.getVehicleId()),
                 contractVehicleStatusUpdateReq.getVehicleStatus());
 
@@ -125,7 +125,7 @@ public class ContractVehicleComponentImpl implements ContractVehicleComponent {
             if (!vehicleMapper.getVehicleStatus(tripReq.getVehicleId()).equals(VehicleStatus.AVAILABLE)) {
                 throw new DataExecutionException("Vehicle is still occupied!");
             } else {
-                contractVehicleRow = contractVehicleMapper.updateContractedVehicleStatus(tripReq.getContractDetailId(), currentIssuedId, ContractVehicleStatus.IN_PROGRESS);
+                contractVehicleRow = contractVehicleMapper.updateContractedVehicleStatus(tripReq.getContractTripId(), currentIssuedId, ContractVehicleStatus.IN_PROGRESS);
                 vehicleRow = vehicleMapper.updateVehicleStatus(tripReq.getVehicleId(), VehicleStatus.ON_ROUTE);
 
                 if (detail.getContractStatus().equals(ContractStatus.NOT_STARTED)) {
@@ -137,7 +137,7 @@ public class ContractVehicleComponentImpl implements ContractVehicleComponent {
             if (!vehicleMapper.getVehicleStatus(tripReq.getVehicleId()).equals(VehicleStatus.ON_ROUTE)) {
                 throw new DataExecutionException("Vehicle is not used!");
             } else {
-                contractVehicleRow = contractVehicleMapper.updateContractedVehicleStatus(tripReq.getContractDetailId(), currentIssuedId, ContractVehicleStatus.COMPLETED);
+                contractVehicleRow = contractVehicleMapper.updateContractedVehicleStatus(tripReq.getContractTripId(), currentIssuedId, ContractVehicleStatus.COMPLETED);
                 vehicleRow = vehicleMapper.updateVehicleStatus(tripReq.getVehicleId(), VehicleStatus.AVAILABLE);
                 if (detail.getContractStatus().equals(ContractStatus.IN_PROGRESS)) {
                     List<ContractVehicle> contractVehicles = contractVehicleMapper.getContractVehiclesByContractId(tripReq.getContractId());

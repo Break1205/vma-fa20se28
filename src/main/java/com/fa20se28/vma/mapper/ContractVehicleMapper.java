@@ -22,7 +22,7 @@ public interface ContractVehicleMapper {
             "#{cv_status}, " +
             "getDate()) ")
     int assignVehicleForContract(
-            @Param("cv_detail_id") int contractDetailId,
+            @Param("cv_detail_id") int contractTripId,
             @Param("cv_iv_id") int issuedVehicleId,
             @Param("cv_status") ContractVehicleStatus vehicleStatus);
 
@@ -31,7 +31,7 @@ public interface ContractVehicleMapper {
             "WHERE issued_vehicle_id = #{iv_id} " +
             "AND contract_trip_id = #{cd_id} ")
     ContractVehicleStatus getVehicleStatus(
-            @Param("cd_id") int contractDetailId,
+            @Param("cd_id") int contractTripId,
             @Param("iv_id") int issuedVehicleId);
 
     @Update("UPDATE contract_vehicles " +
@@ -39,7 +39,7 @@ public interface ContractVehicleMapper {
             "WHERE issued_vehicle_id = #{iv_id} " +
             "AND contract_trip_id = #{cd_id} ")
     int updateContractedVehicleStatus(
-            @Param("cd_id") int contractDetailId,
+            @Param("cd_id") int contractTripId,
             @Param("iv_id") int issuedVehicleId,
             @Param("cv_status") ContractVehicleStatus vehicleStatus);
 
@@ -53,14 +53,14 @@ public interface ContractVehicleMapper {
             "WHERE cd.contract_trip_id = #{cd_id} ")
     @Results(id = "contractVehicleResult", value = {
             @Result(property = "contractVehicleId", column = "contract_vehicle_id"),
-            @Result(property = "contractDetailId", column = "contract_trip_id"),
+            @Result(property = "contractTripId", column = "contract_trip_id"),
             @Result(property = "vehicleId", column = "vehicle_id"),
             @Result(property = "vehicleType.vehicleTypeId", column = "vehicle_type_id"),
             @Result(property = "vehicleType.vehicleTypeName", column = "vehicle_type_name"),
             @Result(property = "seats", column = "seats"),
             @Result(property = "contractVehicleStatus", column = "contract_vehicle_status")
     })
-    List<VehicleBasic> getContractVehicles(@Param("cd_id") int contractDetailId);
+    List<VehicleBasic> getContractVehicles(@Param("cd_id") int contractTripId);
 
     @Select({"<script> " +
             "SELECT " +
@@ -100,7 +100,7 @@ public interface ContractVehicleMapper {
             @Result(property = "destinationTime", column = "destination_time"),
             @Result(property = "locations", column = "contract_trip_id", many = @Many(select = "getContractTripSchedule"))
     })
-    ContractTrip getContractTrip(@Param("contract_trip_id") int contractDetailId);
+    ContractTrip getContractTrip(@Param("contract_trip_id") int contractTripId);
 
     @Select("SELECT " +
             "contract_trip_schedule_id, location " +
@@ -110,7 +110,7 @@ public interface ContractVehicleMapper {
     @Results(id = "tripSchedule", value = {
             @Result(property = "locationId", column = "contract_trip_schedule_id"),
     })
-    List<ContractTripSchedule> getContractTripSchedule(@Param("cd_id") int contractDetailId);
+    List<ContractTripSchedule> getContractTripSchedule(@Param("cd_id") int contractTripId);
 
     @Select("SELECT " +
             "CASE WHEN " +
@@ -135,9 +135,10 @@ public interface ContractVehicleMapper {
     int getCompletedVehicleCount(@Param("c_id") int contractId);
 
     @Select({"<script> " +
-            "SELECT DISTINCT v.vehicle_id, v.model, vt.vehicle_type_id, vt.vehicle_type_name, v.seats, v.year_of_manufacture " +
+            "SELECT DISTINCT v.vehicle_id, v.model, vt.vehicle_type_id, vt.vehicle_type_name, vs.seats, v.year_of_manufacture " +
             "FROM vehicle v " +
             "JOIN vehicle_type vt ON v.vehicle_type_id = vt.vehicle_type_id " +
+            "JOIN vehicle_seat vs ON vs.seats_id = v.seats_id " +
             "WHERE " +
             "v.vehicle_status NOT IN " +
             "( " +
@@ -149,10 +150,10 @@ public interface ContractVehicleMapper {
             "OR vs.vehicle_status = 'AVAILABLE_NO_DRIVER' " +
             ") " +
             "<if test = \"vr_req.seatsMin != 0\" > " +
-            "AND v.seats &gt;= #{vr_req.seatsMin} " +
+            "AND vs.seats &gt;= #{vr_req.seatsMin} " +
             "</if> " +
             "<if test = \"vr_req.seatsMax != 0\" > " +
-            "AND v.seats &lt;= #{vr_req.seatsMax} " +
+            "AND vs.seats &lt;= #{vr_req.seatsMax} " +
             "</if> " +
             "<if test = \"vr_req.vehicleTypeId != 0\" > " +
             "AND vt.vehicle_type_id =  #{vr_req.vehicleTypeId} " +
@@ -207,13 +208,13 @@ public interface ContractVehicleMapper {
             "contract_vehicle_status\n" +
             "FROM contract_vehicles \n" +
             "WHERE contract_trip_id = #{cd_id}")
-    @Results(id = "contractVehicleByContractDetailId", value = {
+    @Results(id = "contractVehicleByContractTripId", value = {
             @Result(property = "contractVehicleId", column = "contract_vehicle_id"),
-            @Result(property = "contractDetailId", column = "contract_trip_id"),
+            @Result(property = "contractTripId", column = "contract_trip_id"),
             @Result(property = "issuedVehicleId", column = "issued_vehicle_id"),
             @Result(property = "contractVehicleStatus", column = "contract_vehicle_status")
     })
-    List<ContractVehicle> getContractVehiclesByContractDetailId(@Param("cd_id") int contractTripId);
+    List<ContractVehicle> getContractVehiclesByContractTripId(@Param("cd_id") int contractTripId);
 
     @Select("SELECT cv.contract_vehicle_id,cv.contract_vehicle_status\n" +
             "FROM contract_vehicles cv \n" +

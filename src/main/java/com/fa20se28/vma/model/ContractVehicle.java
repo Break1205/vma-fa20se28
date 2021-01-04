@@ -4,7 +4,7 @@ import com.fa20se28.vma.enums.ContractVehicleStatus;
 
 public class ContractVehicle {
     private int contractVehicleId;
-    private int contractDetailId;
+    private int contractTripId;
     private int issuedVehicleId;
     private ContractVehicleStatus contractVehicleStatus;
 
@@ -16,12 +16,12 @@ public class ContractVehicle {
         this.contractVehicleId = contractVehicleId;
     }
 
-    public int getContractDetailId() {
-        return contractDetailId;
+    public int getContractTripId() {
+        return contractTripId;
     }
 
-    public void setContractDetailId(int contractDetailId) {
-        this.contractDetailId = contractDetailId;
+    public void setContractTripId(int contractTripId) {
+        this.contractTripId = contractTripId;
     }
 
     public int getIssuedVehicleId() {

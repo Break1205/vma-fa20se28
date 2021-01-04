@@ -51,7 +51,7 @@ public class ContractVehicleServiceImpl implements ContractVehicleService {
            NotificationData notificationData = new NotificationData(
                    NotificationType.CONTRACT_ASSIGNED,
                    "You have been assigned with a trip!",
-                   String.valueOf(contractVehicleReq.getContractDetailId()),
+                   String.valueOf(contractVehicleReq.getContractTripId()),
                    null);
 
            firebaseService.notifyUserByFCMToken(clientRegistrationToken, notificationData);
@@ -59,13 +59,13 @@ public class ContractVehicleServiceImpl implements ContractVehicleService {
     }
 
     @Override
-    public ContractVehicleRes getContractVehiclesByContractDetailId(int contractDetailId) {
+    public ContractVehicleRes getContractVehiclesByContractTripId(int contractDetailId) {
         return new ContractVehicleRes(contractVehicleComponent.getContractVehicles(contractDetailId));
     }
 
     @Override
-    public ContractVehicleStatus getVehicleStatus(int contractDetailId, int issuedVehicleId) {
-        return contractVehicleComponent.getVehicleStatus(contractDetailId, issuedVehicleId);
+    public ContractVehicleStatus getVehicleStatus(int contractTripId, int issuedVehicleId) {
+        return contractVehicleComponent.getVehicleStatus(contractTripId, issuedVehicleId);
     }
 
     @Override

@@ -2,7 +2,7 @@ package com.fa20se28.vma.request;
 
 public class TripReq {
     private int contractId;
-    private int contractDetailId;
+    private int contractTripId;
     private String vehicleId;
 
     public int getContractId() {
@@ -13,12 +13,12 @@ public class TripReq {
         this.contractId = contractId;
     }
 
-    public int getContractDetailId() {
-        return contractDetailId;
+    public int getContractTripId() {
+        return contractTripId;
     }
 
-    public void setContractDetailId(int contractDetailId) {
-        this.contractDetailId = contractDetailId;
+    public void setContractTripId(int contractTripId) {
+        this.contractTripId = contractTripId;
     }
 
     public String getVehicleId() {

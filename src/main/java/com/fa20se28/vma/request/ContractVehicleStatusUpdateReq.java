@@ -3,16 +3,16 @@ package com.fa20se28.vma.request;
 import com.fa20se28.vma.enums.ContractVehicleStatus;
 
 public class ContractVehicleStatusUpdateReq {
-    private int contractDetailId;
+    private int contractTripId;
     private String vehicleId;
     private ContractVehicleStatus vehicleStatus;
 
-    public int getContractDetailId() {
-        return contractDetailId;
+    public int getContractTripId() {
+        return contractTripId;
     }
 
-    public void setContractDetailId(int contractDetailId) {
-        this.contractDetailId = contractDetailId;
+    public void setContractTripId(int contractTripId) {
+        this.contractTripId = contractTripId;
     }
 
     public String getVehicleId() {
