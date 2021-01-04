@@ -1,6 +1,7 @@
 package com.fa20se28.vma.component;
 
 import com.fa20se28.vma.enums.RequestStatus;
+import com.fa20se28.vma.enums.RequestType;
 import com.fa20se28.vma.model.RequestDetail;
 import com.fa20se28.vma.request.*;
 import com.fa20se28.vma.response.RequestRes;
@@ -24,5 +25,5 @@ public interface RequestComponent {
 
     int createVehicleChangeRequest(VehicleChangeRequestReq vehicleChangeRequestReq, String userId);
 
-    int reportIssueRequest(ReportIssueReq reportIssueReq, String userId);
+    int reportIssueRequest(ReportIssueReq reportIssueReq, RequestType requestType, String userId);
 }

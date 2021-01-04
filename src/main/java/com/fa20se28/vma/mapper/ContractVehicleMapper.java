@@ -11,20 +11,40 @@ import java.util.List;
 
 @Mapper
 public interface ContractVehicleMapper {
+//    @Insert("INSERT INTO contract_vehicles " +
+//            "(contract_trip_id, " +
+//            "issued_vehicle_id, " +
+//            "contract_vehicle_status, " +
+//            "create_date) " +
+//            "VALUES " +
+//            "(#{cv_detail_id}, " +
+//            "#{cv_iv_id}, " +
+//            "#{cv_status}, " +
+//            "getDate()) ")
+//    int assignVehicleForContract(
+//            @Param("cv_detail_id") int contractTripId,
+//            @Param("cv_iv_id") int issuedVehicleId,
+//            @Param("cv_status") ContractVehicleStatus vehicleStatus);
+
     @Insert("INSERT INTO contract_vehicles " +
             "(contract_trip_id, " +
             "issued_vehicle_id, " +
             "contract_vehicle_status, " +
-            "create_date) " +
+            "create_date," +
+            "far, " +
+            "backup_location, " +
+            "driver_money, " +
+            "contributor_money) " +
             "VALUES " +
-            "(#{cv_detail_id}, " +
-            "#{cv_iv_id}, " +
-            "#{cv_status}, " +
-            "getDate()) ")
-    int assignVehicleForContract(
-            @Param("cv_detail_id") int contractTripId,
-            @Param("cv_iv_id") int issuedVehicleId,
-            @Param("cv_status") ContractVehicleStatus vehicleStatus);
+            "(#{ContractVehicle.contractTripId}, " +
+            "#{ContractVehicle.issuedVehicleId}, " +
+            "#{ContractVehicle.contractVehicleStatus}, " +
+            "getDate()," +
+            "#{ContractVehicle.far}, " +
+            "#{ContractVehicle.backupLocation}," +
+            "#{ContractVehicle.driverMoney}," +
+            "#{ContractVehicle.contributorMoney}) ")
+    int assignVehicleForContract(@Param("ContractVehicle") ContractVehicle contractVehicle);
 
     @Select("SELECT cv.contract_vehicle_status " +
             "FROM contract_vehicles cv " +
@@ -38,7 +58,7 @@ public interface ContractVehicleMapper {
             "SET contract_vehicle_status = #{cv_status} " +
             "WHERE issued_vehicle_id = #{iv_id} " +
             "AND contract_trip_id = #{cd_id} ")
-    int updateContractedVehicleStatus(
+    int updateContractVehicleStatus(
             @Param("cd_id") int contractTripId,
             @Param("iv_id") int issuedVehicleId,
             @Param("cv_status") ContractVehicleStatus vehicleStatus);
@@ -133,14 +153,14 @@ public interface ContractVehicleMapper {
             @Param("cv_iv_id") int issuedVehicleId,
             @Param("cv_id") int contractId);
 
-    @Select("SELECT COUNT (cv.contract_vehicle_id)\n" +
-            "FROM contract_vehicles cv \n" +
-            "JOIN contract_trip cd \n" +
-            "ON cv.contract_trip_id = cd.contract_trip_id \n" +
-            "JOIN contract c \n" +
-            "ON cd.contract_id = c.contract_id\n" +
-            "WHERE c.contract_id = #{c_id}\n" +
-            "AND cv.contract_vehicle_status = 'COMPLETED' \n")
+    @Select("SELECT COUNT (cv.contract_vehicle_id) " +
+            "FROM contract_vehicles cv  " +
+            "JOIN contract_trip cd  " +
+            "ON cv.contract_trip_id = cd.contract_trip_id  " +
+            "JOIN contract c  " +
+            "ON cd.contract_id = c.contract_id " +
+            "WHERE c.contract_id = #{c_id} " +
+            "AND cv.contract_vehicle_status = 'COMPLETED'  ")
     int getCompletedVehicleCount(@Param("c_id") int contractId);
 
     @Select({"<script> " +
@@ -204,18 +224,18 @@ public interface ContractVehicleMapper {
     })
     List<VehicleContract> getAvailableVehicles(@Param("vr_req") VehicleContractReq vehicleContractReq);
 
-    @Delete("DELETE cv FROM contract_vehicles cv\n" +
-            "JOIN contract_trip cd \n" +
-            "ON cv.contract_trip_id = cd.contract_trip_id \n" +
-            "WHERE cd.contract_id = #{c_id}\n")
+    @Delete("DELETE cv FROM contract_vehicles cv " +
+            "JOIN contract_trip cd  " +
+            "ON cv.contract_trip_id = cd.contract_trip_id  " +
+            "WHERE cd.contract_id = #{c_id} ")
     int deleteContractVehicles(@Param("c_id") int contractId);
 
-    @Select("SELECT \n" +
-            "contract_vehicle_id, \n" +
-            "contract_trip_id,\n" +
-            "issued_vehicle_id, \n" +
-            "contract_vehicle_status\n" +
-            "FROM contract_vehicles \n" +
+    @Select("SELECT  " +
+            "contract_vehicle_id,  " +
+            "contract_trip_id, " +
+            "issued_vehicle_id,  " +
+            "contract_vehicle_status " +
+            "FROM contract_vehicles  " +
             "WHERE contract_trip_id = #{cd_id}")
     @Results(id = "contractVehicleByContractTripId", value = {
             @Result(property = "contractVehicleId", column = "contract_vehicle_id"),
@@ -225,12 +245,12 @@ public interface ContractVehicleMapper {
     })
     List<ContractVehicle> getContractVehiclesByContractTripId(@Param("cd_id") int contractTripId);
 
-    @Select("SELECT cv.contract_vehicle_id,cv.contract_vehicle_status\n" +
-            "FROM contract_vehicles cv \n" +
-            "JOIN contract_trip cd \n" +
-            "ON cv.contract_trip_id = cd.contract_trip_id \n" +
-            "JOIN contract c \n" +
-            "ON cd.contract_id = c.contract_id\n" +
+    @Select("SELECT cv.contract_vehicle_id,cv.contract_vehicle_status " +
+            "FROM contract_vehicles cv  " +
+            "JOIN contract_trip cd  " +
+            "ON cv.contract_trip_id = cd.contract_trip_id  " +
+            "JOIN contract c  " +
+            "ON cd.contract_id = c.contract_id " +
             "WHERE c.contract_id = #{c_id} " +
             "AND cv.contract_vehicle_status != 'DROPPED'")
     @Results(id = "ContractVehiclesByContractIdResult", value = {
@@ -297,4 +317,39 @@ public interface ContractVehicleMapper {
     int getOccurrence(
             @Param("c_id") int contractId,
             @Param("v_id") String vehicleId);
+
+    @Select("SELECT  " +
+            "contract_vehicle_id,  " +
+            "contract_trip_id,  " +
+            "issued_vehicle_id,  " +
+            "contract_vehicle_status,  " +
+            "far,  " +
+            "backup_location, " +
+            "driver_money,  " +
+            "contributor_money " +
+            "FROM contract_vehicles  " +
+            "WHERE contract_trip_id = #{contractTripId}  " +
+            "AND issued_vehicle_id = #{issueVehicleId}")
+    @Results(id = "contractVehicleDetailResult", value = {
+            @Result(property = "contractVehicleId", column = "contract_vehicle_id"),
+            @Result(property = "contractTripId", column = "contract_trip_id"),
+            @Result(property = "issuedVehicleId", column = "issued_vehicle_id"),
+            @Result(property = "contractVehicleStatus", column = "contract_vehicle_status"),
+            @Result(property = "far", column = "far"),
+            @Result(property = "backupLocation", column = "backup_location"),
+            @Result(property = "driverMoney", column = "driver_money"),
+            @Result(property = "contributorMoney", column = "contributor_money"),
+    })
+    ContractVehicle getContractVehicleByContractTripIdAndIssuedVehicleId(@Param("issueVehicleId") int issueVehicleId,
+                                                                         @Param("contractTripId") int contractTripId);
+
+    @Update("UPDATE contract_vehicles " +
+            "SET contract_vehicle_status = #{cv_status}, " +
+            "far = #{far} " +
+            "WHERE issued_vehicle_id = #{iv_id} " +
+            "AND contract_trip_id = #{cd_id} ")
+    int updateContractVehicle(@Param("cd_id") int contractTripId,
+                              @Param("iv_id") int issuedVehicleId,
+                              @Param("cv_status") ContractVehicleStatus contractVehicleStatus,
+                              @Param("far") int far);
 }

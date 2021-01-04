@@ -73,15 +73,22 @@ public class ContractVehicleComponentImpl implements ContractVehicleComponent {
             throw new ResourceNotFoundException("Vehicle with id: " + contractVehicleReq.getVehicleId() + " not found");
         }
 
-        int row = contractVehicleMapper.assignVehicleForContract(
+        ContractDetail contract = contractMapper.getContractValueAndNumberOfVehiclesByContractTripId(contractVehicleReq.getContractTripId());
+
+        ContractVehicle contractVehicle = new ContractVehicle(
                 contractVehicleReq.getContractTripId(),
                 optionalIssuedVehicle.get().getIssuedVehicleId(),
-                ContractVehicleStatus.NOT_STARTED);
+                ContractVehicleStatus.NOT_STARTED,
+                -1,
+                null,
+                contract.getTotalPrice() / contract.getEstimatedVehicleCount() * 10 / 100,
+                contract.getTotalPrice() / contract.getEstimatedVehicleCount() * 25 / 100);
 
-        if (row == 0) {
-            throw new DataExecutionException("Unknown error occurred. Data not modified!");
+        int contractVehicleRow = contractVehicleMapper.assignVehicleForContract(contractVehicle);
+
+        if (contractVehicleRow == 0) {
+            throw new DataExecutionException("Can not insert Contract Vehicle record");
         }
-
     }
 
     @Override
@@ -97,7 +104,7 @@ public class ContractVehicleComponentImpl implements ContractVehicleComponent {
     @Override
     @Transactional
     public void updateContractVehicleStatus(ContractVehicleStatusUpdateReq contractVehicleStatusUpdateReq) {
-        int row = contractVehicleMapper.updateContractedVehicleStatus(
+        int row = contractVehicleMapper.updateContractVehicleStatus(
                 contractVehicleStatusUpdateReq.getContractTripId(),
                 issuedVehicleMapper.getCurrentIssuedVehicleId(contractVehicleStatusUpdateReq.getVehicleId()),
                 contractVehicleStatusUpdateReq.getVehicleStatus());
@@ -125,7 +132,7 @@ public class ContractVehicleComponentImpl implements ContractVehicleComponent {
             if (!vehicleMapper.getVehicleStatus(tripReq.getVehicleId()).equals(VehicleStatus.AVAILABLE)) {
                 throw new DataExecutionException("Vehicle is still occupied!");
             } else {
-                contractVehicleRow = contractVehicleMapper.updateContractedVehicleStatus(tripReq.getContractTripId(), currentIssuedId, ContractVehicleStatus.IN_PROGRESS);
+                contractVehicleRow = contractVehicleMapper.updateContractVehicleStatus(tripReq.getContractTripId(), currentIssuedId, ContractVehicleStatus.IN_PROGRESS);
                 vehicleRow = vehicleMapper.updateVehicleStatus(tripReq.getVehicleId(), VehicleStatus.ON_ROUTE);
 
                 if (detail.getContractStatus().equals(ContractStatus.NOT_STARTED)) {
@@ -137,7 +144,7 @@ public class ContractVehicleComponentImpl implements ContractVehicleComponent {
             if (!vehicleMapper.getVehicleStatus(tripReq.getVehicleId()).equals(VehicleStatus.ON_ROUTE)) {
                 throw new DataExecutionException("Vehicle is not used!");
             } else {
-                contractVehicleRow = contractVehicleMapper.updateContractedVehicleStatus(tripReq.getContractTripId(), currentIssuedId, ContractVehicleStatus.COMPLETED);
+                contractVehicleRow = contractVehicleMapper.updateContractVehicleStatus(tripReq.getContractTripId(), currentIssuedId, ContractVehicleStatus.COMPLETED);
                 vehicleRow = vehicleMapper.updateVehicleStatus(tripReq.getVehicleId(), VehicleStatus.AVAILABLE);
                 if (detail.getContractStatus().equals(ContractStatus.IN_PROGRESS)) {
                     List<ContractVehicle> contractVehicles = contractVehicleMapper.getContractVehiclesByContractId(tripReq.getContractId());
@@ -204,21 +211,21 @@ public class ContractVehicleComponentImpl implements ContractVehicleComponent {
     public List<VehicleContract> getAvailableVehicles(VehicleContractReq vehicleContractReq, int pageNum, int viewOption) {
         //get the first and last date of the inputted start and end datetime.
         LocalDate firstDateOfMonth = YearMonth.from(vehicleContractReq.getStartDate().toLocalDate()).atDay(1);
-        LocalDate lastDateOfMonth =  YearMonth.from(vehicleContractReq.getEndDate().toLocalDate()).atEndOfMonth();
+        LocalDate lastDateOfMonth = YearMonth.from(vehicleContractReq.getEndDate().toLocalDate()).atEndOfMonth();
         long monthDifferent = ChronoUnit.MONTHS.between(firstDateOfMonth, lastDateOfMonth);
 
         List<VehicleContract> availableVehicles = contractVehicleMapper.getAvailableVehicles(vehicleContractReq);
 
-        for (VehicleContract vehicle: availableVehicles) {
+        for (VehicleContract vehicle : availableVehicles) {
             //get value of trips in current month with id
             List<VehicleContractValue> vehicleCountAndValues = contractVehicleMapper.getVehicleCountFromContract(vehicle.getVehicleId(), firstDateOfMonth, lastDateOfMonth);
 
             float earnedValue = 0;
             //calculate the total
             if (vehicleCountAndValues.size() != 0) {
-                for (VehicleContractValue contract: vehicleCountAndValues) {
+                for (VehicleContractValue contract : vehicleCountAndValues) {
                     int occurrence = contractVehicleMapper.getOccurrence(contract.getContractId(), vehicle.getVehicleId());
-                    earnedValue += ((contract.getTotalValue() * 0.25)/contract.getTotalVehicles()) * occurrence;
+                    earnedValue += ((contract.getTotalValue() * 0.25) / contract.getTotalVehicles()) * occurrence;
                 }
                 vehicle.setCurrentEarnedValue(earnedValue);
             }
@@ -228,17 +235,17 @@ public class ContractVehicleComponentImpl implements ContractVehicleComponent {
 
             float estimatedValue = 0;
             if (values.size() != 0) {
-                for (VehicleValue value: values) {
+                for (VehicleValue value : values) {
                     //check if the vehicle have values
                     if (value != null) {
                         if (CustomUtils.isBeforeOrEqualDate(value.getStartDate(), firstDateOfMonth) && CustomUtils.isAfterOrEqualDate(value.getEndDate(), lastDateOfMonth)) {
                             estimatedValue += value.getValue();
                         } else if (CustomUtils.isBeforeOrEqualDate(value.getStartDate(), firstDateOfMonth) && !CustomUtils.isAfterOrEqualDate(value.getEndDate(), lastDateOfMonth)) {
-                            estimatedValue += value.getValue()/30 * ChronoUnit.DAYS.between(YearMonth.now().atDay(1), value.getEndDate());
+                            estimatedValue += value.getValue() / 30 * ChronoUnit.DAYS.between(YearMonth.now().atDay(1), value.getEndDate());
                         } else if (!CustomUtils.isBeforeOrEqualDate(value.getStartDate(), firstDateOfMonth) && CustomUtils.isAfterOrEqualDate(value.getEndDate(), lastDateOfMonth)) {
-                            estimatedValue += value.getValue()/30 * (30-ChronoUnit.DAYS.between(YearMonth.now().atDay(1), value.getStartDate()));
+                            estimatedValue += value.getValue() / 30 * (30 - ChronoUnit.DAYS.between(YearMonth.now().atDay(1), value.getStartDate()));
                         } else {
-                            estimatedValue += value.getValue()/30 * (ChronoUnit.DAYS.between(value.getStartDate(), value.getEndDate()));
+                            estimatedValue += value.getValue() / 30 * (ChronoUnit.DAYS.between(value.getStartDate(), value.getEndDate()));
                         }
                     }
                 }
@@ -260,7 +267,7 @@ public class ContractVehicleComponentImpl implements ContractVehicleComponent {
             if (availableVehicles.size() <= 10 && pageNum == 0) {
                 return availableVehicles;
             } else {
-                return availableVehicles.subList((10*pageNum) + 1 , (10*pageNum) + 10);
+                return availableVehicles.subList((10 * pageNum) + 1, (10 * pageNum) + 10);
             }
         } else {
             return availableVehicles;
@@ -270,5 +277,62 @@ public class ContractVehicleComponentImpl implements ContractVehicleComponent {
     @Override
     public int getTotalAvailableVehicles(VehicleContractReq vehicleContractReq, int viewOption) {
         return getAvailableVehicles(vehicleContractReq, -1, viewOption).size();
+    }
+
+    @Override
+    public void assignBackUpVehicleForContract(String oldVehicleId, int contractTripId, BackUpVehicleReq backUpVehicleReq) {
+        Optional<IssuedVehicle> oldIssuedVehicle = issuedVehicleMapper
+                .getCurrentIssuedVehicleWithDriverById(oldVehicleId);
+        if (oldIssuedVehicle.isPresent()) {
+            if (oldIssuedVehicle.get().getDriverId() == null) {
+                throw new InvalidParamException("Vehicle with id: " + oldVehicleId + " doesn't have any driver");
+            }
+        } else {
+            throw new ResourceNotFoundException("Vehicle with id: " + oldVehicleId + " not found");
+        }
+        ContractVehicle contractVehicle =
+                contractVehicleMapper
+                        .getContractVehicleByContractTripIdAndIssuedVehicleId(
+                                oldIssuedVehicle.get().getIssuedVehicleId(), contractTripId);
+
+        int updateContractVehicleRow =
+                contractVehicleMapper.updateContractVehicle(
+                        contractVehicle.getContractTripId(),
+                        contractVehicle.getIssuedVehicleId(),
+                        ContractVehicleStatus.DROPPED,
+                        backUpVehicleReq.isFar() ? 1 : 0);
+        if (updateContractVehicleRow == 0) {
+            throw new DataExecutionException("Can not update Contract Vehicle record");
+        }
+
+        int contractVehicleRow = 0;
+
+        float driverMoney = contractVehicle.getDriverMoney();
+        float contributorMoney = contractVehicle.getContributorMoney();
+
+        for (String vehicleId : backUpVehicleReq.getVehiclesId()) {
+            Optional<IssuedVehicle> newIssuedVehicle = issuedVehicleMapper
+                    .getCurrentIssuedVehicleWithDriverById(vehicleId);
+            if (newIssuedVehicle.isPresent()) {
+                if (oldIssuedVehicle.get().getDriverId() == null) {
+                    throw new InvalidParamException("Vehicle with id: " + vehicleId + " doesn't have any driver");
+                }
+            } else {
+                throw new ResourceNotFoundException("Vehicle with id: " + vehicleId + " not found");
+            }
+
+            contractVehicle.setIssuedVehicleId(newIssuedVehicle.get().getIssuedVehicleId());
+            contractVehicle.setContractVehicleStatus(ContractVehicleStatus.NOT_STARTED);
+            contractVehicle.setBackupLocation(backUpVehicleReq.getBrokenVehicleLocation());
+            contractVehicle.setDriverMoney(driverMoney / backUpVehicleReq.getVehiclesId().size());
+            contractVehicle.setContributorMoney(contributorMoney / backUpVehicleReq.getVehiclesId().size());
+
+            contractVehicleRow += contractVehicleMapper.assignVehicleForContract(contractVehicle);
+        }
+
+        if (contractVehicleRow == 0) {
+            throw new DataExecutionException("Can not insert Contract Vehicle record");
+        }
+
     }
 }

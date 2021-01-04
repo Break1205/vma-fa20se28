@@ -1,17 +1,32 @@
 package com.fa20se28.vma.enums;
 
 public enum NotificationType {
-    REQUEST_ACCEPTED("Request Accepted"), // mobile
-    REQUEST_DENIED("Request Denied"), // mobile
-    CONTRACT_STARTED("Contract Started"), // web
-    CONTRACT_COMPLETED("Contract Completed"), // web
-    CONTRACT_ASSIGNED("Contract Assigned"), // mobile
-    CONTRACT_DROPPED("Contract Dropped"), // mobile
-    START_TRIP("Start Trip"), // web
-    END_TRIP("End Trip"), // web
-    LICENSE_EXPIRED("License Expired"), // mobile
-    NEW_REQUEST("New Request"), // web
-    VEHICLE_CHANGED("Vehicle Changed"); // mobile
+    /*
+    Mobile
+    */
+    REQUEST_ACCEPTED("Request Accepted"),
+    REQUEST_DENIED("Request Denied"),
+    CONTRACT_ASSIGNED("Contract Assigned"),
+    CONTRACT_DROPPED("Contract Dropped"),
+    LICENSE_EXPIRED("License Expired"),
+    VEHICLE_CHANGED("Vehicle Changed"),
+    EMERGENCY_ASSISTED("Emergency Assisted"),
+    /*
+    Mobile
+     */
+
+    /*
+    Web
+     */
+    CONTRACT_STARTED("Contract Started"),
+    CONTRACT_COMPLETED("Contract Completed"),
+    START_TRIP("Start Trip"),
+    END_TRIP("End Trip"),
+    NEW_REQUEST("New Request");
+    /*
+    Web
+     */
+
 
     private String name;
 

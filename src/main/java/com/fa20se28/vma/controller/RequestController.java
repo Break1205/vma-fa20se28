@@ -122,9 +122,11 @@ public class RequestController {
     @PostMapping("/requests/vehicles/issue")
     @ResponseStatus(HttpStatus.CREATED)
     public int reportIssueInVehicle(@RequestBody ReportIssueReq reportIssueReq) {
-        if (reportIssueReq.getRequestType() != null) {
-            return requestService.reportIssue(reportIssueReq);
-        }
-        return 0;
+        return requestService.reportIssue(reportIssueReq, RequestType.NEED_BACKUP_VEHICLE);
+    }
+
+    @PostMapping("/requests/vehicles/issue/handler")
+    public int handleIssueVehicleRequest(@RequestBody BackUpVehicleReq backUpVehicleReq) {
+        return requestService.handleBackUpVehicleReq(backUpVehicleReq);
     }
 }

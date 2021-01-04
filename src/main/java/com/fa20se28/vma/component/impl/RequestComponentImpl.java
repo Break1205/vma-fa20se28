@@ -4,6 +4,7 @@ import com.fa20se28.vma.component.RequestComponent;
 import com.fa20se28.vma.configuration.exception.DataExecutionException;
 import com.fa20se28.vma.configuration.exception.ResourceNotFoundException;
 import com.fa20se28.vma.enums.RequestStatus;
+import com.fa20se28.vma.enums.RequestType;
 import com.fa20se28.vma.mapper.RequestMapper;
 import com.fa20se28.vma.model.RequestDetail;
 import com.fa20se28.vma.request.*;
@@ -29,8 +30,9 @@ public class RequestComponentImpl implements RequestComponent {
         ReqInsertReq insertReq = new ReqInsertReq(
                 userId,
                 String.valueOf(requestReq.getUserDocumentReq().getUserDocumentId()),
-                null, null,
-                RequestStatus.PENDING,
+                null,
+                null,
+                null, RequestStatus.PENDING,
                 requestReq.getRequestType(),
                 requestReq.getDescription(),
                 LocalDateTime.now());
@@ -75,7 +77,7 @@ public class RequestComponentImpl implements RequestComponent {
                 userId, null,
                 null,
                 Integer.toString(vehicleDocumentRequestReq.getVehicleDocument().getVehicleDocumentReq().getVehicleDocumentId()),
-                RequestStatus.PENDING,
+                null, RequestStatus.PENDING,
                 vehicleDocumentRequestReq.getRequestType(),
                 vehicleDocumentRequestReq.getDescription(),
                 LocalDateTime.now());
@@ -96,6 +98,7 @@ public class RequestComponentImpl implements RequestComponent {
                 userId, null,
                 vehicleRequestReq.getVehicleReq().getVehicleId(),
                 null,
+                null,
                 RequestStatus.PENDING,
                 vehicleRequestReq.getRequestType(),
                 vehicleRequestReq.getDescription(),
@@ -114,7 +117,10 @@ public class RequestComponentImpl implements RequestComponent {
     @Transactional
     public int createVehicleChangeRequest(VehicleChangeRequestReq vehicleChangeRequestReq, String userId) {
         ReqInsertReq insertReq = new ReqInsertReq(
-                userId, null, null, null,
+                userId, null,
+                null,
+                null,
+                null,
                 RequestStatus.PENDING,
                 vehicleChangeRequestReq.getRequestType(),
                 vehicleChangeRequestReq.getDescription(),
@@ -131,12 +137,14 @@ public class RequestComponentImpl implements RequestComponent {
 
     @Override
     @Transactional
-    public int reportIssueRequest(ReportIssueReq reportIssueReq, String userId) {
+    public int reportIssueRequest(ReportIssueReq reportIssueReq, RequestType requestType, String userId) {
         ReqInsertReq insertReq = new ReqInsertReq(
                 userId, null,
-                reportIssueReq.getVehicleId(), null,
+                reportIssueReq.getVehicleId(),
+                null,
+                reportIssueReq.getContractTripId(),
                 RequestStatus.PENDING,
-                reportIssueReq.getRequestType(),
+                requestType,
                 reportIssueReq.getDescription(),
                 LocalDateTime.now());
 

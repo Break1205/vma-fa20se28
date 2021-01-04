@@ -1,6 +1,7 @@
 package com.fa20se28.vma.service.impl;
 
 import com.fa20se28.vma.component.AuthenticationComponent;
+import com.fa20se28.vma.component.ContractVehicleComponent;
 import com.fa20se28.vma.component.RequestComponent;
 import com.fa20se28.vma.component.UserComponent;
 import com.fa20se28.vma.component.UserDocumentComponent;
@@ -17,6 +18,8 @@ import com.fa20se28.vma.model.AssignedVehicle;
 import com.fa20se28.vma.model.ClientRegistrationToken;
 import com.fa20se28.vma.model.NotificationData;
 import com.fa20se28.vma.model.RequestDetail;
+import com.fa20se28.vma.model.UserBasic;
+import com.fa20se28.vma.request.BackUpVehicleReq;
 import com.fa20se28.vma.request.ReportIssueReq;
 import com.fa20se28.vma.request.RequestPageReq;
 import com.fa20se28.vma.request.RequestReq;
@@ -37,6 +40,7 @@ public class RequestServiceImpl implements RequestService {
     private final UserDocumentComponent userDocumentComponent;
     private final VehicleComponent vehicleComponent;
     private final VehicleDocumentComponent vehicleDocumentComponent;
+    private final ContractVehicleComponent contractVehicleComponent;
     private final AuthenticationComponent authenticationComponent;
     private final UserComponent userComponent;
     private final FirebaseService firebaseService;
@@ -45,24 +49,25 @@ public class RequestServiceImpl implements RequestService {
                               UserDocumentComponentImpl documentComponent,
                               VehicleComponent vehicleComponent,
                               VehicleDocumentComponent vehicleDocumentComponent,
-                              AuthenticationComponent authenticationComponent,
+                              ContractVehicleComponent contractVehicleComponent, AuthenticationComponent authenticationComponent,
                               UserComponent userComponent,
                               FirebaseService firebaseService) {
         this.requestComponent = requestComponent;
         this.userDocumentComponent = documentComponent;
         this.vehicleComponent = vehicleComponent;
         this.vehicleDocumentComponent = vehicleDocumentComponent;
+        this.contractVehicleComponent = contractVehicleComponent;
         this.authenticationComponent = authenticationComponent;
         this.userComponent = userComponent;
         this.firebaseService = firebaseService;
     }
 
-    private int createNotificationForAdmin(int requestId, String userId, RequestType requestType) {
-        if (requestId >= 1) {
+    private int createNotificationForAdmin(int requestRecords, String userId, RequestType requestType) {
+        if (requestRecords >= 1) {
             NotificationData createReq = new NotificationData(
                     NotificationType.NEW_REQUEST,
                     "User with id: " + userId + " has sent a new request!",
-                    String.valueOf(requestId),
+                    String.valueOf(requestRecords),
                     requestType.toString());
             firebaseService.notifySubscribersByTopic("admin", createReq);
             return 1;
@@ -140,29 +145,27 @@ public class RequestServiceImpl implements RequestService {
             ClientRegistrationToken clientRegistrationToken = userComponent.findClientRegistrationTokenByUserId(requestDetail.getUserId());
             if (requestStatus.equals(RequestStatus.ACCEPTED)) {
                 if (acceptRequest(requestDetail) == 1) {
-                    if (clientRegistrationToken == null) {
-                        return 0;
+                    if (clientRegistrationToken != null) {
+                        NotificationData notificationData = new NotificationData(
+                                NotificationType.REQUEST_ACCEPTED,
+                                "Request " + requestDetail.getRequestType() + " with id " + requestId + " has been accepted",
+                                String.valueOf(requestId),
+                                null);
+                        firebaseService.notifyUserByFCMToken(clientRegistrationToken, notificationData);
                     }
-                    NotificationData notificationData = new NotificationData(
-                            NotificationType.REQUEST_ACCEPTED,
-                            "Request " + requestDetail.getRequestType() + " with id " + requestId + " has been accepted",
-                            String.valueOf(requestId),
-                            null);
-                    firebaseService.notifyUserByFCMToken(clientRegistrationToken, notificationData);
                     return 1;
                 }
                 return 0;
             } else if (requestStatus.equals(RequestStatus.DENIED)) {
                 if (denyRequest(requestDetail) == 1) {
-                    if (clientRegistrationToken == null) {
-                        return 0;
+                    if (clientRegistrationToken != null) {
+                        NotificationData notificationData = new NotificationData(
+                                NotificationType.REQUEST_DENIED,
+                                "Request " + requestDetail.getRequestType() + " with id " + requestId + " has been denied",
+                                String.valueOf(requestId),
+                                null);
+                        firebaseService.notifyUserByFCMToken(clientRegistrationToken, notificationData);
                     }
-                    NotificationData notificationData = new NotificationData(
-                            NotificationType.REQUEST_DENIED,
-                            "Request " + requestDetail.getRequestType() + " with id " + requestId + " has been denied",
-                            String.valueOf(requestId),
-                            null);
-                    firebaseService.notifyUserByFCMToken(clientRegistrationToken, notificationData);
                     return 1;
                 }
                 return 0;
@@ -309,12 +312,95 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public int reportIssue(ReportIssueReq reportIssueReq) {
+    public int reportIssue(ReportIssueReq reportIssueReq, RequestType requestType) {
         Authentication authentication = authenticationComponent.getAuthentication();
 
+        int requestRecord = requestComponent.reportIssueRequest(reportIssueReq, requestType, authentication.getName());
+        if (requestRecord >= 1) {
+            vehicleComponent.updateVehicleStatus(reportIssueReq.getVehicleId(), VehicleStatus.NEED_REPAIR);
+        }
         return createNotificationForAdmin(
-                requestComponent.reportIssueRequest(reportIssueReq, authentication.getName()),
+                requestRecord,
                 authentication.getName(),
-                reportIssueReq.getRequestType());
+                requestType);
     }
+
+    @Override
+    @Transactional
+    public int handleBackUpVehicleReq(BackUpVehicleReq backUpVehicleReq) {
+        RequestDetail requestDetail = requestComponent.findRequestById(backUpVehicleReq.getRequestId());
+        if (!requestDetail.getRequestStatus().equals(RequestStatus.PENDING)) {
+            throw new RequestAlreadyHandledException("Request with id: " + backUpVehicleReq.getRequestId() + " has already been handled");
+        } else {
+            ClientRegistrationToken brokenVehicleDriverToken = userComponent.findClientRegistrationTokenByUserId(requestDetail.getUserId());
+
+            if (backUpVehicleReq.getRequestStatus().equals(RequestStatus.ACCEPTED)) {
+                if (acceptBackUpRequest(requestDetail, backUpVehicleReq) == 1) {
+                    if (brokenVehicleDriverToken != null) {
+                        NotificationData notificationData = new NotificationData(
+                                NotificationType.REQUEST_ACCEPTED,
+                                "Request " + requestDetail.getRequestType() + " with id " + backUpVehicleReq.getRequestId() + " has been accepted. " +
+                                        "There will be a driver come to your assistance. After that, please find the nearest Car Repair Station.",
+                                String.valueOf(backUpVehicleReq.getRequestId()),
+                                null);
+                        firebaseService.notifyUserByFCMToken(brokenVehicleDriverToken, notificationData);
+                    }
+                    for (String vehicleId : backUpVehicleReq.getVehiclesId()) {
+                        UserBasic userBasic = vehicleComponent.getCurrentDriver(vehicleId);
+                        if (userBasic != null) {
+                            ClientRegistrationToken backupVehicleDriverToken = userComponent.findClientRegistrationTokenByUserId(userBasic.getUserId());
+                            if (backupVehicleDriverToken != null) {
+                                NotificationData notificationData;
+                                if (backUpVehicleReq.isFar()) {
+                                    notificationData = new NotificationData(
+                                            NotificationType.EMERGENCY_ASSISTED,
+                                            "Vehicle with id: " + requestDetail.getVehicleId() + " is broken at: "
+                                                    + backUpVehicleReq.getBrokenVehicleLocation() + "." +
+                                                    "Please come to assist immediately. Thank you",
+                                            String.valueOf(backUpVehicleReq.getRequestId()),
+                                            null);
+                                } else {
+                                    notificationData = new NotificationData(
+                                            NotificationType.CONTRACT_ASSIGNED,
+                                            "You have been assigned with a trip!",
+                                            "",
+                                            null);
+                                }
+                                firebaseService.notifyUserByFCMToken(backupVehicleDriverToken, notificationData);
+                            }
+                        }
+                    }
+                    return 1;
+                }
+                return 0;
+            } else if (backUpVehicleReq.getRequestStatus().equals(RequestStatus.DENIED)) {
+                if (denyBackUpRequest(requestDetail.getVehicleId(), requestDetail.getRequestId()) == 1) {
+                    if (brokenVehicleDriverToken != null) {
+                        NotificationData notificationData = new NotificationData(
+                                NotificationType.REQUEST_DENIED,
+                                "Request " + requestDetail.getRequestType() + " with id " + backUpVehicleReq.getRequestId() + " has been denied." +
+                                        " We can not help you due to difficult circumstances. Please find the nearest Car Repair Station.",
+                                String.valueOf(backUpVehicleReq.getRequestId()),
+                                null);
+                        firebaseService.notifyUserByFCMToken(brokenVehicleDriverToken, notificationData);
+                    }
+                    return 1;
+                }
+                return 0;
+            }
+            return 0;
+        }
+    }
+
+    private int denyBackUpRequest(String oldVehicleId, int requestId) {
+        vehicleComponent.updateVehicleStatus(oldVehicleId, VehicleStatus.REPAIRING);
+        return requestComponent.updateRequestStatus(requestId, RequestStatus.DENIED);
+    }
+
+    private int acceptBackUpRequest(RequestDetail requestDetail, BackUpVehicleReq backUpVehicleReq) {
+        vehicleComponent.updateVehicleStatus(requestDetail.getVehicleId(), VehicleStatus.REPAIRING);
+        contractVehicleComponent.assignBackUpVehicleForContract(requestDetail.getVehicleId(), requestDetail.getContractTripId(), backUpVehicleReq);
+        return requestComponent.updateRequestStatus(requestDetail.getRequestId(), RequestStatus.ACCEPTED);
+    }
+
 }

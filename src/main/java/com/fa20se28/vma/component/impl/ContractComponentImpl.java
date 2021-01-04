@@ -70,7 +70,7 @@ public class ContractComponentImpl implements ContractComponent {
         if (row == 0) {
             throw new DataExecutionException("Can not insert Contract record!");
         } else {
-            createContractDetailAndScheduleAndVehicles(contractReq);
+            createContractTripAndScheduleAndVehicles(contractReq);
         }
     }
 
@@ -155,18 +155,21 @@ public class ContractComponentImpl implements ContractComponent {
         if (contractRecord == 0) {
             throw new DataExecutionException("Can not update contract record");
         } else {
-            createContractDetailAndScheduleAndVehicles(contractReq);
+            createContractTripAndScheduleAndVehicles(contractReq);
         }
     }
 
 
-    private void createContractDetailAndScheduleAndVehicles(ContractReq contractReq) {
+    private void createContractTripAndScheduleAndVehicles(ContractReq contractReq) {
         for (ContractTripReq trip : contractReq.getTrips()) {
             int contractTripRow = contractDetailMapper.createContractTrip(trip, contractMapper.getContractId(contractReq.getContractOwnerId()));
             if (contractTripRow == 0) {
                 throw new DataExecutionException("Can not insert Contract Detail record");
             } else {
                 Map<String, String> nonDuplicateAssignedVehicles = new HashMap<>();
+
+                int numberOfVehicles = contractReq.getEstimatedVehicleCount();
+
                 for (String vehicleId : trip.getAssignedVehicles()) {
                     if (nonDuplicateAssignedVehicles.containsKey(vehicleId)) {
                         throw new InvalidParamException("Duplicate vehicle id: " + vehicleId + " .A vehicle can only be on 1 trip at a time");
@@ -184,11 +187,16 @@ public class ContractComponentImpl implements ContractComponent {
                         throw new ResourceNotFoundException("Vehicle with id: " + vehicleId + " not found");
                     }
 
-                    int contractVehicleRow = contractVehicleMapper.assignVehicleForContract(
+                    ContractVehicle contractVehicle = new ContractVehicle(
                             trip.getContractTripId(),
                             optionalIssuedVehicle.get().getIssuedVehicleId(),
-                            ContractVehicleStatus.NOT_STARTED
-                    );
+                            ContractVehicleStatus.NOT_STARTED,
+                            -1,
+                            null,
+                            contractReq.getTotalPrice() / numberOfVehicles * 10 / 100,
+                            contractReq.getTotalPrice() / numberOfVehicles * 25 / 100);
+
+                    int contractVehicleRow = contractVehicleMapper.assignVehicleForContract(contractVehicle);
 
                     if (contractVehicleRow == 0) {
                         throw new DataExecutionException("Can not insert Contract Vehicle record");

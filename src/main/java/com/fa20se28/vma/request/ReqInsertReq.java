@@ -11,16 +11,26 @@ public class ReqInsertReq {
     private String userDocumentId;
     private String vehicleId;
     private String vehicleDocId;
+    private String contractTripId;
     private RequestStatus requestStatus;
     private RequestType requestType;
     private String desc;
     private LocalDateTime createDate;
 
-    public ReqInsertReq(String userId, String userDocumentId, String vehicleId, String vehicleDocId, RequestStatus requestStatus, RequestType requestType, String desc, LocalDateTime createDate) {
+    public ReqInsertReq(String userId,
+                        String userDocumentId,
+                        String vehicleId,
+                        String vehicleDocId,
+                        String contractTripId,
+                        RequestStatus requestStatus,
+                        RequestType requestType,
+                        String desc,
+                        LocalDateTime createDate) {
         this.userId = userId;
         this.userDocumentId = userDocumentId;
         this.vehicleId = vehicleId;
         this.vehicleDocId = vehicleDocId;
+        this.contractTripId = contractTripId;
         this.requestStatus = requestStatus;
         this.requestType = requestType;
         this.desc = desc;
@@ -65,6 +75,14 @@ public class ReqInsertReq {
 
     public void setVehicleDocId(String vehicleDocId) {
         this.vehicleDocId = vehicleDocId;
+    }
+
+    public String getContractTripId() {
+        return contractTripId;
+    }
+
+    public void setContractTripId(String contractTripId) {
+        this.contractTripId = contractTripId;
     }
 
     public RequestStatus getRequestStatus() {
