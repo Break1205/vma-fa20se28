@@ -14,11 +14,11 @@ import java.util.List;
 
 @Mapper
 public interface ContractMapper {
-    @Select("SELECT \n" +
-            "contract_id,\n" +
-            "contract_status \n" +
-            "FROM contract \n" +
-            "WHERE contract_owner_id = '${contract_owner_id}' \n" +
+    @Select("SELECT  " +
+            "contract_id, " +
+            "contract_status  " +
+            "FROM contract  " +
+            "WHERE contract_owner_id = '${contract_owner_id}'  " +
             "AND contract_status != 'FINISHED'")
     @Results(id = "unfinishedContractResult", value = {
             @Result(property = "contractId", column = "contract_id"),
@@ -202,12 +202,12 @@ public interface ContractMapper {
             @Result(property = "locationId", column = "contract_trip_schedule_id")})
     List<ContractTripSchedule> getContractTripSchedule(@Param("cd_id") int contractDetailId);
 
-    @Select("SELECT \n" +
-            "iv.vehicle_id\n" +
-            "FROM contract_vehicles cv \n" +
-            "JOIN issued_vehicle iv \n" +
-            "ON cv.issued_vehicle_id = iv.issued_vehicle_id\n" +
-            "WHERE contract_trip_id = #{cd_id}\n" +
+    @Select("SELECT  " +
+            "iv.vehicle_id " +
+            "FROM contract_vehicles cv  " +
+            "JOIN issued_vehicle iv  " +
+            "ON cv.issued_vehicle_id = iv.issued_vehicle_id " +
+            "WHERE contract_trip_id = #{cd_id} " +
             "ORDER BY contract_trip_id ASC")
     List<String> getAssignedVehicles(@Param("cd_id") int contractDetailId);
 
@@ -228,4 +228,23 @@ public interface ContractMapper {
             @Param("c_apc") int actualPassengerCount,
             @Param("c_avc") int actualVehicleCount,
             @Param("c_id") int contractId);
+
+    @Select("SELECT total_price " +
+            "FROM contract_trip ct  " +
+            "JOIN contract c  " +
+            "ON ct.contract_id = c.contract_id  " +
+            "WHERE contract_trip_id = #{contractTripId} ")
+    float getContractValueByContractId(@Param("contractTripId") int contractTripId);
+
+    @Select("SELECT total_price," +
+            "estimated_vehicle_count " +
+            "FROM contract_trip ct  " +
+            "JOIN contract c  " +
+            "ON ct.contract_id = c.contract_id  " +
+            "WHERE contract_trip_id = #{contractTripId} ")
+    @Results(id = "priceAndNumberOfVehiclesResult", value = {
+            @Result(property = "totalPrice", column = "total_price"),
+            @Result(property = "estimatedVehicleCount", column = "estimated_vehicle_count"),
+    })
+    ContractDetail getContractValueAndNumberOfVehiclesByContractTripId(int contractTripId);
 }

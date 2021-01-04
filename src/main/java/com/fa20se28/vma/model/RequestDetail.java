@@ -12,6 +12,7 @@ public class RequestDetail {
     private String userDocumentId;
     private String vehicleId;
     private int vehicleDocumentId;
+    private int contractTripId;
     private RequestStatus requestStatus;
     private RequestType requestType;
     private String description;
@@ -95,5 +96,13 @@ public class RequestDetail {
 
     public void setFullName(String fullName) {
         this.fullName = fullName;
+    }
+
+    public int getContractTripId() {
+        return contractTripId;
+    }
+
+    public void setContractTripId(int contractTripId) {
+        this.contractTripId = contractTripId;
     }
 }

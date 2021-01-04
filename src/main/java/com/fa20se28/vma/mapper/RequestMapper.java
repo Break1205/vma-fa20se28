@@ -17,7 +17,8 @@ public interface RequestMapper {
             "(user_id, " +
             "user_document_id, " +
             "vehicle_id, " +
-            "vehicle_document_id, " +
+            "vehicle_document_id," +
+            "contract_trip_id, " +
             "request_status, " +
             "request_type, " +
             "create_date, " +
@@ -26,7 +27,8 @@ public interface RequestMapper {
             "(#{r_insert.userId}, " +
             "#{r_insert.userDocumentId}, " +
             "#{r_insert.vehicleId}, " +
-            "#{r_insert.vehicleDocId}, " +
+            "#{r_insert.vehicleDocId}," +
+            "#{r_insert.contractTripId}, " +
             "#{r_insert.requestStatus}, " +
             "#{r_insert.requestType}, " +
             "#{r_insert.createDate}, " +
@@ -35,35 +37,35 @@ public interface RequestMapper {
     int insertRequest(@Param("r_insert") ReqInsertReq object);
 
     @Select({"<script>" +
-            "SELECT \n" +
-            "request_id,\n" +
-            "user_id,\n" +
-            "request_type, \n" +
-            "request_status, \n" +
-            "description, \n" +
-            "create_date \n" +
-            "FROM request\n" +
-            "WHERE 1=1\n" +
-            "<if test = \"RequestPageReq.userId!=null\" >\n" +
-            "AND user_id LIKE '%${RequestPageReq.userId}%'\n" +
-            "</if> \n" +
-            "<if test = \"RequestPageReq.requestStatus!=null\" >\n" +
-            "AND request_status LIKE '%${RequestPageReq.requestStatus}%'\n" +
-            "</if> \n" +
-            "<if test = \"RequestPageReq.requestType!=null\" >\n" +
-            "AND request_type LIKE N'%${RequestPageReq.requestType}%'\n" +
-            "</if> \n" +
-            "<if test = \"RequestPageReq.fromDate!=null and RequestPageReq.toDate!=null\" >\n" +
-            "AND create_date BETWEEN '${RequestPageReq.fromDate}' AND '${RequestPageReq.toDate}'\n" +
-            "</if> \n" +
-            "<if test = \"RequestPageReq.fromDate!=null and RequestPageReq.toDate==null\" >\n" +
-            "AND create_date &gt; '${RequestPageReq.fromDate}' \n" +
-            "</if> \n" +
-            "<if test = \"RequestPageReq.fromDate==null and RequestPageReq.toDate!=null\" >\n" +
-            "AND create_date &lt; '${RequestPageReq.toDate}' \n" +
-            "</if> \n" +
-            "ORDER BY create_date ${RequestPageReq.sort} \n" +
-            "OFFSET #{RequestPageReq.page} ROWS \n" +
+            "SELECT  " +
+            "request_id, " +
+            "user_id, " +
+            "request_type,  " +
+            "request_status,  " +
+            "description,  " +
+            "create_date  " +
+            "FROM request " +
+            "WHERE 1=1 " +
+            "<if test = \"RequestPageReq.userId!=null\" > " +
+            "AND user_id LIKE '%${RequestPageReq.userId}%' " +
+            "</if>  " +
+            "<if test = \"RequestPageReq.requestStatus!=null\" > " +
+            "AND request_status LIKE '%${RequestPageReq.requestStatus}%' " +
+            "</if>  " +
+            "<if test = \"RequestPageReq.requestType!=null\" > " +
+            "AND request_type LIKE N'%${RequestPageReq.requestType}%' " +
+            "</if>  " +
+            "<if test = \"RequestPageReq.fromDate!=null and RequestPageReq.toDate!=null\" > " +
+            "AND create_date BETWEEN '${RequestPageReq.fromDate}' AND '${RequestPageReq.toDate}' " +
+            "</if>  " +
+            "<if test = \"RequestPageReq.fromDate!=null and RequestPageReq.toDate==null\" > " +
+            "AND create_date &gt; '${RequestPageReq.fromDate}'  " +
+            "</if>  " +
+            "<if test = \"RequestPageReq.fromDate==null and RequestPageReq.toDate!=null\" > " +
+            "AND create_date &lt; '${RequestPageReq.toDate}'  " +
+            "</if>  " +
+            "ORDER BY create_date ${RequestPageReq.sort}  " +
+            "OFFSET #{RequestPageReq.page} ROWS  " +
             "FETCH NEXT 15 ROWS ONLY " +
             "</script>"})
     @Results(id = "requestsResult", value = {
@@ -76,46 +78,47 @@ public interface RequestMapper {
     })
     List<RequestRes> findRequests(@Param("RequestPageReq") RequestPageReq requestPageReq);
 
-    @Select({"<script> "+
-            "SELECT \n" +
-            "COUNT(request_id) \n" +
-            "FROM request \n" +
-            "WHERE 1=1 \n" +
-            "<if test = \"RequestPageReq.userId!=null\" > \n" +
-            "AND user_id LIKE '%${RequestPageReq.userId}%' \n" +
-            "</if>  \n" +
-            "<if test = \"RequestPageReq.requestStatus!=null\" > \n" +
-            "AND request_status LIKE '%${RequestPageReq.requestStatus}%' \n" +
-            "</if>  \n" +
-            "<if test = \"RequestPageReq.requestType!=null\" > \n" +
-            "AND request_type LIKE N'%${RequestPageReq.requestType}%' \n" +
-            "</if>  \n" +
-            "<if test = \"RequestPageReq.fromDate!=null and RequestPageReq.toDate!=null\" > \n" +
-            "AND create_date BETWEEN '${RequestPageReq.fromDate}' AND '${RequestPageReq.toDate}' \n" +
-            "</if>  \n" +
-            "<if test = \"RequestPageReq.fromDate!=null and RequestPageReq.toDate==null\" > \n" +
-            "AND create_date &gt; '${RequestPageReq.fromDate}'  \n" +
-            "</if>  \n" +
-            "<if test = \"RequestPageReq.fromDate==null and RequestPageReq.toDate!=null\" > \n" +
-            "AND create_date &lt; '${RequestPageReq.toDate}'  \n" +
-            "</if> \n" +
+    @Select({"<script> " +
+            "SELECT  " +
+            "COUNT(request_id)  " +
+            "FROM request  " +
+            "WHERE 1=1  " +
+            "<if test = \"RequestPageReq.userId!=null\" >  " +
+            "AND user_id LIKE '%${RequestPageReq.userId}%'  " +
+            "</if>   " +
+            "<if test = \"RequestPageReq.requestStatus!=null\" >  " +
+            "AND request_status LIKE '%${RequestPageReq.requestStatus}%'  " +
+            "</if>   " +
+            "<if test = \"RequestPageReq.requestType!=null\" >  " +
+            "AND request_type LIKE N'%${RequestPageReq.requestType}%'  " +
+            "</if>   " +
+            "<if test = \"RequestPageReq.fromDate!=null and RequestPageReq.toDate!=null\" >  " +
+            "AND create_date BETWEEN '${RequestPageReq.fromDate}' AND '${RequestPageReq.toDate}'  " +
+            "</if>   " +
+            "<if test = \"RequestPageReq.fromDate!=null and RequestPageReq.toDate==null\" >  " +
+            "AND create_date &gt; '${RequestPageReq.fromDate}'   " +
+            "</if>   " +
+            "<if test = \"RequestPageReq.fromDate==null and RequestPageReq.toDate!=null\" >  " +
+            "AND create_date &lt; '${RequestPageReq.toDate}'   " +
+            "</if>  " +
             "</script> "})
     int findTotalRequests(@Param("RequestPageReq") RequestPageReq requestPageReq);
 
-    @Select("SELECT  \n" +
-            "request_id,  \n" +
-            "u.user_id, \n" +
-            "u.full_name,\n" +
-            "user_document_id,  \n" +
-            "vehicle_id, \n" +
-            "vehicle_document_id,  \n" +
-            "request_status,  \n" +
-            "request_type,  \n" +
-            "description,  \n" +
-            "u.create_date \n" +
-            "FROM request \n" +
-            "JOIN [user] u\n" +
-            "on request.user_id = u.user_id\n" +
+    @Select("SELECT   " +
+            "request_id,   " +
+            "u.user_id,  " +
+            "u.full_name, " +
+            "user_document_id,   " +
+            "vehicle_id,  " +
+            "vehicle_document_id," +
+            "contract_trip_id, " +
+            "request_status,   " +
+            "request_type,   " +
+            "description,   " +
+            "u.create_date  " +
+            "FROM request  " +
+            "JOIN [user] u " +
+            "on request.user_id = u.user_id " +
             "WHERE request_id = #{request_id}")
     @Results(id = "documentRequestResult", value = {
             @Result(property = "requestId", column = "request_id"),
@@ -124,6 +127,7 @@ public interface RequestMapper {
             @Result(property = "userDocumentId", column = "user_document_id"),
             @Result(property = "vehicleId", column = "vehicle_id"),
             @Result(property = "vehicleDocumentId", column = "vehicle_document_id"),
+            @Result(property = "contractTripId", column = "contract_trip_id"),
             @Result(property = "requestStatus", column = "request_status"),
             @Result(property = "requestType", column = "request_type"),
             @Result(property = "description", column = "description"),
@@ -131,8 +135,8 @@ public interface RequestMapper {
     })
     Optional<RequestDetail> findRequestById(@Param("request_id") int requestId);
 
-    @Update("UPDATE request \n" +
-            "SET request_status = #{requestStatus} \n" +
+    @Update("UPDATE request  " +
+            "SET request_status = #{requestStatus}  " +
             "WHERE request_id = #{requestId}")
     int updateRequestStatus(@Param("requestId") int requestId, @Param("requestStatus") RequestStatus requestStatus);
 }
