@@ -64,7 +64,12 @@ public interface ContractVehicleMapper {
     List<VehicleBasic> getContractVehicles(@Param("cd_id") int contractTripId);
 
     @Select({"<script> " +
+            "<if test = \"t_current == 0\" > " +
             "SELECT " +
+            "</if> " +
+            "<if test = \"t_current == 1\" > " +
+            "SELECT TOP 1 " +
+            "</if> " +
             "c.contract_id,cd.contract_trip_id, cv.contract_vehicle_id, cv.contract_vehicle_status " +
             "FROM contract_vehicles cv " +
             "JOIN contract_trip cd ON cv.contract_trip_id = cd.contract_trip_id " +
@@ -74,8 +79,10 @@ public interface ContractVehicleMapper {
             "AND cv.contract_vehicle_status = #{cv_status} " +
             "</if> " +
             "ORDER BY cv.create_date DESC " +
+            "<if test = \"t_current == 0\" > " +
             "OFFSET ${cv_offset} ROWS " +
             "FETCH NEXT 15 ROWS ONLY " +
+            "</if> " +
             "</script>"})
     @Results(id = "tripsResult", value = {
             @Result(property = "contractId", column = "contract_id"),
@@ -86,7 +93,8 @@ public interface ContractVehicleMapper {
     List<Trip> getVehicleTrips(
             @Param("cv_iv_id") int issuedVehicleId,
             @Param("cv_status") ContractVehicleStatus vehicleStatus,
-            @Param("cv_offset") int offset);
+            @Param("cv_offset") int offset,
+            @Param("t_current") int getCurrentTrip);
 
     @Select("SELECT " +
             "contract_trip_id, departure_time, destination_time, departure_location, destination_location " +

@@ -80,6 +80,11 @@ public class ContractVehicleServiceImpl implements ContractVehicleService {
     }
 
     @Override
+    public TripListRes getCurrentTrip(int issuedVehicleId) {
+        return new TripListRes(contractVehicleComponent.getCurrentTrip(issuedVehicleId));
+    }
+
+    @Override
     public void startTrip(TripReq tripReq) {
         int contractBegin = contractVehicleComponent.startAndEndTrip(tripReq, false);
 

@@ -168,7 +168,12 @@ public class ContractVehicleComponentImpl implements ContractVehicleComponent {
         return contractVehicleMapper.getVehicleTrips(
                 tripListReq.getIssuedVehicleId(),
                 tripListReq.getVehicleStatus(),
-                page * 15);
+                page * 15, 0);
+    }
+
+    @Override
+    public List<Trip> getCurrentTrip(int issuedVehicleId) {
+        return contractVehicleMapper.getVehicleTrips(issuedVehicleId, ContractVehicleStatus.IN_PROGRESS, 0, 1);
     }
 
     @Override

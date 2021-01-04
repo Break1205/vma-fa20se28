@@ -22,6 +22,8 @@ public interface ContractVehicleService {
 
     TripListRes getTrips(TripListReq tripListReq, int page);
 
+    TripListRes getCurrentTrip(int issuedVehicleId);
+
     void startTrip(TripReq tripReq);
 
     void endTrip(TripReq tripReq);

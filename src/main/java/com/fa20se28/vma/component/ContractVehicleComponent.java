@@ -26,6 +26,8 @@ public interface ContractVehicleComponent {
 
     List<Trip> getVehicleTrips(TripListReq tripListReq, int page);
 
+    List<Trip> getCurrentTrip(int issuedVehicleId);
+
     void startContract(int contractId);
 
     void completeContract(int contractId);

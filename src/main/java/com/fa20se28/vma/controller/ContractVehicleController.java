@@ -74,6 +74,11 @@ public class ContractVehicleController {
         return contractVehicleService.getTrips(new TripListReq(issuedVehicleId, vehicleStatus), page);
     }
 
+    @GetMapping("/{issued-vehicle-id}/trips/current")
+    public TripListRes getCurrentTrip(@PathVariable("issued-vehicle-id") int issuedVehicleId) {
+        return contractVehicleService.getCurrentTrip(issuedVehicleId);
+    }
+
     @GetMapping("/available-vehicles")
     public VehicleContractRes getAvailableVehicles(
             @RequestParam(required = false, defaultValue = "0") int vehicleTypeId,
