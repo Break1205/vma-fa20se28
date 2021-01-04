@@ -43,11 +43,12 @@ public interface ContractVehicleMapper {
             @Param("iv_id") int issuedVehicleId,
             @Param("cv_status") ContractVehicleStatus vehicleStatus);
 
-    @Select("SELECT cv.contract_vehicle_id,cd.contract_trip_id, cv.contract_vehicle_status, v.vehicle_id, vt.vehicle_type_id, vt.vehicle_type_name, v.seats " +
+    @Select("SELECT cv.contract_vehicle_id,cd.contract_trip_id, cv.contract_vehicle_status, v.vehicle_id, vt.vehicle_type_id, vt.vehicle_type_name, vs.seats " +
             "FROM contract_vehicles cv " +
             "JOIN issued_vehicle iv ON cv.issued_vehicle_id = iv.issued_vehicle_id " +
             "JOIN vehicle v ON iv.vehicle_id = v.vehicle_id " +
             "JOIN vehicle_type vt ON vt.vehicle_type_id = v.vehicle_type_id " +
+            "JOIN vehicle_seat vs ON vs.seats_id = v.seats_id " +
             "JOIN contract_trip cd ON cv.contract_trip_id = cd.contract_trip_id " +
             "JOIN contract c ON c.contract_id = cd.contract_id " +
             "WHERE cd.contract_trip_id = #{cd_id} ")

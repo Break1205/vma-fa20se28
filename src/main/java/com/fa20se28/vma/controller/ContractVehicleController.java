@@ -35,8 +35,8 @@ public class ContractVehicleController {
     }
 
     @GetMapping
-    public ContractVehicleRes getContractVehiclesByContractDetailId(@RequestParam int contractDetailId) {
-        return contractVehicleService.getContractVehiclesByContractTripId(contractDetailId);
+    public ContractVehicleRes getContractVehiclesByContractTripId(@RequestParam int contractTripId) {
+        return contractVehicleService.getContractVehiclesByContractTripId(contractTripId);
     }
 
     @PatchMapping
