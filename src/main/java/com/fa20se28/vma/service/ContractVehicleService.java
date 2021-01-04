@@ -12,15 +12,17 @@ public interface ContractVehicleService {
 
     void createPassengerList(ContractVehiclePassengerReq contractVehiclePassengerReq);
 
-    void assignVehicleForContract (ContractVehicleReq contractVehicleReq);
+    void assignVehicleForContract(ContractVehicleReq contractVehicleReq);
 
-    ContractVehicleRes getContractVehiclesByContractDetailId(int contractId);
+    ContractVehicleRes getContractVehiclesByContractTripId(int contractId);
 
-    ContractVehicleStatus getVehicleStatus(int contractDetailId, int issuedVehicleId);
+    ContractVehicleStatus getVehicleStatus(int contractTripId, int issuedVehicleId);
 
     void updateContractVehicleStatus(ContractVehicleStatusUpdateReq contractVehicleStatusUpdateReq);
 
     TripListRes getTrips(TripListReq tripListReq, int page);
+
+    TripListRes getCurrentTrip(int issuedVehicleId);
 
     void startTrip(TripReq tripReq);
 

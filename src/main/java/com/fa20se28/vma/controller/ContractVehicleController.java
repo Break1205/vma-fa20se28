@@ -30,13 +30,13 @@ public class ContractVehicleController {
 
 
     @PostMapping
-    public void assignVehicleForContractDetail(@RequestBody ContractVehicleReq contractVehicleReq) {
+    public void assignVehicleForContractTrip(@RequestBody ContractVehicleReq contractVehicleReq) {
         contractVehicleService.assignVehicleForContract(contractVehicleReq);
     }
 
     @GetMapping
-    public ContractVehicleRes getContractVehiclesByContractDetailId(@RequestParam int contractDetailId) {
-        return contractVehicleService.getContractVehiclesByContractDetailId(contractDetailId);
+    public ContractVehicleRes getContractVehiclesByContractTripId(@RequestParam int contractTripId) {
+        return contractVehicleService.getContractVehiclesByContractTripId(contractTripId);
     }
 
     @PatchMapping
@@ -60,10 +60,10 @@ public class ContractVehicleController {
     }
 
     @GetMapping("/{issued-vehicle-id}/trips/{contract-detail-id}")
-    public ContractVehicleStatus getVehicleStatusByVehicleIdAndContractDetailId(
-            @PathVariable("contract-detail-id") int contractDetailId,
+    public ContractVehicleStatus getVehicleStatusByVehicleIdAndContractTripId(
+            @PathVariable("contract-detail-id") int contractTripId,
             @PathVariable("issued-vehicle-id") int issuedVehicleId) {
-        return contractVehicleService.getVehicleStatus(contractDetailId, issuedVehicleId);
+        return contractVehicleService.getVehicleStatus(contractTripId, issuedVehicleId);
     }
 
     @GetMapping("/{issued-vehicle-id}/trips")
@@ -72,6 +72,11 @@ public class ContractVehicleController {
             @RequestParam(required = false) ContractVehicleStatus vehicleStatus,
             @RequestParam(required = false, defaultValue = "0") int page) {
         return contractVehicleService.getTrips(new TripListReq(issuedVehicleId, vehicleStatus), page);
+    }
+
+    @GetMapping("/{issued-vehicle-id}/trips/current")
+    public TripListRes getCurrentTrip(@PathVariable("issued-vehicle-id") int issuedVehicleId) {
+        return contractVehicleService.getCurrentTrip(issuedVehicleId);
     }
 
     @GetMapping("/available-vehicles")

@@ -18,13 +18,15 @@ public interface ContractVehicleComponent {
 
     List<VehicleBasic> getContractVehicles(int contractId);
 
-    ContractVehicleStatus getVehicleStatus(int contractDetailId, int issuedVehicleId);
+    ContractVehicleStatus getVehicleStatus(int contractTripId, int issuedVehicleId);
 
     void updateContractVehicleStatus(ContractVehicleStatusUpdateReq contractVehicleStatusUpdateReq);
 
     int startAndEndTrip(TripReq tripReq, boolean option);
 
     List<Trip> getVehicleTrips(TripListReq tripListReq, int page);
+
+    List<Trip> getCurrentTrip(int issuedVehicleId);
 
     void startContract(int contractId);
 
