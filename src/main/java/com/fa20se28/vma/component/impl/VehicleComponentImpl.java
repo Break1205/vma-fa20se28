@@ -91,7 +91,7 @@ public class VehicleComponentImpl implements VehicleComponent {
             throw new ResourceIsInUsedException("Vehicle with ID " + vehicle.getVehicleId() + " already exist!");
         } else {
             int vehicleRow;
-            int placeholderRow = 0;
+            int placeholderRow;
 
             if (!notAdmin) {
                 vehicleRow = vehicleMapper.createVehicle(vehicle, VehicleStatus.AVAILABLE_NO_DRIVER);
@@ -126,9 +126,10 @@ public class VehicleComponentImpl implements VehicleComponent {
         } else {
             int vehicleRow = vehicleMapper.deleteVehicle(vehicleId);
             int documentRow = vehicleDocumentMapper.deleteVehicleDocuments(vehicleId);
+            int deleteOwnerRow = vehicleOwnerMapper.updateVehicleOwner(vehicleId, LocalDate.now());
 
-            if (vehicleRow == 0 || documentRow == 0) {
-                throw new DataExecutionException("Unknown error occurred. Vehicle is not deleted!");
+            if (vehicleRow == 0 || documentRow == 0 || deleteOwnerRow == 0) {
+                throw new DataExecutionException("Unknown error occurred. Vehicle deletion failed!");
             }
         }
     }

@@ -22,7 +22,8 @@ public interface VehicleMapper {
             "(SELECT DISTINCT vs.vehicle_status " +
             "FROM vehicle vs " +
             "WHERE vs.vehicle_status = 'REJECTED' " +
-            "OR vs.vehicle_status = 'PENDING_APPROVAL') " +
+            "OR vs.vehicle_status = 'PENDING_APPROVAL' " +
+            "OR vs.vehicle_status = 'DELETED') " +
             "</if> " +
             "<if test = \"v_option == 1\" > " +
             "v.vehicle_status = #{v_request.vehicleStatus} " +
@@ -50,8 +51,8 @@ public interface VehicleMapper {
             "</if> " +
             "<if test = \"v_owner_id != null\" > " +
             "AND ov.user_id = #{v_owner_id} " +
-            "AND ov.end_date IS NULL " +
             "</if> " +
+            "AND ov.end_date IS NULL " +
             "</script>"})
     int getTotal(
             @Param("v_request") VehiclePageReq request,
@@ -99,8 +100,8 @@ public interface VehicleMapper {
             "</if> " +
             "<if test = \"v_owner_id != null\" > " +
             "AND ov.user_id = #{v_owner_id} " +
-            "AND ov.end_date IS NULL " +
             "</if> " +
+            "AND ov.end_date IS NULL " +
             "ORDER BY v.date_of_registration DESC " +
             "OFFSET ${v_offset} ROWS " +
             "<if test = \"v_take_all != 1\" > " +
