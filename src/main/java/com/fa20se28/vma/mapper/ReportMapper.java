@@ -134,15 +134,15 @@ public interface ReportMapper {
                                                                @Param("vehicleId") String vehicleId);
 
     @Select({"<script>" +
-            "SELECT " +
-            "c.contract_id, " +
+            "SELECT   " +
+            "c.contract_id,   " +
             "c.total_price contract_value,  " +
             "c.is_round_trip,  " +
-            "cd.departure_time,  " +
-            "cd.departure_location, " +
-            "cd.destination_location, " +
-            "cu.customer_id, " +
-            "cu.customer_name, " +
+            "ct.departure_time,  " +
+            "ct.departure_location,   " +
+            "ct.destination_location,   " +
+            "cu.customer_id,   " +
+            "cu.customer_name,   " +
             "cu.phone_number,  " +
             "cu.email,  " +
             "cu.fax,  " +
@@ -150,22 +150,22 @@ public interface ReportMapper {
             "cu.tax_code  " +
             "FROM contract c  " +
             "JOIN customer cu  " +
-            "ON c.contract_owner_id = cu.customer_id " +
-            "JOIN ( " +
+            "ON c.contract_owner_id = cu.customer_id   " +
+            "JOIN (   " +
             "SELECT  " +
-            "TOP 1 " +
+            "TOP 1   " +
             "contract_id,  " +
             "departure_time,  " +
             "departure_location,  " +
             "destination_location  " +
-            "FROM contract_detail  " +
-            "ORDER BY create_date) cd  " +
-            "ON c.contract_id = cd.contract_id " +
+            "FROM contract_trip  " +
+            "ORDER BY create_date) ct  " +
+            "ON c.contract_id = ct.contract_id   " +
             "WHERE 1 =1  " +
             "<if test = \"status!=null\" >  " +
             "AND c.contract_status = #{status}  " +
-            "</if> " +
-            "AND cd.departure_time between '${firstDayOfMonth}' AND '${lastDayOfMonth}' " +
+            "</if>   " +
+            "AND ct.departure_time between '${firstDayOfMonth}' AND '${lastDayOfMonth}' " +
             "</script>"})
     @Results(id = "contractReportResult", value = {
             @Result(property = "contractId", column = "contract_id"),
