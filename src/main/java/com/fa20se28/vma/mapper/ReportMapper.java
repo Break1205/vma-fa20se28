@@ -55,8 +55,8 @@ public interface ReportMapper {
                                    @Param("status") String status);
 
     @Select({"<script>" +
-            "SELECT " +
-            "v.vehicle_id," +
+            "SELECT  " +
+            "v.vehicle_id,  " +
             "vt.vehicle_type_name, " +
             "b.brand_name, " +
             "u.user_id, " +
@@ -66,10 +66,13 @@ public interface ReportMapper {
             "ON v.vehicle_type_id = vt.vehicle_type_id " +
             "JOIN brand b " +
             "ON v.brand_id = b.brand_id " +
+            "LEFT JOIN owner_vehicles ov  " +
+            "ON ov.vehicle_id = v.vehicle_id  " +
             "JOIN [user] u " +
-            "ON u.user_id = v.owner_id " +
-            "WHERE 1 = 1 " +
-            "<if test = \"status!=null\" >" +
+            "ON u.user_id = ov.user_id " +
+            "AND ov.end_date IS NULL " +
+            "WHERE 1 = 1  " +
+            "<if test = \"status!=null\" >  " +
             "AND v.vehicle_status = #{status} " +
             "</if> " +
             "ORDER BY u.user_id" +
