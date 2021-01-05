@@ -16,8 +16,8 @@ public class ContractReq {
     private LocalDate durationFrom;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate durationTo;
-    private int estimatedPassengerCount;
-    private int estimatedVehicleCount;
+    private int passengerCount;
+    private int vehicleCount;
     @JsonSerialize(as = ContractTripReq.class)
     private List<ContractTripReq> trips;
     private float totalPrice;
@@ -72,20 +72,20 @@ public class ContractReq {
         this.durationTo = durationTo;
     }
 
-    public int getEstimatedPassengerCount() {
-        return estimatedPassengerCount;
+    public int getPassengerCount() {
+        return passengerCount;
     }
 
-    public void setEstimatedPassengerCount(int estimatedPassengerCount) {
-        this.estimatedPassengerCount = estimatedPassengerCount;
+    public void setPassengerCount(int passengerCount) {
+        this.passengerCount = passengerCount;
     }
 
-    public int getEstimatedVehicleCount() {
-        return estimatedVehicleCount;
+    public int getVehicleCount() {
+        return vehicleCount;
     }
 
-    public void setEstimatedVehicleCount(int estimatedVehicleCount) {
-        this.estimatedVehicleCount = estimatedVehicleCount;
+    public void setVehicleCount(int vehicleCount) {
+        this.vehicleCount = vehicleCount;
     }
 
     public List<ContractTripReq> getTrips() {

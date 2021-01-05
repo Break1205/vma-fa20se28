@@ -168,7 +168,7 @@ public class ContractComponentImpl implements ContractComponent {
             } else {
                 Map<String, String> nonDuplicateAssignedVehicles = new HashMap<>();
 
-                int numberOfVehicles = contractReq.getEstimatedVehicleCount();
+                int numberOfVehicles = contractReq.getVehicleCount();
 
                 for (String vehicleId : trip.getAssignedVehicles()) {
                     if (nonDuplicateAssignedVehicles.containsKey(vehicleId)) {

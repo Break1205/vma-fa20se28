@@ -25,6 +25,6 @@ public interface VehicleOwnerMapper {
             "FROM owner_vehicles " +
             "WHERE vehicle_id = #{v_id} " +
             "AND end_date IS NULL " +
-            "ORDER BY ov.start_date DESC ")
+            "ORDER BY start_date DESC ")
     String getCurrentOwnerId(@Param("v_id") String vehicleId);
 }
