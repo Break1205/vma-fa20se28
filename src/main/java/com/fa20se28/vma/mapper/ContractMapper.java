@@ -33,8 +33,8 @@ public interface ContractMapper {
             "duration_to, " +
             "contract_owner_id, " +
             "contract_status, " +
-            "estimated_passenger_count, " +
-            "estimated_vehicle_count, " +
+            "passenger_count, " +
+            "vehicle_count, " +
             "total_price, " +
             "is_round_trip, " +
             "other_information, " +
@@ -46,8 +46,8 @@ public interface ContractMapper {
             "#{c_request.durationTo}, " +
             "#{c_request.contractOwnerId}, " +
             "#{c_status}, " +
-            "#{c_request.estimatedPassengerCount}, " +
-            "#{c_request.estimatedVehicleCount}, " +
+            "#{c_request.passengerCount}, " +
+            "#{c_request.vehicleCount}, " +
             "#{c_request.totalPrice}, " +
             "#{c_request.isRoundTrip}, " +
             "#{c_request.otherInformation}, " +
@@ -71,8 +71,8 @@ public interface ContractMapper {
             "duration_from = #{c_request.durationFrom},  " +
             "duration_to = #{c_request.durationTo},  " +
             "contract_owner_id = #{c_request.contractOwnerId},  " +
-            "estimated_passenger_count = #{c_request.estimatedPassengerCount}, " +
-            "estimated_vehicle_count = #{c_request.estimatedVehicleCount}, " +
+            "passenger_count = #{c_request.passengerCount}, " +
+            "vehicle_count = #{c_request.vehicleCount}, " +
             "total_price = #{c_request.totalPrice},  " +
             "is_round_trip = #{c_request.isRoundTrip},  " +
             "other_information = #{c_request.otherInformation} " +
@@ -150,8 +150,7 @@ public interface ContractMapper {
     @Select("SELECT " +
             "c.contract_id, ctm.customer_id, ctm.customer_name, c.signed_date, c.signed_location, " +
             "c.duration_from, c.duration_to, c.contract_status, " +
-            "c.estimated_passenger_count, c.estimated_vehicle_count, " +
-            "c.actual_passenger_count, c.actual_vehicle_count, " +
+            "c.passenger_count, c.vehicle_count, " +
             "c.is_round_trip, c.total_price, c.other_information " +
             "FROM contract c " +
             "JOIN customer ctm ON ctm.customer_id = c.contract_owner_id " +
@@ -166,10 +165,8 @@ public interface ContractMapper {
             @Result(property = "durationFrom", column = "duration_from"),
             @Result(property = "durationTo", column = "duration_to"),
             @Result(property = "contractStatus", column = "contract_status"),
-            @Result(property = "estimatedPassengerCount", column = "estimated_passenger_count"),
-            @Result(property = "estimatedVehicleCount", column = "estimated_vehicle_count"),
-            @Result(property = "actualPassengerCount", column = "actual_passenger_count"),
-            @Result(property = "actualVehicleCount", column = "actual_vehicle_count"),
+            @Result(property = "passengerCount", column = "passenger_count"),
+            @Result(property = "vehicleCount", column = "vehicle_count"),
             @Result(property = "isRoundTrip", column = "is_round_trip"),
             @Result(property = "totalPrice", column = "total_price"),
             @Result(property = "otherInformation", column = "other_information"),
@@ -220,8 +217,8 @@ public interface ContractMapper {
 
     @Update("UPDATE contract " +
             "SET " +
-            "actual_passenger_count = #{c_apc}, " +
-            "actual_vehicle_count = #{c_avc} " +
+            "passenger_count = #{c_apc}, " +
+            "vehicle_count = #{c_avc} " +
             "WHERE " +
             "contract_id = #{c_id} ")
     int updateContractActual(
@@ -236,15 +233,14 @@ public interface ContractMapper {
             "WHERE contract_trip_id = #{contractTripId} ")
     float getContractValueByContractId(@Param("contractTripId") int contractTripId);
 
-    @Select("SELECT total_price," +
-            "estimated_vehicle_count " +
+    @Select("SELECT total_price, vehicle_count " +
             "FROM contract_trip ct  " +
             "JOIN contract c  " +
             "ON ct.contract_id = c.contract_id  " +
             "WHERE contract_trip_id = #{contractTripId} ")
     @Results(id = "priceAndNumberOfVehiclesResult", value = {
             @Result(property = "totalPrice", column = "total_price"),
-            @Result(property = "estimatedVehicleCount", column = "estimated_vehicle_count"),
+            @Result(property = "vehicleCount", column = "vehicle_count"),
     })
     ContractDetail getContractValueAndNumberOfVehiclesByContractTripId(int contractTripId);
 }

@@ -14,10 +14,8 @@ public class ContractDetail {
     private LocalDate durationFrom;
     private LocalDate durationTo;
     private List<ContractTrip> trips;
-    private int estimatedPassengerCount;
-    private int estimatedVehicleCount;
-    private int actualPassengerCount;
-    private int actualVehicleCount;
+    private int passengerCount;
+    private int vehicleCount;
     private boolean isRoundTrip;
     private float totalPrice;
     private String otherInformation;
@@ -86,36 +84,20 @@ public class ContractDetail {
         this.trips = trips;
     }
 
-    public int getEstimatedPassengerCount() {
-        return estimatedPassengerCount;
+    public int getPassengerCount() {
+        return passengerCount;
     }
 
-    public void setEstimatedPassengerCount(int estimatedPassengerCount) {
-        this.estimatedPassengerCount = estimatedPassengerCount;
+    public void setPassengerCount(int passengerCount) {
+        this.passengerCount = passengerCount;
     }
 
-    public int getEstimatedVehicleCount() {
-        return estimatedVehicleCount;
+    public int getVehicleCount() {
+        return vehicleCount;
     }
 
-    public void setEstimatedVehicleCount(int estimatedVehicleCount) {
-        this.estimatedVehicleCount = estimatedVehicleCount;
-    }
-
-    public int getActualPassengerCount() {
-        return actualPassengerCount;
-    }
-
-    public void setActualPassengerCount(int actualPassengerCount) {
-        this.actualPassengerCount = actualPassengerCount;
-    }
-
-    public int getActualVehicleCount() {
-        return actualVehicleCount;
-    }
-
-    public void setActualVehicleCount(int actualVehicleCount) {
-        this.actualVehicleCount = actualVehicleCount;
+    public void setVehicleCount(int vehicleCount) {
+        this.vehicleCount = vehicleCount;
     }
 
     public boolean isRoundTrip() {

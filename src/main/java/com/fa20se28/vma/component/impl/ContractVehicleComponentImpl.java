@@ -81,8 +81,8 @@ public class ContractVehicleComponentImpl implements ContractVehicleComponent {
                 ContractVehicleStatus.NOT_STARTED,
                 -1,
                 null,
-                contract.getTotalPrice() / contract.getEstimatedVehicleCount() * 10 / 100,
-                contract.getTotalPrice() / contract.getEstimatedVehicleCount() * 25 / 100);
+                contract.getTotalPrice() / contract.getVehicleCount() * 10 / 100,
+                contract.getTotalPrice() / contract.getVehicleCount() * 25 / 100);
 
         int contractVehicleRow = contractVehicleMapper.assignVehicleForContract(contractVehicle);
 
