@@ -6,7 +6,7 @@ public class Vehicle {
     private String vehicleId;
     private String model;
     private VehicleType vehicleType;
-    private int seats;
+    private Seat seatsModel;
     private VehicleStatus vehicleStatus;
     private float distanceDriven;
 
@@ -34,12 +34,12 @@ public class Vehicle {
         this.vehicleType = vehicleType;
     }
 
-    public int getSeats() {
-        return seats;
+    public Seat getSeatsModel() {
+        return seatsModel;
     }
 
-    public void setSeats(int seats) {
-        this.seats = seats;
+    public void setSeatsModel(Seat seatsModel) {
+        this.seatsModel = seatsModel;
     }
 
     public VehicleStatus getVehicleStatus() {

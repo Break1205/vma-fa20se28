@@ -60,7 +60,7 @@ public interface VehicleMapper {
             @Param("v_owner_id") String ownerId);
 
     @Select({"<script> " +
-            "SELECT v.vehicle_id, v.model, vt.vehicle_type_id, vt.vehicle_type_name, vs.seats, v.vehicle_status, v.distance_driven " +
+            "SELECT v.vehicle_id, v.model, vt.vehicle_type_id, vt.vehicle_type_name, vs.seats_id, vs.seats, v.vehicle_status, v.distance_driven " +
             "FROM vehicle v " +
             "JOIN vehicle_type vt ON v.vehicle_type_id = vt.vehicle_type_id " +
             "JOIN vehicle_seat vs ON v.seats_id = vs.seats_id " +
@@ -110,6 +110,8 @@ public interface VehicleMapper {
             "</script> "})
     @Results(id = "vehicles", value = {
             @Result(property = "vehicleId", column = "vehicle_id"),
+            @Result(property = "seatsModel.seatsId", column = "seats_id"),
+            @Result(property = "seatsModel.seats", column = "seats"),
             @Result(property = "vehicleType.vehicleTypeId", column = "vehicle_type_id"),
             @Result(property = "vehicleType.vehicleTypeName", column = "vehicle_type_name"),
             @Result(property = "vehicleStatus", column = "vehicle_status"),
@@ -170,7 +172,7 @@ public interface VehicleMapper {
 
     @Select("SELECT " +
             "v.vehicle_id, vt.vehicle_type_id,  vt.vehicle_type_name, b.brand_id, b.brand_name, " +
-            "v.vehicle_status, vs.seats, v.image_link, v.model, v.origin_of_manufacture, " +
+            "v.vehicle_status, vs.seats_id, vs.seats, v.image_link, v.model, v.origin_of_manufacture, " +
             "v.chassis_number, v.engine_number, v.year_of_manufacture, v.date_of_registration, v.distance_driven " +
             "FROM vehicle v " +
             "JOIN vehicle_type vt ON vt.vehicle_type_id = v.vehicle_type_id  " +
@@ -180,12 +182,13 @@ public interface VehicleMapper {
             "v.vehicle_id = #{v_id} ")
     @Results(id = "vehicleDetailsResult", value = {
             @Result(property = "vehicleId", column = "vehicle_id"),
+            @Result(property = "seatsModel.seatsId", column = "seats_id"),
+            @Result(property = "seatsModel.seats", column = "seats"),
             @Result(property = "vehicleType.vehicleTypeId", column = "vehicle_type_id"),
             @Result(property = "vehicleType.vehicleTypeName", column = "vehicle_type_name"),
             @Result(property = "brand.brandId", column = "brand_id"),
             @Result(property = "brand.brandName", column = "brand_name"),
             @Result(property = "vehicleStatus", column = "vehicle_status"),
-            @Result(property = "seats", column = "seats"),
             @Result(property = "imageLink", column = "image_link"),
             @Result(property = "origin", column = "origin_of_manufacture"),
             @Result(property = "chassisNumber", column = "chassis_number"),
