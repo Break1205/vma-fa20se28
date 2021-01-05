@@ -324,8 +324,8 @@ public class ContractVehicleComponentImpl implements ContractVehicleComponent {
             contractVehicle.setIssuedVehicleId(newIssuedVehicle.get().getIssuedVehicleId());
             contractVehicle.setContractVehicleStatus(ContractVehicleStatus.NOT_STARTED);
             contractVehicle.setBackupLocation(backUpVehicleReq.getBrokenVehicleLocation());
-            contractVehicle.setDriverMoney(driverMoney / backUpVehicleReq.getVehiclesId().size());
-            contractVehicle.setContributorMoney(contributorMoney / backUpVehicleReq.getVehiclesId().size());
+            contractVehicle.setDriverMoney(backUpVehicleReq.isFar() ? 0 : driverMoney / backUpVehicleReq.getVehiclesId().size());
+            contractVehicle.setContributorMoney(backUpVehicleReq.isFar() ? 0 :contributorMoney / backUpVehicleReq.getVehiclesId().size());
 
             contractVehicleRow += contractVehicleMapper.assignVehicleForContract(contractVehicle);
         }
