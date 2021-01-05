@@ -186,24 +186,26 @@ public interface ReportMapper {
                                             @Param("status") String status);
 
     @Select("SELECT  " +
-            "cd.destination_time date,  " +
+            "ct.destination_time date,  " +
             "'CONTRACT_REVENUE' type, " +
-            "c.total_price/c.actual_vehicle_count value,  " +
+            "(cv.driver_money*100/10) value,  " +
             "CONVERT(varchar,c.contract_id) contract_id, " +
             "cu.customer_id " +
             "FROM issued_vehicle iv " +
             "JOIN contract_vehicles cv  " +
             "ON iv.issued_vehicle_id = cv.issued_vehicle_id  " +
-            "JOIN contract_detail cd " +
-            "ON cv.contract_detail_id = cd.contract_detail_id " +
+            "AND cv.contract_vehicle_status = 'COMPLETED'  " +
+            "OR (cv.contract_vehicle_status = 'DROPPED' AND cv.far = 1) " +
+            "JOIN contract_trip ct " +
+            "ON cv.contract_trip_id = ct.contract_trip_id " +
             "JOIN contract c  " +
-            "ON c.contract_id = cd.contract_id  " +
+            "ON c.contract_id = ct.contract_id  " +
             "JOIN customer cu " +
             "ON cu.customer_id = c.contract_owner_id " +
             "WHERE iv.vehicle_id = #{vehicleId} " +
             "AND c.contract_status = 'FINISHED'  " +
-            "AND cd.destination_time between '${firstDayOfMonth}' AND '${lastDayOfMonth}'  " +
-            "UNION  " +
+            "AND ct.destination_time between '${firstDayOfMonth}' AND '${lastDayOfMonth}'  " +
+            "UNION " +
             "SELECT  " +
             "start_date date,  " +
             "maintenance_type type,  " +
