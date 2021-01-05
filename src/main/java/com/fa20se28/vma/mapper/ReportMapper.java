@@ -23,24 +23,24 @@ public interface ReportMapper {
             "SELECT  " +
             "iv.vehicle_id,  " +
             "c.contract_id,  " +
-            "cd.departure_location,  " +
-            "cd.departure_time,  " +
-            "cd.destination_location,  " +
-            "cd.destination_time,  " +
+            "ct.departure_location,  " +
+            "ct.departure_time,  " +
+            "ct.destination_location,  " +
+            "ct.destination_time,  " +
             "cv.contract_vehicle_status  " +
             "FROM issued_vehicle iv  " +
             "JOIN contract_vehicles cv  " +
             "ON iv.issued_vehicle_id = cv.issued_vehicle_id  " +
-            "JOIN contract_detail cd  " +
-            "ON cv.contract_detail_id = cd.contract_detail_id  " +
+            "JOIN contract_trip ct  " +
+            "ON cv.contract_trip_id = ct.contract_trip_id  " +
             "JOIN contract c " +
-            "ON c.contract_id = cd.contract_id " +
-            "WHERE 1 = 1  " +
+            "ON c.contract_id = ct.contract_id " +
+            "WHERE 1 = 1 " +
             "<if test = \"status!=null\" > " +
             "AND cv.contract_vehicle_status  = #{status} " +
             "</if>  " +
-            "AND cd.departure_time between '${firstDayOfMonth}' AND '${lastDayOfMonth}' " +
-            "ORDER BY cd.departure_time ASC" +
+            "AND ct.departure_time between '${firstDayOfMonth}' AND '${lastDayOfMonth}' " +
+            "ORDER BY ct.departure_time ASC " +
             "</script>"})
     @Results(id = "scheduleResult", value = {
             @Result(property = "vehicleId", column = "vehicle_id"),
