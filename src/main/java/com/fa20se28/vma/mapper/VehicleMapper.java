@@ -285,11 +285,13 @@ public interface VehicleMapper {
             @Param("v_status") VehicleStatus vehicleStatus);
 
     @Select("SELECT vt.vehicle_type_name, COUNT(v.vehicle_id) AS total " +
+            "FROM " +
+            "(SELECT v.vehicle_id, v.vehicle_type_id " +
             "FROM vehicle v " +
-            "RIGHT JOIN vehicle_type vt ON vt.vehicle_type_id = v.vehicle_type_id " +
             "JOIN owner_vehicles ov ON ov.vehicle_id = v.vehicle_id " +
             "AND ov.user_id = #{v_owner_id} " +
-            "AND ov.end_date IS NULL " +
+            "AND ov.end_date IS NULL) v " +
+            "RIGHT JOIN vehicle_type vt ON vt.vehicle_type_id = v.vehicle_type_id " +
             "GROUP BY vt.vehicle_type_name ")
     @Results(id = "typeCount", value = {
             @Result(property = "typeName", column = "vehicle_type_name"),
