@@ -82,7 +82,7 @@ public class ContractVehicleComponentImpl implements ContractVehicleComponent {
                 -1,
                 null,
                 contract.getTotalPrice() / contract.getVehicleCount() * 10 / 100,
-                contract.getTotalPrice() / contract.getVehicleCount() * 25 / 100);
+                contract.getTotalPrice() / contract.getVehicleCount() * 20 / 100);
 
         int contractVehicleRow = contractVehicleMapper.assignVehicleForContract(contractVehicle);
 
