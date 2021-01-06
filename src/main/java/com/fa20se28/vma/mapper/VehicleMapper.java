@@ -15,7 +15,9 @@ public interface VehicleMapper {
             "SELECT COUNT(v.vehicle_id) " +
             "FROM vehicle v " +
             "JOIN vehicle_type vt ON v.vehicle_type_id = vt.vehicle_type_id " +
+            "<if test = \"v_owner_id != null\" > " +
             "JOIN owner_vehicles ov ON ov.vehicle_id = v.vehicle_id " +
+            "</if> " +
             "WHERE " +
             "<if test = \"v_option == 0\" > " +
             "v.vehicle_status NOT IN " +
@@ -52,7 +54,6 @@ public interface VehicleMapper {
             "<if test = \"v_owner_id != null\" > " +
             "AND ov.user_id = #{v_owner_id} " +
             "</if> " +
-            "AND ov.end_date IS NULL " +
             "</script>"})
     int getTotal(
             @Param("v_request") VehiclePageReq request,
@@ -64,7 +65,9 @@ public interface VehicleMapper {
             "FROM vehicle v " +
             "JOIN vehicle_type vt ON v.vehicle_type_id = vt.vehicle_type_id " +
             "JOIN vehicle_seat vs ON v.seats_id = vs.seats_id " +
+            "<if test = \"v_owner_id != null\" > " +
             "JOIN owner_vehicles ov ON ov.vehicle_id = v.vehicle_id " +
+            "</if> " +
             "WHERE " +
             "<if test = \"v_option == 0\" > " +
             "v.vehicle_status NOT IN " +
@@ -101,10 +104,9 @@ public interface VehicleMapper {
             "<if test = \"v_owner_id != null\" > " +
             "AND ov.user_id = #{v_owner_id} " +
             "</if> " +
-            "AND ov.end_date IS NULL " +
             "ORDER BY v.date_of_registration DESC " +
-            "OFFSET ${v_offset} ROWS " +
             "<if test = \"v_take_all != 1\" > " +
+            "OFFSET ${v_offset} ROWS " +
             "FETCH NEXT 15 ROWS ONLY " +
             "</if> " +
             "</script> "})
@@ -292,8 +294,7 @@ public interface VehicleMapper {
             "(SELECT v.vehicle_id, v.vehicle_type_id " +
             "FROM vehicle v " +
             "JOIN owner_vehicles ov ON ov.vehicle_id = v.vehicle_id " +
-            "AND ov.user_id = #{v_owner_id} " +
-            "AND ov.end_date IS NULL) v " +
+            "AND ov.user_id = #{v_owner_id}) v " +
             "RIGHT JOIN vehicle_type vt ON vt.vehicle_type_id = v.vehicle_type_id " +
             "GROUP BY vt.vehicle_type_name ")
     @Results(id = "typeCount", value = {
@@ -306,7 +307,6 @@ public interface VehicleMapper {
             "FROM vehicle v " +
             "JOIN owner_vehicles ov ON ov.vehicle_id = v.vehicle_id " +
             "AND ov.user_id = #{v_owner_id} " +
-            "AND ov.end_date IS NULL " +
             "GROUP BY v.vehicle_status ")
     @Results(id = "statusCount", value = {
             @Result(property = "statusName", column = "vehicle_status"),
@@ -318,15 +318,13 @@ public interface VehicleMapper {
             "FROM vehicle v " +
             "JOIN owner_vehicles ov ON ov.vehicle_id = v.vehicle_id " +
             "AND ov.user_id = #{v_owner_id} " +
-            "AND ov.end_date IS NULL " +
             "GROUP BY v.vehicle_status ")
     List<VehicleStatus> getStatusInFleet(@Param("v_owner_id") String ownerId);
 
     @Select("SELECT COUNT(v.vehicle_id) " +
             "FROM vehicle v " +
             "JOIN owner_vehicles ov ON ov.vehicle_id = v.vehicle_id " +
-            "WHERE ov.user_id = #{v_owner_id} " +
-            "AND ov.end_date IS NULL ")
+            "WHERE ov.user_id = #{v_owner_id} ")
     int getTotalVehicle(@Param("v_owner_id") String ownerId);
 
 

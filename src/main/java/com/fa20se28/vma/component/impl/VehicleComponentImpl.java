@@ -44,13 +44,13 @@ public class VehicleComponentImpl implements VehicleComponent {
     }
 
     @Override
-    public int getTotal(VehiclePageReq request, int viewOption, String ownerId) {
-        return vehicleMapper.getTotal(request, viewOption, ownerId);
+    public int getTotal(VehiclePageReq request, int useStatus, String ownerId) {
+        return vehicleMapper.getTotal(request, useStatus, ownerId);
     }
 
     @Override
-    public List<Vehicle> getVehicles(VehiclePageReq request, int viewOption, int pageNum, String ownerId, int takeAll) {
-        return vehicleMapper.getVehicles(request, viewOption, pageNum * 15, ownerId, takeAll);
+    public List<Vehicle> getVehicles(VehiclePageReq request, int useStatus, int pageNum, String ownerId, int takeAll) {
+        return vehicleMapper.getVehicles(request, useStatus, pageNum * 15, ownerId, takeAll);
     }
 
     @Override
