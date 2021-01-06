@@ -23,24 +23,24 @@ public interface ReportMapper {
             "SELECT  " +
             "iv.vehicle_id,  " +
             "c.contract_id,  " +
-            "cd.departure_location,  " +
-            "cd.departure_time,  " +
-            "cd.destination_location,  " +
-            "cd.destination_time,  " +
+            "ct.departure_location,  " +
+            "ct.departure_time,  " +
+            "ct.destination_location,  " +
+            "ct.destination_time,  " +
             "cv.contract_vehicle_status  " +
             "FROM issued_vehicle iv  " +
             "JOIN contract_vehicles cv  " +
             "ON iv.issued_vehicle_id = cv.issued_vehicle_id  " +
-            "JOIN contract_detail cd  " +
-            "ON cv.contract_detail_id = cd.contract_detail_id  " +
+            "JOIN contract_trip ct  " +
+            "ON cv.contract_trip_id = ct.contract_trip_id  " +
             "JOIN contract c " +
-            "ON c.contract_id = cd.contract_id " +
-            "WHERE 1 = 1  " +
+            "ON c.contract_id = ct.contract_id " +
+            "WHERE 1 = 1 " +
             "<if test = \"status!=null\" > " +
             "AND cv.contract_vehicle_status  = #{status} " +
             "</if>  " +
-            "AND cd.departure_time between '${firstDayOfMonth}' AND '${lastDayOfMonth}' " +
-            "ORDER BY cd.departure_time ASC" +
+            "AND ct.departure_time between '${firstDayOfMonth}' AND '${lastDayOfMonth}' " +
+            "ORDER BY ct.departure_time ASC " +
             "</script>"})
     @Results(id = "scheduleResult", value = {
             @Result(property = "vehicleId", column = "vehicle_id"),
@@ -55,8 +55,8 @@ public interface ReportMapper {
                                    @Param("status") String status);
 
     @Select({"<script>" +
-            "SELECT " +
-            "v.vehicle_id," +
+            "SELECT  " +
+            "v.vehicle_id,  " +
             "vt.vehicle_type_name, " +
             "b.brand_name, " +
             "u.user_id, " +
@@ -66,10 +66,13 @@ public interface ReportMapper {
             "ON v.vehicle_type_id = vt.vehicle_type_id " +
             "JOIN brand b " +
             "ON v.brand_id = b.brand_id " +
+            "LEFT JOIN owner_vehicles ov  " +
+            "ON ov.vehicle_id = v.vehicle_id  " +
             "JOIN [user] u " +
-            "ON u.user_id = v.owner_id " +
-            "WHERE 1 = 1 " +
-            "<if test = \"status!=null\" >" +
+            "ON u.user_id = ov.user_id " +
+            "AND ov.end_date IS NULL " +
+            "WHERE 1 = 1  " +
+            "<if test = \"status!=null\" >  " +
             "AND v.vehicle_status = #{status} " +
             "</if> " +
             "ORDER BY u.user_id" +
@@ -86,15 +89,18 @@ public interface ReportMapper {
     @Select({"<script>" +
             "SELECT " +
             "COUNT(v.vehicle_id) " +
-            "FROM vehicle v  " +
+            "FROM vehicle v " +
             "JOIN vehicle_type vt " +
             "ON v.vehicle_type_id = vt.vehicle_type_id " +
             "JOIN brand b " +
             "ON v.brand_id = b.brand_id " +
+            "LEFT JOIN owner_vehicles ov  " +
+            "ON ov.vehicle_id = v.vehicle_id  " +
             "JOIN [user] u " +
-            "ON u.user_id = v.owner_id " +
-            "WHERE 1 = 1 " +
-            "<if test = \"status!=null\" >" +
+            "ON u.user_id = ov.user_id " +
+            "AND ov.end_date IS NULL " +
+            "WHERE 1 = 1  " +
+            "<if test = \"status!=null\" >  " +
             "AND v.vehicle_status = #{status} " +
             "</if> " +
             "</script>"})
@@ -128,15 +134,15 @@ public interface ReportMapper {
                                                                @Param("vehicleId") String vehicleId);
 
     @Select({"<script>" +
-            "SELECT " +
-            "c.contract_id, " +
+            "SELECT   " +
+            "c.contract_id,   " +
             "c.total_price contract_value,  " +
             "c.is_round_trip,  " +
-            "cd.departure_time,  " +
-            "cd.departure_location, " +
-            "cd.destination_location, " +
-            "cu.customer_id, " +
-            "cu.customer_name, " +
+            "ct.departure_time,  " +
+            "ct.departure_location,   " +
+            "ct.destination_location,   " +
+            "cu.customer_id,   " +
+            "cu.customer_name,   " +
             "cu.phone_number,  " +
             "cu.email,  " +
             "cu.fax,  " +
@@ -144,22 +150,22 @@ public interface ReportMapper {
             "cu.tax_code  " +
             "FROM contract c  " +
             "JOIN customer cu  " +
-            "ON c.contract_owner_id = cu.customer_id " +
-            "JOIN ( " +
+            "ON c.contract_owner_id = cu.customer_id   " +
+            "JOIN (   " +
             "SELECT  " +
-            "TOP 1 " +
+            "TOP 1   " +
             "contract_id,  " +
             "departure_time,  " +
             "departure_location,  " +
             "destination_location  " +
-            "FROM contract_detail  " +
-            "ORDER BY create_date) cd  " +
-            "ON c.contract_id = cd.contract_id " +
+            "FROM contract_trip  " +
+            "ORDER BY create_date) ct  " +
+            "ON c.contract_id = ct.contract_id   " +
             "WHERE 1 =1  " +
             "<if test = \"status!=null\" >  " +
             "AND c.contract_status = #{status}  " +
-            "</if> " +
-            "AND cd.departure_time between '${firstDayOfMonth}' AND '${lastDayOfMonth}' " +
+            "</if>   " +
+            "AND ct.departure_time between '${firstDayOfMonth}' AND '${lastDayOfMonth}' " +
             "</script>"})
     @Results(id = "contractReportResult", value = {
             @Result(property = "contractId", column = "contract_id"),
@@ -180,24 +186,26 @@ public interface ReportMapper {
                                             @Param("status") String status);
 
     @Select("SELECT  " +
-            "cd.destination_time date,  " +
+            "ct.destination_time date,  " +
             "'CONTRACT_REVENUE' type, " +
-            "c.total_price/c.actual_vehicle_count value,  " +
+            "(cv.driver_money*100/10) value,  " +
             "CONVERT(varchar,c.contract_id) contract_id, " +
             "cu.customer_id " +
             "FROM issued_vehicle iv " +
             "JOIN contract_vehicles cv  " +
             "ON iv.issued_vehicle_id = cv.issued_vehicle_id  " +
-            "JOIN contract_detail cd " +
-            "ON cv.contract_detail_id = cd.contract_detail_id " +
+            "AND cv.contract_vehicle_status = 'COMPLETED'  " +
+            "OR (cv.contract_vehicle_status = 'DROPPED' AND cv.far = 1) " +
+            "JOIN contract_trip ct " +
+            "ON cv.contract_trip_id = ct.contract_trip_id " +
             "JOIN contract c  " +
-            "ON c.contract_id = cd.contract_id  " +
+            "ON c.contract_id = ct.contract_id  " +
             "JOIN customer cu " +
             "ON cu.customer_id = c.contract_owner_id " +
             "WHERE iv.vehicle_id = #{vehicleId} " +
             "AND c.contract_status = 'FINISHED'  " +
-            "AND cd.destination_time between '${firstDayOfMonth}' AND '${lastDayOfMonth}'  " +
-            "UNION  " +
+            "AND ct.destination_time between '${firstDayOfMonth}' AND '${lastDayOfMonth}'  " +
+            "UNION " +
             "SELECT  " +
             "start_date date,  " +
             "maintenance_type type,  " +
