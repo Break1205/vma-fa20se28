@@ -227,6 +227,9 @@ public interface ReportMapper {
                                                            @Param("lastDayOfMonth") String lastDayOfMonth,
                                                            @Param("vehicleId") String vehicleId);
 
+    /*
+    Already subtract salary of driver and contributor
+     */
     @Select("SELECT " +
             "c.duration_to date,  " +
             "'CONTRACT_REVENUE' type, " +
