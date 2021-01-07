@@ -8,9 +8,9 @@ import java.util.Optional;
 
 @Mapper
 public interface IssuedVehicleMapper {
-    @Insert("INSERT INTO issued_vehicle(vehicle_id, driver_id, issued_date, returned_date, create_date) " +
-            "VALUES (#{v_id}, NULL, NULL, NULL, getDate()) ")
-    int createPlaceholder(@Param("v_id") String vehicleId);
+    @Insert("INSERT INTO issued_vehicle(vehicle_id,owner_id, driver_id, issued_date, returned_date, create_date) " +
+            "VALUES (#{v_id}, #{v_owner_id},NULL, NULL, NULL, getDate()) ")
+    int createPlaceholder(@Param("v_id") String vehicleId, @Param("v_owner_id") String ownerId);
 
     @Update({"<script>" +
             "UPDATE issued_vehicle " +
@@ -31,6 +31,7 @@ public interface IssuedVehicleMapper {
     int updateIssuedVehicle(
             @Param("v_id") String vehicleId,
             @Param("iv_driver_id") String driverId,
+            @Param("v_owner_id") String ownerId,
             @Param("iv_option") int option);
 
     @Select("SELECT TOP 1 " +

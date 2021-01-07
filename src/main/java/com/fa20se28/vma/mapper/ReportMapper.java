@@ -1,7 +1,7 @@
 package com.fa20se28.vma.mapper;
 
 import com.fa20se28.vma.model.ContractReport;
-import com.fa20se28.vma.model.ContributorIncome;
+import com.fa20se28.vma.model.ContributorVehicleValue;
 import com.fa20se28.vma.model.ContributorIncomesDetail;
 import com.fa20se28.vma.model.DriverIncomes;
 import com.fa20se28.vma.model.MaintenanceReport;
@@ -261,16 +261,22 @@ public interface ReportMapper {
             "vv.value,  " +
             "vv.start_date,  " +
             "vv.end_date,  " +
-            "v.owner_id  " +
+            "ov.user_id as owner_id " +
             "FROM  " +
             "vehicle_value vv " +
             "LEFT JOIN vehicle v " +
             "ON vv.vehicle_id = v.vehicle_id " +
+            "JOIN owner_vehicles ov  " +
+            "ON ov.vehicle_id = v.vehicle_id  " +
+            "JOIN user_roles ur  " +
+            "ON ur.user_id = ov.user_id  " +
+            "AND ur.role_id = 3 " +
             "WHERE vv.is_deleted = 0  " +
             "AND NOT (vv.start_date &gt; '${lastDayOfMonth}' OR vv.end_date &lt; '${firstDayOfMonth}')  " +
             "<if test = \"ownerId!=null\" > " +
-            "AND v.owner_id = #{ownerId}  " +
-            "</if> " +
+            "AND ov.user_id = #{ownerId}  " +
+            "</if>  " +
+            "ORDER BY ov.user_id,vehicle_id,start_date,end_date" +
             "</script>"})
     @Results(id = "contributorIncomesResult", value = {
             @Result(property = "vehicleId", column = "vehicle_id"),
@@ -279,9 +285,9 @@ public interface ReportMapper {
             @Result(property = "endDate", column = "end_date"),
             @Result(property = "ownerId", column = "owner_id")
     })
-    List<ContributorIncome> getContributorIncomesForReport(@Param("ownerId") String ownerId,
-                                                           @Param("firstDayOfMonth") String firstDayOfMonth,
-                                                           @Param("lastDayOfMonth") String lastDayOfMonth);
+    List<ContributorVehicleValue> getContributorVehiclesValues(@Param("ownerId") String ownerId,
+                                                               @Param("firstDayOfMonth") String firstDayOfMonth,
+                                                               @Param("lastDayOfMonth") String lastDayOfMonth);
 
     @Select({"<script>" +
             "SELECT  " +

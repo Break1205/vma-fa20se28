@@ -7,7 +7,7 @@ import com.fa20se28.vma.mapper.ReportMapper;
 import com.fa20se28.vma.model.ByteArrayInputStreamWrapper;
 import com.fa20se28.vma.model.ContractReport;
 import com.fa20se28.vma.model.ContributorEarnedAndEstimatedIncome;
-import com.fa20se28.vma.model.ContributorIncome;
+import com.fa20se28.vma.model.ContributorVehicleValue;
 import com.fa20se28.vma.model.ContributorIncomesDetail;
 import com.fa20se28.vma.model.DriverIncomes;
 import com.fa20se28.vma.model.EstimateAndEarnedIncome;
@@ -729,10 +729,10 @@ public class ReportComponentImpl implements ReportComponent {
     public Map<String, EstimateAndEarnedIncome> calculateContributorEstimatedAndEarnedIncome(ReportReq reportReq) {
         firstAndLast = getFirstAndLastDayInAMonth(reportReq);
 
-        List<ContributorIncome> contributorIncomes = getContributorsIncomeReportData(reportReq);
+        List<ContributorVehicleValue> contributorVehicleValues = getContributorsVehiclesValues(reportReq);
         List<ContributorIncomesDetail> contributorIncomesDetails = getContributorIncomesDetails(reportReq);
 
-        Map<String, List<ContributorIncome>> contributorsEstimatedIncomesMap = new HashMap<>();
+        Map<String, List<ContributorVehicleValue>> contributorsEstimatedIncomesMap = new HashMap<>();
         Map<String, EstimateAndEarnedIncome> contributorsEstimateAndEarnedIncomes = new HashMap<>();
 
         // calculate EarnedValue
@@ -749,34 +749,34 @@ public class ReportComponentImpl implements ReportComponent {
         }
 
         // calculated EstimatedValue
-        for (ContributorIncome contributorIncome : contributorIncomes) {
-            if (!contributorsEstimatedIncomesMap.containsKey(contributorIncome.getOwnerId())) {
-                contributorsEstimatedIncomesMap.put(contributorIncome.getOwnerId(), new ArrayList<>());
+        for (ContributorVehicleValue contributorVehicleValue : contributorVehicleValues) {
+            if (!contributorsEstimatedIncomesMap.containsKey(contributorVehicleValue.getOwnerId())) {
+                contributorsEstimatedIncomesMap.put(contributorVehicleValue.getOwnerId(), new ArrayList<>());
             }
-            contributorsEstimatedIncomesMap.get(contributorIncome.getOwnerId()).add(contributorIncome);
+            contributorsEstimatedIncomesMap.get(contributorVehicleValue.getOwnerId()).add(contributorVehicleValue);
         }
 
         long totalDaysInThisQuarter = firstAndLast.get(0).until(firstAndLast.get(1), ChronoUnit.DAYS);
 
-        for (Map.Entry<String, List<ContributorIncome>> entry : contributorsEstimatedIncomesMap.entrySet()) {
+        for (Map.Entry<String, List<ContributorVehicleValue>> entry : contributorsEstimatedIncomesMap.entrySet()) {
             float estimatedValue = 0;
-            for (ContributorIncome contributorIncome : entry.getValue()) {
+            for (ContributorVehicleValue contributorVehicleValue : entry.getValue()) {
                 long totalDays;
-                if (contributorIncome.getStartDate().isBefore(firstAndLast.get(0))
-                        && contributorIncome.getEndDate().isAfter(firstAndLast.get(1))) {
-                    estimatedValue += (contributorIncome.getValue() / 30) * totalDaysInThisQuarter;
-                } else if (firstAndLast.get(0).isBefore(contributorIncome.getStartDate())
-                        && firstAndLast.get(1).isAfter(contributorIncome.getEndDate())) {
-                    totalDays = contributorIncome.getStartDate().until(contributorIncome.getEndDate(), ChronoUnit.DAYS);
-                    estimatedValue += (contributorIncome.getValue() / 30) * totalDays;
+                if (contributorVehicleValue.getStartDate().isBefore(firstAndLast.get(0))
+                        && contributorVehicleValue.getEndDate().isAfter(firstAndLast.get(1))) {
+                    estimatedValue += (contributorVehicleValue.getValue() / 30) * totalDaysInThisQuarter;
+                } else if (firstAndLast.get(0).isBefore(contributorVehicleValue.getStartDate())
+                        && firstAndLast.get(1).isAfter(contributorVehicleValue.getEndDate())) {
+                    totalDays = contributorVehicleValue.getStartDate().until(contributorVehicleValue.getEndDate(), ChronoUnit.DAYS);
+                    estimatedValue += (contributorVehicleValue.getValue() / 30) * totalDays;
                 } else {
-                    totalDays = firstAndLast.get(0).until(contributorIncome.getEndDate(), ChronoUnit.DAYS);
+                    totalDays = firstAndLast.get(0).until(contributorVehicleValue.getEndDate(), ChronoUnit.DAYS);
                     if (totalDays <= totalDaysInThisQuarter) {
-                        estimatedValue += (contributorIncome.getValue() / 30) * totalDays;
+                        estimatedValue += (contributorVehicleValue.getValue() / 30) * totalDays;
                     }
-                    totalDays = contributorIncome.getStartDate().until(firstAndLast.get(1), ChronoUnit.DAYS);
+                    totalDays = contributorVehicleValue.getStartDate().until(firstAndLast.get(1), ChronoUnit.DAYS);
                     if (totalDays <= totalDaysInThisQuarter) {
-                        estimatedValue += (contributorIncome.getValue() / 30) * totalDays;
+                        estimatedValue += (contributorVehicleValue.getValue() / 30) * totalDays;
                     }
                 }
             }
@@ -788,9 +788,9 @@ public class ReportComponentImpl implements ReportComponent {
         return contributorsEstimateAndEarnedIncomes;
     }
 
-    private List<ContributorIncome> getContributorsIncomeReportData(ReportReq reportReq) {
+    private List<ContributorVehicleValue> getContributorsVehiclesValues(ReportReq reportReq) {
         List<LocalDate> firstAndLast = getFirstAndLastDayInAMonth(reportReq);
-        return reportMapper.getContributorIncomesForReport(
+        return reportMapper.getContributorVehiclesValues(
                 null,
                 firstAndLast.get(0).toString(),
                 firstAndLast.get(1).toString());
@@ -799,8 +799,8 @@ public class ReportComponentImpl implements ReportComponent {
     @Override
     public ContributorEarnedAndEstimatedIncome getContributorEarnedAndEstimatedIncomeById(ReportReq reportReq) {
         firstAndLast = getFirstAndLastDayInAMonth(reportReq);
-        List<ContributorIncome> contributorIncomes =
-                reportMapper.getContributorIncomesForReport(
+        List<ContributorVehicleValue> contributorVehicleValues =
+                reportMapper.getContributorVehiclesValues(
                         reportReq.getUserId(),
                         firstAndLast.get(0).toString(),
                         firstAndLast.get(1).toString());
@@ -809,23 +809,23 @@ public class ReportComponentImpl implements ReportComponent {
         // calculate estimated
 
         float estimatedValue = 0;
-        for (ContributorIncome contributorIncome : contributorIncomes) {
+        for (ContributorVehicleValue contributorVehicleValue : contributorVehicleValues) {
             long totalDays;
-            if (contributorIncome.getStartDate().isBefore(firstAndLast.get(0))
-                    && contributorIncome.getEndDate().isAfter(firstAndLast.get(1))) {
-                estimatedValue += (contributorIncome.getValue() / 30) * totalDaysInThisQuarter;
-            } else if (firstAndLast.get(0).isBefore(contributorIncome.getStartDate())
-                    && firstAndLast.get(1).isAfter(contributorIncome.getEndDate())) {
-                totalDays = contributorIncome.getStartDate().until(contributorIncome.getEndDate(), ChronoUnit.DAYS);
-                estimatedValue += (contributorIncome.getValue() / 30) * totalDays;
+            if (contributorVehicleValue.getStartDate().isBefore(firstAndLast.get(0))
+                    && contributorVehicleValue.getEndDate().isAfter(firstAndLast.get(1))) {
+                estimatedValue += (contributorVehicleValue.getValue() / 30) * totalDaysInThisQuarter;
+            } else if (firstAndLast.get(0).isBefore(contributorVehicleValue.getStartDate())
+                    && firstAndLast.get(1).isAfter(contributorVehicleValue.getEndDate())) {
+                totalDays = contributorVehicleValue.getStartDate().until(contributorVehicleValue.getEndDate(), ChronoUnit.DAYS);
+                estimatedValue += (contributorVehicleValue.getValue() / 30) * totalDays;
             } else {
-                totalDays = firstAndLast.get(0).until(contributorIncome.getEndDate(), ChronoUnit.DAYS) + 1;
+                totalDays = firstAndLast.get(0).until(contributorVehicleValue.getEndDate(), ChronoUnit.DAYS) + 1;
                 if (totalDays <= totalDaysInThisQuarter) {
-                    estimatedValue += (contributorIncome.getValue() / 30) * totalDays;
+                    estimatedValue += (contributorVehicleValue.getValue() / 30) * totalDays;
                 }
-                totalDays = contributorIncome.getStartDate().until(firstAndLast.get(1), ChronoUnit.DAYS);
+                totalDays = contributorVehicleValue.getStartDate().until(firstAndLast.get(1), ChronoUnit.DAYS);
                 if (totalDays <= totalDaysInThisQuarter) {
-                    estimatedValue += (contributorIncome.getValue() / 30) * totalDays;
+                    estimatedValue += (contributorVehicleValue.getValue() / 30) * totalDays;
                 }
             }
         }

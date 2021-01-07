@@ -59,7 +59,8 @@ public class VehicleComponentImpl implements VehicleComponent {
         if (vehicleMapper.getVehicleStatus(vehicleId) != VehicleStatus.AVAILABLE_NO_DRIVER) {
             throw new InvalidStatusException("Vehicle is already occupied or is currently unavailable!");
         } else {
-            int assignRow = issuedVehicleMapper.updateIssuedVehicle(vehicleId, driverId, 0);
+            String ownerId = vehicleOwnerMapper.getCurrentOwnerId(vehicleId);
+            int assignRow = issuedVehicleMapper.updateIssuedVehicle(vehicleId, driverId, ownerId, 0);
             int updateStatusRow = vehicleMapper.updateVehicleStatus(vehicleId, VehicleStatus.AVAILABLE);
 
             if (assignRow == 0 || updateStatusRow == 0) {
@@ -74,8 +75,9 @@ public class VehicleComponentImpl implements VehicleComponent {
         if (contractVehicleMapper.checkIfThereIsRemainingTrip(issuedVehicleMapper.getCurrentIssuedVehicleId(vehicleId), LocalDateTime.now())) {
             throw new ResourceIsInUsedException("Vehicle still has remaining trip(s)!");
         } else {
-            int withDrawRow = issuedVehicleMapper.updateIssuedVehicle(vehicleId, null, 1);
-            int createPlaceHolderRow = issuedVehicleMapper.createPlaceholder(vehicleId);
+            int withDrawRow = issuedVehicleMapper.updateIssuedVehicle(vehicleId, null, null, 1);
+            String ownerId = vehicleOwnerMapper.getCurrentOwnerId(vehicleId);
+            int createPlaceHolderRow = issuedVehicleMapper.createPlaceholder(vehicleId, ownerId);
             int updateStatusRow = vehicleMapper.updateVehicleStatus(vehicleId, VehicleStatus.AVAILABLE_NO_DRIVER);
 
             if (withDrawRow == 0 || createPlaceHolderRow == 0 || updateStatusRow == 0) {
@@ -95,7 +97,7 @@ public class VehicleComponentImpl implements VehicleComponent {
 
             if (!notAdmin) {
                 vehicleRow = vehicleMapper.createVehicle(vehicle, VehicleStatus.AVAILABLE_NO_DRIVER);
-                placeholderRow = issuedVehicleMapper.createPlaceholder(vehicle.getVehicleId());
+                placeholderRow = issuedVehicleMapper.createPlaceholder(vehicle.getVehicleId(), vehicle.getOwnerId());
             } else {
                 vehicleRow = vehicleMapper.createVehicle(vehicle, VehicleStatus.PENDING_APPROVAL);
                 placeholderRow = 1;
@@ -225,7 +227,8 @@ public class VehicleComponentImpl implements VehicleComponent {
     @Override
     @Transactional
     public void acceptVehicle(String vehicleId) {
-        int placeholderRow = issuedVehicleMapper.createPlaceholder(vehicleId);
+        String ownerId = vehicleOwnerMapper.getCurrentOwnerId(vehicleId);
+        int placeholderRow = issuedVehicleMapper.createPlaceholder(vehicleId, ownerId);
         int vehicleStatusRow = vehicleMapper.updateVehicleStatus(vehicleId, VehicleStatus.AVAILABLE_NO_DRIVER);
         int acceptDocRow = vehicleDocumentMapper.changeVehicleDocumentsStatusFromRequest(vehicleId, DocumentStatus.VALID);
 
@@ -320,7 +323,7 @@ public class VehicleComponentImpl implements VehicleComponent {
         List<VehicleStatus> missingStatus = Stream.of(VehicleStatus.values()).collect(Collectors.toList());
         missingStatus.removeAll(vehicleMapper.getStatusInFleet(ownerId));
 
-        for (VehicleStatus status: missingStatus) {
+        for (VehicleStatus status : missingStatus) {
             statusCounts.add(new VehicleStatusCount(status.toString(), 0));
         }
 
