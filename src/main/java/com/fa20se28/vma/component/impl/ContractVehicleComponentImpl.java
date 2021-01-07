@@ -208,57 +208,54 @@ public class ContractVehicleComponentImpl implements ContractVehicleComponent {
     }
 
     @Override
-    public List<VehicleContract> getAvailableVehicles(VehicleContractReq vehicleContractReq, int pageNum, int viewOption) {
-        //get the first and last date of the inputted start and end datetime.
-        LocalDate firstDateOfMonth = YearMonth.from(vehicleContractReq.getStartDate().toLocalDate()).atDay(1);
-        LocalDate lastDateOfMonth = YearMonth.from(vehicleContractReq.getEndDate().toLocalDate()).atEndOfMonth();
-        long monthDifferent = ChronoUnit.MONTHS.between(firstDateOfMonth, lastDateOfMonth);
+    public List<VehicleContract> getAvailableVehicles(VehicleContractReq vehicleContractReq, int pageNum, int displayAll) {
+        // get the first and last date of the inputted start and end date time.
+        LocalDate firstDateOfTimeframe = YearMonth.from(vehicleContractReq.getStartDate().toLocalDate()).atDay(1);
+        LocalDate lastDateOfTimeframe = YearMonth.from(vehicleContractReq.getEndDate().toLocalDate()).atEndOfMonth();
 
+        // compare the difference in month between the above dates
+        long monthDifferent = ChronoUnit.MONTHS.between(firstDateOfTimeframe, lastDateOfTimeframe);
+
+        // get the initial list of available vehicles
         List<VehicleContract> availableVehicles = contractVehicleMapper.getAvailableVehicles(vehicleContractReq);
 
+        //
         for (VehicleContract vehicle : availableVehicles) {
-            //get value of trips in current month with id
-            List<VehicleContractValue> vehicleCountAndValues = contractVehicleMapper.getVehicleCountFromContract(vehicle.getVehicleId(), firstDateOfMonth, lastDateOfMonth);
+            //get value of trips the vehicle ran in the timeframe
+            List<VehicleContractValue> vehicleCountAndValues = contractVehicleMapper.getVehicleCountFromContract(vehicle.getVehicleId(), firstDateOfTimeframe, lastDateOfTimeframe);
 
             float earnedValue = 0;
             //calculate the total
-            if (vehicleCountAndValues.size() != 0) {
+            if (!vehicleCountAndValues.isEmpty()) {
                 for (VehicleContractValue contract : vehicleCountAndValues) {
                     int occurrence = contractVehicleMapper.getOccurrence(contract.getContractId(), vehicle.getVehicleId());
-                    earnedValue += ((contract.getTotalValue() * 0.25) / contract.getTotalVehicles()) * occurrence;
+                    earnedValue += ((contract.getTotalValue() * 0.2) / contract.getTotalVehicles()) * occurrence;
                 }
                 vehicle.setCurrentEarnedValue(earnedValue);
             }
 
-            //get vehicle values
-            List<VehicleValue> values = vehicleValueMapper.getValueInTimeframe(vehicle.getVehicleId(), firstDateOfMonth, lastDateOfMonth);
+            float estimatedValue;
 
-            float estimatedValue = 0;
-            if (values.size() != 0) {
-                for (VehicleValue value : values) {
-                    //check if the vehicle have values
-                    if (value != null) {
-                        if (CustomUtils.isBeforeOrEqualDate(value.getStartDate(), firstDateOfMonth) && CustomUtils.isAfterOrEqualDate(value.getEndDate(), lastDateOfMonth)) {
-                            estimatedValue += value.getValue();
-                        } else if (CustomUtils.isBeforeOrEqualDate(value.getStartDate(), firstDateOfMonth) && !CustomUtils.isAfterOrEqualDate(value.getEndDate(), lastDateOfMonth)) {
-                            estimatedValue += value.getValue() / 30 * ChronoUnit.DAYS.between(YearMonth.now().atDay(1), value.getEndDate());
-                        } else if (!CustomUtils.isBeforeOrEqualDate(value.getStartDate(), firstDateOfMonth) && CustomUtils.isAfterOrEqualDate(value.getEndDate(), lastDateOfMonth)) {
-                            estimatedValue += value.getValue() / 30 * (30 - ChronoUnit.DAYS.between(YearMonth.now().atDay(1), value.getStartDate()));
-                        } else {
-                            estimatedValue += value.getValue() / 30 * (ChronoUnit.DAYS.between(value.getStartDate(), value.getEndDate()));
-                        }
-                    }
+            // if there is more than one month in the provided timeframe
+            if (monthDifferent != 0) {
+                float totalValue = 0;
+
+                for (int i = 0; i< monthDifferent; i++) {
+                    LocalDate firstDateOfMonth =  firstDateOfTimeframe.plusMonths(i);
+                    LocalDate lastDateOfMonth = firstDateOfMonth.withDayOfMonth(firstDateOfMonth.lengthOfMonth());
+
+                    totalValue += calculateEstimatedValue(vehicle.getVehicleId(), firstDateOfMonth, lastDateOfMonth);
                 }
 
-                if (monthDifferent != 0) {
-                    vehicle.setExpectedValue(estimatedValue * (monthDifferent + 1));
-                } else {
-                    vehicle.setExpectedValue(estimatedValue);
-                }
+                estimatedValue = totalValue;
+                vehicle.setExpectedValue(estimatedValue);
+            } else {
+                estimatedValue = calculateEstimatedValue(vehicle.getVehicleId(), firstDateOfTimeframe, lastDateOfTimeframe);
+                vehicle.setExpectedValue(estimatedValue);
             }
 
-            //check if vehicle value is reached
-            if (earnedValue >= estimatedValue && estimatedValue != 0 && viewOption == 0) {
+            // check if vehicle value is reached
+            if (earnedValue >= estimatedValue && estimatedValue != 0 && displayAll == 0) {
                 availableVehicles.remove(vehicle);
             }
         }
@@ -274,9 +271,32 @@ public class ContractVehicleComponentImpl implements ContractVehicleComponent {
         }
     }
 
+    private float calculateEstimatedValue(String vehicleId, LocalDate firstDateOfMonth, LocalDate lastDateOfMonth) {
+        // get vehicle values
+        List<VehicleValue> values = vehicleValueMapper.getValueInTimeframe(vehicleId, firstDateOfMonth, lastDateOfMonth);
+        int estimatedValue = 0;
+
+        // check if the vehicle have values
+        if (!values.isEmpty()) {
+            for (VehicleValue value : values) {
+                if (CustomUtils.isBeforeOrEqualDate(value.getStartDate(), firstDateOfMonth) && CustomUtils.isAfterOrEqualDate(value.getEndDate(), lastDateOfMonth)) {
+                    estimatedValue += value.getValue();
+                } else if (CustomUtils.isBeforeOrEqualDate(value.getStartDate(), firstDateOfMonth) && !CustomUtils.isAfterOrEqualDate(value.getEndDate(), lastDateOfMonth)) {
+                    estimatedValue += value.getValue() / 30 * ChronoUnit.DAYS.between(YearMonth.now().atDay(1), value.getEndDate());
+                } else if (!CustomUtils.isBeforeOrEqualDate(value.getStartDate(), firstDateOfMonth) && CustomUtils.isAfterOrEqualDate(value.getEndDate(), lastDateOfMonth)) {
+                    estimatedValue += value.getValue() / 30 * (30 - ChronoUnit.DAYS.between(YearMonth.now().atDay(1), value.getStartDate()));
+                } else {
+                    estimatedValue += value.getValue() / 30 * (ChronoUnit.DAYS.between(value.getStartDate(), value.getEndDate()));
+                }
+            }
+        }
+
+        return estimatedValue;
+    }
+
     @Override
-    public int getTotalAvailableVehicles(VehicleContractReq vehicleContractReq, int viewOption) {
-        return getAvailableVehicles(vehicleContractReq, -1, viewOption).size();
+    public int getTotalAvailableVehicles(VehicleContractReq vehicleContractReq, int displayAll) {
+        return getAvailableVehicles(vehicleContractReq, -1, displayAll).size();
     }
 
     @Override

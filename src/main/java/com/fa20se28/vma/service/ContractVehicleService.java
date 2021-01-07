@@ -7,6 +7,8 @@ import com.fa20se28.vma.response.PassengerRes;
 import com.fa20se28.vma.response.TripListRes;
 import com.fa20se28.vma.response.VehicleContractRes;
 
+import java.time.LocalDateTime;
+
 public interface ContractVehicleService {
     PassengerRes getPassengerList(int contractVehicleId);
 
@@ -28,7 +30,11 @@ public interface ContractVehicleService {
 
     void endTrip(TripReq tripReq);
 
-    VehicleContractRes getAvailableVehicles(VehicleContractReq vehicleContractReq, int pageNum, int viewOption);
+    VehicleContractRes getAvailableVehicles(VehicleContractReq vehicleContractReq, int pageNum, int displayAll);
 
-    int getTotalAvailableVehicles(VehicleContractReq vehicleContractReq, int viewOption);
+    int getTotalAvailableVehicles(VehicleContractReq vehicleContractReq, int displayAll);
+
+    VehicleContractRes getAvailableVehiclesAuto(int vehicleCount, int passengerCount, LocalDateTime startDate, LocalDateTime endDate, int pageNum, int displayAll);
+
+    int getTotalAvailableVehiclesAuto(int vehicleCount, int passengerCount, LocalDateTime startDate, LocalDateTime endDate, int displayAll);
 }

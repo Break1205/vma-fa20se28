@@ -73,6 +73,11 @@ public interface UserMapper {
     })
     List<Role> findUserRoles(@Param("user_id") String userId);
 
+    @Select("SELECT ur.role_id " +
+            "FROM user_roles ur " +
+            "WHERE ur.user_id = '${user_id}' ")
+    List<Integer> findRoles(@Param("user_id") String userId);
+
     @Insert("INSERT INTO [user]\n" +
             "(user_id,\n" +
             "user_status,\n" +

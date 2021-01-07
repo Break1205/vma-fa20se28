@@ -79,6 +79,28 @@ public class ContractVehicleController {
         return contractVehicleService.getCurrentTrip(issuedVehicleId);
     }
 
+    @GetMapping("/available-vehicles/auto")
+    public VehicleContractRes getAvailableVehiclesAuto(
+            @RequestParam(required = false, defaultValue = "0") int vehicleCount,
+            @RequestParam(required = false, defaultValue = "0") int passengerCount,
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime startDate,
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime endDate,
+            @RequestParam(required = false, defaultValue = "0") int displayAll,
+            @RequestParam(required = false, defaultValue = "0") int pageNum) {
+        return contractVehicleService.getAvailableVehiclesAuto(vehicleCount, passengerCount, startDate, endDate, displayAll, pageNum);
+    }
+
+    @GetMapping("/available-vehicles/count/auto")
+    public int getTotalAvailableVehiclesAuto(
+            @RequestParam(required = false, defaultValue = "0") int vehicleCount,
+            @RequestParam(required = false, defaultValue = "0") int passengerCount,
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime startDate,
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime endDate,
+            @RequestParam(required = false, defaultValue = "0") int displayAll) {
+        return contractVehicleService.getTotalAvailableVehiclesAuto(vehicleCount, passengerCount, startDate, endDate, displayAll);
+    }
+
+
     @GetMapping("/available-vehicles")
     public VehicleContractRes getAvailableVehicles(
             @RequestParam(required = false, defaultValue = "0") int vehicleTypeId,
@@ -88,9 +110,9 @@ public class ContractVehicleController {
             @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime endDate,
             @RequestParam(required = false) String yearMin,
             @RequestParam(required = false) String yearMax,
-            @RequestParam(required = false, defaultValue = "0") int viewOption,
+            @RequestParam(required = false, defaultValue = "0") int displayAll,
             @RequestParam(required = false, defaultValue = "0") int pageNum) {
-        return contractVehicleService.getAvailableVehicles(new VehicleContractReq(vehicleTypeId, seatsMin, seatsMax, startDate, endDate, yearMin, yearMax), pageNum, viewOption);
+        return contractVehicleService.getAvailableVehicles(new VehicleContractReq(vehicleTypeId, seatsMin, seatsMax, startDate, endDate, yearMin, yearMax), pageNum, displayAll);
     }
 
     @GetMapping("/available-vehicles/count")
@@ -102,7 +124,7 @@ public class ContractVehicleController {
             @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime endDate,
             @RequestParam(required = false) String yearMin,
             @RequestParam(required = false) String yearMax,
-            @RequestParam(required = false, defaultValue = "0") int viewOption) {
-        return contractVehicleService.getTotalAvailableVehicles(new VehicleContractReq(vehicleTypeId, seatsMin, seatsMax, startDate, endDate, yearMin, yearMax), viewOption);
+            @RequestParam(required = false, defaultValue = "0") int displayAll) {
+        return contractVehicleService.getTotalAvailableVehicles(new VehicleContractReq(vehicleTypeId, seatsMin, seatsMax, startDate, endDate, yearMin, yearMax), displayAll);
     }
 }

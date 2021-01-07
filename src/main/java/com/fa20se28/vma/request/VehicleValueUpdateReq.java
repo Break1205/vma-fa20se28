@@ -12,6 +12,13 @@ public class VehicleValueUpdateReq {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate endDate;
 
+    public VehicleValueUpdateReq(int vehicleValueId, float value, LocalDate startDate, LocalDate endDate) {
+        this.vehicleValueId = vehicleValueId;
+        this.value = value;
+        this.startDate = startDate;
+        this.endDate = endDate;
+    }
+
     public int getVehicleValueId() {
         return vehicleValueId;
     }

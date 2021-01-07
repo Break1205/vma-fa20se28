@@ -9,14 +9,19 @@ import java.util.Optional;
 @Mapper
 public interface IssuedVehicleMapper {
     @Insert("INSERT INTO issued_vehicle(vehicle_id,owner_id, driver_id, issued_date, returned_date, create_date) " +
-            "VALUES (#{v_id}, #{v_owner_id},NULL, NULL, NULL, getDate()) ")
+            "VALUES (#{v_id}, #{v_owner_id}, NULL, NULL, NULL, getDate()) ")
     int createPlaceholder(@Param("v_id") String vehicleId, @Param("v_owner_id") String ownerId);
+
+    @Delete("DELETE FROM issued_vehicle " +
+            "WHERE issued_vehicle_id = #{iv_id} ")
+    int deletePlaceholder(@Param("iv_id") int issuedVehicleId);
 
     @Update({"<script>" +
             "UPDATE issued_vehicle " +
             "SET " +
             "<if test = \"iv_option == 0\" > " +
             "driver_id = #{iv_driver_id}, " +
+            "owner_id = #{v_owner_id}, " +
             "issued_date = getdate() " +
             "WHERE vehicle_id = #{v_id} " +
             "AND issued_date IS NULL " +
@@ -33,6 +38,15 @@ public interface IssuedVehicleMapper {
             @Param("iv_driver_id") String driverId,
             @Param("v_owner_id") String ownerId,
             @Param("iv_option") int option);
+
+    @Update("UPDATE issued_vehicle " +
+            "SET " +
+            "owner_id = #{v_owner_id}, " +
+            "WHERE vehicle_id = #{v_id} " +
+            "AND driver_id IS NULL ")
+    int updateOwner(
+            @Param("v_id") String vehicleId,
+            @Param("v_owner_id") String ownerId);
 
     @Select("SELECT TOP 1 " +
             "CASE WHEN " +

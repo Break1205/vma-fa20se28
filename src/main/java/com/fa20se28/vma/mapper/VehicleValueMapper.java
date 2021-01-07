@@ -69,4 +69,34 @@ public interface VehicleValueMapper {
             @Param("v_id") String vehicleId,
             @Param("vv_from") LocalDate fromDate,
             @Param("vv_to") LocalDate toDate);
+
+    @Select("SELECT TOP 1 " +
+            "vehicle_value_id, " +
+            "value, " +
+            "start_date," +
+            "end_date, " +
+            "is_deleted " +
+            "FROM vehicle_value " +
+            "WHERE vehicle_id = #{v_id} " +
+            "AND is_deleted = 0 " +
+            "AND start_date <= #{t_current} AND end_date >= #{t_current} " +
+            "ORDER BY create_date DESC ")
+    @Results(id = "vehicleValues", value = {
+            @Result(property = "vehicleValueId", column = "vehicle_value_id"),
+            @Result(property = "startDate", column = "start_date"),
+            @Result(property = "endDate", column = "end_date"),
+            @Result(property = "isDeleted", column = "is_deleted")
+    })
+    VehicleValue getCurrentValue(
+            @Param("v_id") String vehicleId,
+            @Param("t_current") LocalDate currentTime);
+
+    @Update("UPDATE vehicle_value " +
+            "SET is_deleted = 1 " +
+            "WHERE vehicle_id = #{v_id} " +
+            "AND is_deleted = 0 " +
+            "AND start_date >= #{t_input} ")
+    int deleteAllRemainingValues(
+            @Param("v_id") String vehicleId,
+            @Param("t_input") LocalDate inputDate);
 }

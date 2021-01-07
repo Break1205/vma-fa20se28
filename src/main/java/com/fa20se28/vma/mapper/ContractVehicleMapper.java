@@ -75,7 +75,7 @@ public interface ContractVehicleMapper {
             "<if test = \"t_current == 1\" > " +
             "SELECT TOP 1 " +
             "</if> " +
-            "c.contract_id,cd.contract_trip_id, cv.contract_vehicle_id, cv.contract_vehicle_status " +
+            "c.contract_id,cd.contract_trip_id, cv.contract_vehicle_id, cv.contract_vehicle_status, cv.backup_location " +
             "FROM contract_vehicles cv " +
             "JOIN contract_trip cd ON cv.contract_trip_id = cd.contract_trip_id " +
             "JOIN contract c ON cd.contract_id = c.contract_id " +
@@ -94,6 +94,7 @@ public interface ContractVehicleMapper {
             @Result(property = "contractVehicleId", column = "contract_vehicle_id"),
             @Result(property = "contractVehicleStatus", column = "contract_vehicle_status"),
             @Result(property = "contractTrip", column = "contract_trip_id", one = @One(select = "getContractTrip")),
+            @Result(property = "backupLocation", column = "backup_location"),
     })
     List<Trip> getVehicleTrips(
             @Param("cv_iv_id") int issuedVehicleId,
@@ -252,8 +253,7 @@ public interface ContractVehicleMapper {
             "JOIN contract_trip ct ON ct.contract_trip_id = ct.contract_trip_id " +
             "WHERE cv.issued_vehicle_id = #{iv_id} " +
             "AND (cv.contract_vehicle_status = 'NOT_STARTED' OR cv.contract_vehicle_status = 'IN_PROGRESS') " +
-            "AND (ct.destination_time <= #{t_current} " +
-            "OR ct.departure_time >= #{t_current}) ")
+            "AND (ct.departure_time <= #{t_current} AND ct.destination_time >= #{t_current}) ")
     boolean checkIfThereIsRemainingTrip(
             @Param("iv_id") int issuedVehicleId,
             @Param("t_current") LocalDateTime currentDateTime);
