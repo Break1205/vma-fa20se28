@@ -30,7 +30,7 @@ public interface ReportComponent {
 
     RevenueExpenseReportRes getRevenueExpenseDetailReportData(ReportReq reportReq);
 
-    Map<String, EstimateAndEarnedIncome> calculateContributorEstimatedAndEarnedIncome(ReportReq reportReq);
+    Map<String, EstimateAndEarnedIncome> getContributorsEstimatedAndEarnedIncomes(ReportReq reportReq);
 
     ContributorEarnedAndEstimatedIncome getContributorEarnedAndEstimatedIncomeById(ReportReq reportReq);
 

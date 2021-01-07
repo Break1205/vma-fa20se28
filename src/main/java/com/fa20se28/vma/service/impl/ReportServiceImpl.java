@@ -102,7 +102,7 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public ContributorIncomeRes getContributorsIncomesReportData(ReportReq reportReq) {
         ContributorIncomeRes contributorIncomeRes = new ContributorIncomeRes();
-        contributorIncomeRes.setContributorEstimateAndEarnedIncomes(reportComponent.calculateContributorEstimatedAndEarnedIncome(reportReq));
+        contributorIncomeRes.setContributorEstimateAndEarnedIncomes(reportComponent.getContributorsEstimatedAndEarnedIncomes(reportReq));
         return contributorIncomeRes;
     }
 

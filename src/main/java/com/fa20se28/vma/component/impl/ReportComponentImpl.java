@@ -620,7 +620,7 @@ public class ReportComponentImpl implements ReportComponent {
         int numberOfData = 1;
 
         Map<String, EstimateAndEarnedIncome> contributorsEstimateAndRealValue =
-                calculateContributorEstimatedAndEarnedIncome(reportReq);
+                getContributorsEstimatedAndEarnedIncomes(reportReq);
 
         for (Map.Entry<String, EstimateAndEarnedIncome> entry : contributorsEstimateAndRealValue.entrySet()) {
             Row row = sheet.createRow(rowCount++);
@@ -726,7 +726,7 @@ public class ReportComponentImpl implements ReportComponent {
     // end driver income
 
     @Override
-    public Map<String, EstimateAndEarnedIncome> calculateContributorEstimatedAndEarnedIncome(ReportReq reportReq) {
+    public Map<String, EstimateAndEarnedIncome> getContributorsEstimatedAndEarnedIncomes(ReportReq reportReq) {
         firstAndLast = getFirstAndLastDayInAMonth(reportReq);
 
         List<ContributorVehicleValue> contributorVehicleValues = getContributorsVehiclesValues(reportReq);
