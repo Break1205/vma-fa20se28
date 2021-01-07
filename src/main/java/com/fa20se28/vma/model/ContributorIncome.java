@@ -2,13 +2,13 @@ package com.fa20se28.vma.model;
 
 import java.time.LocalDate;
 
-public class ContributorIncomesDetail {
+public class ContributorIncome {
     private String ownerId;
     private String vehicleId;
     private LocalDate date;
     private float value;
     private String contractId;
-    private String contractDetailId;
+    private String contractTripId;
 
     public String getOwnerId() {
         return ownerId;
@@ -50,11 +50,11 @@ public class ContributorIncomesDetail {
         this.contractId = contractId;
     }
 
-    public String getContractDetailId() {
-        return contractDetailId;
+    public String getContractTripId() {
+        return contractTripId;
     }
 
-    public void setContractDetailId(String contractDetailId) {
-        this.contractDetailId = contractDetailId;
+    public void setContractTripId(String contractTripId) {
+        this.contractTripId = contractTripId;
     }
 }
