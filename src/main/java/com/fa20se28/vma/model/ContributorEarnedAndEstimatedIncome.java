@@ -5,7 +5,7 @@ import java.util.List;
 public class ContributorEarnedAndEstimatedIncome {
     private float estimated;
     private float earned;
-    private List<ContributorIncomesDetail> contributorIncomesDetails;
+    private List<ContributorIncome> contributorIncomes;
 
     public float getEstimated() {
         return estimated;
@@ -23,11 +23,11 @@ public class ContributorEarnedAndEstimatedIncome {
         this.earned = earned;
     }
 
-    public List<ContributorIncomesDetail> getContributorIncomesDetails() {
-        return contributorIncomesDetails;
+    public List<ContributorIncome> getContributorIncomesDetails() {
+        return contributorIncomes;
     }
 
-    public void setContributorIncomesDetails(List<ContributorIncomesDetail> contributorIncomesDetails) {
-        this.contributorIncomesDetails = contributorIncomesDetails;
+    public void setContributorIncomesDetails(List<ContributorIncome> contributorIncomes) {
+        this.contributorIncomes = contributorIncomes;
     }
 }

@@ -1,17 +1,17 @@
 package com.fa20se28.vma.response;
 
-import com.fa20se28.vma.model.DriverIncomes;
+import com.fa20se28.vma.model.DriverIncome;
 
 import java.util.List;
 
 public class DriversIncomeRes {
-    private List<DriverIncomes> driverIncomes;
+    private List<DriverIncome> driverIncomes;
 
-    public List<DriverIncomes> getDriverIncomes() {
+    public List<DriverIncome> getDriverIncomes() {
         return driverIncomes;
     }
 
-    public void setDriverIncomes(List<DriverIncomes> driverIncomes) {
+    public void setDriverIncomes(List<DriverIncome> driverIncomes) {
         this.driverIncomes = driverIncomes;
     }
 }
