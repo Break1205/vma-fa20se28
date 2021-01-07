@@ -1,9 +1,9 @@
 package com.fa20se28.vma.mapper;
 
 import com.fa20se28.vma.model.ContractReport;
+import com.fa20se28.vma.model.ContributorVehicleValue;
 import com.fa20se28.vma.model.ContributorIncome;
-import com.fa20se28.vma.model.ContributorIncomesDetail;
-import com.fa20se28.vma.model.DriverIncomes;
+import com.fa20se28.vma.model.DriverIncome;
 import com.fa20se28.vma.model.MaintenanceReport;
 import com.fa20se28.vma.model.RevenueExpense;
 import com.fa20se28.vma.model.Schedule;
@@ -227,6 +227,9 @@ public interface ReportMapper {
                                                            @Param("lastDayOfMonth") String lastDayOfMonth,
                                                            @Param("vehicleId") String vehicleId);
 
+    /*
+    Already subtract salary of driver and contributor
+     */
     @Select("SELECT " +
             "c.duration_to date,  " +
             "'CONTRACT_REVENUE' type, " +
@@ -258,98 +261,108 @@ public interface ReportMapper {
             "vv.value,  " +
             "vv.start_date,  " +
             "vv.end_date,  " +
-            "v.owner_id  " +
+            "ov.user_id as owner_id " +
             "FROM  " +
             "vehicle_value vv " +
             "LEFT JOIN vehicle v " +
             "ON vv.vehicle_id = v.vehicle_id " +
+            "JOIN owner_vehicles ov  " +
+            "ON ov.vehicle_id = v.vehicle_id  " +
+            "JOIN user_roles ur  " +
+            "ON ur.user_id = ov.user_id  " +
+            "AND ur.role_id = 3 " +
             "WHERE vv.is_deleted = 0  " +
             "AND NOT (vv.start_date &gt; '${lastDayOfMonth}' OR vv.end_date &lt; '${firstDayOfMonth}')  " +
             "<if test = \"ownerId!=null\" > " +
-            "AND v.owner_id = #{ownerId}  " +
-            "</if> " +
+            "AND ov.user_id = #{ownerId}  " +
+            "</if>  " +
+            "ORDER BY ov.user_id,vehicle_id,start_date,end_date" +
             "</script>"})
-    @Results(id = "contributorIncomesResult", value = {
+    @Results(id = "contributorVehiclesValuesResults", value = {
             @Result(property = "vehicleId", column = "vehicle_id"),
             @Result(property = "value", column = "value"),
             @Result(property = "startDate", column = "start_date"),
             @Result(property = "endDate", column = "end_date"),
             @Result(property = "ownerId", column = "owner_id")
     })
-    List<ContributorIncome> getContributorIncomesForReport(@Param("ownerId") String ownerId,
-                                                           @Param("firstDayOfMonth") String firstDayOfMonth,
-                                                           @Param("lastDayOfMonth") String lastDayOfMonth);
+    List<ContributorVehicleValue> getContributorVehiclesValues(@Param("ownerId") String ownerId,
+                                                               @Param("firstDayOfMonth") String firstDayOfMonth,
+                                                               @Param("lastDayOfMonth") String lastDayOfMonth);
 
     @Select({"<script>" +
             "SELECT  " +
-            "v.owner_id, " +
-            "v.vehicle_id, " +
-            "cd.destination_time date, " +
-            "c.total_price/c.actual_vehicle_count*20/100 value, " +
-            "CONVERT(varchar,c.contract_id) contract_id, " +
-            "cd.contract_detail_id  " +
-            "FROM vehicle v  " +
-            "JOIN issued_vehicle iv  " +
-            "ON v.vehicle_id = iv.vehicle_id " +
-            "JOIN contract_vehicles cv " +
-            "ON iv.issued_vehicle_id = cv.issued_vehicle_id " +
-            "JOIN contract_detail cd " +
-            "ON cv.contract_detail_id = cd.contract_detail_id " +
-            "JOIN contract c " +
-            "ON c.contract_id = cd.contract_id " +
-            "WHERE c.contract_status = 'FINISHED'" +
-            "AND cd.destination_time between '${firstDayOfMonth}' AND '${lastDayOfMonth}' " +
-            "<if test = \"ownerId!=null\" > " +
-            "AND v.owner_id = #{ownerId}  " +
-            "</if>  " +
+            "iv.owner_id,   " +
+            "iv.vehicle_id,   " +
+            "ct.destination_time date,   " +
+            "cv.contributor_money value,   " +
+            "c.contract_id,   " +
+            "ct.contract_trip_id  " +
+            "FROM issued_vehicle iv  " +
+            "JOIN contract_vehicles cv   " +
+            "ON iv.issued_vehicle_id = cv.issued_vehicle_id   " +
+            "AND ((cv.contract_vehicle_status = 'COMPLETED' AND backup_location IS NULL)  " +
+            "OR (cv.contract_vehicle_status = 'DROPPED' AND far = 1))   " +
+            "JOIN user_roles ur  " +
+            "ON iv.owner_id = ur.user_id  " +
+            "AND ur.role_id = 2   " +
+            "JOIN contract_trip ct   " +
+            "ON cv.contract_trip_id = ct.contract_trip_id   " +
+            "JOIN contract c   " +
+            "ON c.contract_id = ct.contract_id   " +
+            "AND c.contract_status = 'FINISHED'" +
+            "WHERE ct.destination_time between '${firstDayOfMonth}' AND '${lastDayOfMonth}' " +
+            "<if test = \"ownerId!=null\" >  " +
+            "AND iv.owner_id = #{ownerId}  " +
+            "</if> " +
             "</script>"})
-    @Results(id = "contributorIncomesDetailResult", value = {
+    @Results(id = "contributorIncomeResults", value = {
             @Result(property = "ownerId", column = "owner_id"),
             @Result(property = "vehicleId", column = "vehicle_id"),
             @Result(property = "date", column = "date"),
             @Result(property = "value", column = "value"),
             @Result(property = "contractId", column = "contract_id"),
-            @Result(property = "contractDetailId", column = "contract_detail_id"),
+            @Result(property = "contractTripId", column = "contract_trip_id"),
     })
-    List<ContributorIncomesDetail> getContributorIncomesDetail(@Param("ownerId") String ownerId,
-                                                               @Param("firstDayOfMonth") String firstDayOfMonth,
-                                                               @Param("lastDayOfMonth") String lastDayOfMonth);
+    List<ContributorIncome> getContributorIncomes(@Param("ownerId") String ownerId,
+                                                  @Param("firstDayOfMonth") String firstDayOfMonth,
+                                                  @Param("lastDayOfMonth") String lastDayOfMonth);
 
     @Select({"<script>" +
-            "SELECT " +
-            "u.user_id, " +
-            "CONVERT(varchar,c.contract_id) contract_id, " +
-            "cd.contract_detail_id, " +
-            "iv.vehicle_id, " +
-            "c.total_price/c.actual_vehicle_count*10/100 driver_earned  " +
-            "FROM [user] u " +
-            "JOIN user_roles ur " +
-            "ON u.user_id = ur.user_id " +
-            "JOIN issued_vehicle iv " +
-            "ON u.user_id = iv.driver_id  " +
-            "JOIN contract_vehicles cv " +
-            "ON iv.issued_vehicle_id = cv.issued_vehicle_id " +
-            "JOIN contract_detail cd  " +
-            "ON cv.contract_detail_id = cd.contract_detail_id " +
-            "JOIN contract c " +
-            "ON cd.contract_id = c.contract_id " +
-            "WHERE ur.role_id = 3 " +
-            "AND c.contract_status = 'FINISHED' " +
-            "AND cd.destination_time between '${firstDayOfMonth}' AND '${lastDayOfMonth}' " +
+            "SELECT  " +
+            "iv.driver_id,   " +
+            "iv.vehicle_id,   " +
+            "ct.destination_time date,   " +
+            "cv.driver_money value,   " +
+            "c.contract_id,   " +
+            "ct.contract_trip_id  " +
+            "FROM issued_vehicle iv  " +
+            "JOIN contract_vehicles cv   " +
+            "ON iv.issued_vehicle_id = cv.issued_vehicle_id   " +
+            "AND ((cv.contract_vehicle_status = 'COMPLETED' AND backup_location IS NULL)  " +
+            "OR (cv.contract_vehicle_status = 'DROPPED' AND far = 1))   " +
+            "JOIN user_roles ur  " +
+            "ON iv.driver_id = ur.user_id  " +
+            "AND ur.role_id = 3   " +
+            "JOIN contract_trip ct   " +
+            "ON cv.contract_trip_id = ct.contract_trip_id   " +
+            "JOIN contract c   " +
+            "ON c.contract_id = ct.contract_id   " +
+            "AND c.contract_status = 'FINISHED'" +
+            "AND ct.destination_time between '${firstDayOfMonth}' AND '${lastDayOfMonth}' " +
             "<if test = \"driverId!=null\" > " +
-            "AND u.user_id = #{driverId}  " +
+            "AND iv.driver_id = #{driverId}  " +
             "</if>  " +
             "</script>"})
-    @Results(id = "driverIncomesResult", value = {
-            @Result(property = "userId", column = "user_id"),
+    @Results(id = "driverIncomeResults", value = {
+            @Result(property = "userId", column = "driver_id"),
             @Result(property = "contractId", column = "contract_id"),
-            @Result(property = "contractDetailId", column = "contract_detail_id"),
+            @Result(property = "contractTripId", column = "contract_trip_id"),
             @Result(property = "vehicleId", column = "vehicle_id"),
-            @Result(property = "driverEarned", column = "driver_earned"),
+            @Result(property = "driverEarned", column = "value"),
     })
-    List<DriverIncomes> getDriverIncomes(@Param("driverId") String driverId,
-                                         @Param("firstDayOfMonth") String firstDayOfMonth,
-                                         @Param("lastDayOfMonth") String lastDayOfMonth);
+    List<DriverIncome> getDriverIncomes(@Param("driverId") String driverId,
+                                        @Param("firstDayOfMonth") String firstDayOfMonth,
+                                        @Param("lastDayOfMonth") String lastDayOfMonth);
 
     @Select("SELECT base_salary " +
             "FROM [user] " +

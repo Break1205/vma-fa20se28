@@ -32,9 +32,9 @@ public interface ContractVehicleComponent {
 
     void completeContract(int contractId);
 
-    List<VehicleContract> getAvailableVehicles(VehicleContractReq vehicleContractReq, int pageNum, int viewOption);
+    List<VehicleContract> getAvailableVehicles(VehicleContractReq vehicleContractReq, int pageNum, int displayAll);
 
-    int getTotalAvailableVehicles(VehicleContractReq vehicleContractReq, int viewOption);
+    int getTotalAvailableVehicles(VehicleContractReq vehicleContractReq, int displayAll);
 
     void assignBackUpVehicleForContract(String oldVehicleId, int contractTripId, BackUpVehicleReq backUpVehicleReq);
 }

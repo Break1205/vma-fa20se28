@@ -16,6 +16,7 @@ public class VehicleUpdateReq {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy")
     private String yearOfManufacture;
     private float distanceDriven;
+    private VehicleValueReq value;
 
     public VehicleUpdateReq(String vehicleId, int vehicleTypeId, int brandId, String ownerId, int seatsId, String imageLink, String model, String origin, String chassisNumber, String engineNumber, String yearOfManufacture, float distanceDriven) {
         this.vehicleId = vehicleId;
@@ -126,5 +127,13 @@ public class VehicleUpdateReq {
 
     public void setDistanceDriven(float distanceDriven) {
         this.distanceDriven = distanceDriven;
+    }
+
+    public VehicleValueReq getValue() {
+        return value;
+    }
+
+    public void setValue(VehicleValueReq value) {
+        this.value = value;
     }
 }

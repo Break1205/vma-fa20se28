@@ -16,6 +16,8 @@ import com.fa20se28.vma.service.ContractVehicleService;
 import com.fa20se28.vma.service.FirebaseService;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 @Service
 public class ContractVehicleServiceImpl implements ContractVehicleService {
     private final ContractVehicleComponent contractVehicleComponent;
@@ -131,12 +133,27 @@ public class ContractVehicleServiceImpl implements ContractVehicleService {
     }
 
     @Override
-    public VehicleContractRes getAvailableVehicles(VehicleContractReq vehicleContractReq, int pageNum, int viewOption) {
-        return new VehicleContractRes(contractVehicleComponent.getAvailableVehicles(vehicleContractReq, pageNum, viewOption));
+    public VehicleContractRes getAvailableVehicles(VehicleContractReq vehicleContractReq, int pageNum, int displayAll) {
+        return new VehicleContractRes(contractVehicleComponent.getAvailableVehicles(vehicleContractReq, pageNum, displayAll));
     }
 
     @Override
-    public int getTotalAvailableVehicles(VehicleContractReq vehicleContractReq, int viewOption) {
-        return contractVehicleComponent.getTotalAvailableVehicles(vehicleContractReq, viewOption);
+    public int getTotalAvailableVehicles(VehicleContractReq vehicleContractReq, int displayAll) {
+        return contractVehicleComponent.getTotalAvailableVehicles(vehicleContractReq, displayAll);
     }
+
+    @Override
+    public VehicleContractRes getAvailableVehiclesAuto(int vehicleCount, int passengerCount, LocalDateTime startDate, LocalDateTime endDate, int pageNum, int displayAll) {
+        int averageSeatCount = Math.round((float) passengerCount/ (float) vehicleCount);
+
+
+
+        return null;
+    }
+
+    @Override
+    public int getTotalAvailableVehiclesAuto(int vehicleCount, int passengerCount, LocalDateTime startDate, LocalDateTime endDate, int displayAll) {
+        return 0;
+    }
+
 }

@@ -2,6 +2,7 @@ package com.fa20se28.vma.component.impl;
 
 import com.fa20se28.vma.component.VehicleComponent;
 import com.fa20se28.vma.configuration.exception.DataExecutionException;
+import com.fa20se28.vma.configuration.exception.InvalidParamException;
 import com.fa20se28.vma.configuration.exception.InvalidStatusException;
 import com.fa20se28.vma.configuration.exception.ResourceIsInUsedException;
 import com.fa20se28.vma.enums.DocumentStatus;
@@ -27,13 +28,14 @@ public class VehicleComponentImpl implements VehicleComponent {
     private final VehicleValueMapper vehicleValueMapper;
     private final ContractVehicleMapper contractVehicleMapper;
     private final VehicleOwnerMapper vehicleOwnerMapper;
+    private final UserMapper userMapper;
 
     public VehicleComponentImpl(
             VehicleMapper vehicleMapper,
             IssuedVehicleMapper issuedVehicleMapper,
             VehicleDocumentMapper vehicleDocumentMapper,
             VehicleDocumentImageMapper vehicleDocumentImageMapper,
-            VehicleValueMapper vehicleValueMapper, ContractVehicleMapper contractVehicleMapper, VehicleOwnerMapper vehicleOwnerMapper) {
+            VehicleValueMapper vehicleValueMapper, ContractVehicleMapper contractVehicleMapper, VehicleOwnerMapper vehicleOwnerMapper, UserMapper userMapper) {
         this.vehicleMapper = vehicleMapper;
         this.issuedVehicleMapper = issuedVehicleMapper;
         this.vehicleDocumentMapper = vehicleDocumentMapper;
@@ -41,6 +43,7 @@ public class VehicleComponentImpl implements VehicleComponent {
         this.vehicleValueMapper = vehicleValueMapper;
         this.contractVehicleMapper = contractVehicleMapper;
         this.vehicleOwnerMapper = vehicleOwnerMapper;
+        this.userMapper = userMapper;
     }
 
     @Override
@@ -59,7 +62,8 @@ public class VehicleComponentImpl implements VehicleComponent {
         if (vehicleMapper.getVehicleStatus(vehicleId) != VehicleStatus.AVAILABLE_NO_DRIVER) {
             throw new InvalidStatusException("Vehicle is already occupied or is currently unavailable!");
         } else {
-            int assignRow = issuedVehicleMapper.updateIssuedVehicle(vehicleId, driverId, 0);
+            String ownerId = vehicleOwnerMapper.getCurrentOwnerId(vehicleId);
+            int assignRow = issuedVehicleMapper.updateIssuedVehicle(vehicleId, driverId, ownerId, 0);
             int updateStatusRow = vehicleMapper.updateVehicleStatus(vehicleId, VehicleStatus.AVAILABLE);
 
             if (assignRow == 0 || updateStatusRow == 0) {
@@ -74,8 +78,9 @@ public class VehicleComponentImpl implements VehicleComponent {
         if (contractVehicleMapper.checkIfThereIsRemainingTrip(issuedVehicleMapper.getCurrentIssuedVehicleId(vehicleId), LocalDateTime.now())) {
             throw new ResourceIsInUsedException("Vehicle still has remaining trip(s)!");
         } else {
-            int withDrawRow = issuedVehicleMapper.updateIssuedVehicle(vehicleId, null, 1);
-            int createPlaceHolderRow = issuedVehicleMapper.createPlaceholder(vehicleId);
+            int withDrawRow = issuedVehicleMapper.updateIssuedVehicle(vehicleId, null, null, 1);
+            String ownerId = vehicleOwnerMapper.getCurrentOwnerId(vehicleId);
+            int createPlaceHolderRow = issuedVehicleMapper.createPlaceholder(vehicleId, ownerId);
             int updateStatusRow = vehicleMapper.updateVehicleStatus(vehicleId, VehicleStatus.AVAILABLE_NO_DRIVER);
 
             if (withDrawRow == 0 || createPlaceHolderRow == 0 || updateStatusRow == 0) {
@@ -95,7 +100,7 @@ public class VehicleComponentImpl implements VehicleComponent {
 
             if (!notAdmin) {
                 vehicleRow = vehicleMapper.createVehicle(vehicle, VehicleStatus.AVAILABLE_NO_DRIVER);
-                placeholderRow = issuedVehicleMapper.createPlaceholder(vehicle.getVehicleId());
+                placeholderRow = issuedVehicleMapper.createPlaceholder(vehicle.getVehicleId(), vehicle.getOwnerId());
             } else {
                 vehicleRow = vehicleMapper.createVehicle(vehicle, VehicleStatus.PENDING_APPROVAL);
                 placeholderRow = 1;
@@ -127,8 +132,10 @@ public class VehicleComponentImpl implements VehicleComponent {
             int vehicleRow = vehicleMapper.deleteVehicle(vehicleId);
             int documentRow = vehicleDocumentMapper.deleteVehicleDocuments(vehicleId);
             int deleteOwnerRow = vehicleOwnerMapper.updateVehicleOwner(vehicleId, LocalDate.now());
+            int deletePlaceholder = issuedVehicleMapper.deletePlaceholder(issuedVehicleMapper.getCurrentIssuedVehicleId(vehicleId));
+            int endValueRow = clearVehicleValues(vehicleId);
 
-            if (vehicleRow == 0 || documentRow == 0 || deleteOwnerRow == 0) {
+            if (vehicleRow == 0 || documentRow == 0 || deleteOwnerRow == 0 || deletePlaceholder == 0 || endValueRow == 0) {
                 throw new DataExecutionException("Unknown error occurred. Vehicle deletion failed!");
             }
         }
@@ -142,26 +149,93 @@ public class VehicleComponentImpl implements VehicleComponent {
     @Override
     @Transactional
     public void updateVehicleDetails(VehicleUpdateReq vehicleUpdateReq) {
-        int updateOwnerRow;
-        int createOwnerRow;
+        VehicleStatus currentStatus = vehicleMapper.getVehicleStatus(vehicleUpdateReq.getVehicleId());
+
+        if (currentStatus.equals(VehicleStatus.ON_ROUTE)) {
+            throw new InvalidStatusException("Vehicle is currently on route. Unable to change information!");
+        }
+
+        int updateOwnerRow, createOwnerRow, clearValuesRow, newValueRow, withDrawRow, createPlaceHolderRow, assignRow;
 
         if (!vehicleOwnerMapper.getCurrentOwnerId(vehicleUpdateReq.getVehicleId()).equals(vehicleUpdateReq.getOwnerId())) {
             if (contractVehicleMapper.checkIfThereIsRemainingTrip(issuedVehicleMapper.getCurrentIssuedVehicleId(vehicleUpdateReq.getVehicleId()), LocalDateTime.now())) {
-                throw new ResourceIsInUsedException("Vehicle still has remaining trip(s). Unable to update ownership!");
+                throw new ResourceIsInUsedException("Vehicle still has remaining trip(s). Unable to change ownership!");
             } else {
                 updateOwnerRow = vehicleOwnerMapper.updateVehicleOwner(vehicleUpdateReq.getVehicleId(), LocalDate.now());
                 createOwnerRow = vehicleOwnerMapper.createVehicleOwner(vehicleUpdateReq.getOwnerId(), vehicleUpdateReq.getVehicleId(), LocalDate.now());
+
+                List<Integer> roles = userMapper.findRoles(vehicleUpdateReq.getOwnerId());
+
+                clearValuesRow = clearVehicleValues(vehicleUpdateReq.getVehicleId());
+
+                if (roles.contains(1)) {
+                    newValueRow = 1;
+                } else if (roles.contains(2)) {
+                    if (vehicleUpdateReq.getValue() == null) {
+                        throw new InvalidParamException("Vehicle value cannot be null when the new owner is a contributor!");
+                    } else {
+
+                        newValueRow = vehicleValueMapper.createValue(vehicleUpdateReq.getValue());
+                    }
+                } else {
+                    newValueRow = 1;
+                }
+
+                UserBasic currentDriver = issuedVehicleMapper.getAssignedDriver(vehicleUpdateReq.getVehicleId());
+
+                if (currentDriver != null) {
+                    System.out.println(currentDriver.getUserId());
+
+                    withDrawRow = issuedVehicleMapper.updateIssuedVehicle(vehicleUpdateReq.getVehicleId(), null, null, 1);
+                    createPlaceHolderRow = issuedVehicleMapper.createPlaceholder(vehicleUpdateReq.getVehicleId(), vehicleUpdateReq.getOwnerId());
+                    assignRow = issuedVehicleMapper.updateIssuedVehicle(vehicleUpdateReq.getVehicleId(), currentDriver.getUserId(), vehicleUpdateReq.getOwnerId(), 0);
+                } else {
+                    withDrawRow = 1;
+                    createPlaceHolderRow = issuedVehicleMapper.updateOwner(vehicleUpdateReq.getVehicleId(), vehicleUpdateReq.getOwnerId());
+                    assignRow = 1;
+                }
+
             }
         } else {
             updateOwnerRow = 1;
             createOwnerRow = 1;
+            clearValuesRow = 1;
+            newValueRow = 1;
+            withDrawRow = 1;
+            createPlaceHolderRow = 1;
+            assignRow = 1;
         }
 
         int vehicleUpdateRow = vehicleMapper.updateVehicle(vehicleUpdateReq);
 
-        if (vehicleUpdateRow == 0 || updateOwnerRow == 0 || createOwnerRow == 0) {
+        if (vehicleUpdateRow == 0 || updateOwnerRow == 0 || createOwnerRow == 0
+                || clearValuesRow == 0 || newValueRow == 0 || withDrawRow == 0
+                || createPlaceHolderRow == 0 || assignRow == 0) {
             throw new DataExecutionException("Unknown error occurred. Vehicle update failed!");
         }
+    }
+
+    private int clearVehicleValues(String vehicleId) {
+        int endValueRow;
+
+        VehicleValue currentValue = vehicleValueMapper.getCurrentValue(vehicleId, LocalDate.now());
+
+        if (currentValue != null && LocalDate.now().isBefore(currentValue.getEndDate())) {
+            endValueRow = vehicleValueMapper.updateValue(
+                    new VehicleValueUpdateReq(
+                            currentValue.getVehicleValueId(),
+                            currentValue.getValue(),
+                            currentValue.getStartDate(),
+                            LocalDate.now()));
+        } else {
+            endValueRow = 1;
+        }
+
+        if (currentValue != null) {
+            vehicleValueMapper.deleteAllRemainingValues(vehicleId, currentValue.getEndDate());
+        }
+
+        return endValueRow;
     }
 
     @Override
@@ -225,7 +299,8 @@ public class VehicleComponentImpl implements VehicleComponent {
     @Override
     @Transactional
     public void acceptVehicle(String vehicleId) {
-        int placeholderRow = issuedVehicleMapper.createPlaceholder(vehicleId);
+        String ownerId = vehicleOwnerMapper.getCurrentOwnerId(vehicleId);
+        int placeholderRow = issuedVehicleMapper.createPlaceholder(vehicleId, ownerId);
         int vehicleStatusRow = vehicleMapper.updateVehicleStatus(vehicleId, VehicleStatus.AVAILABLE_NO_DRIVER);
         int acceptDocRow = vehicleDocumentMapper.changeVehicleDocumentsStatusFromRequest(vehicleId, DocumentStatus.VALID);
 
@@ -320,7 +395,7 @@ public class VehicleComponentImpl implements VehicleComponent {
         List<VehicleStatus> missingStatus = Stream.of(VehicleStatus.values()).collect(Collectors.toList());
         missingStatus.removeAll(vehicleMapper.getStatusInFleet(ownerId));
 
-        for (VehicleStatus status: missingStatus) {
+        for (VehicleStatus status : missingStatus) {
             statusCounts.add(new VehicleStatusCount(status.toString(), 0));
         }
 

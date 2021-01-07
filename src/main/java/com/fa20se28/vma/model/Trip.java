@@ -2,13 +2,12 @@ package com.fa20se28.vma.model;
 
 import com.fa20se28.vma.enums.ContractVehicleStatus;
 
-import java.util.List;
-
 public class Trip {
     private int contractVehicleId;
     private int contractId;
     private ContractTrip contractTrip;
     private ContractVehicleStatus contractVehicleStatus;
+    private String backupLocation;
 
     public int getContractVehicleId() {
         return contractVehicleId;
@@ -40,5 +39,13 @@ public class Trip {
 
     public void setContractVehicleStatus(ContractVehicleStatus contractVehicleStatus) {
         this.contractVehicleStatus = contractVehicleStatus;
+    }
+
+    public String getBackupLocation() {
+        return backupLocation;
+    }
+
+    public void setBackupLocation(String backupLocation) {
+        this.backupLocation = backupLocation;
     }
 }
