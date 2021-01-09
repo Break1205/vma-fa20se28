@@ -90,9 +90,10 @@ public class VehicleController {
     }
 
     @PatchMapping("/{vehicle-id}/status")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateVehicleStatusById(
             @PathVariable("vehicle-id") String vehicleId,
-            @RequestBody VehicleStatus vehicleStatus) {
+            @RequestParam VehicleStatus vehicleStatus) {
         vehicleService.updateVehicleStatus(vehicleId, vehicleStatus);
     }
 
