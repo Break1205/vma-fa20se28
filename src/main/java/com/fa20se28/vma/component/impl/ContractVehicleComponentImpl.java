@@ -221,18 +221,15 @@ public class ContractVehicleComponentImpl implements ContractVehicleComponent {
 
         //
         for (VehicleContract vehicle : availableVehicles) {
-            //get value of trips the vehicle ran in the timeframe
-            List<VehicleContractValue> vehicleCountAndValues = contractVehicleMapper.getVehicleCountFromContract(vehicle.getVehicleId(), firstDateOfTimeframe, lastDateOfTimeframe);
-
+            //get earned value the vehicle ran in the timeframe
+            String earnedString = contractVehicleMapper.getVehicleEarnedValue(vehicle.getVehicleId(), firstDateOfTimeframe, lastDateOfTimeframe);
             float earnedValue = 0;
-            //calculate the total
-            if (!vehicleCountAndValues.isEmpty()) {
-                for (VehicleContractValue contract : vehicleCountAndValues) {
-                    int occurrence = contractVehicleMapper.getOccurrence(contract.getContractId(), vehicle.getVehicleId());
-                    earnedValue += ((contract.getTotalValue() * 0.2) / contract.getTotalVehicles()) * occurrence;
-                }
-                vehicle.setCurrentEarnedValue(earnedValue);
+
+            if (earnedString != null) {
+                earnedValue = Float.parseFloat(earnedString);
             }
+
+            vehicle.setCurrentEarnedValue(earnedValue);
 
             float estimatedValue;
 

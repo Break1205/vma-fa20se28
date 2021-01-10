@@ -25,4 +25,6 @@ public interface VehicleMiscComponent {
     void createSeat(SeatsReq seatsReq);
 
     void updateSeat(SeatsReq seatsReq);
+
+    List<Integer> getSeatsList();
 }

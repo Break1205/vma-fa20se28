@@ -3,6 +3,7 @@ package com.fa20se28.vma.model;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public class VehicleContract {
     private String vehicleId;
@@ -11,6 +12,7 @@ public class VehicleContract {
     private int seats;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy")
     private LocalDate yearOfManufacture;
+    private List<SeatPrice> prices;
     private float currentEarnedValue;
     private float expectedValue;
 
@@ -68,5 +70,13 @@ public class VehicleContract {
 
     public void setExpectedValue(float expectedValue) {
         this.expectedValue = expectedValue;
+    }
+
+    public List<SeatPrice> getPrices() {
+        return prices;
+    }
+
+    public void setPrices(List<SeatPrice> prices) {
+        this.prices = prices;
     }
 }

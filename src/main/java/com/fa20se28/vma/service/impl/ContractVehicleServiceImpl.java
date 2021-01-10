@@ -3,6 +3,8 @@ package com.fa20se28.vma.service.impl;
 import com.fa20se28.vma.component.ContractVehicleComponent;
 import com.fa20se28.vma.component.UserComponent;
 import com.fa20se28.vma.component.VehicleComponent;
+import com.fa20se28.vma.component.VehicleMiscComponent;
+import com.fa20se28.vma.configuration.Combinations;
 import com.fa20se28.vma.enums.ContractVehicleStatus;
 import com.fa20se28.vma.enums.NotificationType;
 import com.fa20se28.vma.model.ClientRegistrationToken;
@@ -16,7 +18,8 @@ import com.fa20se28.vma.service.ContractVehicleService;
 import com.fa20se28.vma.service.FirebaseService;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
 
 @Service
 public class ContractVehicleServiceImpl implements ContractVehicleService {
@@ -24,12 +27,14 @@ public class ContractVehicleServiceImpl implements ContractVehicleService {
     private final UserComponent userComponent;
     private final FirebaseService firebaseService;
     private final VehicleComponent vehicleComponent;
+    private final VehicleMiscComponent vehicleMiscComponent;
 
-    public ContractVehicleServiceImpl(ContractVehicleComponent contractVehicleComponent, UserComponent userComponent, FirebaseService firebaseService, VehicleComponent vehicleComponent) {
+    public ContractVehicleServiceImpl(ContractVehicleComponent contractVehicleComponent, UserComponent userComponent, FirebaseService firebaseService, VehicleComponent vehicleComponent, VehicleMiscComponent vehicleMiscComponent) {
         this.contractVehicleComponent = contractVehicleComponent;
         this.userComponent = userComponent;
         this.firebaseService = firebaseService;
         this.vehicleComponent = vehicleComponent;
+        this.vehicleMiscComponent = vehicleMiscComponent;
     }
 
     @Override
@@ -134,7 +139,7 @@ public class ContractVehicleServiceImpl implements ContractVehicleService {
 
     @Override
     public VehicleContractRes getAvailableVehicles(VehicleContractReq vehicleContractReq, int pageNum, int displayAll) {
-        return new VehicleContractRes(contractVehicleComponent.getAvailableVehicles(vehicleContractReq, pageNum, displayAll));
+        return new VehicleContractRes(null, contractVehicleComponent.getAvailableVehicles(vehicleContractReq, pageNum, displayAll));
     }
 
     @Override
@@ -143,17 +148,30 @@ public class ContractVehicleServiceImpl implements ContractVehicleService {
     }
 
     @Override
-    public VehicleContractRes getAvailableVehiclesAuto(int vehicleCount, int passengerCount, LocalDateTime startDate, LocalDateTime endDate, int pageNum, int displayAll) {
-        int averageSeatCount = Math.round((float) passengerCount/ (float) vehicleCount);
+    public VehicleContractRes getAvailableVehiclesAuto(VehicleContractAutoReq vehicleContractAutoReq, int pageNum, int displayAll) {
+        List<Integer> seats = vehicleMiscComponent.getSeatsList();
+        Combinations combinations = new Combinations(seats, vehicleContractAutoReq.getPassengerCount(), vehicleContractAutoReq.getVehicleCount());
+        combinations.calculateCombinations();
+        Collections.sort(seats);
 
+        vehicleContractAutoReq.getRequest().setSeatsMin(seats.get(0));
+        vehicleContractAutoReq.getRequest().setSeatsMax(seats.get(seats.size()-1));
 
-
-        return null;
+        if (combinations.getResult().size()!=0) {
+            return new VehicleContractRes(combinations.getResult(), contractVehicleComponent.getAvailableVehicles(vehicleContractAutoReq.getRequest(), pageNum, displayAll));
+        } else {
+            return new VehicleContractRes(null, null);
+        }
     }
 
     @Override
-    public int getTotalAvailableVehiclesAuto(int vehicleCount, int passengerCount, LocalDateTime startDate, LocalDateTime endDate, int displayAll) {
-        return 0;
+    public int getTotalAvailableVehiclesAuto(VehicleContractAutoReq vehicleContractAutoReq, int displayAll) {
+        List<Integer> seats = vehicleMiscComponent.getSeatsList();
+        vehicleContractAutoReq.getRequest().setSeatsMin(seats.get(0));
+        vehicleContractAutoReq.getRequest().setSeatsMax(seats.get(seats.size()-1));
+
+        return contractVehicleComponent.getTotalAvailableVehicles(vehicleContractAutoReq.getRequest(), displayAll);
     }
+
 
 }

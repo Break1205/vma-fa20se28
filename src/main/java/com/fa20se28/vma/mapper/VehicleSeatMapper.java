@@ -32,4 +32,8 @@ public interface VehicleSeatMapper {
             "price_per_hour = #{s_req.pricePerHour} " +
             "WHERE seats_id = #{s_req.seatsId} ")
     int updateSeats(@Param("s_req") SeatsReq seatsReq);
+
+    @Select("SELECT DISTINCT seats " +
+            "FROM vehicle_seat ")
+    List<Integer> getSeatNumbers();
 }
