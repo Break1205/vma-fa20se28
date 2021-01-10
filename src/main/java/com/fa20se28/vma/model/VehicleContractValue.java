@@ -2,8 +2,7 @@ package com.fa20se28.vma.model;
 
 public class VehicleContractValue {
     private int contractId;
-    private float totalValue;
-    private int totalVehicles;
+    private float value;
 
     public int getContractId() {
         return contractId;
@@ -13,19 +12,11 @@ public class VehicleContractValue {
         this.contractId = contractId;
     }
 
-    public float getTotalValue() {
-        return totalValue;
+    public float getValue() {
+        return value;
     }
 
-    public void setTotalValue(float totalValue) {
-        this.totalValue = totalValue;
-    }
-
-    public int getTotalVehicles() {
-        return totalVehicles;
-    }
-
-    public void setTotalVehicles(int totalVehicles) {
-        this.totalVehicles = totalVehicles;
+    public void setValue(float value) {
+        this.value = value;
     }
 }

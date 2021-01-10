@@ -150,7 +150,7 @@ public interface ContractVehicleMapper {
     int getCompletedVehicleCount(@Param("c_id") int contractId);
 
     @Select({"<script> " +
-            "SELECT DISTINCT v.vehicle_id, v.model, vt.vehicle_type_id, vt.vehicle_type_name, vs.seats, v.year_of_manufacture " +
+            "SELECT DISTINCT v.vehicle_id, v.model, vt.vehicle_type_id, vt.vehicle_type_name, vs.seats_id, vs.seats, v.year_of_manufacture " +
             "FROM vehicle v " +
             "JOIN vehicle_type vt ON v.vehicle_type_id = vt.vehicle_type_id " +
             "JOIN vehicle_seat vs ON vs.seats_id = v.seats_id " +
@@ -173,31 +173,23 @@ public interface ContractVehicleMapper {
             "<if test = \"vr_req.vehicleTypeId != 0\" > " +
             "AND vt.vehicle_type_id =  #{vr_req.vehicleTypeId} " +
             "</if> " +
+            "<if test = \"vr_req.ignoreSleeperBus == true\" > " +
+            "AND vt.vehicle_type_name NOT LIKE '%sleeper%' " +
+            "</if> " +
             "<if test = \"vr_req.yearMin != null\" > " +
             "AND v.year_of_manufacture &gt;= #{vr_req.yearMin} " +
             "</if> " +
             "<if test = \"vr_req.yearMax != null\" > " +
             "AND v.year_of_manufacture &lt;= #{vr_req.yearMax} " +
             "</if> " +
-            "AND v.vehicle_id IN " +
-            "( " +
+            "AND v.vehicle_id NOT IN " +
+            "(" +
             "SELECT iv.vehicle_id " +
             "FROM issued_vehicle iv " +
-            "WHERE iv.issued_vehicle_id NOT IN " +
-            "( " +
-            "SELECT cv.issued_vehicle_id " +
-            "FROM contract_vehicles cv " +
-            "JOIN contract_trip cd ON cd.contract_trip_id = cv.contract_trip_id " +
-            "WHERE cv.contract_trip_id IN " +
-            "( " +
-            "SELECT cd.contract_trip_id " +
-            "FROM contract_trip cd " +
-            "WHERE " +
-            "cd.departure_time &lt; (SELECT DATEADD(hour, +2, CAST(#{vr_req.endDate} AS datetime) )) " +
-            "AND cd.destination_time &gt;= (SELECT DATEADD(hour, -2,  CAST(#{vr_req.startDate} AS datetime) )) " +
-            ") " +
-            "GROUP BY cv.issued_vehicle_id " +
-            ") " +
+            "JOIN contract_vehicles cv ON iv.issued_vehicle_id = cv.issued_vehicle_id " +
+            "JOIN contract_trip ct ON ct.contract_trip_id = cv.contract_trip_id " +
+            "WHERE ct.departure_time &lt; (SELECT DATEADD(hour, CAST(CONCAT('-', #{vr_req.bufferPre}) AS int), CAST(#{vr_req.endDate} AS datetime) )) " +
+            "AND ct.destination_time &gt;= (SELECT DATEADD(hour, CAST(CONCAT('+', #{vr_req.bufferPost}) AS int),  CAST(#{vr_req.startDate} AS datetime) )) " +
             "GROUP BY iv.vehicle_id " +
             ") " +
             "ORDER BY v.year_of_manufacture DESC " +
@@ -206,9 +198,20 @@ public interface ContractVehicleMapper {
             @Result(property = "vehicleId", column = "vehicle_id"),
             @Result(property = "vehicleType.vehicleTypeId", column = "vehicle_type_id"),
             @Result(property = "vehicleType.vehicleTypeName", column = "vehicle_type_name"),
-            @Result(property = "yearOfManufacture", column = "year_of_manufacture")
+            @Result(property = "yearOfManufacture", column = "year_of_manufacture"),
+            @Result(property = "prices", column = "seats_id", one = @One(select = "getSeatPrices"))
     })
     List<VehicleContract> getAvailableVehicles(@Param("vr_req") VehicleContractReq vehicleContractReq);
+
+    @Select("SELECT price_per_day, price_per_distance, price_per_hour " +
+            "FROM vehicle_seat " +
+            "WHERE seats_id = #{s_id} ")
+    @Results(id = "seatPriceResult", value = {
+            @Result(property = "pricePerDay", column = "price_per_day"),
+            @Result(property = "pricePerDistance", column = "price_per_distance"),
+            @Result(property = "pricePerHour", column = "price_per_hour"),
+    })
+    List<SeatPrice> getSeatPrices(@Param("s_id") int seatsId);
 
     @Delete("DELETE cv FROM contract_vehicles cv " +
             "JOIN contract_trip cd  " +
@@ -258,50 +261,17 @@ public interface ContractVehicleMapper {
             @Param("iv_id") int issuedVehicleId,
             @Param("t_current") LocalDateTime currentDateTime);
 
-    @Select("SELECT DISTINCT c.contract_id, c.total_price, q1.total_vehicle " +
+    @Select("SELECT SUM(cv.contributor_money) AS total " +
             "FROM contract_vehicles cv " +
             "JOIN issued_vehicle iv ON cv.issued_vehicle_id = iv.issued_vehicle_id " +
-            "JOIN contract_trip cd ON cv.contract_trip_id = cd.contract_trip_id " +
-            "JOIN [contract] c ON cd.contract_id = c.contract_id " +
-            "JOIN " +
-            "(" +
-            "SELECT q.contract_id, SUM(q.total_vehicle) AS total_vehicle " +
-            "FROM " +
-            "(SELECT COUNT(cv.contract_vehicle_id) AS total_vehicle, cv.contract_trip_id, c.contract_id " +
-            "FROM contract_vehicles cv " +
-            "JOIN contract_trip cd ON cv.contract_trip_id = cd.contract_trip_id " +
-            "JOIN [contract] c ON cd.contract_id = c.contract_id " +
-            "GROUP BY cv.contract_trip_id, c.contract_id) q " +
-            "GROUP BY q.contract_id " +
-            ") q1 ON c.contract_id = q1.contract_id " +
+            "JOIN contract_trip ct ON cv.contract_trip_id = ct.contract_trip_id " +
             "WHERE iv.vehicle_id = #{v_id} " +
-            "AND cd.destination_time BETWEEN CAST(CONCAT(#{t_first}, ' 00:00:00') AS datetime) AND CAST(CONCAT(#{t_last}, ' 23:59:59') AS datetime) ")
-    @Results(id = "vehicleCountResult", value = {
-            @Result(property = "contractId", column = "contract_id"),
-            @Result(property = "totalValue", column = "total_price"),
-            @Result(property = "totalVehicles", column = "total_vehicle")
-    })
-    List<VehicleContractValue> getVehicleCountFromContract(
+            "AND cv.contract_vehicle_status = 'COMPLETED' " +
+            "AND ct.destination_time BETWEEN CAST(CONCAT(#{t_first}, ' 00:00:00') AS datetime) AND CAST(CONCAT(#{t_last}, ' 23:59:59') AS datetime) ")
+    String getVehicleEarnedValue(
             @Param("v_id") String vehicleId,
             @Param("t_first") LocalDate firstDate,
             @Param("t_last") LocalDate lastDate);
-
-    @Select("SELECT SUM(q1.occurrence) AS occurrence " +
-            "FROM " +
-            "( " +
-            "SELECT COUNT(cv.contract_vehicle_id) AS occurrence, cv.contract_trip_id, c.contract_id " +
-            "FROM contract_vehicles cv " +
-            "JOIN contract_trip cd ON cv.contract_trip_id = cd.contract_trip_id " +
-            "JOIN [contract] c ON cd.contract_id = c.contract_id " +
-            "JOIN issued_vehicle iv ON iv.issued_vehicle_id = cv.issued_vehicle_id " +
-            "WHERE iv.vehicle_id = #{v_id} " +
-            "GROUP BY cv.contract_trip_id, c.contract_id " +
-            ") q1 " +
-            "WHERE q1.contract_id = #{c_id} " +
-            "GROUP BY q1.contract_id ")
-    int getOccurrence(
-            @Param("c_id") int contractId,
-            @Param("v_id") String vehicleId);
 
     @Select("SELECT  " +
             "contract_vehicle_id,  " +

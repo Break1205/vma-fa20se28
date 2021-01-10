@@ -101,4 +101,11 @@ public class VehicleMiscComponentImpl implements VehicleMiscComponent {
             throw new DataExecutionException("Unknown error occurred. Seats update failed!");
         }
     }
+
+    @Override
+    public List<Integer> getSeatsList() {
+        return vehicleSeatMapper.getSeatNumbers();
+    }
+
+
 }

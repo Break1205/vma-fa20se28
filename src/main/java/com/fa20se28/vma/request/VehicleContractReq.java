@@ -14,8 +14,11 @@ public class VehicleContractReq {
     private LocalDateTime endDate;
     private String yearMin;
     private String yearMax;
+    private boolean ignoreSleeperBus;
+    private int bufferPre;
+    private int bufferPost;
 
-    public VehicleContractReq(int vehicleTypeId, int seatsMin, int seatsMax, LocalDateTime startDate, LocalDateTime endDate, String yearMin, String yearMax) {
+    public VehicleContractReq(int vehicleTypeId, int seatsMin, int seatsMax, LocalDateTime startDate, LocalDateTime endDate, String yearMin, String yearMax, boolean ignoreSleeperBus, int bufferPre, int bufferPost) {
         this.vehicleTypeId = vehicleTypeId;
         this.seatsMin = seatsMin;
         this.seatsMax = seatsMax;
@@ -23,6 +26,9 @@ public class VehicleContractReq {
         this.endDate = endDate;
         this.yearMin = yearMin;
         this.yearMax = yearMax;
+        this.ignoreSleeperBus = ignoreSleeperBus;
+        this.bufferPre = bufferPre;
+        this.bufferPost = bufferPost;
     }
 
     public int getVehicleTypeId() {
@@ -79,5 +85,29 @@ public class VehicleContractReq {
 
     public void setYearMax(String yearMax) {
         this.yearMax = yearMax;
+    }
+
+    public boolean isIgnoreSleeperBus() {
+        return ignoreSleeperBus;
+    }
+
+    public void setIgnoreSleeperBus(boolean ignoreSleeperBus) {
+        this.ignoreSleeperBus = ignoreSleeperBus;
+    }
+
+    public int getBufferPre() {
+        return bufferPre;
+    }
+
+    public void setBufferPre(int bufferPre) {
+        this.bufferPre = bufferPre;
+    }
+
+    public int getBufferPost() {
+        return bufferPost;
+    }
+
+    public void setBufferPost(int bufferPost) {
+        this.bufferPost = bufferPost;
     }
 }
