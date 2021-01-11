@@ -9,6 +9,5 @@ public enum VehicleStatus {
     DELETED,
     REJECTED,
     NEED_REPAIR,
-    REPAIRING,
-    RETURNING
+    REPAIRING
 }
