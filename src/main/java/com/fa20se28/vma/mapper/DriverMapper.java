@@ -50,7 +50,7 @@ public interface DriverMapper {
             "FROM vehicle v " +
             "JOIN issued_vehicle iv  " +
             "ON v.vehicle_id = iv.vehicle_id " +
-            "WHERE v.vehicle_status IN ('AVAILABLE','ON_ROUTE')  " +
+            "WHERE v.vehicle_status IN ('AVAILABLE','ON_ROUTE','NEED_REPAIR','REPAIRING') " +
             "AND iv.returned_date IS NULL  " +
             ") vehicles  " +
             "ON drivers.user_id = vehicles.driver_id")
@@ -107,7 +107,7 @@ public interface DriverMapper {
             "FROM vehicle v  " +
             "JOIN issued_vehicle iv " +
             "ON v.vehicle_id = iv.vehicle_id  " +
-            "WHERE v.vehicle_status IN ('AVAILABLE','ON_ROUTE') " +
+            "WHERE v.vehicle_status IN ('AVAILABLE','ON_ROUTE','NEED_REPAIR','REPAIRING') " +
             "AND iv.returned_date IS NULL " +
             ") vehicles " +
             "ON drivers.user_id = vehicles.driver_id " +
@@ -125,7 +125,7 @@ public interface DriverMapper {
 
     @Select({"<script>" +
             "SELECT COUNT(c.user_id) " +
-            "FROM ("+
+            "FROM (" +
             "SELECT " +
             "drivers.user_id, " +
             "drivers.full_name, " +
@@ -165,7 +165,7 @@ public interface DriverMapper {
             "FROM vehicle v " +
             "JOIN issued_vehicle iv  " +
             "ON v.vehicle_id = iv.vehicle_id " +
-            "WHERE v.vehicle_status IN ('AVAILABLE','ON_ROUTE')  " +
+            "WHERE v.vehicle_status IN ('AVAILABLE','ON_ROUTE','NEED_REPAIR','REPAIRING') " +
             "AND iv.returned_date IS NULL  " +
             ") vehicles  " +
             "ON drivers.user_id = vehicles.driver_id ) c " +
@@ -192,7 +192,7 @@ public interface DriverMapper {
             "JOIN [user] u  " +
             "ON ov.user_id = u.user_id " +
             "WHERE ov.user_id = #{ownerId}  " +
-            "AND v.vehicle_status IN ('ON_ROUTE','AVAILABLE')  " +
+            "AND v.vehicle_status IN ('AVAILABLE','ON_ROUTE','NEED_REPAIR','REPAIRING') " +
             "AND iv.returned_date IS NULL ) iv " +
             "ON u.user_id = iv.driver_id  " +
             "WHERE 1=1  " +
@@ -236,7 +236,7 @@ public interface DriverMapper {
             "JOIN [user] u  " +
             "ON ov.user_id = u.user_id  " +
             "WHERE ov.user_id = #{ownerId}  " +
-            "AND v.vehicle_status IN ('ON_ROUTE','AVAILABLE')  " +
+            "AND v.vehicle_status IN ('AVAILABLE','ON_ROUTE','NEED_REPAIR','REPAIRING') " +
             "AND iv.returned_date IS NULL ) iv " +
             "ON u.user_id = iv.driver_id  " +
             "WHERE 1=1  " +
