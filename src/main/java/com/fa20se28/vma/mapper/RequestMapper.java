@@ -22,7 +22,8 @@ public interface RequestMapper {
             "request_status, " +
             "request_type, " +
             "create_date, " +
-            "description) " +
+            "description," +
+            "coordinates) " +
             "VALUES " +
             "(#{r_insert.userId}, " +
             "#{r_insert.userDocumentId}, " +
@@ -32,7 +33,8 @@ public interface RequestMapper {
             "#{r_insert.requestStatus}, " +
             "#{r_insert.requestType}, " +
             "#{r_insert.createDate}, " +
-            "#{r_insert.desc}) ")
+            "#{r_insert.desc}," +
+            "#{r_insert.coordinates}) ")
     @Options(keyProperty = "requestId", useGeneratedKeys = true)
     int insertRequest(@Param("r_insert") ReqInsertReq object);
 
@@ -114,7 +116,8 @@ public interface RequestMapper {
             "contract_trip_id, " +
             "request_status,   " +
             "request_type,   " +
-            "description,   " +
+            "description," +
+            "coordinates,   " +
             "u.create_date  " +
             "FROM request  " +
             "JOIN [user] u " +
@@ -130,6 +133,7 @@ public interface RequestMapper {
             @Result(property = "contractTripId", column = "contract_trip_id"),
             @Result(property = "requestStatus", column = "request_status"),
             @Result(property = "requestType", column = "request_type"),
+            @Result(property = "coordinates", column = "coordinates"),
             @Result(property = "description", column = "description"),
             @Result(property = "createDate", column = "create_date")
     })

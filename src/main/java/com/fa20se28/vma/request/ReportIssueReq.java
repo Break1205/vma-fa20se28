@@ -4,6 +4,7 @@ public class ReportIssueReq {
     private String description;
     private String vehicleId;
     private String contractTripId;
+    private String coordinates;
 
     public String getDescription() {
         return description;
@@ -28,4 +29,13 @@ public class ReportIssueReq {
     public void setContractTripId(String contractTripId) {
         this.contractTripId = contractTripId;
     }
+
+    public String getCoordinates() {
+        return coordinates;
+    }
+
+    public void setCoordinates(String coordinates) {
+        this.coordinates = coordinates;
+    }
+
 }
