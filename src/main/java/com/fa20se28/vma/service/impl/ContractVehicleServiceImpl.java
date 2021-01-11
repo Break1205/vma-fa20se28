@@ -54,15 +54,15 @@ public class ContractVehicleServiceImpl implements ContractVehicleService {
         ClientRegistrationToken clientRegistrationToken = userComponent.findClientRegistrationTokenByUserId(
                 vehicleComponent.getCurrentDriver(contractVehicleReq.getVehicleId()).getUserId());
 
-       if (clientRegistrationToken != null) {
-           NotificationData notificationData = new NotificationData(
-                   NotificationType.CONTRACT_ASSIGNED,
-                   "You have been assigned with a trip!",
-                   String.valueOf(contractVehicleReq.getContractTripId()),
-                   null);
+        if (clientRegistrationToken != null) {
+            NotificationData notificationData = new NotificationData(
+                    NotificationType.CONTRACT_ASSIGNED,
+                    "You have been assigned with a trip!",
+                    String.valueOf(contractVehicleReq.getContractTripId()),
+                    null);
 
-           firebaseService.notifyUserByFCMToken(clientRegistrationToken, notificationData);
-       }
+            firebaseService.notifyUserByFCMToken(clientRegistrationToken, notificationData);
+        }
     }
 
     @Override
@@ -155,9 +155,9 @@ public class ContractVehicleServiceImpl implements ContractVehicleService {
         Collections.sort(seats);
 
         vehicleContractAutoReq.getRequest().setSeatsMin(seats.get(0));
-        vehicleContractAutoReq.getRequest().setSeatsMax(seats.get(seats.size()-1));
+        vehicleContractAutoReq.getRequest().setSeatsMax(seats.get(seats.size() - 1));
 
-        if (combinations.getResult().size()!=0) {
+        if (combinations.getResult().size() != 0) {
             return new VehicleContractRes(combinations.getResult(), contractVehicleComponent.getAvailableVehicles(vehicleContractAutoReq.getRequest(), pageNum, displayAll));
         } else {
             return new VehicleContractRes(null, null);
@@ -168,7 +168,7 @@ public class ContractVehicleServiceImpl implements ContractVehicleService {
     public int getTotalAvailableVehiclesAuto(VehicleContractAutoReq vehicleContractAutoReq, int displayAll) {
         List<Integer> seats = vehicleMiscComponent.getSeatsList();
         vehicleContractAutoReq.getRequest().setSeatsMin(seats.get(0));
-        vehicleContractAutoReq.getRequest().setSeatsMax(seats.get(seats.size()-1));
+        vehicleContractAutoReq.getRequest().setSeatsMax(seats.get(seats.size() - 1));
 
         return contractVehicleComponent.getTotalAvailableVehicles(vehicleContractAutoReq.getRequest(), displayAll);
     }

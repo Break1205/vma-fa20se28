@@ -16,6 +16,7 @@ public class ReqInsertReq {
     private RequestType requestType;
     private String desc;
     private LocalDateTime createDate;
+    private String coordinates;
 
     public ReqInsertReq(String userId,
                         String userDocumentId,
@@ -25,7 +26,8 @@ public class ReqInsertReq {
                         RequestStatus requestStatus,
                         RequestType requestType,
                         String desc,
-                        LocalDateTime createDate) {
+                        LocalDateTime createDate,
+                        String coordinates) {
         this.userId = userId;
         this.userDocumentId = userDocumentId;
         this.vehicleId = vehicleId;
@@ -35,6 +37,7 @@ public class ReqInsertReq {
         this.requestType = requestType;
         this.desc = desc;
         this.createDate = createDate;
+        this.coordinates = coordinates;
     }
 
     public int getRequestId() {
@@ -115,5 +118,13 @@ public class ReqInsertReq {
 
     public void setCreateDate(LocalDateTime createDate) {
         this.createDate = createDate;
+    }
+
+    public String getCoordinates() {
+        return coordinates;
+    }
+
+    public void setCoordinates(String coordinates) {
+        this.coordinates = coordinates;
     }
 }

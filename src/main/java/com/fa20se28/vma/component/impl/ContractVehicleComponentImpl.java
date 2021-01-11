@@ -237,8 +237,8 @@ public class ContractVehicleComponentImpl implements ContractVehicleComponent {
             if (monthDifferent != 0) {
                 float totalValue = 0;
 
-                for (int i = 0; i< monthDifferent; i++) {
-                    LocalDate firstDateOfMonth =  firstDateOfTimeframe.plusMonths(i);
+                for (int i = 0; i < monthDifferent; i++) {
+                    LocalDate firstDateOfMonth = firstDateOfTimeframe.plusMonths(i);
                     LocalDate lastDateOfMonth = firstDateOfMonth.withDayOfMonth(firstDateOfMonth.lengthOfMonth());
 
                     totalValue += calculateEstimatedValue(vehicle.getVehicleId(), firstDateOfMonth, lastDateOfMonth);
@@ -342,7 +342,7 @@ public class ContractVehicleComponentImpl implements ContractVehicleComponent {
             contractVehicle.setContractVehicleStatus(ContractVehicleStatus.NOT_STARTED);
             contractVehicle.setBackupLocation(backUpVehicleReq.getBrokenVehicleLocation());
             contractVehicle.setDriverMoney(backUpVehicleReq.isFar() ? 0 : driverMoney / backUpVehicleReq.getVehiclesId().size());
-            contractVehicle.setContributorMoney(backUpVehicleReq.isFar() ? 0 :contributorMoney / backUpVehicleReq.getVehiclesId().size());
+            contractVehicle.setContributorMoney(backUpVehicleReq.isFar() ? 0 : contributorMoney / backUpVehicleReq.getVehiclesId().size());
 
             contractVehicleRow += contractVehicleMapper.assignVehicleForContract(contractVehicle);
         }

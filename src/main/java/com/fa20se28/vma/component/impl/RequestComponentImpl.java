@@ -35,7 +35,8 @@ public class RequestComponentImpl implements RequestComponent {
                 null, RequestStatus.PENDING,
                 requestReq.getRequestType(),
                 requestReq.getDescription(),
-                LocalDateTime.now());
+                LocalDateTime.now(),
+                null);
 
         int row = requestMapper.insertRequest(insertReq);
 
@@ -80,7 +81,8 @@ public class RequestComponentImpl implements RequestComponent {
                 null, RequestStatus.PENDING,
                 vehicleDocumentRequestReq.getRequestType(),
                 vehicleDocumentRequestReq.getDescription(),
-                LocalDateTime.now());
+                LocalDateTime.now(),
+                null);
 
         int row = requestMapper.insertRequest(insertReq);
 
@@ -102,7 +104,8 @@ public class RequestComponentImpl implements RequestComponent {
                 RequestStatus.PENDING,
                 vehicleRequestReq.getRequestType(),
                 vehicleRequestReq.getDescription(),
-                LocalDateTime.now());
+                LocalDateTime.now(),
+                null);
 
         int row = requestMapper.insertRequest(insertReq);
 
@@ -124,7 +127,8 @@ public class RequestComponentImpl implements RequestComponent {
                 RequestStatus.PENDING,
                 vehicleChangeRequestReq.getRequestType(),
                 vehicleChangeRequestReq.getDescription(),
-                LocalDateTime.now());
+                LocalDateTime.now(),
+                null);
 
         int row = requestMapper.insertRequest(insertReq);
 
@@ -146,7 +150,8 @@ public class RequestComponentImpl implements RequestComponent {
                 RequestStatus.PENDING,
                 requestType,
                 reportIssueReq.getDescription(),
-                LocalDateTime.now());
+                LocalDateTime.now(),
+                reportIssueReq.getCoordinates());
 
         int row = requestMapper.insertRequest(insertReq);
 

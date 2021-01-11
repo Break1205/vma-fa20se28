@@ -17,6 +17,7 @@ public class RequestDetail {
     private RequestType requestType;
     private String description;
     private LocalDate createDate;
+    private String coordinates;
 
     public int getRequestId() {
         return requestId;
@@ -104,5 +105,13 @@ public class RequestDetail {
 
     public void setContractTripId(int contractTripId) {
         this.contractTripId = contractTripId;
+    }
+
+    public String getCoordinates() {
+        return coordinates;
+    }
+
+    public void setCoordinates(String coordinates) {
+        this.coordinates = coordinates;
     }
 }
