@@ -37,4 +37,6 @@ public interface ContractVehicleComponent {
     int getTotalAvailableVehicles(VehicleContractReq vehicleContractReq, int displayAll);
 
     void assignBackUpVehicleForContract(String oldVehicleId, int contractTripId, BackUpVehicleReq backUpVehicleReq);
+
+    List<Integer> getAvailableSeats(VehicleContractReq vehicleContractReq);
 }

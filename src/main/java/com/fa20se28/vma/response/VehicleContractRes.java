@@ -3,21 +3,22 @@ package com.fa20se28.vma.response;
 import com.fa20se28.vma.model.VehicleContract;
 
 import java.util.List;
+import java.util.Map;
 
 public class VehicleContractRes {
-    private List<List<Integer>> combinations;
+    private Map<Integer, List<Integer>> combinations;
     private List<VehicleContract> vehicleList;
 
-    public VehicleContractRes(List<List<Integer>> combinations, List<VehicleContract> vehicleList) {
+    public VehicleContractRes(Map<Integer, List<Integer>> combinations, List<VehicleContract> vehicleList) {
         this.combinations = combinations;
         this.vehicleList = vehicleList;
     }
 
-    public List<List<Integer>> getCombinations() {
+    public Map<Integer, List<Integer>> getCombinations() {
         return combinations;
     }
 
-    public void setCombinations(List<List<Integer>> combinations) {
+    public void setCombinations(Map<Integer, List<Integer>> combinations) {
         this.combinations = combinations;
     }
 

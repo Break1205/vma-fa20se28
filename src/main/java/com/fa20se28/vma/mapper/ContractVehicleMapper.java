@@ -159,10 +159,10 @@ public interface ContractVehicleMapper {
             "( " +
             "SELECT DISTINCT vs.vehicle_status " +
             "FROM vehicle vs " +
-            "WHERE vs.vehicle_status = 'REJECTED' " +
-            "OR vs.vehicle_status = 'PENDING_APPROVAL' " +
-            "OR vs.vehicle_status = 'DELETED' " +
-            "OR vs.vehicle_status = 'AVAILABLE_NO_DRIVER' " +
+            "WHERE vs.vehicle_status = 'AVAILABLE_NO_DRIVER' OR vs.vehicle_status = 'MAINTENANCE' " +
+            "OR vs.vehicle_status = 'PENDING_APPROVAL' OR vs.vehicle_status = 'DELETED' " +
+            "OR vs.vehicle_status = 'REJECTED' OR vs.vehicle_status = 'NEED_REPAIR' " +
+            "OR vs.vehicle_status = 'REPAIRING' " +
             ") " +
             "<if test = \"vr_req.seatsMin != 0\" > " +
             "AND vs.seats &gt;= #{vr_req.seatsMin} " +
@@ -202,6 +202,53 @@ public interface ContractVehicleMapper {
             @Result(property = "prices", column = "seats_id", one = @One(select = "getSeatPrices"))
     })
     List<VehicleContract> getAvailableVehicles(@Param("vr_req") VehicleContractReq vehicleContractReq);
+
+    @Select({"<script> " +
+            "SELECT vs.seats " +
+            "FROM vehicle v " +
+            "JOIN vehicle_type vt ON v.vehicle_type_id = vt.vehicle_type_id " +
+            "JOIN vehicle_seat vs ON vs.seats_id = v.seats_id " +
+            "WHERE " +
+            "v.vehicle_status NOT IN " +
+            "( " +
+            "SELECT DISTINCT vs.vehicle_status " +
+            "FROM vehicle vs " +
+            "WHERE vs.vehicle_status = 'AVAILABLE_NO_DRIVER' OR vs.vehicle_status = 'MAINTENANCE' " +
+            "OR vs.vehicle_status = 'PENDING_APPROVAL' OR vs.vehicle_status = 'DELETED' " +
+            "OR vs.vehicle_status = 'REJECTED' OR vs.vehicle_status = 'NEED_REPAIR' " +
+            "OR vs.vehicle_status = 'REPAIRING' " +
+            ") " +
+            "<if test = \"vr_req.seatsMin != 0\" > " +
+            "AND vs.seats &gt;= #{vr_req.seatsMin} " +
+            "</if> " +
+            "<if test = \"vr_req.seatsMax != 0\" > " +
+            "AND vs.seats &lt;= #{vr_req.seatsMax} " +
+            "</if> " +
+            "<if test = \"vr_req.vehicleTypeId != 0\" > " +
+            "AND vt.vehicle_type_id =  #{vr_req.vehicleTypeId} " +
+            "</if> " +
+            "<if test = \"vr_req.ignoreSleeperBus == true\" > " +
+            "AND vt.vehicle_type_name NOT LIKE '%sleeper%' " +
+            "</if> " +
+            "<if test = \"vr_req.yearMin != null\" > " +
+            "AND v.year_of_manufacture &gt;= #{vr_req.yearMin} " +
+            "</if> " +
+            "<if test = \"vr_req.yearMax != null\" > " +
+            "AND v.year_of_manufacture &lt;= #{vr_req.yearMax} " +
+            "</if> " +
+            "AND v.vehicle_id NOT IN " +
+            "(" +
+            "SELECT iv.vehicle_id " +
+            "FROM issued_vehicle iv " +
+            "JOIN contract_vehicles cv ON iv.issued_vehicle_id = cv.issued_vehicle_id " +
+            "JOIN contract_trip ct ON ct.contract_trip_id = cv.contract_trip_id " +
+            "WHERE ct.departure_time &lt; (SELECT DATEADD(hour, CAST(CONCAT('-', #{vr_req.bufferPre}) AS int), CAST(#{vr_req.endDate} AS datetime) )) " +
+            "AND ct.destination_time &gt;= (SELECT DATEADD(hour, CAST(CONCAT('+', #{vr_req.bufferPost}) AS int),  CAST(#{vr_req.startDate} AS datetime) )) " +
+            "GROUP BY iv.vehicle_id " +
+            ") " +
+            "ORDER BY v.year_of_manufacture DESC " +
+            "</script>"})
+    List<Integer> getAvailableSeats(@Param("vr_req") VehicleContractReq vehicleContractReq);
 
     @Select("SELECT price_per_day, price_per_distance, price_per_hour " +
             "FROM vehicle_seat " +
