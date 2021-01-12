@@ -3,7 +3,6 @@ package com.fa20se28.vma.service.impl;
 import com.fa20se28.vma.component.ContractVehicleComponent;
 import com.fa20se28.vma.component.UserComponent;
 import com.fa20se28.vma.component.VehicleComponent;
-import com.fa20se28.vma.component.VehicleMiscComponent;
 import com.fa20se28.vma.configuration.Combinations;
 import com.fa20se28.vma.enums.ContractVehicleStatus;
 import com.fa20se28.vma.enums.NotificationType;
@@ -20,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ContractVehicleServiceImpl implements ContractVehicleService {
@@ -27,14 +27,12 @@ public class ContractVehicleServiceImpl implements ContractVehicleService {
     private final UserComponent userComponent;
     private final FirebaseService firebaseService;
     private final VehicleComponent vehicleComponent;
-    private final VehicleMiscComponent vehicleMiscComponent;
 
-    public ContractVehicleServiceImpl(ContractVehicleComponent contractVehicleComponent, UserComponent userComponent, FirebaseService firebaseService, VehicleComponent vehicleComponent, VehicleMiscComponent vehicleMiscComponent) {
+    public ContractVehicleServiceImpl(ContractVehicleComponent contractVehicleComponent, UserComponent userComponent, FirebaseService firebaseService, VehicleComponent vehicleComponent) {
         this.contractVehicleComponent = contractVehicleComponent;
         this.userComponent = userComponent;
         this.firebaseService = firebaseService;
         this.vehicleComponent = vehicleComponent;
-        this.vehicleMiscComponent = vehicleMiscComponent;
     }
 
     @Override
@@ -149,29 +147,56 @@ public class ContractVehicleServiceImpl implements ContractVehicleService {
 
     @Override
     public VehicleContractRes getAvailableVehiclesAuto(VehicleContractAutoReq vehicleContractAutoReq, int pageNum, int displayAll) {
-        List<Integer> seats = vehicleMiscComponent.getSeatsList();
-        Combinations combinations = new Combinations(seats, vehicleContractAutoReq.getPassengerCount(), vehicleContractAutoReq.getVehicleCount());
-        combinations.calculateCombinations();
+        List<Integer> seats = contractVehicleComponent.getAvailableSeats(vehicleContractAutoReq.getRequest());
         Collections.sort(seats);
 
-        vehicleContractAutoReq.getRequest().setSeatsMin(seats.get(0));
-        vehicleContractAutoReq.getRequest().setSeatsMax(seats.get(seats.size() - 1));
+        if (!seats.isEmpty()) {
+             int minSeat = Collections.min(seats);
+             int maxSeat = Collections.max(seats);
 
-        if (combinations.getResult().size() != 0) {
-            return new VehicleContractRes(combinations.getResult(), contractVehicleComponent.getAvailableVehicles(vehicleContractAutoReq.getRequest(), pageNum, displayAll));
-        } else {
-            return new VehicleContractRes(null, null);
+            if (minSeat < maxSeat && minSeat != 0) {
+                vehicleContractAutoReq.getRequest().setSeatsMin(minSeat);
+            }
+            vehicleContractAutoReq.getRequest().setSeatsMax(maxSeat);
+
+            Map<Integer, List<Integer>> combinations = calculateCombination(vehicleContractAutoReq, seats);
+
+            if (combinations != null) {
+                return new VehicleContractRes(combinations, contractVehicleComponent.getAvailableVehicles(vehicleContractAutoReq.getRequest(), pageNum, displayAll));
+            }
         }
+
+        return new VehicleContractRes(null, null);
     }
 
     @Override
     public int getTotalAvailableVehiclesAuto(VehicleContractAutoReq vehicleContractAutoReq, int displayAll) {
-        List<Integer> seats = vehicleMiscComponent.getSeatsList();
-        vehicleContractAutoReq.getRequest().setSeatsMin(seats.get(0));
-        vehicleContractAutoReq.getRequest().setSeatsMax(seats.get(seats.size() - 1));
+        List<Integer> seats = contractVehicleComponent.getAvailableSeats(vehicleContractAutoReq.getRequest());
+        Collections.sort(seats);
 
-        return contractVehicleComponent.getTotalAvailableVehicles(vehicleContractAutoReq.getRequest(), displayAll);
+        if (!seats.isEmpty()) {
+            int minSeat = Collections.min(seats);
+            int maxSeat = Collections.max(seats);
+
+            if (minSeat < maxSeat && minSeat != 0) {
+                vehicleContractAutoReq.getRequest().setSeatsMin(minSeat);
+            }
+            vehicleContractAutoReq.getRequest().setSeatsMax(maxSeat);
+
+            Map<Integer, List<Integer>> combinations = calculateCombination(vehicleContractAutoReq, seats);
+
+            if (combinations != null) {
+                return contractVehicleComponent.getTotalAvailableVehicles(vehicleContractAutoReq.getRequest(), displayAll);
+            }
+        }
+
+        return 0;
     }
 
+    private Map<Integer, List<Integer>> calculateCombination(VehicleContractAutoReq vehicleContractAutoReq, List<Integer> seats) {
+        Combinations combinations = new Combinations(seats, vehicleContractAutoReq.getVehicleCount(), vehicleContractAutoReq.getPassengerCount());
+        combinations.calculateCombinations();
 
+        return combinations.getResultMap();
+    }
 }

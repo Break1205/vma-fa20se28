@@ -352,4 +352,9 @@ public class ContractVehicleComponentImpl implements ContractVehicleComponent {
         }
 
     }
+
+    @Override
+    public List<Integer> getAvailableSeats(VehicleContractReq vehicleContractReq) {
+        return contractVehicleMapper.getAvailableSeats(vehicleContractReq);
+    }
 }
