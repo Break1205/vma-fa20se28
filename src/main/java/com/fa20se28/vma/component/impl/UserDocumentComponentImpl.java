@@ -45,7 +45,7 @@ public class UserDocumentComponentImpl implements UserDocumentComponent {
             }
         }
         Optional<UserDocumentDetail> optionalUserDocumentDetail = userDocumentMapper
-                .findUserDocumentDetail(userDocumentReq.getUserDocumentNumber(), DocumentStatus.VALID);
+                .findUserDocumentDetailByUserDocumentNumber(userDocumentReq.getUserDocumentNumber(), DocumentStatus.VALID);
         if (optionalUserDocumentDetail.isPresent()) {
             throw new DataExecutionException("Document with number: " + userDocumentReq.getUserDocumentNumber() + " is duplicated");
         }
@@ -68,7 +68,7 @@ public class UserDocumentComponentImpl implements UserDocumentComponent {
     @Transactional
     @Override
     public int updateUserDocument(UserDocumentReq userDocumentReq, String userId) {
-        UserDocumentDetail userDocumentDetail = findUserDocumentDetailByNumber(userDocumentReq.getUserDocumentNumber(), DocumentStatus.VALID);
+        UserDocumentDetail userDocumentDetail = findUserDocumentDetailById(userDocumentReq.getUserDocumentId(), DocumentStatus.VALID);
         if (userDocumentDetail == null) {
             throw new ResourceNotFoundException("Can not find User Document with number: " + userDocumentReq.getUserDocumentNumber());
         }
@@ -97,10 +97,10 @@ public class UserDocumentComponentImpl implements UserDocumentComponent {
 
     @Transactional
     @Override
-    public void deleteUserDocument(String userDocumentNumber) {
-        UserDocumentDetail userDocumentDetail = findUserDocumentDetailByNumber(userDocumentNumber, DocumentStatus.VALID);
+    public void deleteUserDocument(int userDocumentId) {
+        UserDocumentDetail userDocumentDetail = findUserDocumentDetailById(userDocumentId, DocumentStatus.VALID);
         if (userDocumentDetail == null) {
-            throw new ResourceNotFoundException("Can not find User Document with number: " + userDocumentNumber);
+            throw new ResourceNotFoundException("Can not find User Document with id: " + userDocumentId);
         }
         userDocumentMapper.deleteUserDocument(String.valueOf(userDocumentDetail.getUserDocumentId()));
         userDocumentImageMapper.deleteUserDocumentImage(String.valueOf(userDocumentDetail.getUserDocumentId()));
@@ -115,7 +115,7 @@ public class UserDocumentComponentImpl implements UserDocumentComponent {
     @Override
     public int createUserDocumentWithRequest(UserDocumentReq userDocumentReq, String userId, DocumentStatus documentStatus) {
         Optional<UserDocumentDetail> optionalUserDocumentDetail = userDocumentMapper
-                .findUserDocumentDetail(userDocumentReq.getUserDocumentNumber(), DocumentStatus.VALID);
+                .findUserDocumentDetailByUserDocumentNumber(userDocumentReq.getUserDocumentNumber(), DocumentStatus.VALID);
         if (optionalUserDocumentDetail.isPresent()) {
             throw new DataExecutionException("Document with number: " + userDocumentReq.getUserDocumentNumber() + " is duplicated");
         }
@@ -195,12 +195,11 @@ public class UserDocumentComponentImpl implements UserDocumentComponent {
     }
 
     @Override
-    public UserDocumentDetail findUserDocumentDetailByNumber(String userDocumentNumber, DocumentStatus documentStatus) {
-        Optional<UserDocumentDetail> optionalUserDocumentDetail = userDocumentMapper.findUserDocumentDetail(userDocumentNumber, documentStatus);
+    public UserDocumentDetail findUserDocumentDetailById(int userDocumentId, DocumentStatus documentStatus) {
+        Optional<UserDocumentDetail> optionalUserDocumentDetail = userDocumentMapper.findUserDocumentDetail(userDocumentId, documentStatus);
         optionalUserDocumentDetail.ifPresent(detail ->
                 detail.setUserDocumentImages(
                         userDocumentImageMapper.findUserDocumentImageDetail(optionalUserDocumentDetail.get().getUserDocumentId())));
-        return optionalUserDocumentDetail.orElseThrow(() -> new ResourceNotFoundException("User document with number: " + userDocumentNumber + " not found"));
+        return optionalUserDocumentDetail.orElseThrow(() -> new ResourceNotFoundException("User document with number: " + userDocumentId + " not found"));
     }
 }
-

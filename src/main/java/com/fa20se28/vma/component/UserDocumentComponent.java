@@ -14,7 +14,7 @@ public interface UserDocumentComponent {
 
     int updateUserDocument(UserDocumentReq userDocumentReq, String userId);
 
-    void deleteUserDocument(String userDocumentId);
+    void deleteUserDocument(int userDocumentId);
 
     int createUserDocumentWithRequest(UserDocumentReq userDocumentReq, String userId, DocumentStatus documentStatus);
 
@@ -26,6 +26,6 @@ public interface UserDocumentComponent {
 
     int denyUpdateDocumentRequest(String userDocumentId);
 
-    UserDocumentDetail findUserDocumentDetailByNumber(String userDocumentId, DocumentStatus documentStatus);
+    UserDocumentDetail findUserDocumentDetailById(int userDocumentId, DocumentStatus documentStatus);
 
 }

@@ -22,7 +22,7 @@ public class UserDocumentServiceImpl implements UserDocumentService {
     }
 
     @Override
-    public void deleteUserDocument(String userDocumentId) {
+    public void deleteUserDocument(int userDocumentId) {
         userDocumentComponent.deleteUserDocument(userDocumentId);
     }
 
@@ -37,9 +37,9 @@ public class UserDocumentServiceImpl implements UserDocumentService {
     }
 
     @Override
-    public UserDocumentDetailRes getUserDocumentDetailById(String userDocumentId) {
+    public UserDocumentDetailRes getUserDocumentDetailById(int userDocumentId) {
         UserDocumentDetailRes userDocumentDetailRes = new UserDocumentDetailRes();
-        userDocumentDetailRes.setUserDocumentDetail(userDocumentComponent.findUserDocumentDetailByNumber(userDocumentId, DocumentStatus.VALID));
+        userDocumentDetailRes.setUserDocumentDetail(userDocumentComponent.findUserDocumentDetailById(userDocumentId, DocumentStatus.VALID));
         return userDocumentDetailRes;
     }
 }

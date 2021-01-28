@@ -12,7 +12,7 @@ public interface UserDocumentService {
 
     int updateUserDocument(UserDocumentReq userDocumentReq, String userId);
 
-    void deleteUserDocument(String userDocumentId);
+    void deleteUserDocument(int userDocumentId);
 
-    UserDocumentDetailRes getUserDocumentDetailById(String userDocumentId);
+    UserDocumentDetailRes getUserDocumentDetailById(int userDocumentId);
 }
