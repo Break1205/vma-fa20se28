@@ -28,5 +28,5 @@ jobs:
       with:
         app-name: 'vma-api'
         slot-name: 'production'
-        publish-profile: ${{ secrets.AzureAppService_PublishProfile_b004487c8fae4d9f90afa2f8bc2b320f }}
+        publish-profile: ${{ secrets.AzureAppService_PublishProfile_9dedce437c9041098d18b90c039fd1c0 }}
         package: '${{ github.workspace }}/target/*.jar'
