@@ -29,8 +29,8 @@ public class DocumentController {
         return userDocumentService.getUserDocuments(userId, documentStatus);
     }
 
-    @GetMapping("/user-documents/{user-document-number}")
-    public UserDocumentDetailRes getUserDocumentDetail(@PathVariable("user-document-number") String userDocumentNumber) {
+    @GetMapping("/user-documents/{user-document-id}")
+    public UserDocumentDetailRes getUserDocumentDetail(@PathVariable("user-document-id") int userDocumentNumber) {
         return userDocumentService.getUserDocumentDetailById(userDocumentNumber);
     }
 
@@ -53,8 +53,8 @@ public class DocumentController {
 
     @DeleteMapping("/admin/user-documents")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteUserDocument(@RequestParam String userDocumentNumber) {
-        userDocumentService.deleteUserDocument(userDocumentNumber);
+    public void deleteUserDocument(@RequestParam int userDocumentId) {
+        userDocumentService.deleteUserDocument(userDocumentId);
     }
 
     @GetMapping("/vehicles/documents")

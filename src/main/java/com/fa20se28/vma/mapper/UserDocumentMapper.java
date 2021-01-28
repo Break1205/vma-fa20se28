@@ -108,7 +108,7 @@ public interface UserDocumentMapper {
             "status,  " +
             "user_document_type " +
             "FROM user_document  " +
-            "WHERE user_document_number = #{userDocumentNumber} " +
+            "WHERE user_document_id = #{userDocumentId} " +
             "AND status = #{status}")
     @Results(id = "userDocumentDetailResult", value = {
             @Result(property = "userDocumentId", column = "user_document_id"),
@@ -122,8 +122,25 @@ public interface UserDocumentMapper {
             @Result(property = "documentStatus", column = "status"),
             @Result(property = "userDocumentType", column = "user_document_type"),
     })
-    Optional<UserDocumentDetail> findUserDocumentDetail(@Param("userDocumentNumber") String userDocumentNumber,
+    Optional<UserDocumentDetail> findUserDocumentDetail(@Param("userDocumentId") int userDocumentId,
                                                         @Param("status") DocumentStatus documentStatus);
+    @Select("SELECT  " +
+            "user_document_id, " +
+            "user_document_number,  " +
+            "user_id,  " +
+            "registered_location,  " +
+            "registered_date,  " +
+            "expiry_date,  " +
+            "create_date,  " +
+            "other_information," +
+            "status,  " +
+            "user_document_type " +
+            "FROM user_document  " +
+            "WHERE user_document_number = #{userDocumentNumber} " +
+            "AND status = #{status}")
+    @ResultMap("userDocumentDetailResult")
+    Optional<UserDocumentDetail> findUserDocumentDetailByUserDocumentNumber(@Param("userDocumentNumber") String userDocumentNumber,
+                                                                            @Param("status") DocumentStatus documentStatus);
 
     @Select("SELECT " +
             "user_document_id, " +
