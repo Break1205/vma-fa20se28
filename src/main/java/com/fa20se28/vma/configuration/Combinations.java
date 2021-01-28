@@ -1,6 +1,5 @@
 package com.fa20se28.vma.configuration;
 
-
 import java.util.*;
 
 public class Combinations {

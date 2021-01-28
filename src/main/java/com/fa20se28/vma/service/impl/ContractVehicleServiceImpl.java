@@ -161,7 +161,7 @@ public class ContractVehicleServiceImpl implements ContractVehicleService {
 
             Map<Integer, List<Integer>> combinations = calculateCombination(vehicleContractAutoReq, seats);
 
-            if (combinations != null) {
+            if (!combinations.isEmpty()) {
                 return new VehicleContractRes(combinations, contractVehicleComponent.getAvailableVehicles(vehicleContractAutoReq.getRequest(), pageNum, displayAll));
             }
         }
@@ -185,7 +185,7 @@ public class ContractVehicleServiceImpl implements ContractVehicleService {
 
             Map<Integer, List<Integer>> combinations = calculateCombination(vehicleContractAutoReq, seats);
 
-            if (combinations != null) {
+            if (!combinations.isEmpty()) {
                 return contractVehicleComponent.getTotalAvailableVehicles(vehicleContractAutoReq.getRequest(), displayAll);
             }
         }
