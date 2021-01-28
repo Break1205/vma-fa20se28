@@ -96,7 +96,8 @@ public interface UserDocumentMapper {
             "WHERE user_document_id = '${user_document_id}'")
     void deleteUserDocument(@Param("user_document_id") String userDocumentId);
 
-    @Select("SELECT  " +
+    @Select("<script>" +
+            "SELECT  " +
             "user_document_id, " +
             "user_document_number,  " +
             "user_id,  " +
@@ -109,7 +110,10 @@ public interface UserDocumentMapper {
             "user_document_type " +
             "FROM user_document  " +
             "WHERE user_document_id = #{userDocumentId} " +
-            "AND status = #{status}")
+            "<if test = \"status!=null\" > " +
+            "AND status = #{status}" +
+            "</if>  " +
+            "</script>")
     @Results(id = "userDocumentDetailResult", value = {
             @Result(property = "userDocumentId", column = "user_document_id"),
             @Result(property = "userDocumentNumber", column = "user_document_number"),

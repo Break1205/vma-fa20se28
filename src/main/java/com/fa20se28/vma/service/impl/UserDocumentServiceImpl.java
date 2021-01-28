@@ -39,7 +39,7 @@ public class UserDocumentServiceImpl implements UserDocumentService {
     @Override
     public UserDocumentDetailRes getUserDocumentDetailById(int userDocumentId) {
         UserDocumentDetailRes userDocumentDetailRes = new UserDocumentDetailRes();
-        userDocumentDetailRes.setUserDocumentDetail(userDocumentComponent.findUserDocumentDetailById(userDocumentId, DocumentStatus.VALID));
+        userDocumentDetailRes.setUserDocumentDetail(userDocumentComponent.findUserDocumentDetailById(userDocumentId, null));
         return userDocumentDetailRes;
     }
 }
