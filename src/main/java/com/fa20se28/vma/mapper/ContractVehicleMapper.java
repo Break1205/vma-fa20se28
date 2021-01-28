@@ -188,8 +188,8 @@ public interface ContractVehicleMapper {
             "FROM issued_vehicle iv " +
             "JOIN contract_vehicles cv ON iv.issued_vehicle_id = cv.issued_vehicle_id " +
             "JOIN contract_trip ct ON ct.contract_trip_id = cv.contract_trip_id " +
-            "WHERE ct.departure_time &lt; (SELECT DATEADD(hour, CAST(CONCAT('-', #{vr_req.bufferPre}) AS int), CAST(#{vr_req.endDate} AS datetime) )) " +
-            "AND ct.destination_time &gt;= (SELECT DATEADD(hour, CAST(CONCAT('+', #{vr_req.bufferPost}) AS int),  CAST(#{vr_req.startDate} AS datetime) )) " +
+            "WHERE ct.departure_time &lt; (SELECT DATEADD(hour, CAST(CONCAT('+', #{vr_req.bufferPost}) AS int), CAST(#{vr_req.endDate} AS datetime) )) " +
+            "AND ct.destination_time &gt;= (SELECT DATEADD(hour, CAST(CONCAT('-', #{vr_req.bufferPre}) AS int),  CAST(#{vr_req.startDate} AS datetime) )) " +
             "GROUP BY iv.vehicle_id " +
             ") " +
             "ORDER BY v.year_of_manufacture DESC " +
@@ -242,8 +242,8 @@ public interface ContractVehicleMapper {
             "FROM issued_vehicle iv " +
             "JOIN contract_vehicles cv ON iv.issued_vehicle_id = cv.issued_vehicle_id " +
             "JOIN contract_trip ct ON ct.contract_trip_id = cv.contract_trip_id " +
-            "WHERE ct.departure_time &lt; (SELECT DATEADD(hour, CAST(CONCAT('-', #{vr_req.bufferPre}) AS int), CAST(#{vr_req.endDate} AS datetime) )) " +
-            "AND ct.destination_time &gt;= (SELECT DATEADD(hour, CAST(CONCAT('+', #{vr_req.bufferPost}) AS int),  CAST(#{vr_req.startDate} AS datetime) )) " +
+            "WHERE ct.departure_time &lt; (SELECT DATEADD(hour, CAST(CONCAT('+', #{vr_req.bufferPost}) AS int), CAST(#{vr_req.endDate} AS datetime) )) " +
+            "AND ct.destination_time &gt;= (SELECT DATEADD(hour, CAST(CONCAT('-', #{vr_req.bufferPre}) AS int),  CAST(#{vr_req.startDate} AS datetime) )) " +
             "GROUP BY iv.vehicle_id " +
             ") " +
             "ORDER BY v.year_of_manufacture DESC " +
