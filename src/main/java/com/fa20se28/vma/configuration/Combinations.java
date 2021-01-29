@@ -23,35 +23,38 @@ public class Combinations {
     }
 
     public void calculateCombinations() {
-        List<Integer> list = new ArrayList<>();
-        getAllCombinations(this.availableSeats, this.vehicleCount, list, 0, this.passengerCount);
+        Integer[] temp = new Integer[availableSeats.size()];
+        Integer[] data = new Integer[vehicleCount];
+        getAllCombinations(availableSeats.toArray(temp), this.vehicleCount, data, 0, 0, this.passengerCount);
     }
 
-    private void getAllCombinations(List<Integer> availableSeats, int vehicleCount, List<Integer> list, int start, int passengerCount) {
-        if (list.size() >= vehicleCount) {
+    private void getAllCombinations(Integer[] availableSeats, int vehicleCount, Integer[] list, int index, int start, int passengerCount) {
+        if (index == vehicleCount) {
             int sum = 0;
-            for (Integer number: list) {
+            for (Integer number : list) {
                 sum += number;
             }
             if (sum >= passengerCount) {
-                List<Integer> temp = new ArrayList<>(list);
-                this.combinationSet.add(temp);
+                this.combinationSet.add(Arrays.asList(list));
             }
             return;
         }
 
-        for (int i = start; i < availableSeats.size(); i++) {
-            list.add(availableSeats.get(i));
-            getAllCombinations(availableSeats, vehicleCount, list, i + 1, passengerCount);
-            list.remove(list.size() - 1);
+        if (start >= availableSeats.length) {
+            return;
         }
+
+        list[index] = availableSeats[start];
+        getAllCombinations(availableSeats, vehicleCount, list, index + 1, start + 1, passengerCount);
+
+        getAllCombinations(availableSeats, vehicleCount, list, index, start + 1, passengerCount);
     }
 
 
     public Map<Integer, List<Integer>> getResultMap() {
-        for (List<Integer> combination: this.combinationSet) {
+        for (List<Integer> combination : this.combinationSet) {
             int sum = 0;
-            for (Integer number: combination) {
+            for (Integer number : combination) {
                 sum += number;
             }
             this.combinationMap.put(sum, combination);
