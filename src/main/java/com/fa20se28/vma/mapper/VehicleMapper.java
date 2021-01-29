@@ -73,8 +73,7 @@ public interface VehicleMapper {
             "</if> " +
             "WHERE " +
             "<if test = \"v_option == 0\" > " +
-            "v.vehicle_status NOT IN " +
-            "(SELECT DISTINCT vs.vehicle_status " +
+            "v.vehicle_status NOT IN (SELECT DISTINCT vs.vehicle_status " +
             "FROM vehicle vs " +
             "WHERE vs.vehicle_status = 'REJECTED' " +
             "OR vs.vehicle_status = 'PENDING_APPROVAL' " +
