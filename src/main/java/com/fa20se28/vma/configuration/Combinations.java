@@ -35,7 +35,8 @@ public class Combinations {
                 sum += number;
             }
             if (sum >= passengerCount) {
-                this.combinationSet.add(Arrays.asList(list));
+                ArrayList<Integer> tempList = new ArrayList<>(Arrays.asList(list));
+                this.combinationSet.add(tempList);
             }
             return;
         }
