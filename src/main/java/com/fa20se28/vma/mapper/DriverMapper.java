@@ -188,7 +188,8 @@ public interface DriverMapper {
             "JOIN issued_vehicle iv  " +
             "ON v.vehicle_id = iv.vehicle_id  " +
             "JOIN owner_vehicles ov  " +
-            "ON v.vehicle_id = ov.vehicle_id  " +
+            "ON v.vehicle_id = ov.vehicle_id " +
+            "AND ov.end_date IS NULL " +
             "JOIN [user] u  " +
             "ON ov.user_id = u.user_id " +
             "WHERE ov.user_id = #{ownerId}  " +
@@ -232,7 +233,8 @@ public interface DriverMapper {
             "JOIN issued_vehicle iv  " +
             "ON v.vehicle_id = iv.vehicle_id  " +
             "JOIN owner_vehicles ov  " +
-            "ON v.vehicle_id = ov.vehicle_id  " +
+            "ON v.vehicle_id = ov.vehicle_id " +
+            "AND ov.end_date IS NULL " +
             "JOIN [user] u  " +
             "ON ov.user_id = u.user_id  " +
             "WHERE ov.user_id = #{ownerId}  " +
