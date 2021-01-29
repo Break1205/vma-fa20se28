@@ -15,6 +15,7 @@ public interface VehicleMapper {
             "SELECT COUNT(v.vehicle_id) " +
             "FROM vehicle v " +
             "JOIN vehicle_type vt ON v.vehicle_type_id = vt.vehicle_type_id " +
+            "JOIN vehicle_seat vs ON v.seats_id = vs.seats_id " +
             "<if test = \"v_owner_id != null\" > " +
             "JOIN owner_vehicles ov ON ov.vehicle_id = v.vehicle_id " +
             "AND ov.end_date IS NULL " +
