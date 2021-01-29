@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.temporal.ChronoUnit;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -219,49 +220,71 @@ public class ContractVehicleComponentImpl implements ContractVehicleComponent {
         // get the initial list of available vehicles
         List<VehicleContract> availableVehicles = contractVehicleMapper.getAvailableVehicles(vehicleContractReq);
 
-        //
-        for (VehicleContract vehicle : availableVehicles) {
-            //get earned value the vehicle ran in the timeframe
-            String earnedString = contractVehicleMapper.getVehicleEarnedValue(vehicle.getVehicleId(), firstDateOfTimeframe, lastDateOfTimeframe);
-            float earnedValue = 0;
+        // calculate earned and expected value
+        if (!availableVehicles.isEmpty()) {
+            for (VehicleContract vehicle : availableVehicles) {
+                //get earned value the vehicle ran in the timeframe
+                String earnedString = contractVehicleMapper.getVehicleEarnedValue(vehicle.getVehicleId(), firstDateOfTimeframe, lastDateOfTimeframe);
+                float earnedValue = 0;
 
-            if (earnedString != null) {
-                earnedValue = Float.parseFloat(earnedString);
-            }
-
-            vehicle.setCurrentEarnedValue(earnedValue);
-
-            float estimatedValue;
-
-            // if there is more than one month in the provided timeframe
-            if (monthDifferent != 0) {
-                float totalValue = 0;
-
-                for (int i = 0; i < monthDifferent; i++) {
-                    LocalDate firstDateOfMonth = firstDateOfTimeframe.plusMonths(i);
-                    LocalDate lastDateOfMonth = firstDateOfMonth.withDayOfMonth(firstDateOfMonth.lengthOfMonth());
-
-                    totalValue += calculateEstimatedValue(vehicle.getVehicleId(), firstDateOfMonth, lastDateOfMonth);
+                if (earnedString != null) {
+                    earnedValue = Float.parseFloat(earnedString);
                 }
 
-                estimatedValue = totalValue;
-                vehicle.setExpectedValue(estimatedValue);
-            } else {
-                estimatedValue = calculateEstimatedValue(vehicle.getVehicleId(), firstDateOfTimeframe, lastDateOfTimeframe);
-                vehicle.setExpectedValue(estimatedValue);
+                vehicle.setCurrentEarnedValue(earnedValue);
+
+                float estimatedValue;
+
+                // if there is more than one month in the provided timeframe
+                if (monthDifferent != 0) {
+                    float totalValue = 0;
+
+                    for (int i = 0; i < monthDifferent; i++) {
+                        LocalDate firstDateOfMonth = firstDateOfTimeframe.plusMonths(i);
+                        LocalDate lastDateOfMonth = firstDateOfMonth.withDayOfMonth(firstDateOfMonth.lengthOfMonth());
+
+                        totalValue += calculateEstimatedValue(vehicle.getVehicleId(), firstDateOfMonth, lastDateOfMonth);
+                    }
+
+                    estimatedValue = totalValue;
+                    vehicle.setExpectedValue(estimatedValue);
+                } else {
+                    estimatedValue = calculateEstimatedValue(vehicle.getVehicleId(), firstDateOfTimeframe, lastDateOfTimeframe);
+                    vehicle.setExpectedValue(estimatedValue);
+                }
+
+                float completion = 0;
+
+                if (estimatedValue != 0) {
+                    completion = (earnedValue / estimatedValue);
+                }
+
+                vehicle.setCompletionPercentage(completion);
+
+                // check percentage >= 100%
+                if (completion >= 100 && displayAll == 0) {
+                    availableVehicles.remove(vehicle);
+                }
             }
 
-            // check if vehicle value is reached
-            if (earnedValue >= estimatedValue && estimatedValue != 0 && displayAll == 0) {
-                availableVehicles.remove(vehicle);
+            if (availableVehicles.size() > 1) {
+                availableVehicles.sort((v1, v2) -> {
+                    if (v1.getCompletionPercentage() == v2.getCompletionPercentage()) {
+                        return 0;
+                    }
+
+                    return v1.getCompletionPercentage() > v2.getCompletionPercentage() ? 1 : -1;
+                });
+
+                availableVehicles.sort(Comparator.comparingDouble(VehicleContract::getExpectedValue).reversed());
             }
         }
 
         if (pageNum >= 0) {
-            if (availableVehicles.size() <= 10 && pageNum == 0) {
+            if (availableVehicles.size() <= 15 && pageNum == 0) {
                 return availableVehicles;
             } else {
-                return availableVehicles.subList((10 * pageNum) + 1, (10 * pageNum) + 10);
+                return availableVehicles.subList((15 * pageNum) + 1, (15 * pageNum) + 10);
             }
         } else {
             return availableVehicles;

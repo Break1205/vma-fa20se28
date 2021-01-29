@@ -15,6 +15,7 @@ public class VehicleContract {
     private List<SeatPrice> prices;
     private float currentEarnedValue;
     private float expectedValue;
+    private float completionPercentage;
 
     public String getVehicleId() {
         return vehicleId;
@@ -78,5 +79,13 @@ public class VehicleContract {
 
     public void setPrices(List<SeatPrice> prices) {
         this.prices = prices;
+    }
+
+    public float getCompletionPercentage() {
+        return completionPercentage;
+    }
+
+    public void setCompletionPercentage(float completionPercentage) {
+        this.completionPercentage = completionPercentage;
     }
 }
