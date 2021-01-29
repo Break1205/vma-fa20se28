@@ -17,6 +17,7 @@ public interface VehicleMapper {
             "JOIN vehicle_type vt ON v.vehicle_type_id = vt.vehicle_type_id " +
             "<if test = \"v_owner_id != null\" > " +
             "JOIN owner_vehicles ov ON ov.vehicle_id = v.vehicle_id " +
+            "AND ov.end_date IS NULL " +
             "</if> " +
             "WHERE " +
             "<if test = \"v_option == 0\" > " +
@@ -67,6 +68,7 @@ public interface VehicleMapper {
             "JOIN vehicle_seat vs ON v.seats_id = vs.seats_id " +
             "<if test = \"v_owner_id != null\" > " +
             "JOIN owner_vehicles ov ON ov.vehicle_id = v.vehicle_id " +
+            "AND ov.end_date IS NULL " +
             "</if> " +
             "WHERE " +
             "<if test = \"v_option == 0\" > " +
